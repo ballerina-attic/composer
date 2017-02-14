@@ -169,6 +169,14 @@ define(['log', 'jquery', './../ast/ballerina-ast-factory', './../tool-palette/to
             nodeFactoryMethod: BallerinaASTFactory.createReturnStatement
         };
 
+        var createConnectorInitStatementTool = {
+            id: "ConnectorInitExpression",
+            name: "ConnectorInitExpression",
+            icon: "images/tool-icons/return.svg",
+            title: "Connector Initialize",
+            nodeFactoryMethod: BallerinaASTFactory.createAggregatedConnectorInitStatement
+        };
+
         var createWorkerInvocationStatementTool = {
             id: "WorkerInvoke",
             name: "Worker Invoke",
@@ -187,7 +195,7 @@ define(['log', 'jquery', './../ast/ballerina-ast-factory', './../tool-palette/to
 
         var statementToolDefArray = [createIfStatementTool, createAssignmentExpressionTool,
             createVariableDefinitionStatementTool,  createFunctionInvocationTool, createReturnStatementTool,
-            createReplyStatementTool, createWhileStatementTool];
+            /*createConnectorInitStatementTool,*/ createReplyStatementTool, createWhileStatementTool];
 
         // Create statements tool group
         var statements = new ToolGroup({

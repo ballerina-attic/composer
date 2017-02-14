@@ -32,7 +32,7 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
         './if-condition', './array-map-access-expression', './map-init-expression', './key-value-expression',
         './binary-expression', './unary-expression','./connector-action', './struct-definition', './constant-definition',
         './variable-definition-statement','./type-struct-definition', './type-casting-expression', './worker-invoke',
-        './reference-type-init-expression', './array-init-expression', './worker-receive'],
+        './reference-type-init-expression', './array-init-expression', './worker-receive', './connector-init-expression'],
     function (_, ballerinaAstRoot, serviceDefinition, functionDefinition, connectorDefinition, resourceDefinition,
               workerDeclaration, statement, conditionalStatement, connectorDeclaration, expression, ifElseStatement,
               ifStatement, elseStatement, elseIfStatement, tryCatchStatement, tryStatement, catchStatement, replyStatement,
@@ -43,7 +43,8 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
               basicLiteralExpression, leftOperandExpression, rightOperandExpression, instanceCreationExpression,
               thenBody, ifCondition, arrayMapAccessExpression, mapInitExpression, keyValueExpression, binaryExpression,
               unaryExpression, connectorAction, structDefinition, constantDefinition, variableDefinitionStatement,
-              typeStructDefinition, typeCastingExpression, workerInvoke, referenceTypeInitExpression, arrayInitExpression, workerReceive) {
+              typeStructDefinition, typeCastingExpression, workerInvoke, referenceTypeInitExpression, arrayInitExpression,
+              workerReceive, connectorInitExpression) {
 
 
         /**
@@ -427,6 +428,26 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
          */
         BallerinaASTFactory.createReturnStatement = function (args) {
             return new returnStatement(args);
+        };
+
+        /**
+         * creates ConnectorInitExpression
+         * @param args
+         */
+        BallerinaASTFactory.createConnectorInitExpression = function (args) {
+            return new connectorInitExpression(args);
+        };
+
+        BallerinaASTFactory.createAggregatedConnectorInitStatement = function (args) {
+            var assignmentStmt = BallerinaASTFactory.createAssignmentStatement(args);
+            var leftOp = BallerinaASTFactory.createLeftOperandExpression(args);
+            var rightOp = BallerinaASTFactory.createRightOperandExpression(args);
+            var connectorInitExpression = BallerinaASTFactory.createConnectorInitExpression(args);
+            rightOp.addChild(connectorInitExpression);
+            rightOp.setRightOperandExpressionString(connectorInitExpression.getExpression());
+            assignmentStmt.addChild(leftOp);
+            assignmentStmt.addChild(rightOp);
+            return assignmentStmt;
         };
 
         /**
@@ -849,6 +870,15 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
          */
         BallerinaASTFactory.isReturnStatement = function (child) {
             return child instanceof returnStatement;
+        };
+
+        /**
+         * instanceof check for ConnectorInitExpression
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.isConnectorInitExpression = function (child) {
+            return child instanceof connectorInitExpression;
         };
 
         /**

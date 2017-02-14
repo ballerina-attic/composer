@@ -15,15 +15,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['./ballerina-file-editor', './ballerina-view', './message-manager', './canvas',
-        './connector-declaration-view', './function-definition-view', './reply-statement-view',
-        './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view',
-        './while-statement-view', './worker-declaration-view', './source-view', './action-invocation-statement-view',
+define(['./ballerina-file-editor', './ballerina-view', './message-manager', './canvas', './connector-declaration-view',
+        './function-definition-view', './reply-statement-view', './resource-definition-view', './return-statement-view',
+        './service-definition-view', './throw-statement-view', './while-statement-view', './worker-declaration-view',
+        './source-view', './action-invocation-statement-view', './connector-init-expression-view',
         './service-preview-view', './simple-statement-view', './compound-statement-view', './backend'],
-    function (BallerinaFileEditor, BallerinaView, Canvas,MessageManager,
-              ConnectorDeclarationView, FunctionDefinitionView, ReplyStatementView,
-              ResourceDefinitionView, ReturnStatementView, ServiceDefinitionView, ThrowStatementView,
-              WhileStatementView, WorkerDeclarationView, SourceView, ActionInvocationStatementView,
+    function (BallerinaFileEditor, BallerinaView, MessageManager, Canvas, ConnectorDeclarationView,
+              FunctionDefinitionView, ReplyStatementView, ResourceDefinitionView, ReturnStatementView,
+              ServiceDefinitionView, ThrowStatementView, WhileStatementView, WorkerDeclarationView,
+              SourceView, ActionInvocationStatementView, ConnectorInitExpressionView,
               ServicePreviewView, SimpleStatementView, CompoundStatementView, Backend) {
         return  {
             BallerinaView: BallerinaView,
@@ -41,6 +41,7 @@ define(['./ballerina-file-editor', './ballerina-view', './message-manager', './c
             WorkerDeclarationView: WorkerDeclarationView,
             SourceView: SourceView,
             ActionInvocationStatementView: ActionInvocationStatementView,
+            ConnectorInitExpressionView: ConnectorInitExpressionView,
             ServicePreviewView: ServicePreviewView,
             SimpleStatementView: SimpleStatementView,
             CompoundStatementView: CompoundStatementView,

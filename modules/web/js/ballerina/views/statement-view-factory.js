@@ -18,13 +18,17 @@
 define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statement-view', './try-statement-view',
         './catch-statement-view', './if-else-statement-view', './if-statement-view', './else-statement-view',
         './else-if-statement-view', './assignment-view', './function-invocation-view',
-        './action-invocation-statement-view', './while-statement-view', './reply-statement-view',
-        './logical-expression-view', './arithmetic-expression-view', './return-statement-view',
-        './variable-definition-statement-view', './worker-invoke-view', './worker-receive-view'],
-    function (_, log, EventChannel, AST, TryCatchStatementView, TryStatementView, CatchStatementView,
-              IfElseStatementView, IfStatementView, ElseStatementView, ElseIfStatementView, AssignmentStatementView,
-              FunctionInvocationStatementView, ActionInvocationStatementView, WhileStatementView, ReplyStatementView,
-              LogicalExpressionView, ArithmeticExpressionView, ReturnStatement, VariableDefinitionStatementView, WorkerInvokeView, WorkerReceiveView) {
+        './action-invocation-statement-view', './connector-init-expression-view', './while-statement-view',
+        './reply-statement-view', './logical-expression-view', './arithmetic-expression-view',
+        './return-statement-view', './variable-definition-statement-view', './worker-invoke-view',
+        './worker-receive-view'],
+    function (_, log, EventChannel, AST, TryCatchStatementView, TryStatementView,
+              CatchStatementView, IfElseStatementView, IfStatementView, ElseStatementView,
+              ElseIfStatementView, AssignmentStatementView, FunctionInvocationStatementView,
+              ActionInvocationStatementView, ConnectorInitExpressionView, WhileStatementView,
+              ReplyStatementView, LogicalExpressionView, ArithmeticExpressionView,
+              ReturnStatement, VariableDefinitionStatementView, WorkerInvokeView,
+              WorkerReceiveView) {
 
         var StatementViewFactory = function () {
         };
@@ -53,6 +57,8 @@ define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statemen
                 return new WhileStatementView(args);
             } else if (statement instanceof AST.ActionInvocationExpression) {
                 return new ActionInvocationStatementView(args);
+            } else if (statement instanceof AST.ConnectorInitExpression) {
+                return new ConnectorInitExpressionView(args);
             } else if (statement instanceof AST.ReplyStatement) {
                 return new ReplyStatementView(args);
             } else if (statement instanceof AST.LogicalExpression) {
@@ -72,6 +78,10 @@ define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statemen
                             if (AST.BallerinaASTFactory.isActionInvocationExpression(child)) {
                                 _.set(args, 'model', statement);
                                 assignmentStatement = new ActionInvocationStatementView(args);
+                            }
+                            if (AST.BallerinaASTFactory.isConnectorInitExpression(child)) {
+                                _.set(args, 'model', child);
+                                assignmentStatement = new ConnectorInitExpressionView(args);
                             }
                         });
                     }

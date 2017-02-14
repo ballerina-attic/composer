@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2016-2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -26,7 +26,7 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './conditional-statem
         './action-invocation-expression', './ballerina-ast-deserializer', './function-invocation-expression',
         './left-operand-expression', './right-operand-expression', './connector-action', './struct-definition',
         './action-invocation-statement', './variable-definition-statement','./type-struct-definition', './worker-invoke',
-        './worker-receive'],
+        './worker-receive', './connector-init-expression'],
     function (BallerinaASTFactory, BallerinaASTRoot, ConditionalStatement, ConnectorDeclaration, ConnectorDefinition,
               ConstantDefinition, Expression, FunctionDefinition, IfElseStatement, IfStatement, ElseStatement,
               ElseIfStatement, TryCatchStatement, TryStatement, CatchStatement, ASTNode, ReplyStatement,
@@ -36,7 +36,7 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './conditional-statem
               FunctionInvocation, ArithmeticExpression, LogicalExpression, ActionInvocationExpression,
               BallerinaASTDeserializer, FunctionInvocationExpression, LeftOperandExpression, RightOperandExpression,
               ConnectorAction, StructDefinition, ActionInvocationStatement, VariableDefinitionStatement,TypeStructDefinition,
-              WorkerInvoke, WorkerReceive) {
+              WorkerInvoke, WorkerReceive, ConnectorInitExpression) {
 
         return  {
             BallerinaASTFactory: BallerinaASTFactory,
@@ -79,6 +79,7 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './conditional-statem
             LogicalExpression: LogicalExpression,
             ActionInvocationStatement: ActionInvocationStatement,
             ActionInvocationExpression: ActionInvocationExpression,
+            ConnectorInitExpression: ConnectorInitExpression,
             BallerinaASTDeserializer : BallerinaASTDeserializer,
             ConnectorAction : ConnectorAction,
             StructDefinition : StructDefinition,

@@ -28,6 +28,7 @@ define(['lodash', 'log', './expression'], function (_, log, Expression) {
      * Undefined when invoking a connector in the same package.
      * @param {string} [args.argsExpressions] - Arguments passed to initialize the connector. Example: One argument
      * passed to the client connector is the url, hence one argument is the url, "http://localhost:9090".
+     * @param {ConnectorDeclaration|undefined} [args.connector] - A reference to the connector.
      * @constructor
      * @augments Expression
      */
@@ -37,6 +38,7 @@ define(['lodash', 'log', './expression'], function (_, log, Expression) {
         this._packageName = _.get(args, "packageName");
         this._packagePath = _.get(args, "packagePath");
         this._argsExpressions = _.get(args, "argsExpressions", []);
+        this._connector = _.get(args, "connector");
     };
 
     /** @lends ConnectorInitExpression **/
@@ -101,6 +103,20 @@ define(['lodash', 'log', './expression'], function (_, log, Expression) {
      */
     ConnectorInitExpression.prototype.getArgExpressions = function () {
         return this._argsExpressions;
+    };
+
+    /**
+     * @param {ConnectorDeclaration} connector
+     */
+    ConnectorInitExpression.prototype.setConnector = function (connector) {
+        this._connector = connector;
+    };
+
+    /**
+     * @return {undefined|ConnectorDeclaration}
+     */
+    ConnectorInitExpression.prototype.getConnector = function () {
+        return this._connector;
     };
 
     /**
