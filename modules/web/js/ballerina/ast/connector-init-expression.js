@@ -145,7 +145,7 @@ define(['lodash', 'log', './expression'], function (_, log, Expression) {
      * @param {string} jsonNode.connector_init_name - The connector name.
      * @param {string} jsonNode.connector_init_package_name - The package prefix.
      * @param {string} jsonNode.connector_init_package_path - The package path.
-     * @param {string} jsonNode.connector_init_args - The arguments as an array of {@link Expression}s.
+     * @param {Object[]} jsonNode.children - The arguments as an array of unparsed {@link Expression}s.
      */
     ConnectorInitExpression.prototype.initFromJson = function (jsonNode) {
         var self = this;
@@ -154,7 +154,7 @@ define(['lodash', 'log', './expression'], function (_, log, Expression) {
         this.setPackagePath(jsonNode.connector_init_package_path, {doSilently: true});
 
         var tempArgExpressions = [];
-        _.forEach(jsonNode.connector_init_args, function(initArg){
+        _.forEach(jsonNode.children, function(initArg){
             var child = self.getFactory().createFromJson(initArg);
             child.initFromJson(initArg);
             tempArgExpressions.push(child.getExpression());

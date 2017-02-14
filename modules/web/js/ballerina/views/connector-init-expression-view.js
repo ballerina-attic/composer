@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -15,14 +15,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', './ballerina-statement-view', './../ast/arithmetic-expression', 'd3utils', 'd3'],
-    function (_, log, BallerinaStatementView, ArithmeticExpression, D3Utils, d3) {
+define(['lodash', 'log', './ballerina-statement-view', './../ast/connector-init-expression', 'd3utils', 'd3'],
+    function (_, log, BallerinaStatementView, ConnectorInitExpression, D3Utils, d3) {
 
         /**
          * The view to represent a arithmetic expression which is an AST visitor.
-         * @param {Object} args - Arguments for creating the view.
-         * @param {ArithmeticExpression} args.model - The arithmetic expression model.
-         * @param {Object} args.container - The HTML container to which the view should be added to.
+         * @param {Object} [args] - Arguments for creating the view.
+         * @param {Expression} [args.model] - The arithmetic expression model.
+         * @param {Object} [args.container] - The HTML container to which the view should be added to.
          * @param {Object} [args.viewOptions={}] - Configuration values for the view.
          * @constructor
          */
@@ -34,11 +34,11 @@ define(['lodash', 'log', './ballerina-statement-view', './../ast/arithmetic-expr
         ConnectorInitExpressionView.prototype.constructor = ConnectorInitExpressionView;
 
         ConnectorInitExpressionView.prototype.setModel = function (model) {
-            if (!_.isNil(model) && model instanceof ArithmeticExpression) {
+            if (!_.isNil(model) && model instanceof ConnectorInitExpression) {
                 this._model = model;
             } else {
-                log.error("arithmetic expression undefined or is of different type." + model);
-                throw "arithmetic expression undefined or is of different type." + model;
+                log.error("Connector init expression undefined or is of different type." + model);
+                throw "Connector init expression undefined or is of different type." + model;
             }
         };
 
@@ -46,8 +46,8 @@ define(['lodash', 'log', './ballerina-statement-view', './../ast/arithmetic-expr
             if (!_.isNil(container)) {
                 this._container = container;
             } else {
-                log.error("Container for arithmetic expression is undefined." + container);
-                throw "Container for arithmetic expression is undefined." + container;
+                log.error("Container for connector init expression is undefined." + container);
+                throw "Container for connector init expression is undefined." + container;
             }
         };
 
