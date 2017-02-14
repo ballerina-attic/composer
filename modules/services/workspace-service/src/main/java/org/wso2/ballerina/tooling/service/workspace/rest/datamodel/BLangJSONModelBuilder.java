@@ -1018,14 +1018,16 @@ public class BLangJSONModelBuilder implements NodeVisitor {
     public void visit(ConnectorInitExpr connectorInitExpr) {
         JsonObject connectorInitExprObj = new JsonObject();
         connectorInitExprObj.addProperty(BLangJSONModelConstants.DEFINITION_TYPE, BLangJSONModelConstants.CONNECTOR_INIT_EXPR);
-        connectorInitExprObj.addProperty(BLangJSONModelConstants.CONNECTOR_NAME, connectorInitExpr.getTypeName().toString());
+        connectorInitExprObj.addProperty(BLangJSONModelConstants.CONNECTOR_INIT_NAME, connectorInitExpr.getTypeName().getName());
+        connectorInitExprObj.addProperty(BLangJSONModelConstants.CONNECTOR_INIT_PACKAGE_NAME, connectorInitExpr.getTypeName().getPackageName());
+        connectorInitExprObj.addProperty(BLangJSONModelConstants.CONNECTOR_INIT_PACKAGE_PATH, connectorInitExpr.getTypeName().getPackagePath());
         tempJsonArrayRef.push(new JsonArray());
         if(connectorInitExpr.getArgExprs() != null) {
             for(Expression expression : connectorInitExpr.getArgExprs()) {
                 expression.accept(this);
             }
         }
-        connectorInitExprObj.add(BLangJSONModelConstants.ARGUMENTS, tempJsonArrayRef.peek());
+        connectorInitExprObj.add(BLangJSONModelConstants.CONNECTOR_INIT_ARGS, tempJsonArrayRef.peek());
         tempJsonArrayRef.pop();
         tempJsonArrayRef.peek().add(connectorInitExprObj);
     }
