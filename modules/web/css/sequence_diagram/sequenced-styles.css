@@ -521,3 +521,7 @@ text-anchor: start;
     stroke: #000;
     fill: #000;
 }
+
+.connector-life-line-greyed {
+    stroke: #CCC;
+}

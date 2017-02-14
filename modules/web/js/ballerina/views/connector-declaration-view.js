@@ -17,7 +17,7 @@
  */
 
 define(['lodash','d3', 'jquery', './ballerina-view', './../ast/connector-declaration', 'log', 'd3utils','./life-line'],
-    function (_, d3, $, BallerinaView, ConnectorDeclaration, log, D3utils, LifeLine) {
+    function (_, d3, $, BallerinaView, ConnectorDeclaration, log, D3utils, LifeLineView) {
 
         /**
          * The view to represent a connection declaration which is an AST visitor.
@@ -26,6 +26,7 @@ define(['lodash','d3', 'jquery', './ballerina-view', './../ast/connector-declara
          * @param {Object} args.container - The HTML container to which the view should be added to.
          * @param {Object} [args.viewOptions={}] - Configuration values for the view.
          * @constructor
+         * @augments LifeLineView
          */
         var ConnectorDeclarationView = function (args) {
             this._totalHeightGap = 50;
@@ -36,7 +37,7 @@ define(['lodash','d3', 'jquery', './ballerina-view', './../ast/connector-declara
             _.set(args, 'title',  _.get(args, 'model').getConnectorVariable() || "HTTP");
             _.set(args, 'cssClass.group',  _.get(args, 'cssClass.group', 'connector-life-line'));
             _.set(args, 'line.height',  _.get(args, 'lineHeight', 290));
-            LifeLine.call(this, args);
+            LifeLineView.call(this, args);
 
             if (_.isNil(this._model) || !(this._model instanceof ConnectorDeclaration)) {
                 log.error("Connection declaration is undefined or is of different type." + this._model);
@@ -51,7 +52,7 @@ define(['lodash','d3', 'jquery', './ballerina-view', './../ast/connector-declara
             this.init();
         };
 
-        ConnectorDeclarationView.prototype = Object.create(LifeLine.prototype);
+        ConnectorDeclarationView.prototype = Object.create(LifeLineView.prototype);
         ConnectorDeclarationView.prototype.constructor = ConnectorDeclaration;
 
         ConnectorDeclarationView.prototype.init = function () {
@@ -171,6 +172,14 @@ define(['lodash','d3', 'jquery', './ballerina-view', './../ast/connector-declara
             this.initDropZone(dropZoneOptions);
 
         };
+
+        // ConnectorDeclarationView.prototype.render = function () {
+        //     LifeLineView.prototype.render.call(this);
+        //     var middleLine = this.getMiddleLine();
+        //     if (_.size(this.getModel().getChildren()) > 0) {
+        //         middleLine.addClass("connector-life-line-greyed", true);
+        //     }
+        // };
 
         ConnectorDeclarationView.prototype.setStyles = function (d3Element) {
             d3Element.attr("fill-opacity", 0);

@@ -22,7 +22,7 @@ define(['lodash', './statement', '../utils/common-utils', './variable-declaratio
      * Class to represent an Variable Definition statement.
      * @param {Object} [args] - Arguments for creating a variable definition statement.
      * @param {string} [args.leftExpression] - The left hand expression.
-     * @param {string|undefined} [args.rightExpression] - The right hand expression.
+     * @param {Expression|undefined} [args.rightExpression] - The right hand expression.
      * @constructor
      * @augments Statement
      */

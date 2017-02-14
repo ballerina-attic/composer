@@ -431,6 +431,14 @@ define(['lodash', 'jquery', 'd3', 'log', 'd3utils', './point', './ballerina-view
         }
     };
 
+        /**
+         *
+         * @return {*|Generic}
+         */
+    LifeLineView.prototype.getMiddleLine = function () {
+        return this._middleLine;
+    };
+
 
     return LifeLineView;
 });

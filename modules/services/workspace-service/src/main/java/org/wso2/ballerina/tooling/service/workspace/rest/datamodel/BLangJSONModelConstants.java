@@ -103,6 +103,12 @@ public class BLangJSONModelConstants {
     public static final String BLOCK_STATEMENT = "block_statement";
 
     public static final String CONNECTOR_NAME = "connector_name";
+    
+    public static final String CONNECTOR_INIT_NAME = "connector_init_name";
+    
+    public static final String CONNECTOR_INIT_PACKAGE_NAME = "connector_init_package_name";
+    
+    public static final String CONNECTOR_INIT_PACKAGE_PATH = "connector_init_package_path";
 
     public static final String ACTION_NAME = "action_name";
 
