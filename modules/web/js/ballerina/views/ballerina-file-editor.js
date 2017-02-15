@@ -488,7 +488,9 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
                     self.addCurrentPackageToToolPalette();
                 } else if (isSwaggerChanged) {
                     var astModal = self._swaggerView.getContent();
-                    self.setModel(self.deserializer.getASTModel(astModal));
+                    if(!_.isNil(astModal)){
+                        self.setModel(self.deserializer.getASTModel(astModal));
+                    }
                     // reset source editor delta stack
                 }
                 //canvas should be visible before you can call reDraw. drawing dependednt on attr:offsetWidth
