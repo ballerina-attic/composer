@@ -48,18 +48,18 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
                 throw "Ballerina AST Root is undefined or is of different type." + this._model;
             }
 
-           if (!_.has(args, 'backendEndpointsOptions')){
-               log.error("Backend endpoints options not defined.");
-               // not throwing an exception for now since we need to work without a backend.
-           }
-           this.parserBackend = new Backend({url: _.get(args, 'backendEndpointsOptions.parser.endpoint', {})});
-           this.validatorBackend = new Backend({url: _.get(args, 'backendEndpointsOptions.validator.endpoint', {})});
-           this._isInSourceView = false;
-           this._isvInSwaggerView = false;
-           this._constantDefinitionsPane = undefined;
-           this.deserializer = BallerinaASTDeserializer;
-           this.init();
-       };
+            if (!_.has(args, 'backendEndpointsOptions')){
+                log.error("Backend endpoints options not defined.");
+                // not throwing an exception for now since we need to work without a backend.
+            }
+            this.parserBackend = new Backend({url: _.get(args, 'backendEndpointsOptions.parser.endpoint', {})});
+            this.validatorBackend = new Backend({url: _.get(args, 'backendEndpointsOptions.validator.endpoint', {})});
+            this._isInSourceView = false;
+            this._isvInSwaggerView = false;
+            this._constantDefinitionsPane = undefined;
+            this.deserializer = BallerinaASTDeserializer;
+            this.init();
+        };
 
         BallerinaFileEditor.prototype = Object.create(BallerinaView.prototype);
         BallerinaFileEditor.prototype.constructor = BallerinaFileEditor;
@@ -90,12 +90,12 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
         };
 
         BallerinaFileEditor.prototype.setActiveView = function(activeView){
-           this._activeView = activeView;
-           switch (activeView){
-               case "source": this.trigger("source-view-activated"); break;
-               case "design": this.trigger("design-view-activated"); break;
-               case "swagger": this.trigger("swagger-view-activated"); break;
-           }
+            this._activeView = activeView;
+            switch (activeView){
+                case "source": this.trigger("source-view-activated"); break;
+                case "design": this.trigger("design-view-activated"); break;
+                case "swagger": this.trigger("swagger-view-activated"); break;
+            }
         };
 
         BallerinaFileEditor.prototype.setModel = function (model) {
@@ -315,7 +315,7 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
                 .append($('<div></div>').addClass(_.get(viewOptions, 'cssClass.canvas_top_control_packages_import')))
                 .append($('<div></div>').addClass(_.get(viewOptions, 'cssClass.canvas_top_control_constants_define')));
             canvasContainer.append(canvasTopControlsContainer);
-            
+
             this._$designViewContainer.append(canvasContainer);
             this._$canvasContainer = canvasContainer;
             // check whether container element exists in dom
@@ -327,8 +327,8 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
 
             var toolPaletteItemProvider = new ToolPaletteItemProvider();
             var toolPaletteContainer = $(this._container)
-                                        .find(_.get(viewOptions, 'design_view.tool_palette.container'))
-                                        .get(0);
+                .find(_.get(viewOptions, 'design_view.tool_palette.container'))
+                .get(0);
             var toolPaletteOpts = _.clone(_.get(viewOptions, 'design_view.tool_palette'));
             toolPaletteOpts.itemProvider = toolPaletteItemProvider;
             toolPaletteOpts.container = toolPaletteContainer;
@@ -572,7 +572,7 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
                 self.setActiveView('design');
             }
 
-    };
+        };
 
         /**
          * Returns a package object with functions, connectors,
@@ -593,44 +593,44 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
             this.toolPalette.getItemProvider().addImport(this.generateCurrentPackage(), 0);
         };
 
-    BallerinaFileEditor.prototype.initDropTarget = function() {
-        var self = this,
-            dropActiveClass = _.get(this._viewOptions, 'cssClass.design_view_drop');
+        BallerinaFileEditor.prototype.initDropTarget = function() {
+            var self = this,
+                dropActiveClass = _.get(this._viewOptions, 'cssClass.design_view_drop');
 
-        // on hover over canvas area
-        this._$canvasContainer
-            .mouseover(function(event){
+            // on hover over canvas area
+            this._$canvasContainer
+                .mouseover(function(event){
 
-            //if someone is dragging a tool from tool-palette
-            if(self.toolPalette.dragDropManager.isOnDrag()){
+                    //if someone is dragging a tool from tool-palette
+                    if(self.toolPalette.dragDropManager.isOnDrag()){
 
-                if(_.isEqual(self.toolPalette.dragDropManager.getActivatedDropTarget(), self)){
-                    return;
-                }
+                        if(_.isEqual(self.toolPalette.dragDropManager.getActivatedDropTarget(), self)){
+                            return;
+                        }
 
-                // register this as a drop target and validate possible types of nodes to drop - second arg is a call back to validate
-                // tool view will use this to provide feedback on impossible drop zones
-                self.toolPalette.dragDropManager.setActivatedDropTarget(self._model);
+                        // register this as a drop target and validate possible types of nodes to drop - second arg is a call back to validate
+                        // tool view will use this to provide feedback on impossible drop zones
+                        self.toolPalette.dragDropManager.setActivatedDropTarget(self._model);
 
-                // indicate drop area
-                self._$canvasContainer.addClass(dropActiveClass);
+                        // indicate drop area
+                        self._$canvasContainer.addClass(dropActiveClass);
 
-                // reset ui feed back on drop target change
-                self.toolPalette.dragDropManager.once("drop-target-changed", function(){
-                    self._$canvasContainer.removeClass(dropActiveClass);
-                });
-            }
-            event.stopPropagation();
-        }).mouseout(function(event){
-            // reset ui feed back on hover out
-            if(self.toolPalette.dragDropManager.isOnDrag()){
-                if(_.isEqual(self.toolPalette.dragDropManager.getActivatedDropTarget(), self._model)){
-                    self.toolPalette.dragDropManager.clearActivatedDropTarget();
-                }
-            }
-            event.stopPropagation();
-        })
-    };
+                        // reset ui feed back on drop target change
+                        self.toolPalette.dragDropManager.once("drop-target-changed", function(){
+                            self._$canvasContainer.removeClass(dropActiveClass);
+                        });
+                    }
+                    event.stopPropagation();
+                }).mouseout(function(event){
+                    // reset ui feed back on hover out
+                    if(self.toolPalette.dragDropManager.isOnDrag()){
+                        if(_.isEqual(self.toolPalette.dragDropManager.getActivatedDropTarget(), self._model)){
+                            self.toolPalette.dragDropManager.clearActivatedDropTarget();
+                        }
+                    }
+                    event.stopPropagation();
+                })
+        };
 
         /**
          * generate Ballerina source for this editor page
@@ -651,32 +651,32 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
             var root;
             var source = this._sourceView.getContent();
             if (!_.isEmpty(source.trim())) {
-               var response = this.parserBackend.parse(source);
-               //if there are errors display the error.
-               //@todo: proper error handling need to get the service specs
-               if (response.error != undefined && response.error) {
-                   alerts.error('cannot switch to design view due to parse errors');
-                   return;
-               } else if (!_.isUndefined(response.errorMessage)) {
-                   alerts.error("Unable to parse the source: " + response.errorMessage);
-                   return;
-               }
-               this._parseFailed = false;
-               //if no errors display the design.
-               //@todo
-               root = this.deserializer.getASTModel(response);
-           } else {
-               root = BallerinaASTFactory.createBallerinaAstRoot();
-        
-               //package definition
-               var packageDefinition = BallerinaASTFactory.createPackageDefinition();
-               packageDefinition.setPackageName("");
-               root.addChild(packageDefinition);
-               root.setPackageDefinition(packageDefinition);
-           }
-           return root;
+                var response = this.parserBackend.parse(source);
+                //if there are errors display the error.
+                //@todo: proper error handling need to get the service specs
+                if (response.error != undefined && response.error) {
+                    alerts.error('cannot switch to design view due to parse errors');
+                    return;
+                } else if (!_.isUndefined(response.errorMessage)) {
+                    alerts.error("Unable to parse the source: " + response.errorMessage);
+                    return;
+                }
+                this._parseFailed = false;
+                //if no errors display the design.
+                //@todo
+                root = this.deserializer.getASTModel(response);
+            } else {
+                root = BallerinaASTFactory.createBallerinaAstRoot();
+
+                //package definition
+                var packageDefinition = BallerinaASTFactory.createPackageDefinition();
+                packageDefinition.setPackageName("");
+                root.addChild(packageDefinition);
+                root.setPackageDefinition(packageDefinition);
+            }
+            return root;
         };
-       
+
         /**
          * Creating the package view of a ballerina-file-editor.
          * @param canvasContainer - The canvas container.
@@ -723,6 +723,7 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
                 .appendTo(importsAddPane);
             $("<span class='fw-stack fw-lg'><i class='fw fw-square fw-stack-2x'></i>" +
                 "<i class='fw fw-cancel fw-stack-1x fw-inverse'></i></span>").appendTo(importAddCancelButtonPane);
+
             // Creating add new import button.
             var importAddCompleteButtonPane = $("<div class='action-icon-wrapper " +
                 "import-add-complete-action-wrapper' title='Import' data-placement='bottom' data-toggle='tooltip'/>")
@@ -909,7 +910,7 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
         };
 
         BallerinaFileEditor.prototype._createConstantDefinitionsView = function(canvasContainer) {
-            
+
             var costantDefinitionWrapper = _.get(this._viewOptions, 'cssClass.canvas_top_control_constants_define');
             var constantsWrapper = canvasContainer.find('.' +costantDefinitionWrapper);
 
