@@ -1174,7 +1174,7 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
                         // This is the case where struct defines variables inside.
                         // TODO: Instead of using the createVariableDeclaration we need to refactor this for createVariableDefinition
                         // simply renaming would work.
-                        node = BallerinaASTFactory.createVariableDeclaration();
+                        node = BallerinaASTFactory.createVariableDefinition();
                         break;
                     case 'variable_definition_statement':
                         node = BallerinaASTFactory.createVariableDefinitionStatement();
@@ -1306,7 +1306,16 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
                         node = BallerinaASTFactory.createKeyValueExpression();
                         break;
                     case 'type_casting_expression':
-                        node = BallerinaASTFactory.createTypeCastingExpression();
+                        node = BallerinaASTFactory.createTypeCastExpression();
+                        break;
+                    case 'type_mapper_definition':
+                        node = BallerinaASTFactory.createTypeMapperDefinition();
+                        break;
+                    case 'struct_field_access_expression':
+                        node = BallerinaASTFactory.createStructFieldAccessExpression();
+                        break;
+                    case 'block_statement':
+                        node = BallerinaASTFactory.createBlockStatement();
                         break;
                     case 'reference_type_init_expression':
                         node = BallerinaASTFactory.createReferenceTypeInitExpression();

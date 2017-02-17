@@ -83,7 +83,8 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
 
         this.jsPlumbInstance.bind('connection', function (info, ev) {
             self.dagrePosition(self);
-            self.processTypeMapperDropdown(info);
+            //TODO: for multiple type mappers
+            // self.processTypeMapperDropdown(info);
         });
     };
 
@@ -97,7 +98,7 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
     TypeMapperRenderer.prototype.disconnect = function (connection) {
         var self = this;
         var propertyConnection = this.getConnectionObject(connection.getParameter("id"),
-                                                            connection.sourceId, connection.targetId);
+            connection.sourceId, connection.targetId);
         this.midpoint = this.midpoint - this.midpointVariance;
         this.jsPlumbInstance.importDefaults({Connector: self.getConnectorConfig(self.midpoint)});
         this.jsPlumbInstance.detach(connection);
@@ -280,12 +281,12 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
     TypeMapperRenderer.prototype.removeStruct = function (name) {
         var structId = name + this.viewIdSeperator + this.viewId;
         var structConns;
-        var lookupClass = "property"
+        var lookupClass = "property";
 
         if ($("#" + structId).attr('class').includes("struct")) {
             lookupClass=  "jstree-anchor";
             structConns = $('div[id^="' +  this.jsTreePrefix + this.viewIdSeperator + structId + '"]')
-                                                        .find('.' + lookupClass);
+                .find('.' + lookupClass);
         } else {
             structConns = $('div[id^="' + structId + '"]');
         }
@@ -312,8 +313,8 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
             + this.viewIdSeperator + this.viewId;
 
         for (var i = 0; i < connection.sourceProperty.length; i++ ) {
-                sourceId += this.idNameSeperator
-                    + connection.sourceProperty[i] + this.nameTypeSeperator + connection.sourceType[i];
+            sourceId += this.idNameSeperator
+                + connection.sourceProperty[i] + this.nameTypeSeperator + connection.sourceType[i];
         }
         sourceId += anchorEnd;
 
@@ -446,7 +447,7 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
             'left': posY
         });
         var jsTreeContainer = $('<div>').attr('id', 'jstree-container' + this.viewIdSeperator + struct.id)
-                              .addClass('tree-container');
+            .addClass('tree-container');
         newStruct.append(jsTreeContainer);
         $("#" + this.placeHolderName).append(newStruct);
     };
@@ -457,6 +458,10 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
      * @param {object} reference AST model reference
      */
     TypeMapperRenderer.prototype.addFunction = function (func, reference, onFunctionRemove) {
+        var funcText = func.name;
+        //Allow multiple functions to drag and drop without conflicting
+        func.name = func.name + new Date().getTime();
+
         var id = func.name + this.viewIdSeperator + this.viewId;
         this.references.push({name: id, refObj: reference});
         var newFunc = $('<div>').attr('id', id).addClass('func');
@@ -469,7 +474,7 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
         var del =  $('<i>').addClass('fw fw-delete fw-stack-1x fw-inverse');
 
         funcName.append(funcIcon);
-        funcName.append($('<span>').text(func.name));
+        funcName.append($('<span>').text(funcText));
         closeButton.append(square);
         closeButton.append(del);
         funcName.append(closeButton);
@@ -492,13 +497,19 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
                 if(connection.target.id.includes(id)) {
                     removedFunction.incomingConnections.push(
                         self.getConnectionObject(connection.getParameter("id"),
-                                                    connection.sourceId, connection.targetId));
+                            connection.sourceId, connection.targetId));
                 } else if(connection.source.id.includes(id)) {
                     removedFunction.outgoingConnections.push(
                         self.getConnectionObject(connection.getParameter("id"),
-                                                    connection.sourceId, connection.targetId));
+                            connection.sourceId, connection.targetId));
                 }
             });
+
+            for (var i = 0; i < self.references.length; i++) {
+                if (self.references[i].name == id) {
+                    removedFunction.reference = self.references[i].refObj;
+                }
+            }
 
             self.removeStruct(func.name);
             onFunctionRemove(removedFunction);
@@ -511,7 +522,7 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
 
         _.forEach(func.returnType, function (parameter) {
             var property = self.makeFunctionAttribute($('#' + id), parameter.name, parameter.type, false);
-            self.addSource(property, self);
+            self.addSource(property, self, true);
         });
 
         self.dagrePosition(this);
@@ -558,10 +569,14 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
      * @param element
      * @param self
      */
-    TypeMapperRenderer.prototype.addSource = function (element, self) {
-        self.jsPlumbInstance.makeSource(element, {
+    TypeMapperRenderer.prototype.addSource = function (element, self, maxConnections) {
+        var connectionConfig = {
             anchor: ["Continuous", {faces: ["right"]}]
-        });
+        };
+        if (maxConnections){
+            connectionConfig.maxConnections = 1;
+        }
+        self.jsPlumbInstance.makeSource(element, connectionConfig);
     };
 
     /**
@@ -591,8 +606,8 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
                     self.midpoint = self.midpoint + self.midpointVariance;
                     self.jsPlumbInstance.importDefaults({Connector: self.getConnectorConfig(self.midpoint)});
                     self.onConnection(connection);
-                    self.disableParentsJsTree(params.sourceId, self);
-                    self.disableParentsJsTree(params.targetId, self);
+                    // self.disableParentsJsTree(params.sourceId, self);
+                    // self.disableParentsJsTree(params.targetId, self);
                 } else {
                     var compatibleTypeConverters = self.getExistingTypeMappers(self.typeConverterView,
                         connection.sourceType, connection.targetType);
@@ -602,8 +617,8 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
                         connection.complexMapperName = compatibleTypeConverters[0];
                         self.jsPlumbInstance.importDefaults({ Connector : self.getConnectorConfig(self.midpoint)});
                         self.onConnection(connection);
-                        self.disableParentsJsTree(params.sourceId, self);
-                        self.disableParentsJsTree(params.targetId, self);
+                        // self.disableParentsJsTree(params.sourceId, self);
+                        // self.disableParentsJsTree(params.targetId, self);
                     } else {
                         alerts.error("There is no valid type mapper existing to covert from : " + connection.sourceType
                             + " to: " + connection.targetType);
@@ -740,14 +755,14 @@ define(['require', 'lodash', 'jquery', 'jsPlumb', 'dagre', 'alerts'], function (
                 //checks whether target and source is a generic type or a function
                 if (source.includes(self.jsTreePrefix)) {
                     sourceId = source.split(self.viewIdSeperator)[1] + self.viewIdSeperator
-                                              + source.split(self.viewIdSeperator)[2];
+                        + source.split(self.viewIdSeperator)[2];
                 } else {
                     sourceId = source;
                 }
 
                 if (target.includes(self.jsTreePrefix)) {
                     targetId = target.split(self.viewIdSeperator)[1]
-                                                + self.viewIdSeperator + target.split(self.viewIdSeperator)[2];
+                        + self.viewIdSeperator + target.split(self.viewIdSeperator)[2];
                 } else {
                     targetId = target;
                 }

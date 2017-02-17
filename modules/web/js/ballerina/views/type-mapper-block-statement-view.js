@@ -72,7 +72,9 @@ define(['lodash', 'log', './ballerina-view', './../ast/block-statement', 'typeMa
                     var typeMapperFunctionDefinitionView = new TypeMapperFunctionAssignmentView({
                         model: statement,
                         parentView: this,
-                        typeMapperRenderer: this._parentView.getTypeMapperRenderer()
+                        typeMapperRenderer: this._parentView.getTypeMapperRenderer(),
+                        sourceInfo: self.getSourceInfo(),
+                        targetInfo: self.getTargetInfo()
                     });
                     typeMapperFunctionDefinitionView.render(this._diagramRenderingContext);
                 } else {
@@ -97,6 +99,47 @@ define(['lodash', 'log', './ballerina-view', './../ast/block-statement', 'typeMa
                 }
             }
             return undefined;
+        };
+
+        /**
+         * returns the values of children
+         * @returns {object}
+         */
+        TypeMapperBlockStatementView.prototype.getExpressionProperties = function (fieldExpression, structSchema, propertyArray) {
+
+            var self = this;
+            var tempType = "";
+            var tempAttr = {};
+
+            var variableRefExpression = _.find(fieldExpression.getChildren(), function (child) {
+                return BallerinaASTFactory.isVariableReferenceExpression(child);
+            });
+
+            tempAttr[STRUCT_DEFINITION_ATTRIBUTES_ARRAY_PROPERTY_NAME] = variableRefExpression.getVariableReferenceName();
+
+            _.each(structSchema.getAttributesArray().properties, function (property) {
+                if (property.name == variableRefExpression.getVariableReferenceName()) {
+                    tempType = property.type;
+                    return false;
+                }
+            });
+
+            tempAttr[STRUCT_DEFINITION_ATTRIBUTES_ARRAY_PROPERTY_TYPE] = tempType;
+
+            propertyArray.push(tempAttr);
+
+            var innerFieldExpression = _.find(fieldExpression.getChildren(), function (child) {
+                return BallerinaASTFactory.isStructFieldAccessExpression(child);
+            });
+
+            if (!_.isUndefined(innerFieldExpression)) {
+                var availableDefinedStructs = self.getSourceInfo().predefinedStructs;
+                var innerStruct = _.find(availableDefinedStructs, function (struct) {
+                    return struct.getStructName() == tempType
+                });
+                self.getExpressionProperties(innerFieldExpression, innerStruct, propertyArray);
+            }
+            return propertyArray;
         };
 
 
@@ -132,39 +175,49 @@ define(['lodash', 'log', './ballerina-view', './../ast/block-statement', 'typeMa
                 var resourceParam = sourceModel;
                 var functionInvocationExp = targetModel.getChildren()[1].getChildren()[0];
                 var functionInvocationExpParams = functionInvocationExp.getParams();
-                var paramStr = resourceParam.identifier;
                 var structFieldAccess = BallerinaASTFactory.createStructFieldAccessExpression({isLHSExpr: false});
                 var variableRefExp = BallerinaASTFactory.createVariableReferenceExpression({variableReferenceName: resourceParam.identifier});
-                functionInvocationExp.addChild(variableRefExp);
-                functionInvocationExp.addChild(structFieldAccess);
+                structFieldAccess.addChild(variableRefExp);
+                var index = _.findIndex(targetFuncSchema.parameters, function (param) {
+                    return param.name === connection.targetProperty[0];
+                });
                 var parentStructFieldExp = structFieldAccess;
+                var root = structFieldAccess;
                 _.forEach(connection.sourceProperty, function (sourceProperty) {
                     structFieldAccess = BallerinaASTFactory.createStructFieldAccessExpression({isLHSExpr: false});
                     variableRefExp = BallerinaASTFactory.createVariableReferenceExpression({variableReferenceName: sourceProperty});
-                    paramStr += "." + sourceProperty;
-                    parentStructFieldExp.addChild(variableRefExp);
+                    structFieldAccess.addChild(variableRefExp);
                     parentStructFieldExp.addChild(structFieldAccess);
                     parentStructFieldExp = structFieldAccess;
                 });
-                if (functionInvocationExpParams && functionInvocationExpParams[0] !== '') {
-                    functionInvocationExpParams += "," + paramStr;
+                if (functionInvocationExp.getChildren().length > index) {
+                    functionInvocationExp.addChild(root, index);
                 } else {
-                    functionInvocationExpParams = paramStr;
+                    functionInvocationExp.addChild(root);
                 }
-                functionInvocationExp.setParams(functionInvocationExpParams);
+                
             } else if (BallerinaASTFactory.isAssignmentStatement(sourceModel)
                 && BallerinaASTFactory.isReturnType(targetModel)) {
                 var leftOperand = sourceModel.getChildren()[0];
+                var structFieldAccessExp = targetModel.getParent().getStructFieldAccessExpression('x', connection.targetProperty);
                 var index = _.findIndex(sourceFuncSchema.returnType, function (param) {
                     return param.name === connection.sourceProperty[0];
                 });
-                var sourceVariableRef = leftOperand.getChildren()[index];
-                var assignmentStatementNode = targetModel.getParent()
-                    .getAssignmentStatementForFunctionReturnVariable(sourceVariableRef, "x", connection.targetProperty,
-                        connection.isComplexMapping, connection.complexMapperName);
-                var blockStatement = targetModel.getParent().getBlockStatement();
-                var lastIndex = _.findLastIndex(blockStatement.getChildren());
-                blockStatement.addChild(assignmentStatementNode, lastIndex);
+                leftOperand.removeChild(leftOperand.getChildren()[index], true);
+                leftOperand.addChild(structFieldAccessExp, index);
+            } else if (BallerinaASTFactory.isAssignmentStatement(sourceModel)
+                && BallerinaASTFactory.isAssignmentStatement(targetModel)) {
+                var functionInvocation = sourceModel.getChildren()[1].getChildren()[0];
+                sourceModel.remove();
+                var targetFunctionInvocation = targetModel.getChildren()[1].getChildren()[0];
+                var index = _.findIndex(targetFuncSchema.parameters, function (param) {
+                    return param.name === connection.targetProperty[0];
+                });
+                if (targetFunctionInvocation.getChildren().length > index) {
+                    targetFunctionInvocation.addChild(functionInvocation, index);
+                } else {
+                    targetFunctionInvocation.addChild(functionInvocation);
+                }
             }
         };
 
@@ -173,7 +226,6 @@ define(['lodash', 'log', './ballerina-view', './../ast/block-statement', 'typeMa
          * @param connection object
          */
         TypeMapperBlockStatementView.prototype.onAttributesDisConnect = function (connection) {
-
             var blockStatement = connection.targetReference.getParent().getBlockStatement();
             var assignmentStatementId = connection.id;
             blockStatement.removeChildById(assignmentStatementId);
