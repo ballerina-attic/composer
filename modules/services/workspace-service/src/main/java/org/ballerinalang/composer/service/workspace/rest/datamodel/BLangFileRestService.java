@@ -126,10 +126,11 @@ public class BLangFileRestService {
     private String parseJsonDataModel(InputStream stream) throws IOException {
 
         ANTLRInputStream antlrInputStream = new ANTLRInputStream(stream);
+
         BallerinaLexer ballerinaLexer = new BallerinaLexer(antlrInputStream);
         CommonTokenStream ballerinaToken = new CommonTokenStream(ballerinaLexer);
-
         BallerinaParser ballerinaParser = new BallerinaParser(ballerinaToken);
+
         BallerinaComposerErrorStrategy errorStrategy = new BallerinaComposerErrorStrategy();
         ballerinaParser.setErrorHandler(errorStrategy);
 
