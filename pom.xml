@@ -291,6 +291,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <!-- <inherited>false</inherited> -->
                 <configuration>
+                    <skip>true</skip>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <environmentVariables>
                         <testEnvironmentVariable>EnvironmentVariable</testEnvironmentVariable>
@@ -308,6 +309,7 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
                     <configuration>
+                        <skip>true</skip>
                         <effort>Max</effort>
                         <threshold>Low</threshold>
                         <xmlOutput>true</xmlOutput>
@@ -335,6 +337,7 @@
                             <id>validate</id>
                             <phase>validate</phase>
                             <configuration>
+                                <skip>true</skip>
                                 <configLocation>
                                     https://raw.githubusercontent.com/wso2/code-quality-tools/master/checkstyle/checkstyle.xml
                                 </configLocation>
@@ -465,7 +468,7 @@
 
     <modules>
         <module>modules/services/workspace-service</module>
-        <module>modules/distribution</module>
+        <module>modules/web</module>
     </modules>
 
 </project>
