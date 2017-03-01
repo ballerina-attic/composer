@@ -28,7 +28,7 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './conditional-statem
         './action-invocation-statement', './variable-definition-statement','./resource-parameter',
         './return-type','./worker-invoke','./worker-receive','./block-statement','./struct-field-access-expression',
         './variable-reference-expression','./reference-type-init-expression','./variable-definition', './break-statement',
-        './comment-statement', './type-cast-expression'],
+        './comment-statement', './type-cast-expression', './fork-statement', './join-statement', './timeout-statement', './forkjoin-statement'],
     function (BallerinaASTFactory, BallerinaASTRoot, ConditionalStatement, ConnectorDeclaration, ConnectorDefinition,
               ConstantDefinition, Expression, FunctionDefinition, IfElseStatement, IfStatement, ElseStatement,
               ElseIfStatement, TryCatchStatement, TryStatement, CatchStatement, ASTNode, ReplyStatement,
@@ -40,7 +40,7 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './conditional-statem
               ConnectorAction, StructDefinition, ActionInvocationStatement, VariableDefinitionStatement,
 	          ResourceParameter,ReturnType,WorkerInvoke,WorkerReceive ,BlockStatement,StructFieldAccessExpression,
               VariableReferenceExpression, ReferenceTypeInitExpression, VariableDefinition, BreakStatement, CommentStatement,
-              TypeCastExpression) {
+              TypeCastExpression, ForkStatement, JoinStatement, TimeoutStatement, ForkJoinStatement) {
 
         return  {
             BallerinaASTFactory: BallerinaASTFactory,
@@ -98,7 +98,10 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './conditional-statem
             VariableDefinition : VariableDefinition,
             BreakStatement : BreakStatement,
             CommentStatement : CommentStatement,
-            TypeCastExpression : TypeCastExpression
+            TypeCastExpression : TypeCastExpression,
+            ForkStatement: ForkStatement,
+            JoinStatement: JoinStatement,
+            TimeoutStatement: TimeoutStatement,
+            ForkJoinStatement: ForkJoinStatement
         }
     });
-

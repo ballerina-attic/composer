@@ -23,7 +23,8 @@ define(['lodash', 'log', 'event_channel', '../../ast/module', './try-catch-state
         './function-invocation-visitor', './function-invocation-expression-visitor', './assignment-visitor',
         './left-operand-expression-visitor', './right-operand-expression-visitor',
         './variable-definition-statement-visitor', './worker-invoke-visitor', './worker-receive-visitor',
-        './break-statement-visitor', './throw-statement-visitor', './comment-statement-visitor'],
+        './break-statement-visitor', './throw-statement-visitor', './comment-statement-visitor',
+        './fork-statement-visitor', './join-statement-visitor', './timeout-statement-visitor', './forkjoin-statement-visitor'],
 function (_, log, EventChannel, AST, TryCatchStatementVisitor,
           TryStatementVisitor, CatchStatementVisitor, IfElseStatementVisitor, IfStatementVisitor,
           ElseStatementVisitor, ElseIfStatementVisitor, WhileStatementVisitor,
@@ -32,7 +33,9 @@ function (_, log, EventChannel, AST, TryCatchStatementVisitor,
           FunctionInvocationVisitor, FunctionInvocationExpressionVisitor, AssignmentVisitor,
           LeftOperandExpressionVisitor, RightOperandExpressionVisitor,
           VariableDefinitionStatement, WorkerInvoke, WorkerReceive,
-          BreakStatementVisitor, ThrowStatementVisitor, CommentStatementVisitor) {
+          BreakStatementVisitor, ThrowStatementVisitor, CommentStatementVisitor,
+          ForkStatementVisitor, JoinStatementVisitor, TimeoutStatementVisitor, ForkJoinStatementVisitor
+        ) {
 
     var StatementVisitorFactor = function () {
     };
@@ -84,6 +87,14 @@ function (_, log, EventChannel, AST, TryCatchStatementVisitor,
             return new ThrowStatementVisitor(parent);
         } else if (statement instanceof AST.CommentStatement) {
             return new CommentStatementVisitor(parent);
+        } else if (statement instanceof AST.ForkStatement) {
+            return new ForkStatementVisitor(parent.getParent());
+        } else if (statement instanceof AST.JoinStatement) {
+            return new JoinStatementVisitor(parent.getParent());
+        } else if (statement instanceof AST.TimeoutStatement) {
+            return new TimeoutStatementVisitor(parent.getParent());
+        } else if (statement instanceof AST.ForkJoinStatement) {
+            return new ForkJoinStatementVisitor(parent);
         }
     };
 
