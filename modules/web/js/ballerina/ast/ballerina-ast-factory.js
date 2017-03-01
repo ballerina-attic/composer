@@ -33,7 +33,8 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
         './binary-expression', './unary-expression','./connector-action', './struct-definition', './constant-definition',
         './variable-definition-statement','./type-casting-expression', './worker-invoke',
         './reference-type-init-expression', './array-init-expression', './worker-receive','./struct-type','./struct-field-access-expression',
-        './block-statement','./type-cast-expression','./variable-definition', './break-statement', './throw-statement', './comment-statement'],
+        './block-statement','./type-cast-expression','./variable-definition', './break-statement', './throw-statement', './comment-statement',
+        './fork-statement', './join-statement', './timeout-statement', './forkjoin-statement'],
     function (_, ballerinaAstRoot, serviceDefinition, functionDefinition, connectorDefinition, resourceDefinition,
               workerDeclaration, statement, conditionalStatement, connectorDeclaration, expression, ifElseStatement,
               ifStatement, elseStatement, elseIfStatement, tryCatchStatement, tryStatement, catchStatement, replyStatement,
@@ -45,7 +46,8 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
               thenBody, ifCondition, arrayMapAccessExpression, keyValueExpression, binaryExpression,
               unaryExpression, connectorAction, structDefinition, constantDefinition, variableDefinitionStatement,
               typeCastingExpression, workerInvoke, referenceTypeInitExpression, arrayInitExpression, workerReceive,structType,
-              structFieldAccessExpression,blockStatement,typeCastExpression,variableDefinition, breakStatement, throwStatement, commentStatement) {
+              structFieldAccessExpression,blockStatement,typeCastExpression,variableDefinition, breakStatement, throwStatement, commentStatement,
+              forkStatement, joinStatement, timeoutStatement, forkJoinStatement) {
 
 
 
@@ -649,6 +651,38 @@ define(['lodash', './ballerina-ast-root', './service-definition', './function-de
          */
         BallerinaASTFactory.createCommentStatement = function (args) {
           return new commentStatement(args);
+        };
+
+        /**
+        * creates forkStatement
+        * @param args
+        */
+        BallerinaASTFactory.createForkStatement = function (args) {
+          return new forkStatement(args);
+        };
+
+        /**
+        * creates joinStatement
+        * @param args
+        */
+        BallerinaASTFactory.createJoinStatement = function (args) {
+         return new joinStatement(args);
+        };
+
+        /**
+        * creates timeoutStatement
+        * @param args
+        */
+        BallerinaASTFactory.createTimeoutStatement = function (args) {
+        return new timeoutStatement(args);
+        };
+
+        /**
+        * creates forkJoinStatement
+        * @param args
+        */
+        BallerinaASTFactory.createForkJoinStatement = function (args) {
+          return new forkJoinStatement(args);
         };
 
         /**

@@ -209,10 +209,18 @@ define(['log', 'jquery', './../ast/ballerina-ast-factory', './../tool-palette/to
             nodeFactoryMethod: DefaultsAddedBallerinaASTFactory.createThrowStatement
         };
 
+        var createForkJoinStatementTool = {
+            id: "forkJoin",
+            name: "ForkJoin",
+            icon: "images/tool-icons/dgm-while.svg",
+            title: "Fork/Join",
+            nodeFactoryMethod: DefaultsAddedBallerinaASTFactory.createForkJoinStatement
+        };
+
         var statementToolDefArray = [createIfStatementTool, createAssignmentExpressionTool,
             createVariableDefinitionStatementTool,  createFunctionInvocationTool, createReturnStatementTool,
             createReplyStatementTool, createWhileStatementTool, createBreakStatementTool, createTryCatchStatementTool, createThrowStatementTool,
-            createWorkerInvocationStatementTool, createWorkerReceiverStatementTool];
+            createWorkerInvocationStatementTool, createWorkerReceiverStatementTool, createForkJoinStatementTool];
 
         // Create statements tool group
         var statements = new ToolGroup({
