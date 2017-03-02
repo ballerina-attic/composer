@@ -42,5 +42,5 @@ If you want to build Ballerina Composer from the source code:
 
 See an example on how to set ballerina home,
  ```
-export BALLERINA_HOME=/home/ballerina/server/ballerina-composer-<version>-SNAPSHOT
+export BALLERINA_HOME=/home/ballerina/server/ballerina-<version>-SNAPSHOT
 ```
