@@ -28,7 +28,8 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './statements/conditi
         './statements/action-invocation-statement', './statements/variable-definition-statement','./resource-parameter',
         './return-type','./worker-invoke','./worker-receive','./statements/block-statement','./expressions/struct-field-access-expression',
         './expressions/variable-reference-expression','./expressions/reference-type-init-expression','./variable-definition', './statements/break-statement',
-        './statements/comment-statement', './expressions/type-cast-expression'],
+        './statements/comment-statement', './expressions/type-cast-expression',
+        './statements/fork-statement', './statements/join-statement', './statements/timeout-statement', './statements/forkjoin-statement'],
     function (BallerinaASTFactory, BallerinaASTRoot, ConditionalStatement, ConnectorDeclaration, ConnectorDefinition,
               ConstantDefinition, Expression, FunctionDefinition, IfElseStatement, IfStatement, ElseStatement,
               ElseIfStatement, TryCatchStatement, TryStatement, CatchStatement, ASTNode, ReplyStatement,
@@ -39,7 +40,8 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './statements/conditi
               LeftOperandExpression, RightOperandExpression, ConnectorAction, StructDefinition,
               ActionInvocationStatement, VariableDefinitionStatement, ResourceParameter, ReturnType, WorkerInvoke,
               WorkerReceive, BlockStatement, StructFieldAccessExpression, VariableReferenceExpression,
-              ReferenceTypeInitExpression, VariableDefinition, BreakStatement, CommentStatement, TypeCastExpression) {
+              ReferenceTypeInitExpression, VariableDefinition, BreakStatement, CommentStatement, TypeCastExpression,
+              ForkStatement, JoinStatement, TimeoutStatement, ForkJoinStatement) {
 
         return  {
             BallerinaASTFactory: BallerinaASTFactory,
@@ -95,7 +97,10 @@ define(['./ballerina-ast-factory', './ballerina-ast-root', './statements/conditi
             VariableDefinition : VariableDefinition,
             BreakStatement : BreakStatement,
             CommentStatement : CommentStatement,
-            TypeCastExpression : TypeCastExpression
+            TypeCastExpression : TypeCastExpression,
+            ForkStatement: ForkStatement,
+            JoinStatement: JoinStatement,
+            TimeoutStatement: TimeoutStatement,
+            ForkJoinStatement: ForkJoinStatement
         }
     });
-

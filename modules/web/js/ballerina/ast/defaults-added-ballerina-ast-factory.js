@@ -168,5 +168,20 @@ define(['lodash', './ballerina-ast-factory'], function (_, BallerinaASTFactory) 
         return throwStatement;
     };
 
+    /**
+     * creates ForkJoinStatement
+     * @param args
+     */
+    DefaultsAddedBallerinaASTFactory.createForkJoinStatement = function (args) {
+        var forkJoinStatement = BallerinaASTFactory.createForkJoinStatement(args);
+        var forkStatement = BallerinaASTFactory.createForkStatement(args);
+        forkJoinStatement.addChild(forkStatement);
+        var joinStatement = BallerinaASTFactory.createJoinStatement(args);
+        forkJoinStatement.addChild(joinStatement);
+        var timeoutStatement = BallerinaASTFactory.createTimeoutStatement(args);
+        forkJoinStatement.addChild(timeoutStatement);
+        return forkJoinStatement;
+    };
+
     return DefaultsAddedBallerinaASTFactory;
 });

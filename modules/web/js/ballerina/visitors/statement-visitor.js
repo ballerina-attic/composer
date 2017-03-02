@@ -264,6 +264,46 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
     StatementVisitor.prototype.endVisitCommentStatement = function (statement) {
     };
 
+    StatementVisitor.prototype.canVisitForkStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitForkStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitForkStatement= function (statement) {
+    };
+    StatementVisitor.prototype.endVisitForkStatement = function (statement) {
+    };
+
+    StatementVisitor.prototype.canVisitJoinStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitJoinStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitJoinStatement= function (statement) {
+    };
+    StatementVisitor.prototype.endVisitJoinStatement = function (statement) {
+    };
+
+    StatementVisitor.prototype.canVisitTimeoutStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitTimeoutStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitTimeoutStatement= function (statement) {
+    };
+    StatementVisitor.prototype.endVisitTimeoutStatement = function (statement) {
+    };
+
+    StatementVisitor.prototype.canVisitForkJoinStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitForkJoinStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitForkJoinStatement= function (statement) {
+    };
+    StatementVisitor.prototype.endVisitForkJoinStatement = function (statement) {
+    };
+
     /**
      * @param node {ASTNode}
      */
@@ -316,6 +356,14 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.visitThrowStatement(node);
         }  else if (node instanceof AST.CommentStatement) {
             return this.visitCommentStatement(node);
+        }  else if (node instanceof AST.ForkStatement) {
+            return this.visitForkStatement(node);
+        }  else if (node instanceof AST.JoinStatement) {
+            return this.visitJoinStatement(node);
+        }  else if (node instanceof AST.TimeoutStatement) {
+            return this.visitTimeoutStatement(node);
+        }  else if (node instanceof AST.ForkJoinStatement) {
+            return this.visitForkJoinStatement(node);
         }
     };
 
@@ -371,6 +419,14 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.canVisitThrowStatement(node);
         }  else if (node instanceof AST.CommentStatement) {
             return this.canVisitCommentStatement(node);
+        }  else if (node instanceof AST.ForkStatement) {
+            return this.canVisitForkStatement(node);
+        }  else if (node instanceof AST.JoinStatement) {
+            return this.canVisitJoinStatement(node);
+        }  else if (node instanceof AST.TimeoutStatement) {
+            return this.canVisitTimeoutStatement(node);
+        }  else if (node instanceof AST.ForkJoinStatement) {
+            return this.canVisitForkJoinStatement(node);
         }
     };
 
@@ -426,6 +482,14 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.beginVisitThrowStatement(node);
         }  else if (node instanceof AST.CommentStatement) {
             return this.beginVisitCommentStatement(node);
+        }  else if (node instanceof AST.ForkStatement) {
+            return this.beginVisitForkStatement(node);
+        }  else if (node instanceof AST.JoinStatement) {
+            return this.beginVisitJoinStatement(node);
+        }  else if (node instanceof AST.TimeoutStatement) {
+            return this.beginVisitTimeoutStatement(node);
+        }  else if (node instanceof AST.ForkJoinStatement) {
+            return this.beginVisitForkJoinStatement(node);
         }
     };
 
@@ -481,6 +545,14 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.endVisitThrowStatement(node);
         }  else if (node instanceof AST.CommentStatement) {
             return this.endVisitCommentStatement(node);
+        }  else if (node instanceof AST.ForkStatement) {
+            return this.endVisitForkStatement(node);
+        }  else if (node instanceof AST.JoinStatement) {
+            return this.endVisitJoinStatement(node);
+        }  else if (node instanceof AST.TimeoutStatement) {
+            return this.endVisitTimeoutStatement(node);
+        }  else if (node instanceof AST.ForkJoinStatement) {
+            return this.endVisitForkJoinStatement(node);
         }
     };
 
