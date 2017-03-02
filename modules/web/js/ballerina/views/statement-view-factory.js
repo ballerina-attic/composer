@@ -20,12 +20,13 @@ define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statemen
         './else-if-statement-view', './assignment-view', './function-invocation-view',
         './action-invocation-statement-view', './while-statement-view', './reply-statement-view',
         './return-statement-view', './variable-definition-statement-view', './worker-invoke-view',
-        './worker-receive-view', './break-statement-view', './throw-statement-view'],
+        './worker-receive-view', './break-statement-view', './throw-statement-view',
+        './fork-statement-view', './join-statement-view', './timeout-statement-view', './forkjoin-statement-view'],
     function (_, log, EventChannel, AST, TryCatchStatementView, TryStatementView, CatchStatementView,
               IfElseStatementView, IfStatementView, ElseStatementView, ElseIfStatementView, AssignmentStatementView,
               FunctionInvocationStatementView, ActionInvocationStatementView, WhileStatementView, ReplyStatementView,
               ReturnStatement, VariableDefinitionStatementView, WorkerInvokeView, WorkerReceiveView, BreakStatementView,
-              ThrowStatementView) {
+              ThrowStatementView,ForkStatementView, JoinStatementView, TimeoutStatementView, ForkJoinStatementView) {
 
         var StatementViewFactory = function () {
         };
@@ -104,6 +105,14 @@ define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statemen
                 return new WorkerReceiveView(args);
             } else if (statement instanceof AST.ThrowStatement) {
                 return new ThrowStatementView(args);
+            } else if (statement instanceof AST.ForkStatement) {
+                return new ForkStatementView(args);
+            } else if (statement instanceof AST.JoinStatement) {
+                return new JoinStatementView(args);
+            } else if (statement instanceof AST.TimeoutStatement) {
+                return new TimeoutStatementView(args);
+            } else if (statement instanceof AST.ForkJoinStatement) {
+                return new ForkJoinStatementView(args);
             }
         };
 
