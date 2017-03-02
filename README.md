@@ -28,3 +28,19 @@ composer
 The command line will display the URL you can use to access the Composer in your browser. 
 
 For complete instructions on creating your integrations and using the Composer, see the [Ballerina documentation](http://ballerinalang.org/documentation/).
+
+
+## Building from the source
+
+If you want to build Ballerina Composer from the source code:
+
+1. Get a clone or download the source from this repository (https://github.com/ballerinalang/composer).
+1. Run the Maven command ``mvn clean install`` from the ``composer`` directory.
+1. Extract the Ballerina Composer distribution created at `composer/modules/distribution/target/ballerina-composer-<version>-SNAPSHOT.zip` to your local directory.
+
+**Note: Set BALLERINA_HOME to point a ballerina distribution before running the Composer for running the samples from the Composer itself.**
+
+See an example on how to set ballerina home,
+ ```
+export BALLERINA_HOME=/home/ballerina/server/ballerina-composer-<version>-SNAPSHOT
+```
