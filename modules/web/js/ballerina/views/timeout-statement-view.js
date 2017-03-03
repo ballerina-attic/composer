@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -22,7 +22,7 @@ define(
         /**
          * The view to represent a Timeout statement which is an AST visitor.
          * @param {Object} args - Arguments for creating the view.
-         * @param {TimeoutStatement} args.model - The Fork Join statement model.
+         * @param {TimeoutStatement} args.model - The Timeout statement model.
          * @param {Object} args.container - The HTML container to which the view should be added to.
          * @param {Object} args.parent - Parent Statement View, which in this case the fork-join statement
          * @param {Object} [args.viewOptions={}] - Configuration values for the view.
@@ -44,7 +44,7 @@ define(
         };
 
         /**
-         * set the join statement model
+         * set the timeout statement model
          * @param {TimeoutStatement} model
          */
         TimeoutStatementView.prototype.setModel = function (model) {

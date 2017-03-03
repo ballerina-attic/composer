@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -15,11 +15,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', './statement', './fork-statement', './join-statement', './timeout-statement'],
+define(['lodash', 'log', './statement', './join-statement', './timeout-statement'],
        function (_, log, Statement, ForkStatement, JoinStatement, TimeoutStatement) {
 
     /**
-     * Class for try-catch statement in ballerina.
+     * Class for fork-join statement in ballerina.
      * @constructor
      */
     var ForkJoinStatement = function (args) {
@@ -29,26 +29,6 @@ define(['lodash', 'log', './statement', './fork-statement', './join-statement', 
 
     ForkJoinStatement.prototype = Object.create(Statement.prototype);
     ForkJoinStatement.prototype.constructor = ForkJoinStatement;
-
-    /**
-     * setter for catch block exception
-     * @param exception
-     */
-    ForkJoinStatement.prototype.setExceptionType = function (exception, options) {
-        if (!_.isNil(exception)) {
-            this.setAttribute('_exceptionType', exception, options);
-        } else {
-            log.error("Cannot set undefined to the exception.");
-        }
-    };
-
-    /**
-    * getter for catch block exception type
-    */
-    ForkJoinStatement.prototype.getExceptionType = function() {
-        return this._exceptionType;
-    };
-
 
     ForkJoinStatement.prototype.initFromJson = function (jsonNode) {
         var self = this;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -22,7 +22,7 @@ define(
         /**
          * The view to represent a Fork statement which is an AST visitor.
          * @param {Object} args - Arguments for creating the view.
-         * @param {ForkStatement} args.model - The If statement model.
+         * @param {ForkStatement} args.model - The Fork statement model.
          * @param {Object} args.container - The HTML container to which the view should be added to.
          * @param {Object} args.parent - Parent Statement View, which in this case the fork-join statement
          * @param {Object} [args.viewOptions={}] - Configuration values for the view.

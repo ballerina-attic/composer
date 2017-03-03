@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,14 +18,14 @@
 define(['lodash', 'log', './conditional-statement'], function (_, log, ConditionalStatement) {
 
     /**
-     * Class for catch statement in ballerina.
-     * @class CatchStatement
+     * Class for timeout statement in ballerina.
+     * @class TimeoutStatement
      * @constructor
      * @extends ConditionalStatement
      */
     var TimeoutStatement = function (args) {
         ConditionalStatement.call(this);
-        this._parameter = _.get(args, "parameter", "exception e");
+        this._parameter = _.get(args, "parameter", "");
 
         this.type = "TimeoutStatement";
     };
