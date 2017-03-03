@@ -28,14 +28,14 @@
     <groupId>org.ballerinalang</groupId>
     <artifactId>ballerina-composer-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.8.14-SNAPSHOT</version>
+    <version>0.8.14</version>
     <name>Ballerina Composer - Parent</name>
 
     <scm>
         <url>https://github.com/ballerinalang/composer.git</url>
         <developerConnection>scm:git:https://github.com/ballerinalang/composer.git</developerConnection>
         <connection>scm:git:https://github.com/ballerinalang/composer.git</connection>
-        <tag>v0.8.1-RC1</tag>
+        <tag>v0.8.14</tag>
     </scm>
 
     <dependencyManagement>
