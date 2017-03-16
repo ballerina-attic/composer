@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.ballerinalang</groupId>
         <artifactId>ballerinalang</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.84</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -101,7 +101,13 @@
                         <xmlOutput>true</xmlOutput>
                         <findbugsXmlOutputDirectory>${project.build.directory}/findbugs
                         </findbugsXmlOutputDirectory>
+<<<<<<< HEAD
+                        <excludeFilterFile>${maven.findbugsplugin.version.exclude}
+                        </excludeFilterFile>
+                        <!--Exclude generated sources-->
+=======
                         <excludeFilterFile>${maven.findbugsplugin.version.exclude}</excludeFilterFile>
+>>>>>>> 9d40d67ebcd70a79ba76bf8053cff74c20d3af12
                     </configuration>
                     <version>${maven.findbugsplugin.version}</version>
                     <executions>
@@ -133,7 +139,8 @@
                                 <failsOnError>true</failsOnError>
                                 <includeTestSourceDirectory>true</includeTestSourceDirectory>
                                 <!--Exclude generated sources-->
-                                <excludes>**/parser/*,**/${native.constructs.provider.class}.java</excludes>
+                                <excludes>**/parser/*,**/${native.constructs.provider.class}.java
+                                </excludes>
                             </configuration>
                             <goals>
                                 <goal>check</goal>
@@ -167,9 +174,18 @@
         <ballerina.package.export.version>0.8.1</ballerina.package.export.version>
 
         <!-- Maven plugins -->
+<<<<<<< HEAD
+        <maven.findbugsplugin.version.exclude>findbugs-exclude.xml
+        </maven.findbugsplugin.version.exclude>
+        <native.constructs.provider.package>org.ballerinalang.nativeimpl
+        </native.constructs.provider.package>
+        <native.constructs.provider.class>BallerinaNativeConstructsProvider
+        </native.constructs.provider.class>
+=======
         <maven.findbugsplugin.version.exclude>findbugs-exclude.xml</maven.findbugsplugin.version.exclude>
         <native.constructs.provider.package>org.ballerinalang.nativeimpl</native.constructs.provider.package>
         <native.constructs.provider.class>BallerinaNativeConstructsProvider</native.constructs.provider.class>
+>>>>>>> 9d40d67ebcd70a79ba76bf8053cff74c20d3af12
     </properties>
 
     <modules>
