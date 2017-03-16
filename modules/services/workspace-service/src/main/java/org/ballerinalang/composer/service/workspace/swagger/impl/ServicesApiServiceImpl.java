@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import javax.script.ScriptException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
@@ -137,6 +138,44 @@ public class ServicesApiServiceImpl {
             }
         }
         return Response.ok().entity(serviceDefinition).header("Access-Control-Allow-Origin", '*').build();
+    }
+
+    @POST
+    @Path("/convert-swagger-to-source")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @io.swagger.annotations.ApiOperation(value = "Convert swagger to ballerina service definitions", notes =
+            "This operation can be used to convert service definitions between "
+                    + "ballerina and swagger ", response = void.class, tags = { "swagger", })
+    @io.swagger.annotations.ApiResponses(value = { @io.swagger.annotations.ApiResponse(code = 200, message =
+            "Created.  Successful response with the newly created API as " + "entity in the body. "
+                    + "Location header contains URL of newly created API. ", response = void.class) })
+    public Response servicesConvertSwaggerToBalPost(
+            @ApiParam(value = "Type to be convert", required = true) @QueryParam("expectedType") String expectedType,
+            @ApiParam(value = "Service definition to be convert ", required = true) Service serviceDefinition)
+            throws NotFoundException {
+        try {
+            //If ballerina definition is not null then only should process
+            String ballerinaDefinition = serviceDefinition.getBallerinaDefinition();
+            String swaggerDefinition = serviceDefinition.getSwaggerDefinition();
+
+            if (expectedType.equalsIgnoreCase("ballerina")) {
+                //In this case both swagger and ballerina should not be null.
+                //If no ballerina present then generate complete new ballerina source from available swagger.
+                String jsonModel = SwaggerConverterUtils
+                        .generateBallerinaDataModel(swaggerDefinition, ballerinaDefinition);
+                String bal = SwaggerConverterUtils.getBallerinaFromJsonModel(jsonModel);
+                serviceDefinition.
+                        setBallerinaDefinition(bal);
+            }
+            return Response.ok().entity(serviceDefinition).header("Access-Control-Allow-Origin", '*').build();
+        } catch (IOException | ScriptException ex) {
+            logger.error("Error while processing service definition at converter service" + ex.getMessage());
+            JsonObject entity = new JsonObject();
+            entity.addProperty("Error", ex.toString());
+            return Response.status(Response.Status.BAD_REQUEST).entity(entity)
+                    .header("Access-Control-Allow-Origin", '*').type(MediaType.APPLICATION_JSON).build();
+        }
     }
 
     @OPTIONS

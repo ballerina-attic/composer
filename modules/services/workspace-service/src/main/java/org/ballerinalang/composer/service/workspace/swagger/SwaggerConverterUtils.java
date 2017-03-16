@@ -56,8 +56,19 @@ import org.ballerinalang.util.parser.BallerinaParser;
 import org.ballerinalang.util.parser.BallerinaParserErrorStrategy;
 import org.ballerinalang.util.parser.antlr4.BLangAntlr4Listener;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.io.IOException;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -102,11 +113,17 @@ public class SwaggerConverterUtils {
      */
     public static BallerinaFile getBFileFromBallerinaDefinition(String ballerinaDefinition) throws IOException {
         //TODO this method need to replaced with the utility provided by ballerina core.
-        ANTLRInputStream antlrInputStream = new ANTLRInputStream(ballerinaDefinition);
+        InputStream stream = new ByteArrayInputStream(ballerinaDefinition.getBytes(StandardCharsets.UTF_8));
+
+        ANTLRInputStream antlrInputStream = new ANTLRInputStream(stream);
+
         BallerinaLexer ballerinaLexer = new BallerinaLexer(antlrInputStream);
         CommonTokenStream ballerinaToken = new CommonTokenStream(ballerinaLexer);
         BallerinaParser ballerinaParser = new BallerinaParser(ballerinaToken);
-        ballerinaParser.setErrorHandler(new BallerinaComposerErrorStrategy());
+
+        BallerinaComposerErrorStrategy errorStrategy = new BallerinaComposerErrorStrategy();
+        ballerinaParser.setErrorHandler(errorStrategy);
+
         GlobalScope globalScope = GlobalScope.getInstance();
         BTypes.loadBuiltInTypes(globalScope);
         BLangPackage bLangPackage = new BLangPackage(globalScope);
@@ -277,9 +294,9 @@ public class SwaggerConverterUtils {
             //This resource initiation was required because resource do have both
             //annotation map and array. But there is no way to update array other than
             //constructor method.
-            resourceBuilder.setName(entry.nickname);
-            resourceBuilder.setName((String) entry.vendorExtensions.
-                    get(SwaggerBallerinaConstants.RESOURCE_UUID_NAME));
+//            resourceBuilder.setName(entry.nickname);
+//            resourceBuilder.setName((String) entry.vendorExtensions.
+//                    get(SwaggerBallerinaConstants.RESOURCE_UUID_NAME));
             //Following code block will generate message input parameter definition for newly created
             //resource as -->	resource TestPost(message m) {
             //This logic can be improved to pass user defined types.
@@ -581,5 +598,37 @@ public class SwaggerConverterUtils {
         BLangJSONModelBuilder jsonModelBuilder = new BLangJSONModelBuilder(response);
         ballerinaFile.accept(jsonModelBuilder);
         return response.toString();
+    }
+
+    /**
+     * Generate ballerina source from json model using nashorn
+     *
+     * @param jsonModel ballerina source in json
+     * @return ballerina source
+     * @throws FileNotFoundException throws if js source couldn't is not found
+     * @throws ScriptException       throws if scripting related exception occured
+     */
+    public static String getBallerinaFromJsonModel(String jsonModel) throws FileNotFoundException, ScriptException {
+        ScriptEngineManager engineManager = new ScriptEngineManager();
+        ScriptEngine engine = engineManager.getEngineByName("nashorn");
+        ArrayList<String> paths = new ArrayList<>();
+        String balHome = System.getProperty("bal.composer.home");
+        String basePath = balHome + File.separator + "resources" + File.separator + "composer" + File.separator + "web";
+        paths.add(balHome + File.separator + "resources" + File.separator + "composer" + File.separator + "web"
+                + File.separator + "js" + File.separator + "source-gen-script" + File.separator + "readfully.js");
+        paths.add(balHome + File.separator + "resources" + File.separator + "composer" + File.separator + "web"
+                + File.separator + "js" + File.separator + "source-gen-script" + File.separator + "r.js");
+        paths.add(balHome + File.separator + "resources" + File.separator + "composer" + File.separator + "web"
+                + File.separator + "js" + File.separator + "source-gen-script" + File.separator
+                + "generate-from-model.js");
+        Bindings bind = new SimpleBindings();
+        bind.put("jsonModel", jsonModel);
+        bind.put("basePath", basePath);
+        engine.setBindings(bind, ScriptContext.GLOBAL_SCOPE);
+        for (String p : paths) {
+            engine.eval(new FileReader(p));
+        }
+        Object result = engine.get("result");
+        return result.toString();
     }
 }

@@ -21,17 +21,17 @@ import io.swagger.codegen.CodegenConfig;
 import io.swagger.codegen.CodegenConstants;
 import io.swagger.codegen.CodegenOperation;
 import io.swagger.codegen.CodegenType;
+import io.swagger.codegen.CodegenModelFactory;
+import io.swagger.codegen.CodegenModelType;
+import io.swagger.codegen.CodegenParameter;
 import io.swagger.codegen.DefaultCodegen;
+import io.swagger.models.parameters.Parameter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This the ballerina connector generator class. Here we can add/update templates to generate different connectors,
@@ -63,9 +63,9 @@ public class BallerinaCodeGenerator extends DefaultCodegen implements CodegenCon
          * as with models, add multiple entries with different extensions for multiple files per
          * class
          */
-        apiTemplateFiles.put(
-                "controller.mustache",   // the template to use
-                ".bal");       // the extension for each file to write
+//        apiTemplateFiles.put(
+//                "controller.mustache",   // the template to use
+//                ".bal");       // the extension for each file to write
 
         /*
          * Template Location.  This is the location which templates will be read from.  The generator
@@ -221,6 +221,10 @@ public class BallerinaCodeGenerator extends DefaultCodegen implements CodegenCon
         return objs;
     }
 
+    public CodegenParameter fromParameter(Parameter param, Set<String> imports) {
+        CodegenParameter p = (CodegenParameter) CodegenModelFactory.newInstance(CodegenModelType.PARAMETER);
+        return p;
+    }
 
     /**
      * Location to write api files.  You can use the apiPackage() as defined when the class is instantiated
