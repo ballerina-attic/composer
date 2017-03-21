@@ -68,9 +68,10 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './co
                 }
             });
 
-            var constructedSourceSegment = 'connector ' + connectorDefinition.getConnectorName() +
+            var constructedSourceSegment = '\nconnector ' + connectorDefinition.getConnectorName() +
                 ' (' + argumentsSrc + ')' + ' {\n';
             this.appendSource(constructedSourceSegment);
+            this.incIndentation();
             log.debug('Begin Visit Connector Definition');
         };
 
@@ -84,6 +85,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './co
          */
         ConnectorDefinitionVisitor.prototype.endVisitConnectorDefinition = function(connectorDefinition){
             this.appendSource("}\n");
+            this.decIndentation();
             this.getParent().appendSource(this.getGeneratedSource());
             log.debug('End Visit Connector Definition');
         };

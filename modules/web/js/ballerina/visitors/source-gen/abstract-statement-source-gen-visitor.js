@@ -23,29 +23,12 @@ define(['lodash', 'log', 'event_channel', '../statement-visitor', './abstract-so
      * @constructor
      */
     var AbstractStatementSourceGenVisitor = function(parent) {
-        this._generatedSource = '';
-        this.parent = parent;
+        AbstractSourceGenVisitor.call(this, parent);
         StatementVisitor.call(this);
     };
 
-    AbstractStatementSourceGenVisitor.prototype = Object.create(StatementVisitor.prototype);
+    AbstractStatementSourceGenVisitor.prototype = _.assignIn({}, AbstractSourceGenVisitor.prototype, StatementVisitor.prototype);
     AbstractStatementSourceGenVisitor.prototype.constructor = AbstractSourceGenVisitor;
-
-    AbstractStatementSourceGenVisitor.prototype.getGeneratedSource = function () {
-        return this._generatedSource;
-    };
-
-    AbstractStatementSourceGenVisitor.prototype.setGeneratedSource = function (generatedSource) {
-        this._generatedSource = generatedSource;
-    };
-
-    AbstractStatementSourceGenVisitor.prototype.appendSource = function (source) {
-        this._generatedSource += source;
-    };
-
-    AbstractStatementSourceGenVisitor.prototype.getParent = function () {
-        return this.parent;
-    };
 
     return AbstractStatementSourceGenVisitor;
 });

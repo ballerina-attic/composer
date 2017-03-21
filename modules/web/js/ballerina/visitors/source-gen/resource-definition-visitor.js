@@ -43,6 +43,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './st
          * that particular source generation has to be constructed here
          */
         var self = this;
+        self.appendSource('\n');
         _.forEach(resourceDefinition.getAnnotations(), function(annotation) {
             if (!_.isEmpty(annotation.value)) {
                 var constructedPathAnnotation;
@@ -77,6 +78,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './st
 
         constructedSourceSegment += resourceDefinition.getParametersAsString() + ') {';
         this.appendSource(constructedSourceSegment);
+        this.incIndentation();
         log.debug('Begin Visit ResourceDefinition');
     };
 
@@ -85,6 +87,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './st
     };
 
     ResourceDefinitionVisitor.prototype.endVisitResourceDefinition = function (resourceDefinition) {
+        this.decIndentation();
         this.appendSource("}\n");
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit ResourceDefinition');

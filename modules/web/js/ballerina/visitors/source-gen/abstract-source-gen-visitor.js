@@ -24,6 +24,7 @@ define(['lodash', 'log', 'event_channel', '../ast-visitor'], function(_, log, Ev
      */
     var AbstractSourceGenVisitor = function(parent) {
         this._generatedSource = '';
+        this._indentation = 0;
         this.parent = parent;
         ASTVisitor.call(this);
     };
@@ -40,11 +41,35 @@ define(['lodash', 'log', 'event_channel', '../ast-visitor'], function(_, log, Ev
     };
 
     AbstractSourceGenVisitor.prototype.appendSource = function (source) {
-        this._generatedSource += source;
+        this._generatedSource += this._indent(source);
     };
 
     AbstractSourceGenVisitor.prototype.getParent = function () {
         return this.parent;
+    };
+
+    AbstractSourceGenVisitor.prototype._indent = function (source) {
+        var lines = source.split('\n');
+        var self = this;
+        var indentedLines = _.map(lines, function(line) {
+            if(line.length === 0) {
+                // Don't add indentations to empty lines
+                return "";
+            }
+
+            return _.repeat('\t', self._indentation) + line;
+        });
+        var indentedSource = _.join(indentedLines, '\n');
+
+        return indentedSource;
+    };
+
+    AbstractSourceGenVisitor.prototype.incIndentation = function () {
+        this._indentation++;
+    };
+
+    AbstractSourceGenVisitor.prototype.decIndentation = function () {
+        this._indentation--;
     };
 
     return AbstractSourceGenVisitor;

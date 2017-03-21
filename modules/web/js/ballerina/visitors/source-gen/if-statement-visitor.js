@@ -30,8 +30,9 @@ function(require, _, log, EventChannel, AbstractStatementSourceGenVisitor) {
     };
 
     IfStatementVisitor.prototype.beginVisitIfStatement = function(ifStatement){
-        this.appendSource('if(' + ifStatement.getCondition() + '){');
         log.debug('Begin Visit If Statement Definition');
+        this.appendSource('if(' + ifStatement.getCondition() + '){\n');
+        this.incIndentation();
     };
 
     IfStatementVisitor.prototype.visitIfStatement = function(ifStatement){
@@ -39,6 +40,7 @@ function(require, _, log, EventChannel, AbstractStatementSourceGenVisitor) {
     };
 
     IfStatementVisitor.prototype.endVisitIfStatement = function(ifStatement){
+        this.decIndentation();
         this.appendSource("}\n");
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit If Statement Definition');
