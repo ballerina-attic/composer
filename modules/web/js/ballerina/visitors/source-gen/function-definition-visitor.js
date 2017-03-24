@@ -48,8 +48,9 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './st
             }
 
             var constructedSourceSegment = 'function ' + functionDefinition.getFunctionName() + '(' +
-                functionDefinition.getArgumentsAsString() + ') ' + functionReturnTypesSource + '{';
+                functionDefinition.getArgumentsAsString() + ') ' + functionReturnTypesSource + '{\n';
             this.appendSource(constructedSourceSegment);
+            this.incIndentation();
             log.debug('Begin Visit FunctionDefinition');
         };
 
@@ -58,7 +59,8 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './st
         };
 
         FunctionDefinitionVisitor.prototype.endVisitFunctionDefinition = function(functionDefinition){
-            this.appendSource("} \n");
+            this.decIndentation();
+            this.appendSource("}\n");
             this.getParent().appendSource(this.getGeneratedSource());
             log.debug('End Visit FunctionDefinition');
         };

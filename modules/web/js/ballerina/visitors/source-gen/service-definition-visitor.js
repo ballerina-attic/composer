@@ -42,6 +42,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './re
          * that particular source generation has to be constructed here
          */
         var self = this;
+        self.appendSource('\n');
         _.forEach(serviceDefinition.getAnnotations(), function(annotation) {
             if (!_.isEmpty(annotation.value)) {
                 var constructedPathAnnotation = '';
@@ -55,6 +56,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './re
 
         var constructedSourceSegment = 'service ' + serviceDefinition.getServiceName() + ' {\n';
         this.appendSource(constructedSourceSegment);
+        this.incIndentation();
         log.debug('Begin Visit Service Definition');
     };
 
@@ -63,6 +65,7 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './re
     };
 
     ServiceDefinitionVisitor.prototype.endVisitServiceDefinition = function(serviceDefinition){
+        this.decIndentation();
         this.appendSource("}\n");
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Service Definition');
