@@ -262,8 +262,13 @@ class BallerinaStatementView extends StatementVisitor {
             $(statementGroup).remove();
         });
 
-        $(jumpButtonRect.node()).click(function(event){
-            //@todo implement
+        $(jumpButtonRect.node()).click(event => {
+            const expression = _.isNil(editableProperties.getterMethod.call(editableProperties.model))
+                       ? '' : editableProperties.getterMethod.call(editableProperties.model);
+            this.trigger('edit-mode-disabled');
+            const container = this.getDiagramRenderingContext().ballerinaFileEditor._container;
+            $(container).find('.view-source-btn').trigger('click');
+            this.getDiagramRenderingContext().ballerinaFileEditor.getSourceView().jumpToLine({expression});
         });
 
         $(toggleBreakpointButtonRect.node()).click(function(event){
