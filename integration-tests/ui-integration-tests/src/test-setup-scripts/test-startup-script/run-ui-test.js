@@ -24,7 +24,7 @@ if (argv.skipTests === "true") {
     utils.startSeleniumProcess();
     setTimeout(function () {
         console.log('Running UI Integration Tests');
-        shell.exec("NODE_ENV=test mocha src/test-suits/*.js", function (code) {
+        shell.exec("NODE_ENV=test mocha src/test-suits/statements/connector-declaration/edit-connector-declaration.js", function (code) {
             shell.exit(code);
         });
     }, 10000);

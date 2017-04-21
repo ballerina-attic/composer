@@ -74,7 +74,7 @@ module.exports = {
     getWebDriverConfigurations: function () {
         return {
             desiredCapabilities: {
-                browserName: 'firefox'
+                browserName: 'chrome'
             }
         };
     },
@@ -196,5 +196,13 @@ module.exports = {
             ".setModel(window.composer.tabController.getActiveTab().getBallerinaFileEditor()" +
             ".deserializer.getASTModel(JSON.parse('" + modelString + "')));" +
             "window.composer.tabController.getActiveTab().getBallerinaFileEditor().reDraw();");
+    },
+    
+    clickElementById: function (id, driver) {
+        return driver.execute("$(#" + id + ").click()");
+    },
+
+    clickElementByClass: function (cls, driver) {
+        return driver.execute("$('." + cls + "').click()");
     }
 };
