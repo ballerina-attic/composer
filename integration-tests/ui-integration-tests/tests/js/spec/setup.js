@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -15,9 +15,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import _ from 'lodash';
-import log from 'log';
-import ASTVisitor from './ast-visitor';
 
-class SourceGenVisitor extends ASTVisitor {}
+// Sets up environment for tests to run on node.js by providing a mock browser
+// environment using jsdom.
+var jsdom = require('jsdom').jsdom;
 
+global.document = jsdom('');
+global.window = document.defaultView;
+Object.keys(document.defaultView).forEach(function(property) {
+  if (typeof global[property] === 'undefined') {
+    global[property] = document.defaultView[property];
+  }
+});
+
+global.navigator = {
+  userAgent: 'node.js',
+  platform: 'node.js',
+  appName: 'Node JS'
+};
