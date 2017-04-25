@@ -68,24 +68,24 @@ class ResourceDefinitionView extends BallerinaView {
         }
 
         // Center point of the resource
-        this._viewOptions.topLeft = _.get(args, "viewOptions.topLeft", new Point(50, 125));
+        this._viewOptions.topLeft = _.get(args, "viewOptions.topLeft", new Point(25, 70));
         this._viewOptions.startActionOffSet = _.get(args, "viewOptions.startActionOffSet", 60);
 
         // center point for the client lifeline
         this._viewOptions.client = _.get(args, "viewOptions.client", {});
         this._viewOptions.client.center = _.get(args, "viewOptions.client.centerPoint",
-            this._viewOptions.topLeft.clone().move(100, 150));
+            this._viewOptions.topLeft.clone().move(70, 85));
 
         // Center point of the default worker
         this._viewOptions.defaultWorker = _.get(args, "viewOptions.defaultWorker", {});
         this._viewOptions.defaultWorker.offsetTop = _.get(args, "viewOptions.defaultWorker.offsetTop", 50);
         this._viewOptions.defaultWorker.center = _.get(args, "viewOptions.defaultWorker.centerPoint",
-                        this._viewOptions.topLeft.clone().move(300, 150));
+                        this._viewOptions.topLeft.clone().move(250, 85));
 
         // View options for height and width of the heading box.
         this._viewOptions.heading = _.get(args, "viewOptions.heading", {});
         this._viewOptions.heading.height = _.get(args, "viewOptions.heading.height", 25);
-        this._viewOptions.heading.width = _.get(args, "viewOptions.heading.width", this._container.node().ownerSVGElement.parentElement.offsetWidth - 100);
+        this._viewOptions.heading.width = _.get(args, "viewOptions.heading.width", this._container.node().ownerSVGElement.parentElement.offsetWidth - 50);
 
         // View options for height and width of the resource icon in the heading box.
         this._viewOptions.heading.icon = _.get(args, "viewOptions.heading.icon", {});
@@ -93,8 +93,8 @@ class ResourceDefinitionView extends BallerinaView {
         this._viewOptions.heading.icon.width = _.get(args, "viewOptions.heading.icon.width", 25);
 
         this._viewOptions.contentCollapsed = _.get(args, "viewOptions.contentCollapsed", false);
-        this._viewOptions.contentWidth = _.get(args, "viewOptions.contentWidth", this._container.node().ownerSVGElement.parentElement.offsetWidth - 100);
-        this._viewOptions.contentHeight = _.get(args, "viewOptions.contentHeight", 470);
+        this._viewOptions.contentWidth = _.get(args, "viewOptions.contentWidth", this._container.node().ownerSVGElement.parentElement.offsetWidth - 50);
+        this._viewOptions.contentHeight = _.get(args, "viewOptions.contentHeight", 425);
         this._viewOptions.collapseIconWidth = _.get(args, "viewOptions.collaspeIconWidth", this._container.node().ownerSVGElement.parentElement.offsetWidth - 95);
         this._viewOptions.deleteIconWidth = _.get(args, "viewOptions.deleteIconWidth", this._container.node().ownerSVGElement.parentElement.offsetWidth - 125);
 
@@ -808,7 +808,7 @@ class ResourceDefinitionView extends BallerinaView {
         this._clientLifeLine.render();
         this._clientLifeLine.listenTo(this.getHorizontalMargin(), 'moved', function (dy) {
             var newBottomCenterY = self.getHorizontalMargin().getPosition();
-            self._clientLifeLine._bottomCenter.y(newBottomCenterY - 45);
+            self._clientLifeLine._bottomCenter.y(newBottomCenterY - 35);
         });
 
         if (_.isUndefined(this._defaultWorker)) {
