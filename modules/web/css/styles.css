@@ -862,11 +862,11 @@ attachment-content-wrapper,
 }
 
 .attachment-add-action-wrapper{
-    display: none;
-    width: 517px;
-    background-color: #ddd;
-    height: 26px;
-    padding: 2px 4px;
+    display: block;
+    width: 300px;
+    background-color: #fff;
+    height: 27px;
+    padding: 0px 2px;
  }
 
 .attachment-add-action-wrapper input{
@@ -917,7 +917,7 @@ attachment-content-wrapper,
 }
 
 .attachment-wrapper {
-   border: 1px solid #000005; 
+   border: 1px solid #000005;
 }
 
 /** Start of Constants view **/
@@ -1005,17 +1005,17 @@ attachment-content-wrapper,
 }
 
 .attachment-pane {
-    border: 1px solid #dddddd;
     background-color: #fff;
-    position: absolute;
-    top: 9px;
-    left: 28px;
     margin: auto;
     min-height: 28px;
+    left: 87px;
+    top: 0px;
+    float: left;
+    padding-top: 1px;
  }
 
-.constant-pane-collapser-wrapper, 
-.import-pane-collapser-wrapper, 
+.constant-pane-collapser-wrapper,
+.import-pane-collapser-wrapper,
 .variable-pane-collapser-wrapper,
 .attachment-pane-collapser-wrapper {
     font-size: 12px;
@@ -1166,7 +1166,6 @@ attachment-content-wrapper,
 }
 
 .annotation-icon {
-    margin-top: 8px;
     cursor: pointer;
 }
 
@@ -1529,13 +1528,23 @@ span.fw-stack.fw-lg {
     border-left-style: solid;
 }
 
+.attachments-btn {
+    height: 29px;
+    padding-top: 10px;
+    padding-left: 20px;
+    background: #fff;
+}
+
 .constants-btn { border-left-color: #9b59b6; }
 .package-name-btn { border-left-color: #16a085; }
 .imports-btn { border-left-color: #f39c12; }
 .variable-btn { border-left-color: #3498db; }
+
 .attachments-btn {
-    position: absolute;
-    width: 90px;
+    left: 0px;
+    top: 0px;
+    opacity: 1;
+    float: left;
 }
 
 .import-declaration-type{
@@ -1593,6 +1602,12 @@ span.fw-stack.fw-lg {
     font-weight: 300;
     font-size: 14px;
 }
+
+.annotation-attachment-container{
+    display: block;
+    height: 29px;
+}
+
 .orange{ color: #f17b31;}
 
 .select2-container--default .select2-selection--single {

@@ -38,34 +38,24 @@ class AnnotationAttributeDefinitionView extends BallerinaView {
 
         var annotationAttributeDefinitionWrapper = $("<div/>", {
             id: this.getModel().getID(),
-            class: "struct-variable-definition-wrapper"
+            class: "annotation-variable-definition-wrapper"
         }).data("model", this.getModel()).appendTo(this.getContainer());
 
         this._annotationAttributeDefinitionTypeWrapper = annotationAttributeDefinitionWrapper.get(0);
 
-        var annotationAttributeDefinitionTypeWrapper = $("<div/>", {
-            text: this.getModel().getAttributeType(),
-            class: "struct-variable-definition-type pull-left"
-        }).appendTo(annotationAttributeDefinitionWrapper);
-
-        this._typeWrapper = annotationAttributeDefinitionTypeWrapper.get(0);
-
         var annotationAttributeDefinitionIdentifierWrapper = $("<div/>", {
-            text: this.getModel().getAttributeName(),
-            class: "struct-variable-definition-identifier pull-left"
+            text: this.getModel().getAttributeStatementString(),
+            class: "annotation-variable-definition-identifier pull-left"
         }).appendTo(annotationAttributeDefinitionWrapper);
 
         this._nameWrapper = annotationAttributeDefinitionIdentifierWrapper.get(0);
 
-        var annotationAttributeDefinitionValueWrapper = $("<div/>", {
-            text: this.getModel().getAttributeValue(),
-            class: "struct-variable-definition-value pull-left"
-        }).appendTo(annotationAttributeDefinitionWrapper);
-
-        this._valueWrapper = annotationAttributeDefinitionValueWrapper.get(0);
-
-        var deleteButton = $("<i class='fw fw-cancel'></i>").css("visibility", "hidden")
+        var deleteButton = $("<div class='add-annotation-variable-button pull-left'/>").css("visibility", "hidden")
             .appendTo(annotationAttributeDefinitionWrapper);
+
+        $("<span class='fw-stack fw-lg'><i class='fw fw-square fw-stack-2x'></i>" +
+            "<i class='fw fw-cancel fw-stack-1x fw-inverse add-annotation-remove-button-square'></i></span>")
+            .appendTo(deleteButton);
 
         $(annotationAttributeDefinitionWrapper).hover(function () {
             deleteButton.css("visibility", "visible");
@@ -75,7 +65,7 @@ class AnnotationAttributeDefinitionView extends BallerinaView {
 
         this._deleteButton = deleteButton.get(0);
 
-        $(deleteButton).click(function(){
+        $(deleteButton).click(function () {
             $(annotationAttributeDefinitionWrapper).remove();
             self.getParent().removeAnnotationAttributeDefinition(self.getModel().getID());
         });
@@ -84,64 +74,19 @@ class AnnotationAttributeDefinitionView extends BallerinaView {
     renderEditView() {
         var self = this;
 
-        $(this._typeWrapper).empty();
-
-        var typeEditWrapper = $("<div/>",{
-            click: function(e) {e.stopPropagation();}
-        }).appendTo(this._typeWrapper);
-
-        //Initialize the select2 control
-        var typeDropdownWrapper = $('<div class="type-drop-wrapper struct-edit"></div>')
-            .appendTo(typeEditWrapper);
-
-        $(document).ready(function(){
-            var typeDropdown = $("<select/>").appendTo(typeDropdownWrapper);
-
-            $(typeDropdown).select2({
-                tags: true,
-                selectOnClose: true,
-                data : self._getTypeDropdownValues(),
-                query: function (query) {
-                    var data = {results: []};
-                    if (!_.isNil(query.term)) {
-                        _.forEach(self._getTypeDropdownValues(), function (item) {
-                            if (item.text.toUpperCase().indexOf(query.term.toUpperCase()) >= 0) {
-                                data.results.push(item);
-                            }
-                        });
-                        // Adding user typed string when there is no any matching item in the list
-                        if(data.results.length == 0){
-                            data.results.push({id: query.term, text: query.term});
-                        }
-                    } else {
-                        data.results = self._getTypeDropdownValues();
-                    }
-                    query.callback(data);
-                }
-            });
-
-            $(typeDropdown).on("select2:open", function() {
-                $(".select2-search__field").attr("placeholder", "Search");
-            });
-
-            $(typeDropdown).val(self.getModel().getAttributeType()).change();
-
-            $(typeDropdown).on("select2:select", function() {
-                self.getModel().setAttributeType(typeDropdown.select2('data')[0].text);
-            });
-        });
-
         $(this._nameWrapper).empty();
 
-        var identifierEditWrapper = $("<div/>",{
-            click: function(e) {e.stopPropagation();}
+        var identifierEditWrapper = $("<div/>", {
+            click: function (e) {
+                e.stopPropagation();
+            }
         }).appendTo(this._nameWrapper);
 
         // Creating the identifier text box.
         var identifierTextBox = $("<input/>", {
             type: "text",
-            class: "struct-variable-identifier-text-input",
-            val: this.getModel().getAttributeName()
+            class: "annotation-variable-identifier-text-input",
+            val: this.getModel().getAttributeStatementString()
         }).keypress(function (e) {
             /* Ignore Delete and Backspace keypress in firefox and capture other keypress events.
              (Chrome and IE ignore keypress event of these keys in browser level)*/
@@ -152,71 +97,47 @@ class AnnotationAttributeDefinitionView extends BallerinaView {
                     e.stopPropagation();
                     return false;
                 }
+            }
+        }).focusout(function (e) {
+            try {
+                // var bType = typeDropdown.select2('data')[0].text;
+                var variableDeclaration = $(identifierTextBox).val().trim();
+                var splitedExpression = variableDeclaration.split("=");
+                var leftHandSideExpression = splitedExpression[0].trim();
+                var rightHandSideExpression;
+                if (splitedExpression.length > 1) {
+                    rightHandSideExpression = splitedExpression[1].trim();
+                }
 
-                var newIdentifier = $(this).val() + String.fromCharCode(enteredKey);
-
-                try {
-                    self.getModel().setAttributeName(newIdentifier);
-                } catch (error) {
-                    Alerts.error(error);
+                if (leftHandSideExpression.split(" ").length <= 1) {
+                    var errorString = "Invalid variable declaration: " + variableDeclaration;
+                    Alerts.error(errorString);
                     e.stopPropagation();
                     return false;
                 }
-            }
-        }).keydown(function(e){
-            var enteredKey = e.which || e.charCode || e.keyCode;
 
-            // If tab pressed.
-            if (e.shiftKey && _.isEqual(enteredKey, 9)) {
-                typeDropdown.dropdownButton.trigger("click");
+                var bType = leftHandSideExpression.split(" ")[0];
+                if (!self._validateType(bType)) {
+                    var errorString = "Invalid type for a variable: " + bType;
+                    Alerts.error(errorString);
+                    e.stopPropagation();
+                    return false;
+                }
+
+                var identifier = leftHandSideExpression.split(" ")[1];
+                self.getModel().setAttributeName(identifier);
+
+                var defaultValue = "";
+                if (rightHandSideExpression) {
+                    defaultValue = rightHandSideExpression;
+                }
+
+                self.getModel().setAttributeType(bType);
+                self.getModel().setAttributeValue(defaultValue);
+            } catch (e) {
+                Alerts.error(e);
             }
-        }).keyup(function(){
-            self.getModel().setAttributeName($(this).val());
         }).appendTo($(identifierEditWrapper));
-
-        $(this._valueWrapper).empty();
-
-        var valueEditWrapper = $("<div/>", {
-            click: function (e) { e.stopPropagation(); }
-        }).appendTo(this._valueWrapper);
-
-        // Creating the identifier text box.
-        var valueTextBox = $("<input/>", {
-            type: "text",
-            class: "struct-variable-identifier-text-input",
-            val: this.getModel().getAttributeValue()
-        }).keypress(function (e) {
-            /* Ignore Delete and Backspace keypress in firefox and capture other keypress events.
-             (Chrome and IE ignore keypress event of these keys in browser level)*/
-            if (!_.isEqual(e.key, "Delete") && !_.isEqual(e.key, "Backspace")) {
-                var enteredKey = e.which || e.charCode || e.keyCode;
-                // Disabling enter key
-                if (_.isEqual(enteredKey, 13)) {
-                    e.stopPropagation();
-                    return false;
-                }
-
-                var newValue = $(this).val() + String.fromCharCode(enteredKey);
-
-                try {
-                    self.getModel().setAttributeValue(newValue);
-                } catch (error) {
-                    Alerts.error(error);
-                    e.stopPropagation();
-                    return false;
-                }
-            }
-        }).keydown(function (e) {
-            var enteredKey = e.which || e.charCode || e.keyCode;
-
-            // If tab pressed.
-            if (e.shiftKey && _.isEqual(enteredKey, 9)) {
-                typeDropdown.dropdownButton.trigger("click");
-            }
-        }).keyup(function () {
-            self.getModel().setAttributeValue($(this).val());
-        }).appendTo($(valueEditWrapper));
-
     }
 
 
@@ -242,6 +163,18 @@ class AnnotationAttributeDefinitionView extends BallerinaView {
         });
 
         return dropdownData;
+    }
+
+    _validateType(bType) {
+        var isValid = false;
+        var typeList = this._getTypeDropdownValues();
+        var filteredTypeList = _.filter(typeList, function (type) {
+            return type.id === bType;
+        });
+        if (filteredTypeList.length > 0) {
+            isValid = true;
+        }
+        return isValid;
     }
 }
 
