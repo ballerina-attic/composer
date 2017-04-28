@@ -32,7 +32,7 @@ storiesOf('Return-Statement', module)
                 }
             }, null);
         return (
-            <CanvasDecorator>
+            <CanvasDecorator bBox={{w: "100%", h: "100%"}}>
                 <StatementContainer>
                     {returnStatement}
                 </StatementContainer>
