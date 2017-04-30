@@ -5,6 +5,7 @@ window.scope = window.location.pathname;
 
 
 var Application = require('./js/main').default;
+var ApplicationStyles = require('./scss/main.scss').default;
 const config = require('./config').default;
 var app = new Application(config);
 
