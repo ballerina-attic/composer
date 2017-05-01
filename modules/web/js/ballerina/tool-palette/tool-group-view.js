@@ -56,7 +56,16 @@ import ToolView from './tool-view';
             groupHeaderDiv.append(groupCollapseIcon);
             groupCollapseIcon.attr('class', "collapse-icon fw fw-up");
 
-            if(this.model.attributes.gridConfig){
+            if(this.model.attributes.gridConfig){              
+                var groupTilesIcon = $("<a class='tool-group-tiles-view'></a>");
+                groupHeaderDiv.append(groupTilesIcon);
+                groupTilesIcon.attr('class', "collapse-icon fw fw-tiles");
+                groupTilesIcon.click(function(){
+                    $(this).parents('.tool-group').find('.tool-group-body')
+                        .attr("class", "tool-group-body tool-group-body-tiles");
+                    return false;
+                });
+                
                 var groupGridIcon = $("<a class='tool-group-action-grid'></a>");
                 groupHeaderDiv.append(groupGridIcon);
                 groupGridIcon.attr('class', "collapse-icon fw fw-grid");
@@ -65,16 +74,7 @@ import ToolView from './tool-view';
                         .attr("class", "tool-group-body tool-group-body-grid");
                     return false;
                 });
-
-                var groupTilesIcon = $("<a class='tool-group-tiles-view'></a>");
-                groupHeaderDiv.append(groupTilesIcon);
-                groupTilesIcon.attr('class', "collapse-icon fw fw-tiles");
-                groupTilesIcon.click(function(){
-                    $(this).parents('.tool-group').find('.tool-group-body')
-                        .attr("class", "tool-group-body tool-group-body-tiles");
-                    return false;
-                });                
-
+                
                 var groupListIcon = $("<a class='tool-group-list-view'></a>");
                 groupHeaderDiv.append(groupListIcon);
                 groupListIcon.attr('class', "collapse-icon fw fw-list");
@@ -82,12 +82,12 @@ import ToolView from './tool-view';
                     $(this).parents('.tool-group').find('.tool-group-body')
                         .attr("class", "tool-group-body tool-group-body-list");
                     return false;
-                });                
+                });
             }
 
             var groupBodyDiv = $("<div></div>");
             groupDiv.append(groupBodyDiv);
-            groupBodyDiv.attr('class', "tool-group-body");
+            groupBodyDiv.attr('class', "tool-group-body tool-group-body-list");
             this._$toolGroupBody = groupBodyDiv;
 
             if(collapsed) {
