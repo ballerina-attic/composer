@@ -21,6 +21,7 @@ import _ from 'lodash';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 import AST from './../../ast/module';
 import ASTFactory from './../../ast/ballerina-ast-factory';
+import { util } from './../sizing-utils';
 
 class ResourceDefinitionPositionCalcVisitor {
 
@@ -82,6 +83,23 @@ class ResourceDefinitionPositionCalcVisitor {
         headerBBox.y = headerY;
         bodyBBox.x = bodyX;
         bodyBBox.y = bodyY;
+
+        // Setting positions of resource parameters.
+        if (node.getParameters().length > 0) {
+            node.getViewState().components['parametersPrefixContainer'].x = node.getViewState().bBox.x + viewSate.titleWidth;
+            let nextXPositionOfParameter = node.getViewState().components['parametersPrefixContainer'].x + 
+                    node.getViewState().components['parametersPrefixContainer'].w;
+            for (let i = 0; i < node.getParameters().length; i++) {
+                let resourceParameter = node.getParameters()[i];
+                let viewState = resourceParameter.getViewState();
+                if (i !== 0) {
+                    nextXPositionOfParameter = nextXPositionOfParameter + 14;
+                }
+
+                viewState.x = nextXPositionOfParameter;
+                nextXPositionOfParameter += util.getTextWidth(resourceParameter.getParameterAsString()).w;
+            }
+        }
     }
 
     visit(node) {
