@@ -38,10 +38,14 @@ class ResourceDefinition extends React.Component {
         resource_worker_bBox.h = statementContainerBBox.h + lifeLine.head.height * 2;
 
         var children = getComponentForNodeArray(this.props.model.getChildren());
+
+        let titleText = 'Parameters: (' + this.props.model.getParametersAsString() + ')';
+
         return (<PanelDecorator icon="tool-icons/resource" title={name} bBox={bBox}
                         model={this.props.model}
                         dropTarget={this.props.model}
-                        dropSourceValidateCB={(node) => this.canDropToPanelBody(node)}>
+                        dropSourceValidateCB={(node) => this.canDropToPanelBody(node)}
+                        textValue={titleText}>
             <g>
                 <StatementContainer dropTarget={this.props.model} bBox={statementContainerBBox}/>
                 <LifeLineDecorator title="ResourceWorker" bBox={resource_worker_bBox}/>

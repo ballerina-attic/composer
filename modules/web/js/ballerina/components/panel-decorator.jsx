@@ -49,11 +49,13 @@ class PanelDecorator extends React.Component {
         const dropZoneDropNotAllowed = this.state.dropZoneDropNotAllowed;
         const dropZoneClassName = ((!dropZoneActivated) ? "panel-body-rect drop-zone" : "panel-body-rect drop-zone active")
                           + ((dropZoneDropNotAllowed) ? " block" : "");
+        let modelTitleWidth = this.props.model.viewState.titleWidth ? this.props.model.viewState.titleWidth.w || 0 : 0;
         return ( <g className="panel">
                      <g className="panel-header">
                          <rect x={ bBox.x } y={ bBox.y } width={ bBox.w } height={ titleHeight } rx="0" ry="0" className="headingRect" data-original-title="" title=""></rect>
                          <text x={ bBox.x + titleHeight } y={ bBox.y + titleHeight / 2 + 5 }>{this.props.title}</text>
                          <image x={bBox.x + 5} y={bBox.y + 5} width={iconSize} height={iconSize} xlinkHref={ImageUtil.getSVGIconString(this.props.icon)}/>
+                         <text x={ bBox.x + titleHeight + modelTitleWidth } y={ bBox.y + titleHeight / 2 + 5 }>{this.props.textValue}</text>
                          <g className="panel-header-controls">
                              <image x={ bBox.x + bBox.w - 44.5} y={ bBox.y + 5.5} width={ iconSize } height={ iconSize } className="control"
                                   xlinkHref={ImageUtil.getSVGIconString('delete')} onClick={() => this.onDelete()}/>
