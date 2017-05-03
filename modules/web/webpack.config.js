@@ -18,7 +18,7 @@ var config = {
             {
               loader: 'babel-loader',
               query: {
-                  presets: ['es2015']
+                  presets: ['es2015', 'react']
               }
             }
           ]
@@ -36,6 +36,18 @@ var config = {
         {
             test: /\.(png|jpg|svg|cur|gif)$/,
             use: [ 'url-loader' ]
+        },
+        {
+            test: /\.jsx$/,
+            exclude: /(node_modules|modules\/web\/lib)/,
+            use: [
+              {
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015', 'react']
+                }
+              }
+            ]
         }
       ]
     },
@@ -46,6 +58,7 @@ var config = {
     node: { module: "empty", net: "empty", fs: "empty" },
     devtool: 'source-map',
     resolve: {
+        extensions: [".js", ".json", ".jsx"],
         modules: [path.resolve('./lib'), path.resolve('./js'), path.resolve('./node_modules'), path.resolve(__dirname)],
         alias: {
             /////////////////////////
