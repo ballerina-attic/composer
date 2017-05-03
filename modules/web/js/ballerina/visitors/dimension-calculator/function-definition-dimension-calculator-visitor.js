@@ -39,6 +39,8 @@ class FunctionDefinitionDimensionCalculatorVisitor {
 
     endVisit(node) {
         util.populatePanelDecoratorBBox(node);
+        var viewState = node.getViewState();
+        viewState.titleWidth = util.getTextWidth(node.getFunctionName());
     }
 }
 

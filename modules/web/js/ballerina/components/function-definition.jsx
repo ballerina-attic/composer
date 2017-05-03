@@ -49,10 +49,13 @@ class FunctionDefinition extends React.Component {
             icons = "tool-icons/main-function";
         }
 
+        let titleText = 'Arguments: (' + this.props.model.getArgumentsAsString() + '), Return Types: (' + this.props.model.getReturnTypesAsString() + ')';
+
         return (<PanelDecorator icon={icons} title={name} bBox={bBox}
                         model={this.props.model}
                         dropTarget={this.props.model}
-                        dropSourceValidateCB={(node) => this.canDropToPanelBody(node)}>
+                        dropSourceValidateCB={(node) => this.canDropToPanelBody(node)}
+                        textValue={titleText}>
                     <StatementContainer  dropTarget={this.props.model}
                       title="StatementContainer" bBox={statementContainerBBox}/>
                     <LifeLine title="FunctionWorker" bBox={function_worker_bBox}/>
