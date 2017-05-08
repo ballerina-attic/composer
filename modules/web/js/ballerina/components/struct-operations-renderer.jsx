@@ -30,4 +30,9 @@ export default class StructOperationsRenderer {
             <CreateStruct {...options}/>,
             this.overlay);
     }
+    hideOverlay() {
+        ReactDOM.render(
+            <div></div>,
+            this.overlay);
+    }
 }
