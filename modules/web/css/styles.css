@@ -189,8 +189,8 @@ ol#breadcrumbList {
 }
 
 .statement-rect {
-    fill: #ffffff;
-    stroke: #000000;
+    fill: #fff;
+    stroke: #969696;
     stroke-width: 1;
 }
 
@@ -201,14 +201,14 @@ ol#breadcrumbList {
 }
 
 .background-empty-rect {
-    fill: #ffffff;
+    fill: #fff;
     fill-opacity: 0;
     stroke: #000000;
     stroke-width: 1;
 }
 
 .background-empty-rect-error {
-    fill: #ffffff;
+    fill: #fff;
     fill-opacity: 0;
     stroke: #ff0202;
     stroke-width: 1;
