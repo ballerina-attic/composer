@@ -428,6 +428,14 @@ class ASTNode extends EventChannel {
         }
     }
 
+    addBreakpoint(options = {}) {
+        this.setAttribute('isBreakpoint', true, options);
+    }
+
+    removeBreakpoint(options = {}) {
+        this.setAttribute('isBreakpoint', false, options);
+    }
+
     setLineNumber(lineNumber, options) {
         this.setAttribute('_lineNumber', parseInt(lineNumber), options);
     }

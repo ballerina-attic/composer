@@ -17,37 +17,25 @@
  */
 
 import ASTVisitor from './ast-visitor';
+import _ from 'lodash';
 
-class FindBreakpointsVisitor extends ASTVisitor {
+class FindBreakpointLinesVisitor extends ASTVisitor {
     constructor() {
         super();
         this._breakpoints = [];
-        this._breakpointNodes = [];
     }
-    setBreakpoints(breakpoints = []) {
-        this._breakpoints = breakpoints;
-    }
-    getBreakPoints(){
-        return this._breakpoints;
+    getBreakpoints(){
+        return _.sortedUniq(this._breakpoints);
     }
     visit(node) {
-        const lineNumber = node.getLineNumber();
-        if(this.getBreakPoints().indexOf(lineNumber) !== -1){
-            node.isBreakpoint = true;
-        } else {
-            node.isBreakpoint = false;
-        }
         if(node.isBreakpoint) {
-            this._breakpointNodes.push(node);
+            const lineNumber = node.getLineNumber();
+            this._breakpoints.push(lineNumber);
         }
-
     }
     canVisit() {
         return true;
     }
-    getBreakpointNodes() {
-        return this._breakpointNodes;
-    }
 }
 
-export default FindBreakpointsVisitor;
+export default FindBreakpointLinesVisitor;
