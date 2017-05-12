@@ -1,10 +1,14 @@
 var path = require('path');
 var webpack = require("webpack");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+var extractTheme = new ExtractTextPlugin('./main.css');
+var extractBundle = new ExtractTextPlugin('./bundle.css');
 
 var config = {
     entry: {
-      bundle: './index.js',
-      'worker-ballerina': './js/ballerina/utils/ace-worker.js'
+       bundle: './index.js',
+       'worker-ballerina': './js/ballerina/utils/ace-worker.js',
     },
     output: {
         filename: '[name].js',
@@ -25,13 +29,23 @@ var config = {
         },
         {
             test: /\.html$/,
-            use: [ {
+            use: [{
                 loader: 'html-loader'
             }]
         },
         {
+            test: /\.scss$/,
+            use: extractTheme.extract({
+                fallback: "style-loader",
+                use: ['css-loader','sass-loader']
+            })
+        },
+        {
             test: /\.css$/,
-            use: [ 'style-loader', 'css-loader' ]
+            use: extractBundle.extract({
+                fallback: "style-loader",
+                use: ['css-loader']
+            })
         },
         {
             test: /\.(png|jpg|svg|cur|gif)$/,
@@ -39,7 +53,10 @@ var config = {
         }
       ]
     },
-    plugins: [],
+    plugins: [
+        extractBundle,
+        extractTheme
+    ],
     devServer: {
       publicPath: '/dist/'
     },

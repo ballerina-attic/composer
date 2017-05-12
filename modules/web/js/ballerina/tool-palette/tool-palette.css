@@ -94,6 +94,7 @@
 
 .tool-group-body-list .tool-container {
     width: 106px !important;
+    height: 28px;
     border: none;
     padding: 0px;
     text-align: left;
@@ -239,4 +240,8 @@
     border-bottom: 1px solid #e4e4e4;
     clear: both;
     margin: 0 0 7px 0;
+}
+
+.tools-view-modes-controls {
+    margin-bottom: 20px;
 }
