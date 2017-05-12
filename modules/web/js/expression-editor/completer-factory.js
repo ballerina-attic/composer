@@ -21,6 +21,7 @@ class CompleterFactory{
     constructor() {
         this.variable_dec = /([a-z])+ .*/i;
         this.package_dec = /([a-z0-9])+:.*/i;
+        this.annotation_dec = /([a-z0-9])+:.*/i;
     }
 
     getCompleters(key , packageScope){
@@ -31,6 +32,8 @@ class CompleterFactory{
             case "Function":
                 return this.getFunctionCompleters(packageScope);
                 break;
+            case "AnnotationAttributeDefinition":
+                return this.getAnnotationAttributeCompleters(packageScope);
             default:
                 return false;
         }
@@ -47,6 +50,21 @@ class CompleterFactory{
                     return { name:item, value:item + " ", meta: "type" };
                  });
                  callback(null, completions);
+            }
+        }];
+    }
+
+    getAnnotationAttributeCompleters(packageScope){
+        return [{
+            getCompletions: (editor, session, pos, prefix, callback) => {
+                if(this.annotation_dec.exec(editor.getSession().getValue())){
+                    return [];
+                }
+                let types = BallerinaEnvironment.getTypes();
+                var completions = types.map(function(item){
+                    return { name:item, value:item + " ", meta: "type" };
+                });
+                callback(null, completions);
             }
         }];
     }

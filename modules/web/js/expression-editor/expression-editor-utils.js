@@ -64,7 +64,7 @@ class ExpressionEditor{
         var editorTheme = ace.acequire("ace/theme/chrome");
         this._editor.setTheme(editorTheme);
 
-        // set OS specific font size to prevent Mac fonts getting oversized.
+        // set OS specific font size to prevent Mac fonts getting oversize.
         if(this.isRunningOnMacOS()){
             this._editor.setFontSize("10pt");
         }else{
@@ -156,7 +156,7 @@ class ExpressionEditor{
         let width = text.length * 8 + 40;
         if(width < this.default_with ){
             return this.default_with;
-        };
+        }
         return width;
     }
 

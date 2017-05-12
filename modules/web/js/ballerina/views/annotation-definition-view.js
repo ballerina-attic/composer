@@ -23,6 +23,7 @@ import SVGCanvas from './../../ballerina/views/svg-canvas';
 import AnnotationDefinition from './../ast/annotation-definition';
 import ASTNode from './../ast/node';
 import Alerts from 'alerts';
+import ExpressionEditor from 'expression_editor_utils';
 import AnnotationAttributeDefinitionView from './annotation-attribute-definition-view';
 
 /**
@@ -91,12 +92,13 @@ class AnnotationDefinitionView extends SVGCanvas {
     render(diagramRenderingContext) {
         this.setDiagramRenderingContext(diagramRenderingContext);
 
-        // Draws the outlying body of the struct definition.
-        this.drawAccordionCanvas(this._viewOptions, this.getModel().getID(), this.getModel().getType().toLowerCase(), this.getModel().getAnnotationName());
+        // Draws the outlying body of the annotation definition.
+        this.drawAccordionCanvas(this._viewOptions, this.getModel().getID(), this.getModel().getType().toLowerCase(),
+            this.getModel().getAnnotationName());
 
         // Setting the styles for the canvas icon.
         this.getPanelIcon().addClass(_.get(this._viewOptions, "cssClass.annotation_icon", ""));
-
+        this.getPanelIcon().addClass("annotation-icon");
         var self = this;
 
         //Scroll to the added position and highlight the heading
@@ -111,6 +113,8 @@ class AnnotationDefinitionView extends SVGCanvas {
             hadingBox.removeClass(canvas_heading_new);
         }, new_drop_timeout);
 
+        $(this.getTitle()).addClass("annotation-title-anchor");
+        $(this.getTitle()).closest("h4").addClass("clearfix");
         $(this.getTitle()).text(this.getModel().getAnnotationName())
             .on("change paste keyup", function () {
                 self.getModel().setAnnotationName($(this).text());
@@ -141,176 +145,80 @@ class AnnotationDefinitionView extends SVGCanvas {
 
         ////// Start implementation for Attachment View
 
-        var attachmentButton = $('<div class="attachments-btn" data-toggle="tooltip" title="Attachments" data-placement="bottom"></div>')
-            .appendTo(this.getBodyWrapper()).tooltip();
+        var attachmentButton = $('<div class="attachments-btn" data-toggle="tooltip" title="Attachments" ' +
+            'data-placement="bottom"></div>').appendTo($(this.getTitle()).closest("h4")).tooltip();
 
         // Positioning the attachment button.
-        attachmentButton.css('left', '60px');
-        attachmentButton.css('top', '20px');
+        attachmentButton.css('left', '0px');
+        attachmentButton.css('top', '0px');
 
-        $('<span class="btn-icon">Attachments</span>').appendTo(attachmentButton);
+        $('<span class="btn-icon">Attach:</span>').appendTo(attachmentButton);
 
-        var attachmentPaneWrapper = $('<div class="attachment-pane"/>').appendTo($(this.getBodyWrapper()));
+        let attachmentPaneWrapper = $('<div class="attachment-pane"/>').appendTo($(this.getTitle()).closest("h4"));
         // Positioning the  pane from the left border of the container(service, resource, etc).
-        attachmentPaneWrapper.css('left', (60 + 87) + 'px');
+        attachmentPaneWrapper.css('left', '87px');
         // Positioning the variable pane from the top border of the container(service, resource, etc).
-        attachmentPaneWrapper.css('top', (20 - 0) + 'px');
+        attachmentPaneWrapper.css('top', '0px');
         // Setting max-width of the variable wrapper.
         attachmentPaneWrapper.css('max-width', this._viewOptions.width + 'px');
 
-        var attachmentContentWrapper = $('<div class="attachment-content-wrapper"/>').appendTo(attachmentPaneWrapper);
+        let attachmentContentWrapper = $('<div class="attachment-content-wrapper"/>').appendTo(attachmentPaneWrapper);
 
-        var collapserWrapper = $('<div class="attachment-pane-collapser-wrapper"/>')
-            .data('collapsed', 'true')
-            .appendTo(attachmentPaneWrapper);
-        $('<i class=\'fw fw-left\'></i>').appendTo(collapserWrapper);
+        let variablesActionWrapper = $('<div class="attachment-action-wrapper"/>').appendTo(attachmentContentWrapper);
 
-        var variablesActionWrapper = $('<div class="attachment-action-wrapper"/>').appendTo(attachmentContentWrapper);
-
-        // Creating add variable editor button.
-        var addVariableButton = $('<div class="action-icon-wrapper attachment-add-icon-wrapper" ' +
-            'data-toggle="tooltip" title="Add Attachment" data-placement="bottom"/>')
-            .appendTo(variablesActionWrapper).tooltip();
-        $('<i class="fw fw-add"></i>').appendTo(addVariableButton);
-
-        var variableAddPane = $('<div class="action-content-wrapper-heading attachment-add-action-wrapper"/>')
+        let variableAddPane = $('<div class="action-content-wrapper-heading attachment-add-action-wrapper"/>')
             .appendTo(variablesActionWrapper);
 
         // Creating the variable type dropdown.
-        var variableIdentifier = $('<input id="text" placeholder="Identifier"/>').appendTo(variableAddPane);
+        let variableIdentifier = $('<select id="variableIdentifier" class="annotation-definition-identifier" multiple="multiple"/>').appendTo(variableAddPane);
 
-        // Add new variable upon enter key.
-        $(variableIdentifier).on('change paste keydown', function (e) {
-            if (_.isEqual(e.which, 13)) {
-                variableAddCompleteButtonPane.click();
-            }
-        }).keypress(function (e) {
-            var enteredKey = e.which || e.charCode || e.keyCode;
+        $(document).ready(function () {
+            $(variableIdentifier).select2({
+                tags: true,
+                tokenSeparators: [',', ' '],
+                data: self._getAnnotationAttachmentTypes()
+            });
 
-            // Disabling enter key
-            if (_.isEqual(enteredKey, 13)) {
-                e.stopPropagation();
-                return false;
-            }
+            $(variableIdentifier).on('select2:selecting', function (e) {
+                var newIdentifier = e.params.args.data.text;
+                if (!ASTNode.isValidIdentifier(newIdentifier)) {
+                    let errorString = 'Invalid keyword for attachment: ' + newIdentifier;
+                    log.error(errorString);
+                    Alerts.error(errorString);
+                    e.stopPropagation();
+                    return false;
+                }
 
-            var newIdentifier = $(this).val() + String.fromCharCode(enteredKey);
+                if (!self._validateAttachment(newIdentifier)) {
+                    let errorString = "Invalid keyword for attachment: " + newIdentifier;
+                    Alerts.error(errorString);
+                    e.stopPropagation();
+                    return false;
+                }
+            });
 
-            // Validation the identifier against grammar.
-            if (!ASTNode.isValidIdentifier(newIdentifier)) {
-                var errorString = 'Invalid identifier for a variable: ' + newIdentifier;
-                log.error(errorString);
-                Alerts.error(errorString);
-                e.stopPropagation();
-                return false;
-            }
-        });
+            $(variableIdentifier).on('select2:select', function (e) {
+                let identifierOfNewVariable = e.params.data.text.trim();
+                try {
+                    self._model.addAnnotationAttachmentPoint(identifierOfNewVariable);
+                } catch (error) {
+                    log.error(error);
+                    Alerts.error(error);
+                }
+            });
 
-        // Creating cancelling add new variable button.
-        var variableAddCancelButtonPane = $('<div class="action-icon-wrapper attachment-add-cancel-action-wrapper"/>')
-            .appendTo(variableAddPane);
-        $('<span class="fw-stack fw-lg"><i class="fw fw-square fw-stack-2x"></i>' +
-            '<i class="fw-cancel fw-stack-1x fw-inverse"></i></span>').appendTo(variableAddCancelButtonPane);
-        // Creating add new variable button.
-        var variableAddCompleteButtonPane = $('<div class="action-icon-wrapper ' +
-            'attachment-add-complete-action-wrapper">').appendTo(variableAddPane);
-        $('<span class="fw-stack fw-lg"><i class="fw fw-square fw-stack-2x"></i>' +
-            '<i class="fw fw-check fw-stack-1x fw-inverse"></i></span>').appendTo(variableAddCompleteButtonPane);
+            $(variableIdentifier).on('select2:unselecting', function (e) {
+                self.getModel().removeAnnotationAttachmentPoints(e.params.args.data.text + '');
+                self._renderAttachments();
+            });
 
-        // Add new variable activate button.
-        $(addVariableButton).click(function () {
-            $(variableAddPane).show();
-            $(this).hide();
-            $(variableIdentifier).focus();
-        });
-
-        // Cancel adding a new variable.
-        $(variableAddCancelButtonPane).click(function () {
-            $(variableAddPane).hide();
-            $(addVariableButton).show();
-        });
-
-        // Rendering the variables
-        this._renderAttachments(attachmentContentWrapper, collapserWrapper);
-
-        // When a new variable is created.
-        $(variableAddCompleteButtonPane).click(function () {
-            var identifierOfNewVariable = variableIdentifier.val().trim();
-
-            try {
-                self._model.addAnnotationAttachmentPoint(identifierOfNewVariable);
-                var oldWrapperSize = $(attachmentContentWrapper).height();
-
-                // Recreating the arguments details view.
-                self._renderAttachments(attachmentContentWrapper, collapserWrapper);
-
-                // Changing the content of the collapser.
-                collapserWrapper.empty();
-                collapserWrapper.data('collapsed', 'false');
-                $('<i class=\'fw fw-left\'></i>').appendTo(collapserWrapper);
-                attachmentContentWrapper.show();
-
-                // Clearing values in inputs.
-                variableIdentifier.val('');
-
-                // Trigger the event to inform that a new variable has been added and the height of the variable pane
-                // has been changed
-                $(attachmentContentWrapper).trigger('contentWrapperShown', $(attachmentContentWrapper).height() - oldWrapperSize);
-            } catch (error) {
-                log.error(error);
-                Alerts.error(error);
-            }
-        });
-
-        // Hiding/showing the attachments depending on the default "collapsed" value of collapserWrapper.
-        if (_.isEqual(collapserWrapper.data('collapsed'), 'false')) {
-            $(collapserWrapper).empty();
-            $('<i class=\'fw fw-left\'></i>').appendTo(collapserWrapper);
-            attachmentContentWrapper.find('.variable-wrapper').show();
-            var dh = $(attachmentContentWrapper).height() !== this._minHeight ?
-                $(attachmentContentWrapper).height() - this._minHeight : 0;
-            $(attachmentPaneWrapper).trigger('contentWrapperShown', dh);
-        } else {
-            $(collapserWrapper).empty();
-            $('<i class=\'fw fw-right\'></i>').appendTo(collapserWrapper);
-            attachmentContentWrapper.find('.variable-wrapper').hide();
-            var height = $(attachmentContentWrapper).height();
-            $(attachmentPaneWrapper).trigger('contentWrapperHidden', height);
-        }
-
-        // The click event for hiding and showing attachments.
-        collapserWrapper.click(function () {
-            $(this).empty();
-            if ($(this).data('collapsed') === 'false') {
-                $(this).data('collapsed', 'true');
-                $('<i class=\'fw fw-right\'></i>').appendTo(this);
-                attachmentContentWrapper.find('.variable-wrapper').hide();
-                $(attachmentContentWrapper).trigger('contentWrapperHidden');
-            } else {
-                $(this).data('collapsed', 'false');
-                $('<i class=\'fw fw-left\'></i>').appendTo(this);
-                attachmentContentWrapper.find('.variable-wrapper').show();
-                var dh = $(attachmentContentWrapper).height() !== self._minHeight ?
-                    $(attachmentContentWrapper).height() - self._minHeight : 0;
-                $(attachmentContentWrapper).trigger('contentWrapperShown', dh);
-            }
+            // Rendering the variables
+            self._renderAttachments();
         });
 
         // By default the variable pane is shown on pane load.
         $(attachmentButton).css('opacity', 1);
-
-        // When the variable button is clicked we show and hide the variable pane.
-        $(attachmentButton).click(function () {
-            if ($(attachmentPaneWrapper).is(':visible')) {
-                // Variable pane is already shown.
-                $(this).css({opacity: ''});
-                attachmentPaneWrapper.hide();
-
-            } else {
-                // Variable pane is hidden.
-                $(this).css('opacity', 1);
-                attachmentPaneWrapper.show();
-            }
-        });
+        attachmentPaneWrapper.show();
 
         // Stop propagating event to elements behind. This is needed for closing the wrapper when clicked outside.
         attachmentPaneWrapper.click(function (event) {
@@ -319,62 +227,68 @@ class AnnotationDefinitionView extends SVGCanvas {
 
         ////// End implementation for Attachment View
 
-        var structContentWrapper = $("<div/>", {
+        /** start annotation variable definition.**/
+
+        let annotationContentWrapper = $("<div/>", {
             id: this.getModel().getID(),
-            class: "struct-content-wrapper"
+            class: "annotation-content-wrapper"
         }).data("model", this.getModel()).appendTo(this.getBodyWrapper());
 
         //// Creating operational panel
 
-        var structOperationsWrapper = $("<div/>", {
+        let annotationOperationsWrapper = $("<div/>", {
             class: "attribute-content-operations-wrapper"
-        }).appendTo(structContentWrapper);
+        }).appendTo(annotationContentWrapper);
 
-        var typeDropdownWrapper = $('<div class="type-drop-wrapper struct-view"></div>')
-            .appendTo(structOperationsWrapper);
+        var inputBoxesWrapper = $("<div/>", {
+            class: "annotation-attribute-inputboxes-wrapper"
+        }).appendTo(annotationOperationsWrapper);
 
-        var typeDropdown = $("<select/>").appendTo(typeDropdownWrapper);
 
-        $(typeDropdown).select2({
-            data : this._getTypeDropdownValues()
-        });
+        var annotationVariablesWrapper = $("<div/>", {
+            class: "annotation-content-variables-wrapper"
+        }).appendTo(annotationOperationsWrapper);
 
-        $(document).ready(function() {
-            $(typeDropdownWrapper).empty();
-            typeDropdown = $("<select/>").appendTo(typeDropdownWrapper);
-            $(typeDropdown).select2({
-                tags: true,
-                selectOnClose: true,
-                data : self._getTypeDropdownValues(),
-                query: function (query) {
-                    var data = {results: []};
-                    if (!_.isNil(query.term)) {
-                        _.forEach(self._getTypeDropdownValues(), function (item) {
-                            if (item.text.toUpperCase().indexOf(query.term.toUpperCase()) >= 0) {
-                                data.results.push(item);
-                            }
-                        });
-                        // Adding user typed string when there is no any matching item in the list
-                        if(data.results.length == 0){
-                            data.results.push({id: query.term, text: query.term});
-                        }
-                    } else {
-                        data.results = self._getTypeDropdownValues();
-                    }
-                    query.callback(data);
+
+        var identifierTextInput = $("<div/>", {
+            class: "annotation-identifier-text-input",
+            text: "Enter Variable"
+        }).appendTo(inputBoxesWrapper);
+
+        identifierTextInput.on('click', function (e) {
+
+            var editableProperty = {
+                propertyType: 'text',
+                key: 'AnnotationAttributeDefinition',
+                model: self.getModel(),
+                getterMethod: function () {
+
+                },
+                setterMethod: function () {
                 }
-            });
+            };
+            identifierTextInput.empty();
+            let packageScope = diagramRenderingContext.packagedScopedEnvironemnt;
+            self.expressionEditor = new ExpressionEditor(identifierTextInput, "annotation-expression-editor-wrapper",
+                editableProperty, packageScope, function () {
 
-            $(typeDropdown).on("select2:open", function() {
-                $(".select2-search__field").attr("placeholder", "Search");
-            });
+                });
+        }).focusout(function (e) {
+            var text = self.expressionEditor._editor.getSession().getValue();
+            if (text && text !== "") {
+                identifierTextInput.text(text);
+            } else {
+                identifierTextInput.text("Enter Variable");
+            }
         });
+
+        this.listenTo(this.getModel(), 'update-property-text', this.updateVariableIdentifierText);
 
         // Creating the identifier text box.
         var identifierTextBox = $("<input/>", {
             type: "text",
-            class: "struct-identifier-text-input",
-            "placeholder": "Identifier"
+            class: "annotation-identifier-text-input",
+            "placeholder": "Enter Variable"
         }).keypress(function (e) {
             /* Ignore Delete and Backspace keypress in firefox and capture other keypress events.
              (Chrome and IE ignore keypress event of these keys in browser level)*/
@@ -382,104 +296,44 @@ class AnnotationDefinitionView extends SVGCanvas {
                 var enteredKey = e.which || e.charCode || e.keyCode;
                 // Adding new variable upon enter key.
                 if (_.isEqual(enteredKey, 13)) {
-                    addStructVariableButton.click();
-                    e.stopPropagation();
-                    return false;
-                }
-
-                var newIdentifier = $(this).val() + String.fromCharCode(enteredKey);
-
-                // Validation the identifier against grammar.
-                if (!ASTNode.isValidIdentifier(newIdentifier)) {
-                    var errorString = "Invalid identifier for a variable: " + newIdentifier;
-                    Alerts.error(errorString);
+                    addAnnotationVariableButton.click();
                     e.stopPropagation();
                     return false;
                 }
             }
-        }).keydown(function(e){
-            var enteredKey = e.which || e.charCode || e.keyCode;
-
-            // If tab pressed.
-            if (e.shiftKey && _.isEqual(enteredKey, 9)) {
-                typeDropdown.dropdownButton.trigger("click");
-            }
-        }).appendTo(structOperationsWrapper);
-
-        // Creating the default value text box.
-        var defaultValueTextBox = $("<input/>", {
-            type: "text",
-            class: "struct-default-value-text-input",
-            placeholder: "Default Value"
-        }).keypress(function (e) {
-            /* Ignore Delete and Backspace keypress in firefox and capture other keypress events.
-             (Chrome and IE ignore keypress event of these keys in browser level)*/
-            if (!_.isEqual(e.key, "Delete") && !_.isEqual(e.key, "Backspace")) {
-                var enteredKey = e.which || e.charCode || e.keyCode;
-                // Adding new variable upon enter key.
-                if (_.isEqual(enteredKey, 13)) {
-                    addStructVariableButton.click();
-                    e.stopPropagation();
-                    return false;
-                }
-            }
-        }).keydown(function(e){
-            var enteredKey = e.which || e.charCode || e.keyCode;
-
-            // If tab pressed.
-            if (e.shiftKey && _.isEqual(enteredKey, 9)) {
-                typeDropdown.dropdownButton.trigger("click");
-            }
-        }).appendTo(structOperationsWrapper);
+        });//.appendTo(inputBoxesWrapper);
 
         // Creating cancelling add new constant button.
-        var addStructVariableButton = $("<div class='add-struct-variable-button pull-left'/>")
-            .appendTo(structOperationsWrapper);
+        var addAnnotationVariableButton = $("<div class='add-annotation-variable-button pull-left'/>")
+            .appendTo(inputBoxesWrapper);
         $("<span class='fw-stack fw-lg'><i class='fw fw-square fw-stack-2x'></i>" +
-            "<i class='fw fw-check fw-stack-1x fw-inverse add-struct-variable-button-square'></i></span>").appendTo(addStructVariableButton);
+            "<i class='fw fw-check fw-stack-1x fw-inverse add-annotation-variable-button-square'></i></span>")
+            .appendTo(addAnnotationVariableButton);
 
-        $(addStructVariableButton).click(function () {
-            try {
-                var bType = typeDropdown.select2('data')[0].text;
-                var identifier = $(identifierTextBox).val().trim();
-                var defaultValue = $(defaultValueTextBox).val().trim();
-
-                self.getModel().addAnnotationAttributeDefinition(bType, identifier, defaultValue);
-
-                self._renderAttributeDefinitions(structVariablesWrapper);
-
-                $(identifierTextBox).val("");
-                $(defaultValueTextBox).val("");
-            } catch (e) {
-                Alerts.error(e);
-            }
+        $(addAnnotationVariableButton).click(function (e) {
+            self.expressionEditor._editor.execCommand("Enter|Shift-Enter");
         });
 
         //// End of operational panel.
+        this._renderAttributeDefinitions(annotationVariablesWrapper);
 
-        //// Creating struct content panel
-
-        var structVariablesWrapper = $("<div/>",{
-            class: "struct-content-variables-wrapper"
-        }).appendTo(structContentWrapper);
-
-        this._renderAttributeDefinitions(structVariablesWrapper);
-
-        $(structVariablesWrapper).click(function(e){
+        $(annotationVariablesWrapper).click(function (e) {
             e.preventDefault();
             return false;
         });
 
-        //// End of struct content panel
-
         // On window click.
         $(window).click(function (event) {
-            self._renderAttributeDefinitions(structVariablesWrapper);
+            self._renderAttributeDefinitions(annotationVariablesWrapper);
         });
 
         currentContainer.find('svg').remove();
     }
 
+    /**
+     * Get the types values for the drop down.
+     * @return {Object} dropdownData
+     * */
     _getTypeDropdownValues() {
         var dropdownData = [];
         // Adding items to the type dropdown.
@@ -488,18 +342,59 @@ class AnnotationDefinitionView extends SVGCanvas {
             dropdownData.push({id: bType, text: bType});
         });
 
-        // var annotationsTypes = this.getDiagramRenderingContext().getPackagedScopedEnvironment().getCurrentPackage().getAnnotationDefinitions();
-        // _.forEach(annotationsTypes, function (sType) {
-        //     dropdownData.push({id: sType.getAnnotationName(), text: sType.getAnnotationName()});
-        // });
-
         return dropdownData;
     }
 
-    _renderAttributeDefinitions(wrapper){
+    /**
+     * Get the attachment types.
+     * @return {Object} attachment type list.
+     * */
+    _getAnnotationAttachmentTypes() {
+        return ["service", "resource", "action"];
+    }
+
+    /**
+     * Validate attachment by checking whether it exist in the attachment type list.
+     * @param {string} newAttachment.
+     * @return {boolean} isValid true if valid false if not valid.
+     * */
+    _validateAttachment(newAttachment) {
+        var isValid = false;
+        var attachmentPointList = this._getAnnotationAttachmentTypes();
+        var filteredAttachmentList = _.filter(attachmentPointList, function (attachment) {
+            return attachment === newAttachment;
+        });
+        if (filteredAttachmentList.length > 0) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+    /**
+     * Validate Type for Variable declaration.
+     * @param {String} bType.
+     * @return {boolean} isValidate
+     * */
+    _validateType(bType) {
+        var isValid = false;
+        var typeList = this._getTypeDropdownValues();
+        var filteredTypeList = _.filter(typeList, function (type) {
+            return type.id === bType;
+        });
+        if (filteredTypeList.length > 0) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+    /**
+     * Render attribute definition view on canvas.
+     * @param {Object} wrapper.
+     * */
+    _renderAttributeDefinitions(wrapper) {
         $(wrapper).empty();
         var self = this;
-        _.forEach(this._model.getAnnotationAttributeDefinitions(), function(attributeDefinition) {
+        _.forEach(this._model.getAnnotationAttributeDefinitions(), function (attributeDefinition) {
             var annotationAttributeDefinitionView = new AnnotationAttributeDefinitionView({
                 parent: self.getModel(),
                 model: attributeDefinition,
@@ -513,62 +408,109 @@ class AnnotationDefinitionView extends SVGCanvas {
 
             annotationAttributeDefinitionView.render(self.getDiagramRenderingContext());
 
-            $(annotationAttributeDefinitionView.getDeleteButton()).click(function(){
+            $(annotationAttributeDefinitionView.getDeleteButton()).click(function () {
                 self._renderAttributeDefinitions(wrapper);
             });
 
             $(annotationAttributeDefinitionView.getWrapper()).click({
                 modelID: attributeDefinition.getID()
-            }, function(event){
+            }, function (event) {
                 self._renderAttributeDefinitions(wrapper);
                 var annotationAttributeDefinitionView = self.getDiagramRenderingContext()
                     .getViewModelMap()[event.data.modelID];
                 annotationAttributeDefinitionView.renderEditView();
             });
         });
+
+        // var attributesDeffs = wrapper
+        //     .find(".annotation-variable-definition-identifier");
+        //
+        // var width = self._getLargestWidth(wrapper);
+        // for (let i = 0; i < attributesDeffs.length; i++) {
+        //     let element = attributesDeffs[i];
+        //     $(element).width(width);
+        // }
     }
 
-    _renderAttachments(attachmentPaneWrapper, collapserWrapper) {
-        // Clear existing variables on UI.
-        $(attachmentPaneWrapper).find('.attachment-wrapper').remove();
+    /**
+     * Get the largest width.
+     * @param {object} wrapper
+     * @return {int} largestWidth
+     * */
+    _getLargestWidth(wrapper){
+        let attributesDefinitions = $(wrapper).find(".annotation-variable-definition-identifier");
+        let largestWidth = 0;
+        for(let i = 0; i < attributesDefinitions.length; i++){
+            let width = $(attributesDefinitions[i]).width();
+            if(largestWidth < width){
+                largestWidth = width;
+            }
+        }
+        return largestWidth;
+    }
 
-        var self = this;
-
+    /**
+     * Render the attachments on load.
+     * */
+    _renderAttachments() {
         _.forEach(this._model.getAttachmentPoints(), function (attachmentPoint) {
-            var variableDefinitionWrapper = $('<div/>', {
-                id: self.getModel().getID(),
-                class: 'attachment-wrapper variable-wrapper-message'
-            }).data('model', self.getModel()).appendTo(attachmentPaneWrapper);
-
-            self._variableDefinitionWrapper = variableDefinitionWrapper;
-
-            var variableDefintionStatementWrapper = $('<span/>', {
-                text: attachmentPoint,
-                'contenteditable': true,
-                class: 'variable-identifier variable-identifier-message',
-                'prevValue': attachmentPoint
-            }).keyup(function() {
-                try {
-                    self.getModel().removeAnnotationAttachmentPoints($(variableDefintionStatementWrapper).attr('prevValue'));
-                    self.getModel().addAnnotationAttachmentPoint($(this).text().trim()+'');
-                    $(variableDefintionStatementWrapper).attr('prevValue',$(this).text().trim()+'');
-                } catch (error) {
-                    Alerts.error(error);
+            var options = $("#variableIdentifier").find("option");
+            _.forEach(options, function (option) {
+                if ($(option).text().trim() === attachmentPoint) {
+                    $(option).attr("selected", "selected");
+                    $("#variableIdentifier").trigger("change");
                 }
-            }).appendTo(variableDefinitionWrapper);
-
-            // Creating delete button.
-            var deleteButton = $('<i class=\'fw fw-cancel\'></i>').appendTo(variableDefinitionWrapper);
-
-            self._deleteButton = deleteButton.get(0);
-
-            $(self._deleteButton).click(() => {
-                var oldWrapperSize = $('.variables-content-wrapper').height();
-                self.getModel().removeAnnotationAttachmentPoints($(variableDefintionStatementWrapper).text().trim()+'');
-                self._renderAttachments(attachmentPaneWrapper, collapserWrapper);
-                $('.variables-content-wrapper').trigger('contentWrapperShown', $('.variables-content-wrapper').height() - oldWrapperSize);
             });
         });
+    }
+
+    /**
+     * Update Variable identifier text.
+     * @param {string} text
+     * */
+    updateVariableIdentifierText(text) {
+        try {
+            let variableDeclaration = text.trim();
+            let splicedExpression = variableDeclaration.split("=");
+            let leftHandSideExpression = splicedExpression[0].trim();
+            let rightHandSideExpression;
+            if (splicedExpression.length > 1) {
+                rightHandSideExpression = splicedExpression[1].trim();
+            }
+
+            if (leftHandSideExpression.split(" ").length <= 1) {
+                let errorString = "Invalid variable declaration: " + variableDeclaration;
+                Alerts.error(errorString);
+                return false;
+            }
+
+            let bType = leftHandSideExpression.split(" ")[0];
+            if (!this._validateType(bType)) {
+                let errorString = "Invalid type for a variable: " + bType;
+                Alerts.error(errorString);
+                return false;
+            }
+
+            let identifier = leftHandSideExpression.split(" ")[1];
+            if (!ASTNode.isValidIdentifier(identifier)) {
+                let errorString = "Invalid identifier for a variable: " + identifier;
+                Alerts.error(errorString);
+                return false;
+            }
+
+            let defaultValue = "";
+            if (rightHandSideExpression) {
+                defaultValue = rightHandSideExpression;
+            }
+
+            this.getModel().addAnnotationAttributeDefinition(bType, identifier, defaultValue);
+
+            this._renderAttributeDefinitions($(".annotation-content-variables-wrapper"));
+
+            this.expressionEditor._editor.session.setValue("");
+        } catch (e) {
+            Alerts.error(e);
+        }
     }
 }
 AnnotationDefinitionView.prototype.constructor = Canvas;
