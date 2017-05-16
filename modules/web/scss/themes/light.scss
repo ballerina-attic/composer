@@ -38,7 +38,7 @@ $tool-group-header-text-color: #333;
 $tool-title-color: $tool-group-header-text-color;
 $tool-separator-color: $tool-group-header-bgcolor;
 
-$panel-header-bgcolor: #fff;
+$panel-header-bgcolor: #b6b6b6;
 $panel-header-border-color: $panel-header-bgcolor;
 $panel-header-color: #333;
 $panel-body-bgcolor: #fff;
@@ -52,6 +52,6 @@ $package-definition-color: #000;
 $btn-primary-bgcolor: #5b5b5b;
 $btn-secondary-bgcolor: #858585;
 $welcome-details-content-wrapper-bgcolor: transparentize(#e4e4e4, 0.5);
-$welcome-tile-view-wrapper-bgcolor: #ffffff;
+$welcome-tile-view-wrapper-bgcolor: #fff;
 
 @import '../main.scss';
