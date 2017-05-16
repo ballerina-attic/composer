@@ -47,6 +47,7 @@ class ConnectorActionVisitor extends AbstractSourceGenVisitor {
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
+        const spaces = connectorAction.whiteSpaceDescriptor.regions;
         var functionReturnTypes = connectorAction.getReturnTypesAsString();
         var connectorActionReturnTypesSource = '';
         if (!_.isEmpty(functionReturnTypes)) {
@@ -61,8 +62,9 @@ class ConnectorActionVisitor extends AbstractSourceGenVisitor {
             }
         });
 
-        constructedSourceSegment += this.getIndentation() + 'action ' + connectorAction.getActionName() + ' (' +
-            connectorAction.getArgumentsAsString() + ') ' + connectorActionReturnTypesSource + '{\n';
+        constructedSourceSegment += this.getIndentation() + 'action' + spaces[1] + connectorAction.getActionName() +
+            spaces[2] + '(' + connectorAction.getArgumentsAsString() + ')' + (spaces[3] || '') +
+            connectorActionReturnTypesSource + spaces[6] + '{\n';
         this.appendSource(constructedSourceSegment);
         this.indent();
         log.debug('Begin Visit Connector Action');
@@ -77,8 +79,9 @@ class ConnectorActionVisitor extends AbstractSourceGenVisitor {
      * @param {ConnectorAction} connectorAction
      */
     endVisitConnectorAction(connectorAction) {
+        const regions = connectorAction.whiteSpaceDescriptor.regions;
         this.outdent();
-        this.appendSource(this.getIndentation() + "}\n");
+        this.appendSource(this.getIndentation() + "}" + regions[7]);
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit FunctionDefinition');
     }

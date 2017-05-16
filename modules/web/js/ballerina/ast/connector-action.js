@@ -31,6 +31,15 @@ class ConnectorAction extends ASTNode {
         super('ConnectorAction');
         this.action_name = _.get(args, 'action_name');
         this.arguments = _.get(args, 'arguments', []);
+        this.whiteSpaceDescriptor = {
+            regions: {
+                1: ' ',
+                2: ' ',
+                3: '',
+                6: ' ',
+                7: '\n'
+            }
+        };
     }
 
     /**
