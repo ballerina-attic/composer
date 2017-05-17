@@ -63,17 +63,14 @@
 }
 
 .struct {
-    border: 1px solid gray;
     width: 400px;
     height: auto;
-    background: #3d3d3d;
-    color: #ffffff;
+    color: #3d3d3d;
     position: absolute;
 }
 .property {
     padding: 5;
     font-size: 16px;
-    background-color: #ffffff;
     color: black;
 }
 
@@ -81,16 +78,8 @@ svg.plumbConnect path {
     stroke:#3d3d3d;
 }
 
-.jstree-default .jstree-last {
-    background: #ffffff;
-}
-
 .typeMapperList {
     display: none;
-}
-
-.tree-container{
-    background: #ffffff;
 }
 
 .jstree-default .jstree-hovered {
@@ -102,7 +91,6 @@ svg.plumbConnect path {
 }
 
 .jstree-default .jstree-clicked {
-    background : #ffffff;
     color: #000000;
 }
 
