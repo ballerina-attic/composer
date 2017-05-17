@@ -54,7 +54,8 @@ class AssignmentStatementVisitor extends AbstractStatementSourceGenVisitor {
     }
 
     endVisitAssignmentStatement(assignmentStatement) {
-        this.getParent().appendSource(this.getGeneratedSource() + ";\n");
+        const spaces = assignmentStatement.whiteSpaceDescriptor.regions;
+        this.getParent().appendSource(spaces[0] + this.getGeneratedSource() + ";" + spaces[3]);
         log.debug('End Visit Assignment Statement');
     }
 }
