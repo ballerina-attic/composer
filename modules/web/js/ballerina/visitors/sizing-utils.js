@@ -581,13 +581,10 @@ class SizingUtil {
             }
         });
         
-
-        if(height != 0){
-            //add padding
-            height = height + 7 * 2;
-            // add a gap for add new annotation.
-            height = height + 25;
-        }
+        //add padding
+        height = height + 7 * 2;
+        // add a gap for add new annotation.
+        height = height + 25;
 
         return height;
     }
