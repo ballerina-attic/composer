@@ -28,7 +28,7 @@ environment_content.getPackages = function (app) {
     // TODO: remove the following hard coded url and use a value from application config
     $.ajax({
         type: "GET",
-        url: packageServiceURL,
+        url: packageServiceURL +'test',
         contentType: "application/json; charset=utf-8",
         async: false,
         dataType: "json",
