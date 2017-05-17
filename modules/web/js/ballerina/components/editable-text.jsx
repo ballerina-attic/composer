@@ -109,7 +109,6 @@ class EditableText extends React.Component {
                 <text {...textProps} className="panel-label">{this.props.placeHolder}</text>
             )
         } else {
-
             return (
                 <text {...textProps} className="panel-label">{this.props.children}</text>
             )
