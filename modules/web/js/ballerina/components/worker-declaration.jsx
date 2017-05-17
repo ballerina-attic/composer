@@ -18,6 +18,7 @@
 
 import React from 'react';
 import LifeLine from './lifeline.jsx';
+import PropTypes from 'prop-types';
 import {getComponentForNodeArray} from './utils';
 import StatementContainer from './statement-container';
 import * as DesignerDefaults from './../configs/designer-defaults';
@@ -33,11 +34,17 @@ class WorkerDeclaration extends React.Component {
             model: props.model,
             getterMethod: props.model.getWorkerDeclarationStatement,
             setterMethod: props.model.setWorkerDeclarationStatement,
-        };          
+        };
     }
 
     onDelete() {
         this.props.model.remove();
+    }
+
+    onJumptoCodeLine () {
+        const {renderingContext: {ballerinaFileEditor}} = this.context;
+        const container = ballerinaFileEditor._container;
+        $(container).find('.view-source-btn').trigger('click');
     }
 
     render() {
@@ -57,12 +64,18 @@ class WorkerDeclaration extends React.Component {
         return (<g>
                 <StatementContainer dropTarget={this.props.model} bBox={statementContainerBBox}/>
                 <LifeLine title={this.props.model.getWorkerName()} bBox={workerBBox}
-                          editorOptions={this.editorOptions} model={this.props.model}
-                          onDelete={this.onDelete.bind(this)} classes={classes}/>
+                    editorOptions={this.editorOptions} model={this.props.model}
+                    onDelete={this.onDelete.bind(this)} classes={classes}
+                    onJumptoCodeLine={ () => this.onJumptoCodeLine() }
+                />
                 {children}
             </g>
         );
     }
 }
+
+WorkerDeclaration.contextTypes = {
+    renderingContext: PropTypes.instanceOf(Object).isRequired
+};
 
 export default WorkerDeclaration;

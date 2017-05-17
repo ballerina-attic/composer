@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
 import React from "react";
 import PropTypes from 'prop-types';
 import SimpleBBox from '../ast/simple-bounding-box';
@@ -28,7 +28,7 @@ import ActionBox from "./action-box";
 import ActiveArbiter from './active-arbiter';
 
 class LifeLine extends React.Component {
-    
+
     constructor(props){
         super(props);
         let bBox = this.props.bBox;
@@ -66,7 +66,12 @@ class LifeLine extends React.Component {
                         <text x={ centerX } y={ y2 - titleBoxH / 2 } textAnchor="middle" alignmentBaseline="central"
                               dominantBaseline="central" className="life-line-text genericT unhoverable">{ this.props.title }</text>
                         {this.props.onDelete &&
-                            <ActionBox show={this.state.active} bBox={actionBbox} onDelete={this.onDelete.bind(this)}/>
+                            <ActionBox
+                              show={this.state.active}
+                              bBox={actionBbox}
+                              onDelete={ () => this.props.onDelete() }
+                              onJumptoCodeLine={ ()=> this.props.onJumptoCodeLine()}
+                            />
                         }
                 </g>);
     }
