@@ -534,12 +534,10 @@ class TypeMapperRenderer {
      * @param {object} reference AST model reference
      */
     addFunction(func, reference, onFunctionRemove) {
-        funcName = _.isEmpty(func.packageName) ? func.name : func.packageName + ' : ' + func.name;
-        var funcText = funcName;
+        var funcText = func.name;
         //Allow multiple functions to drag and drop without conflicting
         var functionInvocationModelId = reference.model.getChildren()[1].getChildren()[0].getID();
-        func.name = (_.isEmpty(func.packageName) ? func.name : func.packageName + '-' + func.name)
-                       + functionInvocationModelId;
+        func.name = func.name + functionInvocationModelId;
 
         var id = func.name + this.viewIdSeperator + this.viewId;
         if ($("#" + id).length === 0) {
