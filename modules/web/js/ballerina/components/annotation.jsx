@@ -58,12 +58,10 @@ class Annotation extends React.Component {
 
 
     onMouseOver(){
-        console.log(this.state);
         this.setState({ selected: true });
     }
 
     onMouseOut(){
-        console.log(this.state);
         this.setState({ selected: false });
     }
 
