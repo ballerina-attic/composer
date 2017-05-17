@@ -30,7 +30,7 @@ class AssignmentStatement extends Statement {
         this._statementString = _.get(args, 'statementString', '');
         this.whiteSpaceDescriptor = {
             regions: {
-                0: '    ',
+                0: '',
                 1: ' ',
                 2: ' ',
                 3: '\n'
