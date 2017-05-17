@@ -33,7 +33,14 @@ class VariableDefinitionStatementVisitor extends AbstractStatementSourceGenVisit
     }
 
     endVisitVariableDefinitionStatement(variableDefinitionStatement) {
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource() + ";\n");
+        const spaces = variableDefinitionStatement && variableDefinitionStatement.children && variableDefinitionStatement.children["0"] &&
+            variableDefinitionStatement.children["0"].whiteSpaceDescriptor &&
+            variableDefinitionStatement.children["0"].whiteSpaceDescriptor.regions;
+
+        const indent = !variableDefinitionStatement || !variableDefinitionStatement.children || !variableDefinitionStatement.children["0"] ||
+        variableDefinitionStatement.children["0"].shouldCalculateIndentation ? this.getIndentation() : '';
+        this.getParent().appendSource(indent + this.getGeneratedSource() + (spaces && spaces[3] ? spaces[3] : '') + ";" +
+            (spaces && spaces[4] ? spaces[4] : '\n'));
     }
 }
 
