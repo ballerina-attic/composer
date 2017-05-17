@@ -51,7 +51,7 @@ class ServiceDefinitionView extends SVGCanvas {
         this._viewOptions.panelIcon = _.get(args.viewOptions, 'cssClass.service_icon');
         this._viewOptions.minHeight = _.get(args, 'minHeight', 300);
         //set initial height for the service container svg
-        this._totalHeight = 170;
+        this._totalHeight = 75;
         //set initial connector margin for the service
         this._lifelineMargin = new Axis(0, false);
         this._topHorizontalMargin = new Axis(35, true);
