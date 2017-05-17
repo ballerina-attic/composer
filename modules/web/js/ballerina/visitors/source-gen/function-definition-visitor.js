@@ -56,9 +56,17 @@ class FunctionDefinitionVisitor extends AbstractSourceGenVisitor {
                 constructedSourceSegment += annotationNode.toString() + '\n';
             }
         });
-
-        constructedSourceSegment += this.getIndentation() + 'function ' + functionDefinition.getFunctionName() + '(' +
-            functionDefinition.getArgumentsAsString() + ') ' + functionReturnTypesSource + '{\n';
+        let startIndentation;
+        if (functionDefinition.shouldCalculateIndentation) {
+            startIndentation = this.getIndentation();
+        } else {
+            startIndentation = '';
+        }
+        constructedSourceSegment += startIndentation + 'function' +
+            functionDefinition.whiteSpaceDescriptor.regions[1] + functionDefinition.getFunctionName() + '(' +
+            functionDefinition.getArgumentsAsString() + ')' + functionDefinition.whiteSpaceDescriptor.regions[2] +
+            functionReturnTypesSource + functionDefinition.whiteSpaceDescriptor.regions[6] + '{' +
+            functionDefinition.whiteSpaceDescriptor.regions[7];
         this.appendSource(constructedSourceSegment);
         this.indent();
         log.debug('Begin Visit FunctionDefinition');

@@ -49,7 +49,7 @@ class ASTNode extends EventChannel {
 
         this._generateUniqueIdentifiers = undefined;
         this.whiteSpaceDescriptor = {};
-
+        this.shouldCalculateIndentation = true;
         /**
          * View State Object to keep track of the model's view properties
          * @type {{bBox: SimpleBBox, components: {}, dimensionsSynced: boolean}}

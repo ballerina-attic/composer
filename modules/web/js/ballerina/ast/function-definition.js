@@ -37,6 +37,23 @@ class FunctionDefinition extends CallableDefinition {
         this._functionName = _.get(args, 'functionName');
         this._isPublic = _.get(args, "isPublic") || false;
         this._annotations = _.get(args, 'annotations', []);
+
+        /**
+         * set the default whitespace regions
+         * @type {{regions: {0: string, 1: string, 2: string, 3: string}}}
+         */
+        this.whiteSpaceDescriptor = {
+            regions: {
+                0: ' ',
+                1: ' ',
+                2: ' ',
+                3: ' ',
+                4: ' ',
+                5: ' ',
+                6: ' ',
+                7: '\n'
+            }
+        }
     }
 
     setFunctionName(name, options) {
