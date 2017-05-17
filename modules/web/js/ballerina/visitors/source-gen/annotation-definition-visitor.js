@@ -29,13 +29,24 @@ class AnnotationDefinitionVisitor extends AbstractSourceGenVisitor {
     }
 
     beginVisitAnnotationDefinition(annotationDefinition) {
-        let constructedSourceSegment = '\nannotation ' + annotationDefinition.getAnnotationName();
+        const spaces = annotationDefinition.whiteSpaceDescriptor.regions;
+        const childSpaces = annotationDefinition.whiteSpaceDescriptor.children.attachmentPoints.children;
+        let constructedSourceSegment = 'annotation' + spaces[0] + annotationDefinition.getAnnotationName();
         let self = this;
-        if (annotationDefinition.getAttachmentPoints().length > 0) {
-            constructedSourceSegment += ' attach ' + _.join(annotationDefinition.getAttachmentPoints(), ', ');
+        let attachmentPoints = annotationDefinition.getAttachmentPoints();
+        if (attachmentPoints.length > 0) {
+            constructedSourceSegment += spaces[1] + 'attach';
+            for (let i = 0; i < attachmentPoints.length; i++) {
+                let attachment = attachmentPoints[i];
+                let childSpace = childSpaces && childSpaces[attachment] && childSpaces[attachment].regions;
+                constructedSourceSegment += ( childSpace ? childSpace[0] : ' ' ) + attachment +
+                    ( childSpace ? childSpace[1] : '' );
+                if (i !== attachmentPoints.length - 1) {
+                    constructedSourceSegment += ',';
+                }
+            }
         }
-        constructedSourceSegment += ' {\n';
-        this.indent();
+        constructedSourceSegment += '{';
         _.each(annotationDefinition.getAnnotationAttributeDefinitions(), function (attrDefinition, count) {
             constructedSourceSegment += (self.getIndentation() + attrDefinition.getAttributeStatementString() + ';');
             if (count < annotationDefinition.getAnnotationAttributeDefinitions().length) {
@@ -52,8 +63,9 @@ class AnnotationDefinitionVisitor extends AbstractSourceGenVisitor {
     }
 
     endVisitAnnotationDefinition(annotationDefinition) {
+        const spaces = annotationDefinition.whiteSpaceDescriptor.regions;
         this.outdent();
-        this.appendSource("}\n");
+        this.appendSource("}" + spaces[3]);
         this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit Annotation Definition');
     }

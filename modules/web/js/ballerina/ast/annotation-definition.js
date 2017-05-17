@@ -28,6 +28,15 @@ class AnnotationDefinition extends ASTNode {
         super('AnnotationDefinition');
         this._annotationName = _.get(args, 'annotationName');
         this._attachmentPoints = _.get(args, 'attachmentPoints', []);
+        this.whiteSpaceDescriptor = {
+            regions: {
+                0: ' ',
+                1: ' ',
+                2: ' ',
+                3: ' '
+            },
+            children: {attachmentPoints: {children: {}}}
+        };
     }
 
     setAnnotationName(annotationName, options) {
