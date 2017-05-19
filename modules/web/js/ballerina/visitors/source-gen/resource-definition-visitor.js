@@ -49,10 +49,18 @@ class ResourceDefinitionVisitor extends AbstractSourceGenVisitor {
                 constructedSourceSegment += this.getIndentation() + annotationNode.toString() + '\n';
             }
         });
+        let startIndentation;
+        if (resourceDefinition.shouldCalculateIndentation) {
+            startIndentation = this.getIndentation();
+        } else {
+            startIndentation = '';
+        }
+        constructedSourceSegment += startIndentation + 'resource' +
+            resourceDefinition.whiteSpaceDescriptor.regions[0] + resourceDefinition.getResourceName() +
+            resourceDefinition.whiteSpaceDescriptor.regions[1] + '(' + resourceDefinition.whiteSpaceDescriptor.regions[2];
 
-        constructedSourceSegment += this.getIndentation() + 'resource ' + resourceDefinition.getResourceName() + '(';
-
-        constructedSourceSegment += resourceDefinition.getParametersAsString() + ') {\n';
+        constructedSourceSegment += (resourceDefinition.getParametersAsString() + ')' +
+        resourceDefinition.whiteSpaceDescriptor.regions[3] + '{' + resourceDefinition.whiteSpaceDescriptor.regions[4]);
         this.appendSource(constructedSourceSegment);
         this.indent();
     }
@@ -78,7 +86,7 @@ class ResourceDefinitionVisitor extends AbstractSourceGenVisitor {
 
     endVisitResourceDefinition(resourceDefinition) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}\n");
+        this.appendSource(this.getIndentation() + '}' + resourceDefinition.whiteSpaceDescriptor.regions[5]);
         this.getParent().appendSource(this.getGeneratedSource());
     }
 }

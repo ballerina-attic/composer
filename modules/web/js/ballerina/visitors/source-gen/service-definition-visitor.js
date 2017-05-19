@@ -42,19 +42,29 @@ class ServiceDefinitionVisitor extends AbstractSourceGenVisitor {
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        let constructedSourceSegment = '\n';
+        let constructedSourceSegment = '';
         _.forEach(serviceDefinition.getChildrenOfType(serviceDefinition.getFactory().isAnnotation),
             annotationNode => {
                 constructedSourceSegment += this.getIndentation() + annotationNode.toString() + '\n';
             });
-        constructedSourceSegment += this.getIndentation() + 'service ' + serviceDefinition.getServiceName() + ' {\n';
+
+        let startIndentation;
+        if (serviceDefinition.shouldCalculateIndentation) {
+            startIndentation = this.getIndentation();
+        } else {
+            startIndentation = '';
+        }
+
+        constructedSourceSegment += startIndentation + 'service' +
+            serviceDefinition.whiteSpaceDescriptor.regions[0] + serviceDefinition.getServiceName() +
+            serviceDefinition.whiteSpaceDescriptor.regions[1] + '{' + serviceDefinition.whiteSpaceDescriptor.regions[2];
         this.appendSource(constructedSourceSegment);
         this.indent();
     }
 
     endVisitServiceDefinition(serviceDefinition) {
         this.outdent();
-        this.appendSource(this.getIndentation() + '}\n');
+        this.appendSource(this.getIndentation() + '}' + serviceDefinition.whiteSpaceDescriptor.regions[3]);
         this.getParent().appendSource(this.getGeneratedSource());
     }
 

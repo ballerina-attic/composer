@@ -31,12 +31,25 @@ class WorkerInvocationStatementVisitor extends AbstractStatementSourceGenVisitor
     }
 
     beginVisitWorkerInvocationStatement(workerInvocationStatement) {
-        this.appendSource(workerInvocationStatement.getInvocationStatement());
+        const statementTokens = workerInvocationStatement.getInvocationStatement().split('->');
+        let startIndentation;
+        if (workerInvocationStatement.shouldCalculateIndentation) {
+            startIndentation = this.getIndentation();
+        } else {
+            startIndentation = workerInvocationStatement.whiteSpaceDescriptor.regions[0];
+        }
+
+        let generatedStatement = startIndentation + statementTokens[0] +
+            workerInvocationStatement.whiteSpaceDescriptor.regions[1] + '->' +
+            workerInvocationStatement.whiteSpaceDescriptor.regions[2] + statementTokens[1];
+        this.appendSource(generatedStatement);
         log.debug('Begin Visit Worker Invocation Statement');
     }
 
     endVisitWorkerInvocationStatement(workerInvocationStatement) {
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource() + ";\n");
+        this.getParent().appendSource(this.getGeneratedSource() +
+            workerInvocationStatement.whiteSpaceDescriptor.regions[3] + ";" +
+            workerInvocationStatement.whiteSpaceDescriptor.regions[4]);
         log.debug('End Visit Worker Invocation Statement');
     }
 }

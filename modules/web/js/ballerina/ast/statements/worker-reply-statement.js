@@ -31,6 +31,20 @@ class WorkerReplyStatement extends Statement {
         this._expressionList = _.get(args, 'expressionList', []);
         this._replyStatement = _.get(args, 'replyStatement', 'm1 <- workerName');
         this._workerName = _.get(args, 'workerName', 'workerName');
+
+        /**
+         * set the default whitespace regions
+         * @type {{regions: {0: string, 1: string, 2: string, 3: string}}}
+         */
+        this.whiteSpaceDescriptor = {
+            regions: {
+                0: '    ',
+                1: ' ',
+                2: ' ',
+                3: '',
+                4: '\n'
+            }
+        }
     }
 
     setSource(source) {

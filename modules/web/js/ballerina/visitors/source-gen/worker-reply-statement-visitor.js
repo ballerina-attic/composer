@@ -31,12 +31,27 @@ class WorkerReplyStatementVisitor extends AbstractStatementSourceGenVisitor {
     }
 
     beginVisitWorkerReplyStatement(workerReplyStatement) {
-        this.appendSource(workerReplyStatement.getReplyStatement());
+        const statementTokens = workerReplyStatement.getReplyStatement().split('<-');
+        let startIndentation;
+
+        if (workerReplyStatement.shouldCalculateIndentation) {
+            startIndentation = this.getIndentation();
+        } else {
+            startIndentation = workerReplyStatement.whiteSpaceDescriptor.regions[0];
+        }
+
+        let generatedStatement = startIndentation + statementTokens[0] +
+            workerReplyStatement.whiteSpaceDescriptor.regions[1] + '<-' +
+            workerReplyStatement.whiteSpaceDescriptor.regions[2] + statementTokens[1];
+        this.appendSource(generatedStatement);
+
         log.debug('Begin Visit Worker Receive Statement');
     }
 
     endVisitWorkerReplyStatement(workerReplyStatement) {
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource() + ";\n");
+        this.getParent().appendSource(this.getGeneratedSource() +
+            workerReplyStatement.whiteSpaceDescriptor.regions[3] + ";" +
+            workerReplyStatement.whiteSpaceDescriptor.regions[4]);
         log.debug('End Visit Worker Receive Statement');
     }
 }
