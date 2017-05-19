@@ -99,8 +99,6 @@ class PackageDefinition extends React.Component {
                 packageDefExpanded: false,
                 packageNameEditing: false
             })
-            // TODO: unset package name
-            return;
         }
         this.props.model.setPackageName(this.state.packageDefValue);
         this.setState({packageNameEditing: false});
@@ -119,6 +117,7 @@ class PackageDefinition extends React.Component {
         const importsExpanded = this.props.model.viewState.importsExpanded;
         const globalsExpanded = this.props.model.viewState.globalsExpanded;
         const packageDefTextWidth = 275;
+        const gutterSize = 10;
         const iconSize = 20;
 
         const importsBbox = {
@@ -138,7 +137,7 @@ class PackageDefinition extends React.Component {
 
         const expandedGlobalsBbox = {
             x: bBox.x,
-            y: bBox.y + headerHeight
+            y: bBox.y + headerHeight + gutterSize
         }
 
         const astRoot = this.props.model.parent;
@@ -188,9 +187,10 @@ class PackageDefinition extends React.Component {
                     globalsExpanded ?
                          <GlobalExpanded
                             bBox={expandedGlobalsBbox} globals={globals} onCollapse={this.handleGlobalsBadgeClick}
-                            title="Globals" onAddNewValue={this.handleAddGlobal} onDeleteClick={this.handleDeleteGlobal}
+                            title={'Globals'} addText={'+ Add Global'} onAddNewValue={this.handleAddGlobal} onDeleteClick={this.handleDeleteGlobal}
                             getValue={ g => (g.getConstantDefinitionAsString())}/> :
-                         <GlobalDefinitions bBox={globalsBbox} globals={globals} onClick={this.handleGlobalsBadgeClick} />
+                         <GlobalDefinitions bBox={globalsBbox} numberOfItems={globals.length}
+                             title={'Globals'} onExpand={this.handleGlobalsBadgeClick} />
                }
             </g>
         );

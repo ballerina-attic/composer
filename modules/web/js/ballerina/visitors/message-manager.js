@@ -19,19 +19,22 @@ import log from 'log';
 import _ from 'lodash';
 import * as d3 from 'd3';
 import $ from 'jquery';
+import EventChannel from 'event_channel';
 
 /**
  * Handle Message drawing by Message manager
  * @class MessageManager
  */
-class MessageManager {
+class MessageManager extends EventChannel{
     /**
      * Constructor for MessageManager
      * @param {args} args for constructor
      * @constructor
      */
     constructor(args) {
+        super();
         log.debug('Initialising Message Manager');
+        this._fileEditor = args.fileEditor;
         this._typeBeingDragged = undefined;
         this._isOnDrag = false;
         this._source = undefined;
@@ -151,9 +154,10 @@ class MessageManager {
     startDrawMessage(mouseUpCallback, targetValidationCallback) {
 
         var self = this,
-            container = d3.select('.svg-container');
+            container = d3.select(self._fileEditor._$canvasContainer.find('.svg-container').get(0));
 
         container.on('mousemove', function (e) {
+            self.trigger('message-draw-start');
             var m = d3.mouse(this);
             self.setMessageEnd(m[0] - 5, self.getMessageStart().y);
             if (self.getMessageEnd().x > self.getMessageStart().x) {
@@ -176,6 +180,7 @@ class MessageManager {
             const messageDestination = self.getDestination();
             const validDestination = self.isAtValidDestination();
             self.reset();
+            self.trigger('message-draw-stop');
             if (validDestination) {
                 mouseUpCallback(messageSource, messageDestination);
             }
