@@ -52,6 +52,10 @@ class StructDefinition extends React.Component {
         node.remove();
     }
 
+    componentWillUnmount() {
+        this.context.structOperationsRenderer.hideOverlay();
+    }
+
     renderTextBox(textValue, bBox, callback) {
         const self = this;
         this.context.renderer.renderTextBox({
