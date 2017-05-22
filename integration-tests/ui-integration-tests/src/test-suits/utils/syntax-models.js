@@ -116,5 +116,68 @@ module.exports = {
         }
 
         return argument;
+    },
+
+    getVariableDefinitionStatementModel: function (lineNumber, children) {
+        var arguments = {
+            line_number: lineNumber,
+            type: 'variable_definition_statement',
+            children: []
+        };
+
+        if (children) {
+            for (var i = 0; i < children.length; i++) {
+                arguments.children.push(children[i]);
+            }
+        }
+
+        return arguments;
+    },
+
+    getVariableReferenceExpressionModel: function (lineNumber, variableName, children) {
+        var arguments = {
+            line_number: lineNumber,
+                type: "variable_reference_expression",
+            variable_name: variableName,
+            children: []
+        };
+
+        if (children) {
+            for (var i = 0; i < children.length; i++) {
+                arguments.children.push(children[i]);
+            }
+        }
+
+        return arguments;
+    },
+
+    getConnectorInitExpressionModel: function (lineNumber, connectorName, uri) {
+         var arguments = {
+             line_number: lineNumber,
+             type: "connector_init_expr",
+             connector_name: connectorName,
+             arguments: [
+                 {
+                     type: "basic_literal_expression",
+                     basic_literal_type: "string",
+                     basic_literal_value: uri,
+                     line_number: lineNumber
+                 }
+             ]
+         };
+
+         return arguments;
+    },
+
+    getVariableDefinitionModel: function (lineNumber, variableName, variableType, packageName) {
+        var arguments = {
+            line_number: lineNumber,
+            type: "variable_definition",
+            variable_name: variableName,
+            variable_type: variableType,
+            package_name: packageName
+        };
+
+        return arguments;
     }
 };
