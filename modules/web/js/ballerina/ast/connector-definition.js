@@ -31,6 +31,14 @@ class ConnectorDefinition extends ASTNode {
         this.connector_name = _.get(args, 'connector_name');
         this.annotations = _.get(args, 'annotations', []);
         this.arguments = _.get(args, 'arguments', []);
+        this.whiteSpaceDescriptor = {
+            regions: {
+                0: ' ',
+                1: ' ',
+                2: ' ',
+                3: '\n'
+            }
+        };
     }
 
     /**

@@ -57,10 +57,13 @@ class VariableDefinitionStatement extends Statement {
      */
     getStatementString() {
         var variableDefinitionStatementString;
+        const spaces = this.children && this.children["0"] && this.children["0"].whiteSpaceDescriptor &&
+            this.children["0"].whiteSpaceDescriptor.regions;
         if (_.isNil(this._rightExpression) || _.isEmpty(this._rightExpression)) {
-            variableDefinitionStatementString = this._leftExpression;
+            variableDefinitionStatementString = this.getBType() + (spaces && spaces[0] ? spaces[0] : ' ') + this.getIdentifier();
         } else {
-            variableDefinitionStatementString = this._leftExpression + " = " + this._rightExpression;
+            variableDefinitionStatementString = this.getBType() + (spaces && spaces[0] ? spaces[0] : ' ') + this.getIdentifier() +
+                (spaces && spaces[1] ? spaces[1] : ' ') + "=" + (spaces && spaces[2] ? spaces[2] : ' ') + this._rightExpression;
         }
         return variableDefinitionStatementString;
     }
@@ -86,7 +89,7 @@ class VariableDefinitionStatement extends Statement {
      * @return {string} - The ballerina type.
      */
     getBType() {
-        return (this._leftExpression.split(" ")[0]).trim();
+        return (this._leftExpression.split(/\s+/)[0]).trim();
     }
 
     /**
@@ -94,7 +97,7 @@ class VariableDefinitionStatement extends Statement {
      * @return {string} - The identifier.
      */
     getIdentifier() {
-        return (this._leftExpression.split(" ")[1]).trim();
+        return (this._leftExpression.split(/\s+/)[1]).trim();
     }
 
     /**
@@ -106,7 +109,7 @@ class VariableDefinitionStatement extends Statement {
     }
 
     setIdentifier(identifier) {
-        this.setLeftExpression(this.getBType() + " " + identifier);
+        this.setLeftExpression(this.getBType() + ' ' + identifier);
     }
 
     setBType(bType) {

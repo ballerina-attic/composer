@@ -34,7 +34,8 @@ class RightOperandExpressionVisitor extends AbstractStatementSourceGenVisitor {
 
     beginVisitRightOperandExpression(rightOperandExpression) {
         //FIXME: Need to refactor this if logic
-        this.appendSource(" = ");
+        const spaces = rightOperandExpression.parent.whiteSpaceDescriptor.regions;
+        this.appendSource(spaces[1] + "=" + spaces[2]);
         if (!_.isUndefined(rightOperandExpression.getRightOperandExpressionString())) {
             this.appendSource(rightOperandExpression.getRightOperandExpressionString());
         }

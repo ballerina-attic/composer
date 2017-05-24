@@ -28,6 +28,14 @@ class VariableReferenceExpression extends Expression {
         super('VariableReferenceExpression');
         this._variableName = _.get(args, 'variableName');
         this.setExpression(this.generateExpression(), {doSilently: true});
+        this.whiteSpaceDescriptor = {
+            regions: {
+                0: '',
+                1: ' ',
+                2: ' ',
+                3: '\n'
+            }
+        };
     }
 
     /**
