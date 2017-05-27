@@ -19,13 +19,12 @@ package org.ballerinalang.composer.service.workspace.rest;
 import org.ballerinalang.composer.service.workspace.api.NotFoundException;
 import org.ballerinalang.composer.service.workspace.api.PackagesApiService;
 import org.ballerinalang.composer.service.workspace.model.Action;
-import org.ballerinalang.composer.service.workspace.model.Annotation;
 import org.ballerinalang.composer.service.workspace.model.AnnotationAttachment;
+import org.ballerinalang.composer.service.workspace.model.AnnotationDef;
 import org.ballerinalang.composer.service.workspace.model.Connector;
 import org.ballerinalang.composer.service.workspace.model.Function;
 import org.ballerinalang.composer.service.workspace.model.ModelPackage;
 import org.ballerinalang.composer.service.workspace.model.Parameter;
-import org.ballerinalang.model.AnnotationDef;
 import org.ballerinalang.model.BLangPackage;
 import org.ballerinalang.model.BLangProgram;
 import org.ballerinalang.model.BallerinaAction;
@@ -40,8 +39,7 @@ import org.ballerinalang.util.exceptions.NativeException;
 import org.ballerinalang.util.program.BLangPackages;
 import org.ballerinalang.util.repository.BuiltinPackageRepository;
 import org.ballerinalang.util.repository.FileSystemPackageRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,8 +58,6 @@ import javax.ws.rs.core.Response;
  * @since 0.8.0
  */
 public class PackagesApiServiceImpl extends PackagesApiService {
-
-    private static final Logger logger = LoggerFactory.getLogger(WorkspaceService.class);
 
     private static final String ACCESS_CONTROL_ALLOW_ORIGIN_NAME = "Access-Control-Allow-Origin";
     private static final String ACCESS_CONTROL_ALLOW_ORIGIN_VALUE = "*";
@@ -148,33 +144,16 @@ public class PackagesApiServiceImpl extends PackagesApiService {
      * @param annotationDef annotationDef
      * */
     private void extractAnnotationDefs(Map<String, ModelPackage> packages, String packagePath,
-                                       AnnotationDef annotationDef) {
+                                       org.ballerinalang.model.AnnotationDef annotationDef) {
         if (packages.containsKey(packagePath)) {
             ModelPackage modelPackage = packages.get(packagePath);
-            List<AnnotationAttachment> annotationAttachment = new ArrayList<>();
-            addAnnotationAttachment(annotationAttachment, annotationDef.getAnnotations());
-
-            List<String> attachmentPoints = new ArrayList<>();
-            addAttachmentPoints(attachmentPoints, annotationDef.getAttachmentPoints());
-
-            //List<Action> attributeDefs = new ArrayList<>();
-            //addAttributeDefs(attributeDefs, annotationDef.getAttributeDefs());
-
-            modelPackage.addAnnotationsItem(createNewAnnotationDef(annotationDef.getName(), attachmentPoints));
+            
+            modelPackage.addAnnotationsItem(AnnotationDef.convertToPackageModel(annotationDef));
         } else {
             ModelPackage modelPackage = new ModelPackage();
             modelPackage.setName(packagePath);
-
-            List<AnnotationAttachment> annotationAttachment = new ArrayList<>();
-            addAnnotationAttachment(annotationAttachment, annotationDef.getAnnotations());
-
-            List<String> attachmentPoints = new ArrayList<>();
-            addAttachmentPoints(attachmentPoints, annotationDef.getAttachmentPoints());
-
-            //List<Action> attributeDefs = new ArrayList<>();
-            //addAttributeDefs(attributeDefs, annotationDef.getAttributeDefs());
-
-            modelPackage.addAnnotationsItem(createNewAnnotationDef(annotationDef.getName(), attachmentPoints));
+            
+            modelPackage.addAnnotationsItem(AnnotationDef.convertToPackageModel(annotationDef));
             packages.put(packagePath, modelPackage);
         }
     }
@@ -191,7 +170,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
             List<Parameter> parameters = new ArrayList<>();
             addParameters(parameters, connector.getParameterDefs());
 
-            List<Annotation> annotations = new ArrayList<>();
+            List<AnnotationAttachment> annotations = new ArrayList<>();
             addAnnotations(annotations, connector.getAnnotations());
 
             List<Action> actions = new ArrayList<>();
@@ -206,7 +185,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
             List<Parameter> parameters = new ArrayList<>();
             addParameters(parameters, connector.getParameterDefs());
 
-            List<Annotation> annotations = new ArrayList<>();
+            List<AnnotationAttachment> annotations = new ArrayList<>();
             addAnnotations(annotations, connector.getAnnotations());
 
             List<Action> actions = new ArrayList<>();
@@ -233,7 +212,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
             List<Parameter> returnParameters = new ArrayList<>();
             addParameters(returnParameters, function.getReturnParameters());
 
-            List<Annotation> annotations = new ArrayList<>();
+            List<AnnotationAttachment> annotations = new ArrayList<>();
             addAnnotations(annotations, function.getAnnotations());
 
             modelPackage.addFunctionsItem(createNewFunction(function.getName(),
@@ -247,7 +226,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
             List<Parameter> returnParameters = new ArrayList<>();
             addParameters(returnParameters, function.getReturnParameters());
 
-            List<Annotation> annotations = new ArrayList<>();
+            List<AnnotationAttachment> annotations = new ArrayList<>();
             addAnnotations(annotations, function.getAnnotations());
 
             modelPackage.addFunctionsItem(createNewFunction(function.getName(),
@@ -273,11 +252,10 @@ public class PackagesApiServiceImpl extends PackagesApiService {
      * @param annotations annotations list to be sent
      * @param annotationsFromModel annotations
      * */
-    private void addAnnotations(List<Annotation> annotations,
+    private void addAnnotations(List<AnnotationAttachment> annotations,
                                 org.ballerinalang.model.AnnotationAttachment[] annotationsFromModel) {
         Stream.of(annotationsFromModel)
-                .forEach(annotation -> annotations.add(createNewAnnotation(annotation.getName(),
-                        annotation.getValue())));
+                .forEach(annotation -> annotations.add(AnnotationAttachment.convertToPackageModel(annotation)));
     }
 
     /**
@@ -291,41 +269,6 @@ public class PackagesApiServiceImpl extends PackagesApiService {
     }
 
     /**
-     * Add Attachment Points to a list from ballerina lang Attachment Points list.
-     * @param attachmentPoints attachmentPoints to send.
-     * @param attachmentPointsArray attachment Points Array
-     * */
-    private void addAttachmentPoints(List<String> attachmentPoints, String[] attachmentPointsArray) {
-        if (attachmentPointsArray != null) {
-            Stream.of(attachmentPointsArray).forEach(item -> attachmentPoints.add(item));
-        }
-    }
-
-    /**
-     * Add annotationAttachments from ballerina lang annotationAttachment list.
-     * @param annotationAttachment annotationAttachment
-     * @param attachmentPoints attachment Points
-     * */
-    private void addAnnotationAttachment(List<AnnotationAttachment> annotationAttachment,
-                                         org.ballerinalang.model.AnnotationAttachment[] attachmentPoints) {
-        if (attachmentPoints != null) {
-            Stream.of(attachmentPoints).forEach(attachmentPoint ->
-                    annotationAttachment.add(createAttachmentPoint(attachmentPoint)));
-        }
-    }
-
-    /**
-     * Create Annotation Attachment
-     * @param attachmentPoint attachmentPoint
-     * @return {Parameter} parameter
-     * */
-    private AnnotationAttachment createAttachmentPoint(org.ballerinalang.model.AnnotationAttachment attachmentPoint) {
-        AnnotationAttachment annotationAttachment = new AnnotationAttachment();
-        annotationAttachment.setName(attachmentPoint.getName());
-        return annotationAttachment;
-    }
-
-    /**
      * Extract action details from a connector.
      * @param action action.
      * @return {Action} action
@@ -333,8 +276,10 @@ public class PackagesApiServiceImpl extends PackagesApiService {
     private Action extractAction(BallerinaAction action) {
         List<Parameter> parameters = new ArrayList<>();
         addParameters(parameters, action.getParameterDefs());
-        List<Annotation> annotations = new ArrayList<>();
+        
+        List<AnnotationAttachment> annotations = new ArrayList<>();
         addAnnotations(annotations, action.getAnnotations());
+        
         List<Parameter> returnParameters = new ArrayList<>();
         addParameters(returnParameters, action.getReturnParameters());
         return createNewAction(action.getName(), parameters, returnParameters, annotations);
@@ -349,7 +294,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
      * @return {Action} action
      * */
     private Action createNewAction(String name, List<Parameter> params, List<Parameter> returnParams,
-                                   List<Annotation> annotations) {
+                                   List<AnnotationAttachment> annotations) {
         Action action = new Action();
         action.setName(name);
         action.setParameters(params);
@@ -372,19 +317,6 @@ public class PackagesApiServiceImpl extends PackagesApiService {
     }
 
     /**
-     * Create new annotations
-     * @param name annotation name
-     * @param value annotation value
-     * @return {Annotation} annotation
-     * */
-    private Annotation createNewAnnotation(String name, String value) {
-        Annotation annotation = new Annotation();
-        annotation.setName(name);
-        annotation.setValue(value);
-        return annotation;
-    }
-
-    /**
      * Create new function
      * @param name name of the function
      * @param annotations list of annotations
@@ -392,7 +324,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
      * @param returnParams list of return params
      * @return {Function} function
      * */
-    private Function createNewFunction(String name, List<Annotation> annotations, List<Parameter> params,
+    private Function createNewFunction(String name, List<AnnotationAttachment> annotations, List<Parameter> params,
                                        List<Parameter> returnParams) {
         Function function = new Function();
         function.setName(name);
@@ -411,7 +343,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
      * @param returnParams list of return params
      * @return {Connector} connector
      * */
-    private Connector createNewConnector(String name, List<Annotation> annotations, List<Action> actions,
+    private Connector createNewConnector(String name, List<AnnotationAttachment> annotations, List<Action> actions,
                                          List<Parameter> params, List<Parameter> returnParams) {
         Connector connector = new Connector();
         connector.setName(name);
@@ -420,19 +352,6 @@ public class PackagesApiServiceImpl extends PackagesApiService {
         connector.setAnnotations(annotations);
         connector.setReturnParameters(returnParams);
         return connector;
-    }
-
-    /**
-     * Create new annotation
-     * @param name name of the annotation
-     * @param attachmentPoints list of attachmentPoints
-     * @return {Function} function
-     * */
-    private Annotation createNewAnnotationDef(String name, List<String> attachmentPoints) {
-        Annotation annotation = new Annotation();
-        annotation.setName(name);
-        annotation.setAttachmentPoints(attachmentPoints);
-        return annotation;
     }
 
     /**
@@ -469,10 +388,7 @@ public class PackagesApiServiceImpl extends PackagesApiService {
      * */
     private static void loadConstructs(GlobalScope globalScope, NativeScope nativeScope) {
         BTypes.loadBuiltInTypes(globalScope);
-        Iterator<NativeConstructLoader> nativeConstructLoaders =
-                ServiceLoader.load(NativeConstructLoader.class).iterator();
-        while (nativeConstructLoaders.hasNext()) {
-            NativeConstructLoader constructLoader = nativeConstructLoaders.next();
+        for (NativeConstructLoader constructLoader : ServiceLoader.load(NativeConstructLoader.class)) {
             try {
                 constructLoader.load(nativeScope);
             } catch (NativeException e) {
