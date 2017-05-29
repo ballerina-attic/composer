@@ -55,8 +55,8 @@ class AbortStatementVisitor extends AbstractStatementSourceGenVisitor {
      * @param {AbortStatement} abortStatement
      * */
     endVisitAbortStatement(abortStatement) {
-        this.appendSource(";\n");
-        this.getParent().appendSource("\n" + this.getIndentation() + this.getGeneratedSource());
+        this.appendSource(';\n');
+        this.getParent().appendSource('\n' + this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit Abort Statement');
     }
 }

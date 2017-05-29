@@ -48,7 +48,7 @@ class ConstantDefinitionVisitor extends AbstractSourceGenVisitor {
     }
 
     endVisitConstantDefinition(constantDefinition) {
-        this.appendSource(";\n");
+        this.appendSource(';\n');
         this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit ConstantDefinition');
     }

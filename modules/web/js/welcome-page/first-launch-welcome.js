@@ -70,7 +70,7 @@ var FirstLaunchWelcomePage = Backbone.View.extend({
         var command = this._options.application.commandManager;
         var browserStorage = this._options.application.browserStorage;
 
-        var samples = _.get(this._options, "samples", []);
+        var samples = _.get(this._options, 'samples', []);
 
         var config;
         var servicePreview;
@@ -81,51 +81,51 @@ var FirstLaunchWelcomePage = Backbone.View.extend({
         for (var i = 0; i < samples.length; i++) {
             $.ajax({
                 url: samples[i],
-                type: "GET",
+                type: 'GET',
                 async: false,
                 success: function(fileContentAsString) {
-                    var content = {"content": fileContentAsString};
+                    var content = {'content': fileContentAsString};
                     var config =
                         {
-                            "sampleName": samples[i].replace(/^.*[\\\/]/, '').match(/[^.]*/i)[0],
-                            "parentContainer": "#inner-samples",
-                            "firstItem": i === 0,
-                            "clickEventCallback": function () {
-                                var root = "";
+                            'sampleName': samples[i].replace(/^.*[\\\/]/, '').match(/[^.]*/i)[0],
+                            'parentContainer': '#inner-samples',
+                            'firstItem': i === 0,
+                            'clickEventCallback': function () {
+                                var root = '';
                                 $.ajax({
-                                    url: _.get(self._options.application, "config.services.parser.endpoint"),
-                                    type: "POST",
+                                    url: _.get(self._options.application, 'config.services.parser.endpoint'),
+                                    type: 'POST',
                                     data: JSON.stringify(content),
-                                    contentType: "application/json; charset=utf-8",
+                                    contentType: 'application/json; charset=utf-8',
                                     async: false,
-                                    dataType: "json",
+                                    dataType: 'json',
                                     success: function (data, textStatus, xhr) {
                                         if (xhr.status == 200) {
                                             if (!_.isUndefined(data.errorMessage)) {
-                                                alerts.error("Unable to parse the source: " + data.errorMessage);
+                                                alerts.error('Unable to parse the source: ' + data.errorMessage);
                                             } else {
                                                 root = BallerinaASTDeserializer.getASTModel(data);
                                             }
                                         } else {
-                                            log.error("Error while parsing the source: " + JSON.stringify(xhr));
-                                            alerts.error("Error while parsing the source.");
+                                            log.error('Error while parsing the source: ' + JSON.stringify(xhr));
+                                            alerts.error('Error while parsing the source.');
                                         }
                                     },
                                     error: function (res, errorCode, error) {
-                                        log.error("Error while parsing the source. " + JSON.stringify(res));
-                                        alerts.error("Error while parsing the source.");
+                                        log.error('Error while parsing the source. ' + JSON.stringify(res));
+                                        alerts.error('Error while parsing the source.');
                                     }
                                 });
-                                command.dispatch("create-new-tab", {tabOptions: {astRoot: root}});
-                                browserStorage.put("pref:passedFirstLaunch", true);
+                                command.dispatch('create-new-tab', {tabOptions: {astRoot: root}});
+                                browserStorage.put('pref:passedFirstLaunch', true);
                             }
                         };
 
                     sampleConfigs.push(config);
                 },
                 error: function() {
-                    alerts.error("Unable to read a sample file.");
-                    throw "Unable to read a sample file.";
+                    alerts.error('Unable to read a sample file.');
+                    throw 'Unable to read a sample file.';
                 }
             });
         }
@@ -133,7 +133,7 @@ var FirstLaunchWelcomePage = Backbone.View.extend({
         let previews = React.createElement(ServicePreviewView, {sampleConfigs}, null);
         ReactDOM.render(
             previews,
-            $("#inner-samples")[0]
+            $('#inner-samples')[0]
         );
 
         var command = this._options.application.commandManager;
@@ -141,19 +141,19 @@ var FirstLaunchWelcomePage = Backbone.View.extend({
 
         // When "new" is clicked, open up an empty workspace.
         $('#btn-welcome-new').on('click', function () {
-            command.dispatch("create-new-tab");
-            browserStorage.put("pref:passedFirstLaunch", true);
+            command.dispatch('create-new-tab');
+            browserStorage.put('pref:passedFirstLaunch', true);
         });
 
         // Show the open file dialog when "open" is clicked.
         $('#btn-welcome-open').on('click', function(){
-            command.dispatch("open-file-open-dialog");
-            browserStorage.put("pref:passedFirstLaunch", true);
+            command.dispatch('open-file-open-dialog');
+            browserStorage.put('pref:passedFirstLaunch', true);
         });
 
         // upon welcome tab remove, set flag to indicate first launch pass
         this._tab.on('removed', function(){
-            browserStorage.put("pref:passedFirstLaunch", true);
+            browserStorage.put('pref:passedFirstLaunch', true);
         });
     }
 });

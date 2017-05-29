@@ -38,7 +38,7 @@ class ActionInvocationStatementVisitor extends AbstractStatementSourceGenVisitor
     }
 
     endVisitActionInvocationStatement(action) {
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource() + ";\n");
+        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource() + ';\n');
     }
 }
 

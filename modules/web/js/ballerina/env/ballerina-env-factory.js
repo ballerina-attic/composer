@@ -29,92 +29,92 @@ import TypeMapper from './type-mapper';
         /**
          * @class BallerinaEnvFactory
          */
-        var BallerinaEnvFactory = {};
+var BallerinaEnvFactory = {};
 
         /**
          * creates Package
          * @param args
          */
-        BallerinaEnvFactory.createPackage = function (args) {
-            var pckg = new Package(args);
-            return pckg;
-        };
+BallerinaEnvFactory.createPackage = function (args) {
+    var pckg = new Package(args);
+    return pckg;
+};
 
         /**
          * creates Connector
          * @param args
          */
-        BallerinaEnvFactory.createConnector = function (args) {
-            var connector = new Connector(args);
-            return connector;
-        };
+BallerinaEnvFactory.createConnector = function (args) {
+    var connector = new Connector(args);
+    return connector;
+};
   
         /**
          * creates ConnectorAction
          * @param args
          */
-        BallerinaEnvFactory.createConnectorAction = function (args) {
-            var action = new ConnectorAction(args);
-            return action;
-        };
+BallerinaEnvFactory.createConnectorAction = function (args) {
+    var action = new ConnectorAction(args);
+    return action;
+};
 
         /**
          * creates Function
          * @param jsonNode
          */
-        BallerinaEnvFactory.createFunction = function (args) {
-            var functionDef = new Function(args);
-            return functionDef;
-        };
+BallerinaEnvFactory.createFunction = function (args) {
+    var functionDef = new Function(args);
+    return functionDef;
+};
 
         /**
          * creates Annotation
          * @param jsonNode
          */
-        BallerinaEnvFactory.createAnnotation = function (args) {
-            var annotationDef = new Annotation(args);
-            return annotationDef;
-        }
+BallerinaEnvFactory.createAnnotation = function (args) {
+    var annotationDef = new Annotation(args);
+    return annotationDef;
+};
 
         /**
          * creates TypeMapper
          * @param jsonNode
          */
-        BallerinaEnvFactory.createTypeMapper = function (args) {
-            var typeMapperDef = new TypeMapper(args);
-            return typeMapperDef;
-        };
+BallerinaEnvFactory.createTypeMapper = function (args) {
+    var typeMapperDef = new TypeMapper(args);
+    return typeMapperDef;
+};
 
-        BallerinaEnvFactory.isConnector = function (connector) {
-            return (connector instanceof Connector);
-        };
+BallerinaEnvFactory.isConnector = function (connector) {
+    return (connector instanceof Connector);
+};
 
-        BallerinaEnvFactory.isFunction = function (functionDef) {
-            return (functionDef instanceof Function);
-        };
+BallerinaEnvFactory.isFunction = function (functionDef) {
+    return (functionDef instanceof Function);
+};
 
-        BallerinaEnvFactory.isConnectorAction = function (connectorAction) {
-            return (connectorAction instanceof ConnectorAction);
-        };
+BallerinaEnvFactory.isConnectorAction = function (connectorAction) {
+    return (connectorAction instanceof ConnectorAction);
+};
 
         /**
          * instanceof check for Annotation
          * @param {function object} annotationDef - Object for instanceof check
          * @returns {boolean} - true if same type, else false
          */
-        BallerinaEnvFactory.isAnnotation = function (annotationDef){
-            return (annotationDef instanceof Annotation);
-        }
+BallerinaEnvFactory.isAnnotation = function (annotationDef){
+    return (annotationDef instanceof Annotation);
+};
 
         /**
          * instanceof check for TypeMapper
          * @param {function object} typeMapperDef - Object for instanceof check
          * @returns {boolean} - true if same type, else false
          */
-        BallerinaEnvFactory.isTypeMapper = function (typeMapperDef) {
-            return (typeMapperDef instanceof TypeMapper);
-        };
+BallerinaEnvFactory.isTypeMapper = function (typeMapperDef) {
+    return (typeMapperDef instanceof TypeMapper);
+};
 
-        export default BallerinaEnvFactory;
+export default BallerinaEnvFactory;
 
     

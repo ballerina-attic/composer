@@ -39,7 +39,7 @@ class ServiceDefinition extends ASTNode {
         if (!_.isNil(serviceName) && ASTNode.isValidIdentifier(serviceName)) {
             this.setAttribute('_serviceName', serviceName, options);
         } else {
-            var errorString = "Invalid name for the service name: " + serviceName;
+            var errorString = 'Invalid name for the service name: ' + serviceName;
             log.error(errorString);
             throw errorString;
         }
@@ -90,7 +90,7 @@ class ServiceDefinition extends ASTNode {
 
         // Check is identifier is not null or empty.
         if (_.isNil(identifier) || _.isEmpty(identifier)) {
-            var errorStringOfEmptyIdentifier = "A variable definition requires an identifier.";
+            var errorStringOfEmptyIdentifier = 'A variable definition requires an identifier.';
             log.error(errorStringOfEmptyIdentifier);
             throw errorStringOfEmptyIdentifier;
         }
@@ -98,19 +98,19 @@ class ServiceDefinition extends ASTNode {
         // Check if already variable definition statement exists with same identifier.
         var identifierAlreadyExists = _.findIndex(this.getVariableDefinitionStatements(),
                                                                                 function (variableDefinitionStatement) {
-                return _.isEqual(variableDefinitionStatement.getIdentifier(), identifier);
-            }) !== -1;
+                                                                                    return _.isEqual(variableDefinitionStatement.getIdentifier(), identifier);
+                                                                                }) !== -1;
 
         // If variable definition statement with the same identifier exists, then throw an error. Else create the new
         // variable definition statement.
         if (identifierAlreadyExists) {
-            var errorString = "A variable definition with identifier '" + identifier + "' already exists.";
+            var errorString = 'A variable definition with identifier \'' + identifier + '\' already exists.';
             log.error(errorString);
             throw errorString;
         } else {
             // Creating new constant definition.
             var newVariableDefinitionStatement = this.getFactory().createVariableDefinitionStatement();
-            newVariableDefinitionStatement.setLeftExpression(bType + " " + identifier);
+            newVariableDefinitionStatement.setLeftExpression(bType + ' ' + identifier);
             if (!_.isNil(assignedValue) && !_.isEmpty(assignedValue)) {
                 newVariableDefinitionStatement.setRightExpression(assignedValue);
             }
@@ -209,7 +209,7 @@ class ServiceDefinition extends ASTNode {
         }
     }
 
-    //// Start of resource definitions functions
+    // Start of resource definitions functions
 
     getResourceDefinitions() {
         var resourceDefinitions = [];
@@ -223,7 +223,7 @@ class ServiceDefinition extends ASTNode {
         return resourceDefinitions;
     }
 
-    //// End of resource definitions functions
+    // End of resource definitions functions
 
     /**
      * @inheritDoc

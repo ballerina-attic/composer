@@ -105,13 +105,13 @@ class ResourceDefinition extends ASTNode {
      * @return {string} - Parameters as string.
      */
     getParametersAsString() {
-        let paramsAsString = "";
+        let paramsAsString = '';
         let params = this.getParameters();
 
         _.forEach(params, function (parameter, index) {
             paramsAsString += parameter.getParameterDefinitionAsString();
             if (params.length - 1 != index) {
-                paramsAsString += ", ";
+                paramsAsString += ', ';
             }
         });
 
@@ -128,12 +128,12 @@ class ResourceDefinition extends ASTNode {
     addParameter(annotationType, annotationText, parameterType, parameterIdentifier) {
         // Check if already parameter exists with same identifier.
         let identifierAlreadyExists = _.findIndex(this.getParameters(), function (parameter) {
-                return parameter.getName() === parameterIdentifier;
-            }) !== -1;
+            return parameter.getName() === parameterIdentifier;
+        }) !== -1;
 
         // If parameter with the same identifier exists, then throw an error. Else create the new parameter.
         if (identifierAlreadyExists) {
-            let errorString = "A resource parameter with identifier '" + parameterIdentifier + "' already exists.";
+            let errorString = 'A resource parameter with identifier \'' + parameterIdentifier + '\' already exists.';
             log.error(errorString);
             throw errorString;
         } else {

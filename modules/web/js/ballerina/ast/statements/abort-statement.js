@@ -20,7 +20,7 @@ import Statement from './statement';
 class AbortStatement extends Statement {
     constructor() {
         super();
-        this.type = "AbortStatement";
+        this.type = 'AbortStatement';
     }
 
     /**
@@ -45,7 +45,7 @@ class AbortStatement extends Statement {
      * @return {string} Statement
      * */
     getStatement() {
-        return "abort";
+        return 'abort';
     }
 }
 

@@ -61,7 +61,7 @@ class WorkerDeclarationPositionCalcVisitor {
             const previousStatementContainer = previousWorker.getViewState().components.statementContainer;
             x = previousStatementContainer.getRight() + DesignerDefaults.lifeLine.gutter.h;
         } else {
-            throw "Invalid index found for Worker Declaration";
+            throw 'Invalid index found for Worker Declaration';
         }
         y = parentViewState.components.body.getTop() + DesignerDefaults.innerPanel.body.padding.top;
 

@@ -26,8 +26,8 @@ import Statement from './statement';
 class LeftOperandExpression extends Statement {
     constructor(args) {
         super('LeftOperandExpression');
-        this._operand_type = _.get(args, "operandType", "");
-        this._left_operand_expression_string = _.get(args, "variableName", "var1");
+        this._operand_type = _.get(args, 'operandType', '');
+        this._left_operand_expression_string = _.get(args, 'variableName', 'var1');
     }
 
     /**
@@ -89,7 +89,7 @@ class LeftOperandExpression extends Statement {
      */
     initFromJson(jsonNode) {
         var self = this;
-        var expression = "";
+        var expression = '';
         for (var itr = 0; itr < jsonNode.children.length; itr++) {
             var childJsonNode = jsonNode.children[itr];
             if (childJsonNode.type === 'variable_name') {
@@ -101,7 +101,7 @@ class LeftOperandExpression extends Statement {
                 expression += child.getExpression();
             }
             if (itr !== jsonNode.children.length - 1) {
-                expression += " , ";
+                expression += ' , ';
             }
         }
         this.setLeftOperandExpressionString(expression, {doSilently: true});

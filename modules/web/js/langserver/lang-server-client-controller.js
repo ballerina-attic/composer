@@ -52,7 +52,7 @@ class LangServerClientController extends EventChannel{
         var message = {
             id: session.getId(),
             jsonrpc: '2.0',
-            method : "initialize"
+            method : 'initialize'
         };
         session.setMessage(message);
         session.setCallback(() => {
@@ -72,7 +72,7 @@ class LangServerClientController extends EventChannel{
         var message = {
             id: session.getId(),
             jsonrpc: '2.0',
-            method : "workspace/symbol",
+            method : 'workspace/symbol',
             params: {
                 query: query
             }

@@ -43,7 +43,7 @@ class TransactionStatementDimensionCalculatorVisitor {
             h: 0
         };
 
-        viewState.title.w = util.getTextWidth("Transaction").w;
+        viewState.title.w = util.getTextWidth('Transaction').w;
         viewState.title.h = blockStatement.heading.height;
     }
 }

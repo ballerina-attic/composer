@@ -28,14 +28,14 @@ class ReturnStatement extends Statement {
     constructor(args) {
         super();
         this._expression = _.get(args, 'expression', '');
-        this.type = "ReturnStatement";
+        this.type = 'ReturnStatement';
     }
 
     setExpression(expression, options) {
         if (!_.isNil(expression)) {
             this.setAttribute('_expression', expression, options);
         } else {
-            log.error("Cannot set undefined to the return statement.");
+            log.error('Cannot set undefined to the return statement.');
         }
     }
 
@@ -46,7 +46,7 @@ class ReturnStatement extends Statement {
     }
 
     getReturnExpression() {
-        return "return " + this.getExpression();
+        return 'return ' + this.getExpression();
     }
 
     getExpression() {
@@ -59,7 +59,7 @@ class ReturnStatement extends Statement {
      */
     initFromJson(jsonNode) {
         var self = this;
-        var expression = "";
+        var expression = '';
 
         for (var itr = 0; itr < jsonNode.children.length; itr++) {
             var childJsonNode = jsonNode.children[itr];
@@ -68,7 +68,7 @@ class ReturnStatement extends Statement {
             expression += child.getExpression();
 
             if (itr !== jsonNode.children.length - 1) {
-                expression += ", ";
+                expression += ', ';
             }
         }
         this.setExpression(expression, {doSilently: true});

@@ -19,19 +19,19 @@
         export default  {
             services:   {
                 workspace:  {
-                    endpoint: "http://localhost:8289/service/workspace"
+                    endpoint: 'http://localhost:8289/service/workspace'
                 },
                 packages:  {
-                    endpoint: "http://localhost:8289/ballerina/editor/packages"
+                    endpoint: 'http://localhost:8289/ballerina/editor/packages'
                 },
                 swagger:  {
-                    endpoint: "http://localhost:8289/service/swagger/"
+                    endpoint: 'http://localhost:8289/service/swagger/'
                 },
                 parser:  {
-                    endpoint: "http://localhost:8289/ballerina/model/content"
+                    endpoint: 'http://localhost:8289/ballerina/model/content'
                 },
                 validator:  {
-                    endpoint: "http://localhost:8289/ballerina/validate"
+                    endpoint: 'http://localhost:8289/ballerina/validate'
                 }
             }
         };

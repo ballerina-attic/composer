@@ -40,27 +40,27 @@ class DeleteItemDialog extends ModalDialog {
             if(_.isFunction(successCallBack)){
                 successCallBack.call();
             }
-            log.debug(data.path + " deleted successfully");
+            log.debug(data.path + ' deleted successfully');
         }
     }
 
     displayWizard(data) {
-        this.setTitle("delete "+ data.type);
-        this.setSubmitBtnText("delete");
+        this.setTitle('delete '+ data.type);
+        this.setSubmitBtnText('delete');
         var body = this.getBody();
         body.empty();
         this.getSubmitBtn().unbind('click');
         this.clearError();
         var modalBody =
-            $("<div class='delete-item-dialog'>" +
-                   "<div class='icon'>" +
-                        "<i class='fw fw-warning fw-5x'></i>" +
-                   "</div>" +
-                   "<div class='text'>" +
-                            "<h3> Are you sure you want to delete the selected item?</h3>" +
-                            "<p>You are deleting:</br>" +  data.path + "</p>" +
-                   "</div>" +
-            "</div>");
+            $('<div class=\'delete-item-dialog\'>' +
+                   '<div class=\'icon\'>' +
+                        '<i class=\'fw fw-warning fw-5x\'></i>' +
+                   '</div>' +
+                   '<div class=\'text\'>' +
+                            '<h3> Are you sure you want to delete the selected item?</h3>' +
+                            '<p>You are deleting:</br>' +  data.path + '</p>' +
+                   '</div>' +
+            '</div>');
         body.append(modalBody);
 
         this.show();

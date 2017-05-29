@@ -25,7 +25,7 @@ class ModalDialog extends EventChannel {
     constructor(options) {
         super();
         this._options = options;
-        this._application = _.get(options, "application");
+        this._application = _.get(options, 'application');
         this._$container = $(_.get(options, 'container', 'body'));
     }
 
@@ -74,13 +74,13 @@ class ModalDialog extends EventChannel {
     }
 
     showError(error) {
-       this.getErrorContainer().text(error);
-       this.getErrorContainer().show();
+        this.getErrorContainer().text(error);
+        this.getErrorContainer().show();
     }
 
     clearError() {
-       this.getErrorContainer().text("");
-       this.getErrorContainer().hide();
+        this.getErrorContainer().text('');
+        this.getErrorContainer().hide();
     }
 
     hide() {
@@ -94,20 +94,20 @@ class ModalDialog extends EventChannel {
         if(!_.isNil(this._$modalContainer)){
             this._$modalContainer.remove();
         }
-        var modalContainer = $("<div class='modal fade " + _.get(this._options, 'class') +
-            "' tabindex='-1' role='dialog' aria-hidden='true'></div>");
-        var modalDialog = $("<div class='modal-dialog file-dialog' role='document'></div>");
-        var modalContent = $("<div class='modal-content'></div>");
-        var modalHeader = $("<div class='modal-header'></div>");
-        var modalCloseBtnTop = $("<button type='button' class='close' data-dismiss='modal' aria-label='Close'>" +
-            "<span aria-hidden='true'>&times;</span></button>");
-        var modalTitle = $("<h4 class='modal-title '></h4>");
-        var modalBody = $("<div class='modal-body'></div>");
-        var modalFooter = $("<div class='modal-footer'></div>");
-        var modalCloseBtnBottom = $("<button type='button' class='btn btn-default btn-file-dialog'" +
-            " data-dismiss='modal'>Close</button>");
-        var modalSubmitBtn = $("<button type='button' class='btn btn-primary btn-file-dialog'>Submit</button>");
-        var errorContainer = $("<div class='alert alert-danger errors-container'></div>");
+        var modalContainer = $('<div class=\'modal fade ' + _.get(this._options, 'class') +
+            '\' tabindex=\'-1\' role=\'dialog\' aria-hidden=\'true\'></div>');
+        var modalDialog = $('<div class=\'modal-dialog file-dialog\' role=\'document\'></div>');
+        var modalContent = $('<div class=\'modal-content\'></div>');
+        var modalHeader = $('<div class=\'modal-header\'></div>');
+        var modalCloseBtnTop = $('<button type=\'button\' class=\'close\' data-dismiss=\'modal\' aria-label=\'Close\'>' +
+            '<span aria-hidden=\'true\'>&times;</span></button>');
+        var modalTitle = $('<h4 class=\'modal-title \'></h4>');
+        var modalBody = $('<div class=\'modal-body\'></div>');
+        var modalFooter = $('<div class=\'modal-footer\'></div>');
+        var modalCloseBtnBottom = $('<button type=\'button\' class=\'btn btn-default btn-file-dialog\'' +
+            ' data-dismiss=\'modal\'>Close</button>');
+        var modalSubmitBtn = $('<button type=\'button\' class=\'btn btn-primary btn-file-dialog\'>Submit</button>');
+        var errorContainer = $('<div class=\'alert alert-danger errors-container\'></div>');
 
         this._$title = modalTitle;
         this._$body = modalBody;

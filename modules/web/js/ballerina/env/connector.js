@@ -40,7 +40,7 @@ class Connector extends EventChannel {
     setName(name) {
         var oldName = this._name;
         this._name = name;
-        this.trigger("name-modified", name, oldName);
+        this.trigger('name-modified', name, oldName);
     }
 
     getName() {
@@ -65,7 +65,7 @@ class Connector extends EventChannel {
 
     addAction(action) {
         this._actions.push(action);
-        this.trigger("connector-action-added", action);
+        this.trigger('connector-action-added', action);
     }
 
     /**
@@ -76,7 +76,7 @@ class Connector extends EventChannel {
         _.remove(this._actions, function (action) {
             return _.isEqual(action.getName(), actionDef.getActionName());
         });
-        this.trigger("connector-action-removed", actionDef);
+        this.trigger('connector-action-removed', actionDef);
     }
 
     /**
@@ -108,7 +108,7 @@ class Connector extends EventChannel {
 
     addParam(param) {
         this._params.push(param);
-        this.trigger("param-added", param);
+        this.trigger('param-added', param);
     }
 
     getParams(param) {

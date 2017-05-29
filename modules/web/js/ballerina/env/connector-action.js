@@ -38,7 +38,7 @@ class ConnectorAction extends EventChannel {
     setName(name) {
         var oldName = this._name;
         this._name = name;
-        this.trigger("name-modified", name, oldName);
+        this.trigger('name-modified', name, oldName);
     }
 
     getName() {

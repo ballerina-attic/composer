@@ -22,9 +22,9 @@ import Argument from './argument';
 class ReturnType extends Argument {
     constructor(args) {
         super(args);
-        this.annotationType = _.get(args, "annotationType");
-        this.annotationText = _.get(args, "annotationText");
-        this.type = "ReturnType";
+        this.annotationType = _.get(args, 'annotationType');
+        this.annotationText = _.get(args, 'annotationText');
+        this.type = 'ReturnType';
     }
 
     /**

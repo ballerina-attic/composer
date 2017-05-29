@@ -26,7 +26,7 @@ class AnnotationContainer {
 
     getID(){
         keyIndex = keyIndex + 1;
-        return "annotation-container-" + keyIndex ;
+        return 'annotation-container-' + keyIndex ;
     }
 
 }

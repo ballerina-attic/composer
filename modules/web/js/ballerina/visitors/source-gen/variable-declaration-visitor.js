@@ -28,7 +28,7 @@ class VariableDeclarationVisitor extends AbstractSourceGenVisitor {
     }
 
     beginVisitVariableDeclaration(variableDeclaration) {
-        this.appendSource(variableDeclaration.getType() + " " +variableDeclaration.getIdentifier());
+        this.appendSource(variableDeclaration.getType() + ' ' +variableDeclaration.getIdentifier());
         log.debug('Begin Visit Variable Declaration');
     }
 
@@ -37,7 +37,7 @@ class VariableDeclarationVisitor extends AbstractSourceGenVisitor {
     }
 
     endVisitVariableDeclaration(variableDeclaration) {
-        this.appendSource(";\n");
+        this.appendSource(';\n');
         this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit Variable Declaration');
     }

@@ -42,8 +42,8 @@ class ASTNode extends EventChannel {
             if (!_.isNil(this.parent)) {
                 this.parent.trigger('tree-modified', event);
             } else {
-                log.debug("Cannot find the parent node to propagate tree modified event up. Node: " + this.getType() +
-                    ", EventType: " + event.type + ", EventTitle: " + event.title);
+                log.debug('Cannot find the parent node to propagate tree modified event up. Node: ' + this.getType() +
+                    ', EventType: ' + event.type + ', EventTitle: ' + event.title);
             }
         });
 
@@ -59,7 +59,7 @@ class ASTNode extends EventChannel {
             bBox: new SimpleBBox(),
             components: {},
             dimensionsSynced: false
-        }
+        };
     }
 
     /**
@@ -158,7 +158,7 @@ class ASTNode extends EventChannel {
                 /**
                  * @event ASTNode#child-removed
                  */
-                this.trigger("child-removed", child);
+                this.trigger('child-removed', child);
 
                 if (!ignoreTreeModifiedEvent) {
                     /**
@@ -293,7 +293,7 @@ class ASTNode extends EventChannel {
     }
 
     initFromJson(jsonNode) {
-        throw "InitFromJson not implemented";
+        throw 'InitFromJson not implemented';
     }
 
     /**

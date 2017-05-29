@@ -46,7 +46,7 @@ class BreakStatementVisitor extends AbstractStatementSourceGenVisitor {
     }
 
     endVisitBreakStatement(breakStatement) {
-        this.appendSource(";\n");
+        this.appendSource(';\n');
         this.getParent().appendSource('\n' + this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit Break Statement Definition');
     }

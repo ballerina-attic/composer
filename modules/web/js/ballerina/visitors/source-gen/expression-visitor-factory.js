@@ -25,17 +25,17 @@ import TypeCastExpressionVisitor from './type-cast-expression-visitor';
 
 class ExpressionViewFactory {
     getExpressionView(args) {
-        var expression  = _.get(args, "model");
+        var expression  = _.get(args, 'model');
         if (ASTFactory.isFunctionInvocation(expression)) {
-            return new FunctionInvocationVisitor(_.get(args, "parent"));
+            return new FunctionInvocationVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isStructFieldAccessExpression(expression)) {
-            return new StructFieldAccessExpressionVisitor(_.get(args, "parent"));
+            return new StructFieldAccessExpressionVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isVariableReferenceExpression(expression)) {
-            return new VariableReferenceExpressionVisitor(_.get(args, "parent"));
+            return new VariableReferenceExpressionVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isReferenceTypeInitExpression(expression)) {
-            return new ReferenceTypeInitExpressionVisitor(_.get(args, "parent"));
+            return new ReferenceTypeInitExpressionVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isTypeCastExpression(expression)) {
-            return new TypeCastExpressionVisitor(_.get(args, "parent"));
+            return new TypeCastExpressionVisitor(_.get(args, 'parent'));
         }
     }
 }

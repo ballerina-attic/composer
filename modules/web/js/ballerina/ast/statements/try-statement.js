@@ -26,7 +26,7 @@ import Statement from './statement';
 class TryStatement extends Statement {
     constructor() {
         super();
-        this.type = "TryStatement";
+        this.type = 'TryStatement';
     }
 
     initFromJson(jsonNode) {

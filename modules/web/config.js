@@ -1,25 +1,25 @@
 let config = {
-    container: "#page-content",
+    container: '#page-content',
     welcome:{
-        container:"#welcome-container",
+        container:'#welcome-container',
         cssClass :{
-            parent: "initial-background-container",
-            outer: "initial-welcome-container",
-            heading: "heading-welcome-container",
-            headingTitle: "welcome-title",
-            body: "body-welcome-container",
-            bodyTitle: "welcome-body-title",
-            headingIcon: "welcome-icon",
-            buttonNew: " btn btn-block new-welcome-button",
-            buttonOpen: " btn btn-block open-welcome-button",
-            samples: "welcome-samples",
-            headingTop: "top-heading",
-            btnWrap1: "btn-wrap"
+            parent: 'initial-background-container',
+            outer: 'initial-welcome-container',
+            heading: 'heading-welcome-container',
+            headingTitle: 'welcome-title',
+            body: 'body-welcome-container',
+            bodyTitle: 'welcome-body-title',
+            headingIcon: 'welcome-icon',
+            buttonNew: ' btn btn-block new-welcome-button',
+            buttonOpen: ' btn btn-block open-welcome-button',
+            samples: 'welcome-samples',
+            headingTop: 'top-heading',
+            btnWrap1: 'btn-wrap'
         },
-        samples: ["resources/samples/echoService.bal", "resources/samples/helloWorld.bal",
-            "resources/samples/passthroughService.bal", "resources/samples/routingServices.bal",
-            "resources/samples/ATMLocatorService.bal", "resources/samples/ecommerceService.bal",
-            "resources/samples/contentBasedRoutingService.bal", "resources/samples/SimpleWorker.bal"]
+        samples: ['resources/samples/echoService.bal', 'resources/samples/helloWorld.bal',
+            'resources/samples/passthroughService.bal', 'resources/samples/routingServices.bal',
+            'resources/samples/ATMLocatorService.bal', 'resources/samples/ecommerceService.bal',
+            'resources/samples/contentBasedRoutingService.bal', 'resources/samples/SimpleWorker.bal']
     },
     // you can overide service urls by uncommenting the following.
     // if the following are not set they will be taken automatically from the composer file server.
@@ -44,50 +44,50 @@ let config = {
         }
     },*/
     alerts: {
-        container: "#alerts-container",
+        container: '#alerts-container',
         cssClass: {
         }
     },
     tool_bar: {
-        container: ""
+        container: ''
     },
     menu_bar: {
-        container: "#menu-bar-container",
+        container: '#menu-bar-container',
         menu_group: {
             menu_item: {
                 cssClass: {
-                    label: "menu-label pull-left",
-                    shortcut: "shortcut-label pull-right",
-                    active: "menu-item-enabled",
-                    inactive: "menu-item-disabled"
+                    label: 'menu-label pull-left',
+                    shortcut: 'shortcut-label pull-right',
+                    active: 'menu-item-enabled',
+                    inactive: 'menu-item-disabled'
                 }
             },
             cssClass: {
-                group: "menu-group file-menu-group",
-                menu: "dropdown-menu file-dropdown-menu",
-                toggle: "dropdown-toggle"
+                group: 'menu-group file-menu-group',
+                menu: 'dropdown-menu file-dropdown-menu',
+                toggle: 'dropdown-toggle'
             }
         },
         cssClass: {
-            menu_bar: "dropdown-menu file-dropdown-menu"
+            menu_bar: 'dropdown-menu file-dropdown-menu'
         },
         help_urls: {
-            user_guide_url: "http://ballerinalang.org/docs/user-guide/0.8/"
+            user_guide_url: 'http://ballerinalang.org/docs/user-guide/0.8/'
         }
     },
     breadcrumbs:{
-        container: "#breadcrumb-container",
+        container: '#breadcrumb-container',
         cssClass:  {
-            active: "active",
-            list: "breadcrumb pull-left",
-            item: "breadcrumb-item"
+            active: 'active',
+            list: 'breadcrumb pull-left',
+            item: 'breadcrumb-item'
         }
     },
     tab_controller: {
-        container: "#tabs-container",
+        container: '#tabs-container',
         headers:    {
             // relative selector within container for tab controller
-            container: ".tab-headers",
+            container: '.tab-headers',
             cssClass: {
                 list: 'nav nav-tabs nav-tabs-bar',
                 item: '',
@@ -96,9 +96,9 @@ let config = {
         },
         tabs: {
             // relative selector within container for tab controller
-            container: ".tab-content",
+            container: '.tab-content',
             tab: {
-                template: "#tab-template",
+                template: '#tab-template',
                 cssClass: {
                     tab: 'tab-pane',
                     tab_active: 'active',
@@ -112,7 +112,7 @@ let config = {
                         new_drop_timeout: 3000,
                         tool_palette: {
                             // relative selector within container for design view
-                            container: ".tool-palette-container",
+                            container: '.tool-palette-container',
                             search_bar: {
                                 cssClass:{
                                     search_box: 'search-bar',
@@ -192,10 +192,10 @@ let config = {
                         container: '#notification-container'
                     },
                     backend:{
-                        url:"http://localhost:8289/ballerina/model/content"
+                        url:'http://localhost:8289/ballerina/model/content'
                     },
                     dialog_boxes:{
-                        parser_error: "#parserErrorModel"
+                        parser_error: '#parserErrorModel'
                     }
                 }
             }
@@ -203,20 +203,20 @@ let config = {
 
     },
     workspace_explorer: {
-        container: ".sidebar-left",
+        container: '.sidebar-left',
         activateBtn: '.workspace-explorer-activate-btn',
         separator: '.sidebar-left-separator',
-        containerToAdjust: ".right-container",
+        containerToAdjust: '.right-container',
         command: {
-            id: "toggle-file-explorer",
+            id: 'toggle-file-explorer',
             shortcuts: {
                 mac: {
-                    key: "command+shift+e",
-                    label: "\u2318\u21E7E"
+                    key: 'command+shift+e',
+                    label: '\u2318\u21E7E'
                 },
                 other: {
-                    key: "ctrl+shift+e",
-                    label: "Ctrl+Shift+E"
+                    key: 'ctrl+shift+e',
+                    label: 'Ctrl+Shift+E'
                 }
             }
         },
@@ -234,30 +234,30 @@ let config = {
         }
     },
     notifications:{
-        container: "#notification-container"
+        container: '#notification-container'
     },
     dialog: {
         container: 'body'
     },
     about_dialog:{
-        selector: "#modalAbout"
+        selector: '#modalAbout'
     },
     settings_dialog:{
-        selector: "#modalSettings",
-        submit_button: "#saveSettingsButton"
+        selector: '#modalSettings',
+        submit_button: '#saveSettingsButton'
     },
     open_folder_dialog:{
-        modal_selector: "#open-folder-modal",
-        tree_container: ".file-tree",
-        errors_container: ".errors-container",
-        location_input: ".location-input",
-        submit_button: ".open-button"
+        modal_selector: '#open-folder-modal',
+        tree_container: '.file-tree',
+        errors_container: '.errors-container',
+        location_input: '.location-input',
+        submit_button: '.open-button'
     },
     debugger : {
-        container: ".sidebar-left",
+        container: '.sidebar-left',
         activateBtn: '.debugger-activate-btn',
         separator: '.sidebar-left-separator',
-        containerToAdjust: ".right-container",
+        containerToAdjust: '.right-container',
         leftOffset: 40,
         separatorOffset: 5,
         defaultWidth: 290,
@@ -265,96 +265,96 @@ let config = {
             minX: 200,
             maxX: 800
         },
-        containerId: "debugger",
+        containerId: 'debugger',
         cssClass: {
             container: 'debugger-container tab-pane'
         },
         command: {
-            id: "toggle-debugger",
+            id: 'toggle-debugger',
             shortcuts: {
                 mac: {
-                    key: "command+shift+d",
-                    label: "\u2318\u21E7d"
+                    key: 'command+shift+d',
+                    label: '\u2318\u21E7d'
                 },
                 other: {
-                    key: "ctrl+shift+d",
-                    label: "Ctrl+Shift+d"
+                    key: 'ctrl+shift+d',
+                    label: 'Ctrl+Shift+d'
                 }
             }
         },
         toolbarShortcuts: [
             {
-                id: "StepOver",
+                id: 'StepOver',
                 shortcuts: {
-                   mac: {
-                       key: "alt+o",
-                       label: "alt+o"
-                   },
-                   other: {
-                       key: "alt+o",
-                       label: "alt+o"
-                   }
+                    mac: {
+                        key: 'alt+o',
+                        label: 'alt+o'
+                    },
+                    other: {
+                        key: 'alt+o',
+                        label: 'alt+o'
+                    }
                 }
             },
             {
-                id: "Resume",
+                id: 'Resume',
                 shortcuts: {
-                   mac: {
-                       key: "alt+r",
-                       label: "alt+r"
-                   },
-                   other: {
-                       key: "alt+r",
-                       label: "alt+r"
-                   }
+                    mac: {
+                        key: 'alt+r',
+                        label: 'alt+r'
+                    },
+                    other: {
+                        key: 'alt+r',
+                        label: 'alt+r'
+                    }
                 }
             },
             {
-                id: "StepIn",
+                id: 'StepIn',
                 shortcuts: {
-                   mac: {
-                       key: "alt+i",
-                       label: "alt+i"
-                   },
-                   other: {
-                       key: "alt+i",
-                       label: "alt+i"
-                   }
+                    mac: {
+                        key: 'alt+i',
+                        label: 'alt+i'
+                    },
+                    other: {
+                        key: 'alt+i',
+                        label: 'alt+i'
+                    }
                 }
             },
             {
-                id: "StepOut",
+                id: 'StepOut',
                 shortcuts: {
-                   mac: {
-                       key: "alt+u",
-                       label: "alt+u"
-                   },
-                   other: {
-                       key: "alt+u",
-                       label: "alt+u"
-                   }
+                    mac: {
+                        key: 'alt+u',
+                        label: 'alt+u'
+                    },
+                    other: {
+                        key: 'alt+u',
+                        label: 'alt+u'
+                    }
                 }
             },
             {
-                id: "Stop",
+                id: 'Stop',
                 shortcuts: {
-                   mac: {
-                       key: "alt+p",
-                       label: "alt+p"
-                   },
-                   other: {
-                       key: "alt+p",
-                       label: "alt+p"
-                   }
+                    mac: {
+                        key: 'alt+p',
+                        label: 'alt+p'
+                    },
+                    other: {
+                        key: 'alt+p',
+                        label: 'alt+p'
+                    }
                 }
             }
         ]
     },
     launcher : {
-        container: ".sidebar-left",
+        container: '.sidebar-left',
         activateBtn: '.launcher-activate-btn',
         separator: '.sidebar-left-separator',
-        containerToAdjust: ".right-container",
+        containerToAdjust: '.right-container',
         leftOffset: 40,
         separatorOffset: 5,
         defaultWidth: 290,
@@ -362,20 +362,20 @@ let config = {
             minX: 200,
             maxX: 800
         },
-        containerId: "launcher",
+        containerId: 'launcher',
         cssClass: {
             container: 'launcher-container tab-pane'
         },
         command: {
-            id: "toggle-launcher",
+            id: 'toggle-launcher',
             shortcuts: {
                 mac: {
-                    key: "command+shift+r",
-                    label: "\u2318\u21E7r"
+                    key: 'command+shift+r',
+                    label: '\u2318\u21E7r'
                 },
                 other: {
-                    key: "ctrl+shift+r",
-                    label: "Ctrl+Shift+r"
+                    key: 'ctrl+shift+r',
+                    label: 'Ctrl+Shift+r'
                 }
             }
         }
@@ -385,18 +385,18 @@ let config = {
 
 // PRODUCTION is a global variable set by webpack DefinePlugin
 // it will be set to "true" in the production build.
-let configUrl = "";
+let configUrl = '';
 if(PRODUCTION != undefined && PRODUCTION){    
-    configUrl = "/config";
+    configUrl = '/config';
 }else{
     //following is to support development mode where we will have static config for services.
-    configUrl = "http://localhost:9091/config"
+    configUrl = 'http://localhost:9091/config';
 }
 
 // lets overide configs sent from the server
 $.ajax({
     url: configUrl ,
-    dataType: "json",
+    dataType: 'json',
     success: (data) => {
         config = _.merge(data, config);
     },

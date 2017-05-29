@@ -27,12 +27,12 @@ import path from 'path';
 
 var testFileList = require('../../resources/BalList.json');
 
-var getModelBackend = "http://localhost:8289/ballerina/model/content";
-var getFileContentBackend = "http://localhost:8289/service/workspace";
+var getModelBackend = 'http://localhost:8289/ballerina/model/content';
+var getFileContentBackend = 'http://localhost:8289/service/workspace';
 
 //Ballerina AST Deserializer
 function ballerinaASTDeserializer(fileContent){
-    var backend = new Ballerina.views.Backend({"url" : getModelBackend})
+    var backend = new Ballerina.views.Backend({'url' : getModelBackend});
     var response = backend.parse(fileContent);
     var ASTModel = Ballerina.ast.BallerinaASTDeserializer.getASTModel(response);
     var sourceGenVisitor = new Ballerina.visitors.SourceGen.BallerinaASTRootVisitor();
@@ -43,26 +43,26 @@ function ballerinaASTDeserializer(fileContent){
 
 function readFile(filePath, callback){
     var workspaceServiceURL = getFileContentBackend;
-    var saveServiceURL = workspaceServiceURL + "/read";
+    var saveServiceURL = workspaceServiceURL + '/read';
 
     return fs.readFileSync(filePath, 'utf8');
 }
 
 var sourceList = testFileList.sources.source;
 
-describe("Ballerina Tests", function() {
+describe('Ballerina Tests', function() {
     sourceList.forEach(function(testFile) {
 
         // TODO: following path resolution only works if tests are run from the root directory of the project
         // To avoid that we need to use __dirname or __filename
         // but mocha-webpack does not seem to provide correct values for them. So using path.resolve for now.
-        var sourceFile = path.resolve('js/tests/resources/' + testFile)
+        var sourceFile = path.resolve('js/tests/resources/' + testFile);
 
-        it(sourceFile.replace(/^.*[\\\/]/, '') + " Service Test", function() {
+        it(sourceFile.replace(/^.*[\\\/]/, '') + ' Service Test', function() {
             var expectedSource = readFile(sourceFile);
-            var generatedSource = ballerinaASTDeserializer(expectedSource)
+            var generatedSource = ballerinaASTDeserializer(expectedSource);
             expectedSource = expectedSource.replace(/\s/g, '');
-            generatedSource = generatedSource.replace(/(\r\n|\n|\r)/gm,"");
+            generatedSource = generatedSource.replace(/(\r\n|\n|\r)/gm,'');
             generatedSource = generatedSource.replace(/\s/g, '');
             if(generatedSource!=expectedSource){
                 log.error('error');

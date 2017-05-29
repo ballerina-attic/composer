@@ -22,7 +22,7 @@ class Expression extends ASTNode {
     constructor(args) {
         super('Expression');
         this._expression = _.get(args, 'expression');
-        this.type = "Expression";
+        this.type = 'Expression';
     }
 
     setExpression(expression, options) {

@@ -39,9 +39,9 @@ class ArrayInitExpression extends Expression {
             var child = self.getFactory().createFromJson(childNode);
             self.addChild(child);
             child.initFromJson(childNode);
-            generatedExpression += child.getExpression() + ",";
+            generatedExpression += child.getExpression() + ',';
         });
-        this.setExpression(generatedExpression.replace(/,\s*$/, "") + ']', {doSilently: true});
+        this.setExpression(generatedExpression.replace(/,\s*$/, '') + ']', {doSilently: true});
     }
 
     generateExpression() {

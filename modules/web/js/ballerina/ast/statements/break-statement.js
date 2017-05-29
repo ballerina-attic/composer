@@ -27,7 +27,7 @@ import Statement from './statement';
 class BreakStatement extends Statement {
     constructor() {
         super();
-        this.type = "BreakStatement";
+        this.type = 'BreakStatement';
     }
 
     canBeAChildOf(node) {
@@ -43,7 +43,7 @@ class BreakStatement extends Statement {
     }
 
     getStatement() {
-        return "break";
+        return 'break';
     }
 }
 

@@ -34,7 +34,7 @@ class NewItemDialog extends ModalDialog {
             path = data.path + app.getPathSeperator() + itemName,
             existsResponse = this._serviceClient.exists(path);
         if (existsResponse.exists) {
-            this.showError(itemName + " already exists at " + data.path);
+            this.showError(itemName + ' already exists at ' + data.path);
         } else {
             this.clearError();
             var response = this._serviceClient.create(path, data.type);
@@ -46,33 +46,33 @@ class NewItemDialog extends ModalDialog {
                 if(_.isFunction(successCallBack)){
                     successCallBack.call();
                 }
-                log.debug('file' + path + " created successfully");
+                log.debug('file' + path + ' created successfully');
                 if(!_.isEqual('folder', data.type)){
                     var file = this._serviceClient.readFile(path);
-                    app.commandManager.dispatch("create-new-tab", {tabOptions: {file: file}});
+                    app.commandManager.dispatch('create-new-tab', {tabOptions: {file: file}});
                 }
             }
         }
     }
 
     displayWizard(data) {
-        this.setTitle("new "+ data.type);
-        this.setSubmitBtnText("create");
+        this.setTitle('new '+ data.type);
+        this.setSubmitBtnText('create');
         var body = this.getBody();
         body.empty();
         this.getSubmitBtn().unbind('click');
         this.clearError();
-        var modalBody = $("<hr class='file-dialog-hr'>"+
-                            "<div class='container-fluid'>" +
-                            "<form class='form-horizontal' onsubmit='return false'>" +
-                                "<div class='form-group'>" +
-                                    "<label for='item-name' class='col-sm-2 file-dialog-form-label'>Enter Name</label>" +
-                                    "<div class='file-dialog-input-field'>" +
-                                          "<input type='text' id='item-name' class='file-dialog-form-control item-name' placeholder='name'>" +
-                                    "</div>" +
-                                "</div>"+
-                            "</form>"+
-                           "</div>" );
+        var modalBody = $('<hr class=\'file-dialog-hr\'>'+
+                            '<div class=\'container-fluid\'>' +
+                            '<form class=\'form-horizontal\' onsubmit=\'return false\'>' +
+                                '<div class=\'form-group\'>' +
+                                    '<label for=\'item-name\' class=\'col-sm-2 file-dialog-form-label\'>Enter Name</label>' +
+                                    '<div class=\'file-dialog-input-field\'>' +
+                                          '<input type=\'text\' id=\'item-name\' class=\'file-dialog-form-control item-name\' placeholder=\'name\'>' +
+                                    '</div>' +
+                                '</div>'+
+                            '</form>'+
+                           '</div>' );
         body.append(modalBody);
         this.show();
         var self = this,
@@ -87,7 +87,7 @@ class NewItemDialog extends ModalDialog {
         });
         input.keyup(function(e){
             if(e.keyCode == 13) {
-               self.onSubmit(data, input.val());
+                self.onSubmit(data, input.val());
             } else {
                 self.clearError();
             }

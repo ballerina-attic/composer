@@ -38,26 +38,26 @@ import $ from 'jquery';
 class Dropdown {
     constructor(args) {
         this.args = args;
-        this.onSelectCallBackFunction = _.get(args, "onSelectCallBackFunction");
-        this.onDropdownOpen = _.get(args, "onDropdownOpen");
-        this.onDropdownClosed = _.get(args, "onDropdownClosed");
-        this.dropdownMainWrapper = $("<div/>").addClass("input-group-btn").addClass(_.get(args, "class.mainWrapper", ""));
-        this.dropdownButton = $("<button/>").addClass("btn").addClass("btn-default")
-            .addClass(_.get(args, "class.button", "")).appendTo(this.dropdownMainWrapper);
-        this.dropdownButtonText = $("<span/>").appendTo(this.dropdownButton);
+        this.onSelectCallBackFunction = _.get(args, 'onSelectCallBackFunction');
+        this.onDropdownOpen = _.get(args, 'onDropdownOpen');
+        this.onDropdownClosed = _.get(args, 'onDropdownClosed');
+        this.dropdownMainWrapper = $('<div/>').addClass('input-group-btn').addClass(_.get(args, 'class.mainWrapper', ''));
+        this.dropdownButton = $('<button/>').addClass('btn').addClass('btn-default')
+            .addClass(_.get(args, 'class.button', '')).appendTo(this.dropdownMainWrapper);
+        this.dropdownButtonText = $('<span/>').appendTo(this.dropdownButton);
 
-        $("<i/>").addClass("icon-caret").addClass("fw").addClass("fw-down").addClass("icon-caret")
-            .addClass("pull-right").appendTo(this.dropdownButton);
-        this.dropdownItemWrapper = $("<ul class='dropdown-menu' role='menu'/>").appendTo(this.dropdownMainWrapper);
+        $('<i/>').addClass('icon-caret').addClass('fw').addClass('fw-down').addClass('icon-caret')
+            .addClass('pull-right').appendTo(this.dropdownButton);
+        this.dropdownItemWrapper = $('<ul class=\'dropdown-menu\' role=\'menu\'/>').appendTo(this.dropdownMainWrapper);
 
         var self = this;
 
         // Creating dropdown elements.
-        _.forEach(_.get(args, "items"), function (item) {
-            var dropdownItem = $("<li><a href='#' data-key='" + item.key + "'>" + item.value.trim() + "</a><li/>");
+        _.forEach(_.get(args, 'items'), function (item) {
+            var dropdownItem = $('<li><a href=\'#\' data-key=\'' + item.key + '\'>' + item.value.trim() + '</a><li/>');
             dropdownItem.appendTo(self.dropdownItemWrapper);
             dropdownItem.click(function () {
-                $(self.dropdownMainWrapper).removeClass("open");
+                $(self.dropdownMainWrapper).removeClass('open');
                 if (!_.isNil(self.onDropdownClosed)) {
                     self.onDropdownClosed();
                 }
@@ -70,7 +70,7 @@ class Dropdown {
             });
 
             // Custom type ahead
-            $(dropdownItem).find("a").keydown(function (e) {
+            $(dropdownItem).find('a').keydown(function (e) {
                 var enteredKey = e.which || e.charCode || e.keyCode;
                 // Disabling enter key
                 if (enteredKey == 13) {
@@ -78,7 +78,7 @@ class Dropdown {
                 }
             });
 
-            $(self.dropdownButton).removeClass("disabled");
+            $(self.dropdownButton).removeClass('disabled');
         });
 
         // Adding the "open" class to the main wrapper when the dropdown button is clicked. If its already open, then
@@ -89,12 +89,12 @@ class Dropdown {
         });
 
         // Adding onlick listener for dropdown items.
-        $(self.dropdownItemWrapper).find("a").each(function () {
+        $(self.dropdownItemWrapper).find('a').each(function () {
             $(this).click(function () {
                 // Setting the selected value.
                 self.setSelectedValue($(this).text().trim());
                 // Closing the dropdown.
-                $(self.dropdownMainWrapper).removeClass("open");
+                $(self.dropdownMainWrapper).removeClass('open');
                 if (!_.isNil(self.onDropdownClosed)) {
                     self.onDropdownClosed();
                 }
@@ -103,16 +103,16 @@ class Dropdown {
 
         if (this.getAllItems().length > 0) {
             // Setting the default selected value.
-            self.setSelectedValue(_.get(self.args, "defaultValue", ""));
+            self.setSelectedValue(_.get(self.args, 'defaultValue', ''));
         } else {
             // Setting the empty string value if no items are available in the dropdown.
-            self.setSelectedValue(_.get(self.args, "emptyValue", ""));
+            self.setSelectedValue(_.get(self.args, 'emptyValue', ''));
         }
 
         // Closing the pop-up if when clicked outside of the dropdown.
         $(window).click(function () {
-            if ($(self.dropdownMainWrapper).hasClass("open")) {
-                $(self.dropdownMainWrapper).removeClass("open");
+            if ($(self.dropdownMainWrapper).hasClass('open')) {
+                $(self.dropdownMainWrapper).removeClass('open');
                 if (!_.isNil(self.onDropdownClosed)) {
                     self.onDropdownClosed();
                 }
@@ -131,12 +131,12 @@ class Dropdown {
 
         // Custom type ahead.
         $(self.dropdownItemWrapper).keypress(function (e) {
-            if ($(self.dropdownMainWrapper).hasClass("open")) {
+            if ($(self.dropdownMainWrapper).hasClass('open')) {
                 // get the key that was pressed
                 var key = String.fromCharCode(e.which);
-                self.dropdownItemWrapper.find("li").each(function (idx, item) {
+                self.dropdownItemWrapper.find('li').each(function (idx, item) {
                     if ($(item).text().charAt(0) == key) {
-                        $(item).find("a").trigger('focus');
+                        $(item).find('a').trigger('focus');
                         return false;
                     }
                 });
@@ -158,7 +158,7 @@ class Dropdown {
      */
     getSelectedValue() {
         var selectedItem = this.dropdownButton.text();
-        if (selectedItem === _.get(this.args, "emptyValue", "")) {
+        if (selectedItem === _.get(this.args, 'emptyValue', '')) {
             return undefined;
         } else {
             return this.dropdownButton.text();
@@ -171,10 +171,10 @@ class Dropdown {
      */
     removeItem(itemName) {
         var self = this;
-        $(self.dropdownItemWrapper).find("li a:contains('" + itemName + "')").remove();
+        $(self.dropdownItemWrapper).find('li a:contains(\'' + itemName + '\')').remove();
 
-        if ($(self.dropdownItemWrapper).find("li").length == 0) {
-            self.setSelectedValue(_.get(self.args, "emptyValue", ""));
+        if ($(self.dropdownItemWrapper).find('li').length == 0) {
+            self.setSelectedValue(_.get(self.args, 'emptyValue', ''));
         }
     }
 
@@ -186,10 +186,10 @@ class Dropdown {
      */
     addItem(item) {
         var self = this;
-        var dropdownItem = $("<li><a href='#' data-key='" + item.key + "'>" + item.value.trim() + "</a></li>")
+        var dropdownItem = $('<li><a href=\'#\' data-key=\'' + item.key + '\'>' + item.value.trim() + '</a></li>')
             .appendTo(self.dropdownItemWrapper);
         dropdownItem.click(function () {
-            $(self.dropdownMainWrapper).removeClass("open");
+            $(self.dropdownMainWrapper).removeClass('open');
             if (!_.isNil(self.onDropdownClosed)) {
                 self.onDropdownClosed();
             }
@@ -200,7 +200,7 @@ class Dropdown {
 
             self.setSelectedValue(item.value.trim());
 
-            $(this.dropdownButton).removeClass("disabled");
+            $(this.dropdownButton).removeClass('disabled');
         });
     }
 
@@ -213,10 +213,10 @@ class Dropdown {
     addItems(items) {
         var self = this;
         _.forEach(items, function (item) {
-            var dropdownItem = $("<li><a href='#' data-key='" + item.key + "'>" + item.value.trim() + "</a></li>")
+            var dropdownItem = $('<li><a href=\'#\' data-key=\'' + item.key + '\'>' + item.value.trim() + '</a></li>')
                 .appendTo(self.dropdownItemWrapper);
             dropdownItem.click(function () {
-                $(self.dropdownMainWrapper).removeClass("open");
+                $(self.dropdownMainWrapper).removeClass('open');
                 if (!_.isNil(self.onDropdownClosed)) {
                     self.onDropdownClosed();
                 }
@@ -227,7 +227,7 @@ class Dropdown {
 
                 self.setSelectedValue(item.value.trim());
 
-                $(this.dropdownButton).removeClass("disabled");
+                $(this.dropdownButton).removeClass('disabled');
             });
         });
     }
@@ -239,8 +239,8 @@ class Dropdown {
     getAllItems() {
         var self = this;
         var items = [];
-        $(self.dropdownItemWrapper).find("li a").each(function () {
-            items.push({key: $(this).data("key"), value: $(this).text()});
+        $(self.dropdownItemWrapper).find('li a').each(function () {
+            items.push({key: $(this).data('key'), value: $(this).text()});
         });
 
         return items;
@@ -251,10 +251,10 @@ class Dropdown {
      */
     removeAllItems() {
         var self = this;
-        $(self.dropdownItemWrapper).find("li").remove();
-        self.setSelectedValue(_.get(self.args, "emptyValue", ""));
+        $(self.dropdownItemWrapper).find('li').remove();
+        self.setSelectedValue(_.get(self.args, 'emptyValue', ''));
 
-        $(this.dropdownButton).addClass("disabled");
+        $(this.dropdownButton).addClass('disabled');
     }
 
     /**
@@ -271,16 +271,16 @@ class Dropdown {
      */
     focusOnItem(itemName) {
         // Removing selected items.
-        this.dropdownItemWrapper.find("li").removeClass("active");
+        this.dropdownItemWrapper.find('li').removeClass('active');
 
         // Setting selected item.
         if (_.isUndefined(itemName)) {
-            this.dropdownItemWrapper.find("li:eq(1) a").trigger('focus');
+            this.dropdownItemWrapper.find('li:eq(1) a').trigger('focus');
         } else {
-            this.dropdownItemWrapper.find("li").each(function () {
+            this.dropdownItemWrapper.find('li').each(function () {
                 if (_.isEqual($(this).text(), itemName)) {
-                    $(this).addClass("active");
-                    $(this).find("a").trigger('focus');
+                    $(this).addClass('active');
+                    $(this).find('a').trigger('focus');
                 }
             });
         }
@@ -291,8 +291,8 @@ class Dropdown {
      */
     openDropdown() {
         var self = this;
-        if ($(self.dropdownMainWrapper).hasClass("open")) {
-            $(self.dropdownMainWrapper).removeClass("open");
+        if ($(self.dropdownMainWrapper).hasClass('open')) {
+            $(self.dropdownMainWrapper).removeClass('open');
             if (!_.isNil(self.onDropdownClosed)) {
                 self.onDropdownClosed();
             }
@@ -301,9 +301,9 @@ class Dropdown {
             if (!_.isNil(self.onDropdownOpen)) {
                 self.onDropdownOpen();
             }
-            if ($(self.dropdownMainWrapper).find("li").length != 0) {
-                $(self.dropdownButton).removeClass("disabled");
-                $(self.dropdownMainWrapper).addClass("open");
+            if ($(self.dropdownMainWrapper).find('li').length != 0) {
+                $(self.dropdownButton).removeClass('disabled');
+                $(self.dropdownMainWrapper).addClass('open');
                 self.setSelectedValue(selectVal);
                 self.focusOnItem(selectVal);
             }

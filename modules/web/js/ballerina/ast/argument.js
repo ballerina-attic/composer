@@ -73,8 +73,8 @@ class Argument extends ASTNode {
 
     // TODO: This function is to temporary fix the issue of function drag and drop until the model refactor
     getParameterAsString() {
-        var paramAsString = "";
-        paramAsString += "" + this.getBType() + " ";
+        var paramAsString = '';
+        paramAsString += '' + this.getBType() + ' ';
         paramAsString += this.getIdentifier();
 
         return paramAsString.trim();

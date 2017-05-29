@@ -66,7 +66,7 @@ class VariableReferenceExpression extends Expression {
         var varDef = this.findChild(this.getFactory().isVariableDefinition);
         if (!_.isNil(varDef)) {
             return (!_.isNil(varDef.getPkgPath()) ?
-                varDef.getPkgPath() + ":" : "") + varDef.getTypeName() + " " + varDef.getName();
+                varDef.getPkgPath() + ':' : '') + varDef.getTypeName() + ' ' + varDef.getName();
         } else {
             return this.getVariableName();
         }

@@ -25,17 +25,17 @@ import ASTFactory from './../../ast/ballerina-ast-factory';
 
 class TypeMapperExpressionFactory {
     getExpressionVisitor(args) {
-        var expression  = _.get(args, "model");
+        var expression  = _.get(args, 'model');
         if (ASTFactory.isFunctionInvocation(expression)) {
-            return new TypeMapperFunctionInvocationVisitor(_.get(args, "parent"));
+            return new TypeMapperFunctionInvocationVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isStructFieldAccessExpression(expression)) {
-            return new TypeMapperStructFieldAccessExpressionVisitor(_.get(args, "parent"));
+            return new TypeMapperStructFieldAccessExpressionVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isVariableReferenceExpression(expression)) {
-            return new TypeMapperVariableReferenceExpressionVisitor(_.get(args, "parent"));
+            return new TypeMapperVariableReferenceExpressionVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isReferenceTypeInitExpression(expression)) {
-            return new TypeMapperReferenceTypeInitExpressionVisitor(_.get(args, "parent"));
+            return new TypeMapperReferenceTypeInitExpressionVisitor(_.get(args, 'parent'));
         } else if (ASTFactory.isTypeCastExpression(expression)) {
-            return new TypeMapperTypeCastExpressionVisitor(_.get(args, "parent"));
+            return new TypeMapperTypeCastExpressionVisitor(_.get(args, 'parent'));
         }
     }
 }

@@ -45,7 +45,7 @@ class ElseIfStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     endVisitElseIfStatement(elseIfStatement) {
         this.outdent();
-        this.appendSource("}");
+        this.appendSource('}');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Else If Statement Definition');
     }

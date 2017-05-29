@@ -22,7 +22,7 @@ class TypeName extends ASTNode {
     constructor(type) {
         super();
         this.typename = type;
-        this.type = "TypeName";
+        this.type = 'TypeName';
     }
 
     setTypeName(typename, options) {

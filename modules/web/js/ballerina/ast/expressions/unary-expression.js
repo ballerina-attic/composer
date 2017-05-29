@@ -44,7 +44,7 @@ class UnaryExpression extends Expression {
      * */
     generateExpressionString(jsonNode) {
         var self = this;
-        var expString = "";
+        var expString = '';
         expString += this.getOperator();
         for (var itr = 0; itr < jsonNode.children.length; itr++) {
             var childJsonNode = jsonNode.children[itr];

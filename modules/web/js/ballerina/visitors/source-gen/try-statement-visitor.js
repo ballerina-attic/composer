@@ -52,7 +52,7 @@ class TryStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     endVisitTryStatement(tryStatement) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}");
+        this.appendSource(this.getIndentation() + '}');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Try Statement');
     }

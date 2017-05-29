@@ -43,7 +43,7 @@ class CommonUtils {
                 var existingIdentifiers = [];
 
                 _.forEach(attribute.parents, function (parent) {
-                    log.debug("Children: " + parent.getChildrenFunc.call(parent.node));
+                    log.debug('Children: ' + parent.getChildrenFunc.call(parent.node));
                     // Get the children of the parent.
                     _.forEach(parent.getChildrenFunc.call(parent.node), function (child) {
                         // Skipping the current node.
@@ -54,7 +54,7 @@ class CommonUtils {
                     });
                 });
 
-                log.debug("Existing identifiers: " + existingIdentifiers);
+                log.debug('Existing identifiers: ' + existingIdentifiers);
 
                 // Generating the ID.
                 var counter = 1;
@@ -73,7 +73,7 @@ class CommonUtils {
                     attribute.setter.call(genArgs.node, currentAttributeValue + counter, opts);
                 }
             }
-        })
+        });
     }
 }
 

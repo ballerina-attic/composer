@@ -29,7 +29,7 @@ class ElseIfStatement extends ConditionalStatement {
         if(!_.isNil(condition)){
             this._condition = condition;
         }
-        this.type = "ElseIfStatement";
+        this.type = 'ElseIfStatement';
     }
 
     setCondition(condition, options) {

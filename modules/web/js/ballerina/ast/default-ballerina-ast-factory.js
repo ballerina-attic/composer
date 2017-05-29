@@ -182,7 +182,7 @@ DefaultBallerinaASTFactory.createTryCatchStatement = function (args) {
  */
 DefaultBallerinaASTFactory.createThrowStatement = function (args) {
     var throwStatement = BallerinaASTFactory.createThrowStatement(args);
-    throwStatement.addChild(BallerinaASTFactory.createVariableReferenceExpression({variableName: "e"}));
+    throwStatement.addChild(BallerinaASTFactory.createVariableReferenceExpression({variableName: 'e'}));
     return throwStatement;
 };
 

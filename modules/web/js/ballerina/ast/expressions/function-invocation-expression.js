@@ -70,33 +70,33 @@ class FunctionInvocationExpression extends Expression {
             params = this._params.split(',');
             return params;
         }
-        else params = "";
+        else params = '';
         return params;
     }
 
     setFunctionalExpression(expression, options) {
-        if(!_.isNil(expression) && expression !== "") {
-            var splittedText = expression.split("(",1)[0].split(":", 2);
+        if(!_.isNil(expression) && expression !== '') {
+            var splittedText = expression.split('(',1)[0].split(':', 2);
 
             if(splittedText.length == 2){
                 this.setPackageName(splittedText[0], options);
                 this.setFunctionName(splittedText[1]);
             }else{
-                this.setPackageName("", options);
+                this.setPackageName('', options);
                 this.setFunctionName(splittedText[0]);
             }
 
             var params = expression.slice(((expression.indexOf(this._functionName) + 1)
-            + this._functionName.split("(", 1)[0].length), (expression.length - 1));
+            + this._functionName.split('(', 1)[0].length), (expression.length - 1));
 
             this.setParams(params, options);
         }
     }
 
     getFunctionalExpression() {
-        var text = "";
+        var text = '';
         if (!_.isNil(this._packageName) && !_.isEmpty(this._packageName) && !_.isEqual(this._packageName, 'Current Package')) {
-            text += this._packageName + ":";
+            text += this._packageName + ':';
         }
         text += this._functionName + '('+ (this._params? this._params:'') +')';
         return text;
@@ -135,7 +135,7 @@ class FunctionInvocationExpression extends Expression {
      */
     _generateArgsString(jsonNode) {
         var self = this;
-        var argsString = "";
+        var argsString = '';
 
         for (var itr = 0; itr < jsonNode.children.length; itr++) {
             var childJsonNode = jsonNode.children[itr];
@@ -155,7 +155,7 @@ class FunctionInvocationExpression extends Expression {
      * @return {string} action invocation statement
      */
     generateExpression() {
-        var argsString = "";
+        var argsString = '';
         var children = this.getChildren();
 
         for (var itr = 0; itr < children.length; itr++) {
@@ -166,7 +166,7 @@ class FunctionInvocationExpression extends Expression {
         }
 
         var functionName = (_.isNil(this.getPackageName()) || _.isEqual(this.getPackageName(), 'Current Package') )
-            ? this.getFunctionName() : this.getPackageName() + ":" + this.getFunctionName();
+            ? this.getFunctionName() : this.getPackageName() + ':' + this.getFunctionName();
 
         return functionName + '(' + this._params +  ')';
     }

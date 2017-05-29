@@ -30,9 +30,9 @@ import ConditionalStatement from './conditional-statement';
 class WhileStatement extends ConditionalStatement {
     constructor(args) {
         super();
-        this._condition = _.get(args, "condition", "true");
-        this._statements = _.get(args, "statements", []);
-        this.type = "WhileStatement";
+        this._condition = _.get(args, 'condition', 'true');
+        this._statements = _.get(args, 'statements', []);
+        this.type = 'WhileStatement';
     }
 
     setCondition(condition, options) {
@@ -60,7 +60,7 @@ class WhileStatement extends ConditionalStatement {
                 var child = undefined;
                 var childNodeTemp = undefined;
                 //TODO : generalize this logic
-                if (childNode.type === "variable_definition_statement" && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+                if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
                     child = self.getFactory().createConnectorDeclaration();
                     childNodeTemp = childNode;
                 } else {

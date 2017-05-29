@@ -31,9 +31,9 @@ import Argument from './argument';
 class ResourceParameter extends Argument {
     constructor(args) {
         super(args);
-        this.annotationType = _.get(args, "annotationType");
-        this.annotationText = _.get(args, "annotationText");
-        this.type = "ResourceParameter";
+        this.annotationType = _.get(args, 'annotationType');
+        this.annotationText = _.get(args, 'annotationText');
+        this.type = 'ResourceParameter';
     }
 
     setAnnotationType(annotationType, options) {
@@ -57,10 +57,10 @@ class ResourceParameter extends Argument {
      * @return {string} - String representation.
      */
     getParameterAsString() {
-        var paramAsString = !_.isUndefined(this.getAnnotationType()) ? this.getAnnotationType() : "";
+        var paramAsString = !_.isUndefined(this.getAnnotationType()) ? this.getAnnotationType() : '';
         paramAsString += !_.isUndefined(this.getAnnotationText()) && !_.isEmpty(this.getAnnotationText()) ?
-        "{value:\"" + this.getAnnotationText() + "\"} " : "";
-        paramAsString += "" + this.getBType() + " ";
+        '{value:"' + this.getAnnotationText() + '"} ' : '';
+        paramAsString += '' + this.getBType() + ' ';
         paramAsString += this.getIdentifier();
 
         return paramAsString.trim();
@@ -72,7 +72,7 @@ class ResourceParameter extends Argument {
      * @static
      */
     static getSupportedAnnotations() {
-        return ["@http:PathParam", "@http:QueryParam"/*, "@HeaderParam", "@FormParam", "@Body"*/];
+        return ['@http:PathParam', '@http:QueryParam'/*, "@HeaderParam", "@FormParam", "@Body"*/];
     }
 
     /**

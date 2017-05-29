@@ -36,14 +36,14 @@ class TypeMapperFunctionInvocationExpressionVisitor extends AbstractStatementSou
     canVisitFuncInvocationExpression(functionInvocation) {
         //This visitor has already visited the indended function invocation expression
         // , and hence no need to visit again.
-        return true && this._generatedSource === "";
+        return true && this._generatedSource === '';
     }
 
     beginVisitFuncInvocationExpression(functionInvocation) {
-        var source = "";
+        var source = '';
         if (!_.isNil(functionInvocation.getPackageName()) && !_.isEmpty(functionInvocation.getPackageName())
             && !_.isEqual(functionInvocation.getPackageName(), 'Current Package')) {
-            source += functionInvocation.getPackageName() + ":";
+            source += functionInvocation.getPackageName() + ':';
         }
         source += functionInvocation.getFunctionName() + '(';
         this.appendSource(source);
@@ -59,7 +59,7 @@ class TypeMapperFunctionInvocationExpressionVisitor extends AbstractStatementSou
             this.appendSource(',');
         }
         var args = {model: functionInvocation, parent: this};
-        functionInvocation.accept(new TypeMapperFunctionInvocationExpressionVisitor(_.get(args, "parent")));
+        functionInvocation.accept(new TypeMapperFunctionInvocationExpressionVisitor(_.get(args, 'parent')));
         log.debug('Visit Type Mapper Function Invocation expression');
     }
 

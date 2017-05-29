@@ -38,7 +38,7 @@ class ConnectorAction extends ASTNode {
      * @return {string} action_name - Action Name
      */
     getActionName() {
-        return this.action_name
+        return this.action_name;
     }
 
     /**
@@ -142,7 +142,7 @@ class ConnectorAction extends ASTNode {
             returnTypes.push(returnTypeChild.getParameterDefinitionAsString());
         });
 
-        return _.join(returnTypes, " , ");
+        return _.join(returnTypes, ' , ');
     }
 
     /**
@@ -179,7 +179,7 @@ class ConnectorAction extends ASTNode {
         if (!_.isUndefined(identifier)) {
             let child = returnParamDefHolder.findChildByIdentifier(true, identifier);
             if (_.isUndefined(child)) {
-                let errorString = "An return argument with identifier '" + identifier + "' already exists.";
+                let errorString = 'An return argument with identifier \'' + identifier + '\' already exists.';
                 log.error(errorString);
                 throw errorString;
             }
@@ -188,15 +188,15 @@ class ConnectorAction extends ASTNode {
         // Validating whether return type can be added based on identifiers of other return types.
         if (!_.isUndefined(identifier)) {
             if (!this.hasNamedReturnTypes() && this.hasReturnTypes()) {
-                let errorStringWithoutIdentifiers = "Return types without identifiers already exists. Remove them to " +
-                    "add return types with identifiers.";
+                let errorStringWithoutIdentifiers = 'Return types without identifiers already exists. Remove them to ' +
+                    'add return types with identifiers.';
                 log.error(errorStringWithoutIdentifiers);
                 throw errorStringWithoutIdentifiers;
             }
         } else {
             if (this.hasNamedReturnTypes() && this.hasReturnTypes()) {
-                let errorStringWithIdentifiers = "Return types with identifiers already exists. Remove them to add " +
-                    "return types without identifiers.";
+                let errorStringWithIdentifiers = 'Return types with identifiers already exists. Remove them to add ' +
+                    'return types without identifiers.';
                 log.error(errorStringWithIdentifiers);
                 throw errorStringWithIdentifiers;
             }
@@ -233,7 +233,7 @@ class ConnectorAction extends ASTNode {
 
         // Deleting the argument from the AST.
         if (_.isUndefined(removeChild)) {
-            let exceptionString = "Could not find a return type with id : " + modelID;
+            let exceptionString = 'Could not find a return type with id : ' + modelID;
             log.error(exceptionString);
             throw exceptionString;
         }
@@ -246,13 +246,13 @@ class ConnectorAction extends ASTNode {
      * @return {string} - Arguments as string.
      */
     getArgumentsAsString() {
-        let argsAsString = "";
+        let argsAsString = '';
         let args = this.getArguments();
         _.forEach(args, function (argument, index) {
-            argsAsString += argument.getTypeName() + " ";
+            argsAsString += argument.getTypeName() + ' ';
             argsAsString += argument.getName();
             if (args.length - 1 !== index) {
-                argsAsString += " , ";
+                argsAsString += ' , ';
             }
         });
         return argsAsString;
@@ -325,7 +325,7 @@ class ConnectorAction extends ASTNode {
         _.each(jsonNode.children, function (childNode) {
             let child = undefined;
             let childNodeTemp = undefined;
-            if (childNode.type === "variable_definition_statement" && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+            if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
                 child = self.getFactory().createConnectorDeclaration();
                 childNodeTemp = childNode;
             } else {

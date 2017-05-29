@@ -66,7 +66,7 @@ class BallerinaEnvironment extends EventChannel {
      */
     addPackage(packageInstance) {
         if (!(packageInstance instanceof Package)) {
-            let err = packageInstance + " is not an instance of Package.";
+            let err = packageInstance + ' is not an instance of Package.';
             log.error(err);
             throw err;
         }
@@ -74,7 +74,7 @@ class BallerinaEnvironment extends EventChannel {
         /**
          * @Event BallerinaEnvironment#new-package-added
          */
-        this.trigger("new-package-added", packageInstance);
+        this.trigger('new-package-added', packageInstance);
     }
 
     /**
@@ -126,7 +126,7 @@ class BallerinaEnvironment extends EventChannel {
             }
         });
         self._types = _.sortBy(self._types, [function (type) {
-            return type
+            return type;
         }]);
     }
 
@@ -137,8 +137,8 @@ class BallerinaEnvironment extends EventChannel {
         let self = this;
         self._annotationAttachmentTypes = _.sortBy(['service', 'resource', 'connector', 'action', 'function',
             'typemapper', 'struct', 'const', 'parameter', 'annotation'], [function (type) {
-            return type;
-        }]);
+                return type;
+            }]);
     }
 
     searchPackage(query, exclude) {
