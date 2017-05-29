@@ -58,10 +58,10 @@ class BasicLiteralExpression extends Expression {
     }
 
     escapeEscapeChars(stringVal) {
-        return stringVal.replace(/"/g, "\\\"")
-                        .replace(/\n/g, "\\n")
-                        .replace(/\r/g, "\\r")
-                        .replace(/\t/g, "\\t");
+        return stringVal.replace(/"/g, '\\"')
+                        .replace(/\n/g, '\\n')
+                        .replace(/\r/g, '\\r')
+                        .replace(/\t/g, '\\t');
     }
 }
 

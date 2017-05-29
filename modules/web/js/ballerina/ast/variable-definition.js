@@ -121,7 +121,7 @@ class VariableDefinition extends ASTNode {
      * @return {string} - Variable definition as string.
      */
     getVariableDefinitionAsString() {
-        return this._typeName + " " + this._name + ";";
+        return this._typeName + ' ' + this._name + ';';
     }
 
     initFromJson(jsonNode) {

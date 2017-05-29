@@ -27,14 +27,14 @@ import Statement from './statement';
 class ThrowStatement extends Statement {
     constructor(args) {
         super('ThrowStatement');
-        this.type = "ThrowStatement";
+        this.type = 'ThrowStatement';
     }
 
     setExpression(expression, options) {
         if (!_.isNil(expression)) {
             this.setAttribute('_expression', expression, options);
         } else {
-            log.error("Cannot set undefined to the throw statement.");
+            log.error('Cannot set undefined to the throw statement.');
         }
     }
 

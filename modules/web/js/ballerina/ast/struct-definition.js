@@ -70,7 +70,7 @@ class StructDefinition extends ASTNode {
 
         // if identifier is empty
         if (_.isEmpty(identifier)) {
-            var errorString = "Identifier cannot be empty";
+            var errorString = 'Identifier cannot be empty';
             log.error(errorString);
             throw errorString;
         }
@@ -83,7 +83,7 @@ class StructDefinition extends ASTNode {
         // If variable definition with the same identifier exists, then throw an error. Else create the new variable
         // definition.
         if (identifierAlreadyExists) {
-            var errorString = "A variable with identifier '" + identifier + "' already exists.";
+            var errorString = 'A variable with identifier \'' + identifier + '\' already exists.';
             log.error(errorString);
             throw errorString;
         } else {
@@ -131,7 +131,7 @@ class StructDefinition extends ASTNode {
      * @return {boolean}
      */
     canBeParentOf(node) {
-        return this.getFactory().isVariableDefinition(node)
+        return this.getFactory().isVariableDefinition(node);
     }
 
     /**
@@ -159,7 +159,7 @@ class StructDefinition extends ASTNode {
         CommonUtils.generateUniqueIdentifier({
             node: this,
             attributes: [{
-                defaultValue: "newStruct",
+                defaultValue: 'newStruct',
                 setter: this.setStructName,
                 getter: this.getStructName,
                 parents: [{

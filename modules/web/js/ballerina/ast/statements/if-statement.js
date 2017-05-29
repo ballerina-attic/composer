@@ -30,9 +30,9 @@ import ConditionalStatement from './conditional-statement';
 class IfStatement extends ConditionalStatement {
     constructor(args) {
         super();
-        this._condition = _.get(args, "condition", "true");
-        this._statements = _.get(args, "statements", []);
-        this.type = "IfStatement";
+        this._condition = _.get(args, 'condition', 'true');
+        this._statements = _.get(args, 'statements', []);
+        this.type = 'IfStatement';
     }
 
     setCondition(condition, options) {

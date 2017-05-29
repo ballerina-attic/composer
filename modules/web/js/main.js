@@ -63,20 +63,20 @@ class Application {
         this.browserStorage = new BrowserStorage('ballerinaAppTempStorage');
 
         //init menu bar
-        var menuBarOpts = _.get(this.config, "menu_bar");
+        var menuBarOpts = _.get(this.config, 'menu_bar');
         _.set(menuBarOpts, 'application', this);
         this.menuBar = new MenuBar(menuBarOpts);
 
         //init workspace manager
         this.workspaceManager = new WorkspaceManager(this);
 
-        var breadCrumbsOpts = _.get(this.config, "breadcrumbs");
+        var breadCrumbsOpts = _.get(this.config, 'breadcrumbs');
         _.set(breadCrumbsOpts, 'application', this);
         // init breadcrumbs controller
         this.breadcrumbController = new BreadcrumbController(breadCrumbsOpts);
 
         //init tab controller
-        var tabControlOpts = _.get(this.config, "tab_controller");
+        var tabControlOpts = _.get(this.config, 'tab_controller');
         _.set(tabControlOpts, 'application', this);
 
         // tab controller will take care of rendering tool palette
@@ -84,12 +84,12 @@ class Application {
         this.workspaceManager.listenToTabController();
 
         //init workspace explorer
-        var workspaceExplorerOpts = _.get(this.config, "workspace_explorer");
+        var workspaceExplorerOpts = _.get(this.config, 'workspace_explorer');
         _.set(workspaceExplorerOpts, 'application', this);
         this.workspaceExplorer = new WorkspaceExplorer(workspaceExplorerOpts);
 
         //init launcher
-        var launcherOpts = _.get(this.config, "launcher");
+        var launcherOpts = _.get(this.config, 'launcher');
         _.set(launcherOpts, 'application', this);
         this.launcher = new Launcher(launcherOpts);
 
@@ -103,7 +103,7 @@ class Application {
 
         // init debugger
 
-        var debuggerOpts = _.get(this.config, "debugger");
+        var debuggerOpts = _.get(this.config, 'debugger');
         _.set(debuggerOpts, 'application', this);
         _.set(debuggerOpts, 'launchManager', LaunchManager);
         this.debugger = new Debugger(debuggerOpts);
@@ -117,7 +117,7 @@ class Application {
 
     reRender(){
         this.tabController.forEach(function(tab){
-            if (typeof tab.reRender === "function") {
+            if (typeof tab.reRender === 'function') {
                 tab.reRender();
             }
         });
@@ -125,7 +125,7 @@ class Application {
 
     validateConfig(config) {
         if (!_.has(config, 'services.workspace.endpoint')) {
-            throw 'config services.workspace.endpoint could not be found for remote log initialization.'
+            throw 'config services.workspace.endpoint could not be found for remote log initialization.';
         } else {
             // disable ajax appender
             //log.initAjaxAppender(_.get(config, 'services.workspace.endpoint'));
@@ -145,29 +145,29 @@ class Application {
         // lets initialize the ballerina environment before we render UI.
         BallerinaEnvironment.initialize({app: this});  
 
-        log.debug("start: rendering menu_bar control");
+        log.debug('start: rendering menu_bar control');
         this.menuBar.render();
-        log.debug("end: rendering menu_bar control");
+        log.debug('end: rendering menu_bar control');
 
-        log.debug("start: rendering breadcrumbs control");
+        log.debug('start: rendering breadcrumbs control');
         this.breadcrumbController.render();
-        log.debug("end: rendering breadcrumbs control");
+        log.debug('end: rendering breadcrumbs control');
 
-        log.debug("start: rendering workspace explorer control");
+        log.debug('start: rendering workspace explorer control');
         this.workspaceExplorer.render();
-        log.debug("end: rendering workspace explorer control");
+        log.debug('end: rendering workspace explorer control');
 
-        log.debug("start: rendering debugger control");
+        log.debug('start: rendering debugger control');
         this.debugger.render();
-        log.debug("end: rendering debugger control");
+        log.debug('end: rendering debugger control');
 
-        log.debug("start: rendering launcher control");
+        log.debug('start: rendering launcher control');
         this.launcher.render();
-        log.debug("end: rendering launcher control");
+        log.debug('end: rendering launcher control');
 
-        log.debug("start: rendering tab controller");
+        log.debug('start: rendering tab controller');
         this.tabController.render();
-        log.debug("end: rendering tab controller");
+        log.debug('end: rendering tab controller');
 
         if(this.isElectronMode()) {
             this.menuBar.setVisible(false);
@@ -187,18 +187,18 @@ class Application {
     }
 
     getOperatingSystem() {
-        var operatingSystem = "Unknown OS";
-        if (navigator.appVersion.indexOf("Win") != -1) {
-            operatingSystem = "Windows";
+        var operatingSystem = 'Unknown OS';
+        if (navigator.appVersion.indexOf('Win') != -1) {
+            operatingSystem = 'Windows';
         }
-        else if (navigator.appVersion.indexOf("Mac") != -1) {
-            operatingSystem = "MacOS";
+        else if (navigator.appVersion.indexOf('Mac') != -1) {
+            operatingSystem = 'MacOS';
         }
-        else if (navigator.appVersion.indexOf("X11") != -1) {
-            operatingSystem = "UNIX";
+        else if (navigator.appVersion.indexOf('X11') != -1) {
+            operatingSystem = 'UNIX';
         }
-        else if (navigator.appVersion.indexOf("Linux") != -1) {
-            operatingSystem = "Linux";
+        else if (navigator.appVersion.indexOf('Linux') != -1) {
+            operatingSystem = 'Linux';
         }
         return operatingSystem;
     }

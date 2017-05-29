@@ -33,11 +33,11 @@ class CloseConfirmDialog extends ModalDialog {
             return;
         }
 
-        var saveBtn = $("<button type='button' class='btn btn-primary'>Save</button>");
-        var dontSaveBtn = $("<button type='button' class='btn btn-default" +
-                            " close-file-confirm-dialog-btn'>Don't Save</button>");
-        var cancelBtn = $("<button type='button' class='btn btn-default'" +
-                          " data-dismiss='modal'>Cancel</button>");
+        var saveBtn = $('<button type=\'button\' class=\'btn btn-primary\'>Save</button>');
+        var dontSaveBtn = $('<button type=\'button\' class=\'btn btn-default' +
+                            ' close-file-confirm-dialog-btn\'>Don\'t Save</button>');
+        var cancelBtn = $('<button type=\'button\' class=\'btn btn-default\'' +
+                          ' data-dismiss=\'modal\'>Cancel</button>');
         this._saveBtn = saveBtn;
         this._dontSaveBtn = dontSaveBtn;
 
@@ -46,7 +46,7 @@ class CloseConfirmDialog extends ModalDialog {
 
         this._initialized = true;
 
-        this._$modalContainer.addClass("close-confirm-dialog");
+        this._$modalContainer.addClass('close-confirm-dialog');
     }
 
     askConfirmation(options) {
@@ -54,11 +54,11 @@ class CloseConfirmDialog extends ModalDialog {
         this.init();
 
         var name = options.file.getName();
-        this.setTitle("Save Changes?");
+        this.setTitle('Save Changes?');
 
         var body = this.getBody();
         body.empty();
-        body.append($("<p><br>File '" + name + "' contains changes, do you want to save them before closing? <br>Your changes will be lost if you close this file without saving.</p>"))
+        body.append($('<p><br>File \'' + name + '\' contains changes, do you want to save them before closing? <br>Your changes will be lost if you close this file without saving.</p>'));
 
         this._saveBtn.unbind('click');
         this._dontSaveBtn.unbind('click');

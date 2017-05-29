@@ -70,7 +70,7 @@ class FunctionDefinitionVisitor extends AbstractSourceGenVisitor {
 
     endVisitFunctionDefinition(functionDefinition) {
         this.outdent();
-        this.appendSource("}\n");
+        this.appendSource('}\n');
         this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit FunctionDefinition');
     }

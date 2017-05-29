@@ -33,7 +33,7 @@ import ImportDeclaration from './import-declaration';
  */
 class BallerinaASTRoot extends ASTNode {
     constructor(args) {
-        super("BallerinaASTRoot");
+        super('BallerinaASTRoot');
         this.packageDefinition = _.get(args, 'packageDefinition');
         const self = this;
         const factory = self.getFactory();
@@ -41,7 +41,7 @@ class BallerinaASTRoot extends ASTNode {
         // Ignore if already added or if it is a current package
         const addImport = function (fullPackageName) {
             if (!self.isExistingPackage(fullPackageName)
-                && !_.isEqual(fullPackageName, "Current Package")) {
+                && !_.isEqual(fullPackageName, 'Current Package')) {
                 let importDeclaration = factory.createImportDeclaration();
                 importDeclaration.setPackageName(fullPackageName);
                 importDeclaration.setParent(self);
@@ -87,7 +87,7 @@ class BallerinaASTRoot extends ASTNode {
             }
         };
         this.on('tree-modified', function (e) {
-            if (e.type === "child-added") {
+            if (e.type === 'child-added') {
                 //to add the imports based on the function/action drag and drop to editor
                 addImportsForTopLevel(e.data.child, {doSilently: true});
             }
@@ -182,7 +182,7 @@ class BallerinaASTRoot extends ASTNode {
      */
     addImport(importDeclaration, options) {
         if (this.isExistingPackage(importDeclaration.getPackageName())) {
-            var errorString = "Package \"" + importDeclaration.getPackageName() + "\" is already imported.";
+            var errorString = 'Package "' + importDeclaration.getPackageName() + '" is already imported.';
             log.error(errorString);
             throw errorString;
         }
@@ -230,13 +230,13 @@ class BallerinaASTRoot extends ASTNode {
 
         // Check if already constant declaration exists with same identifier.
         var identifierAlreadyExists = _.findIndex(this.getConstantDefinitions(), function (constantDefinition) {
-                return constantDefinition.getIdentifier() === identifier;
-            }) !== -1;
+            return constantDefinition.getIdentifier() === identifier;
+        }) !== -1;
 
         // If constant declaration with the same identifier exists, then throw an error. Else create the new constant
         // declaration.
         if (identifierAlreadyExists) {
-            var errorString = "A constant with identifier '" + identifier + "' already exists.";
+            var errorString = 'A constant with identifier \'' + identifier + '\' already exists.';
             log.error(errorString);
             throw errorString;
         } else {
@@ -257,12 +257,12 @@ class BallerinaASTRoot extends ASTNode {
             if (index == -1) {
                 index = _.findLastIndex(this.getChildren(), function (child) {
                     return self.getFactory().isImportDeclaration(child);
-                })
+                });
             }
 
             // If index is still -1, then consider the package definition.
             if (_.isEqual(index, -1) && !_.isNil(this.getPackageDefinition())) {
-                 index = 0;
+                index = 0;
             }
 
             this.addChild(newConstantDefinition, index + 1);
@@ -421,7 +421,7 @@ class BallerinaASTRoot extends ASTNode {
             || BallerinaASTFactory.isConnectorDefinition(node)
             || BallerinaASTFactory.isStructDefinition(node)
             || BallerinaASTFactory.isTypeMapperDefinition(node)
-            || BallerinaASTFactory.isAnnotationDefinition(node)
+            || BallerinaASTFactory.isAnnotationDefinition(node);
     }
 
     /**

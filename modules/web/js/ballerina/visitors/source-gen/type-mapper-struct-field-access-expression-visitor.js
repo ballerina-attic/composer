@@ -29,7 +29,7 @@ class TypeMapperSructFieldAccessExpressionVisitor extends AbstractExpressionSour
     }
 
     canVisitStructFieldAccessExpression(expression) {
-        return expression instanceof StructFieldAccessExpression && this._generatedSource === "";
+        return expression instanceof StructFieldAccessExpression && this._generatedSource === '';
     }
 
     beginVisitStructFieldAccessExpression(expression) {

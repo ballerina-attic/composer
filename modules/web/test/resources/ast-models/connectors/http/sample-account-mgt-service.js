@@ -23,35 +23,35 @@ define(['ast/ballerina-ast-factory'], function (BallerinaASTFactory) {
 
         //package definition
         var packageDefinition = ballerinaASTFactory.createPackageDefinition();
-        packageDefinition.setPackageName("samples.passthrough");
+        packageDefinition.setPackageName('samples.passthrough');
         ballerinaAstRoot.setPackageDefinition(packageDefinition);
 
         //import declarations
         var importDeclaration_langMessage = ballerinaASTFactory.createImportDeclaration();
-        importDeclaration_langMessage.setPackageName("ballerina.lang.message");
+        importDeclaration_langMessage.setPackageName('ballerina.lang.message');
         var importDeclaration_netHttp = ballerinaASTFactory.createImportDeclaration();
-        importDeclaration_netHttp.setPackageName("ballerina.net.http");
+        importDeclaration_netHttp.setPackageName('ballerina.net.http');
         ballerinaAstRoot.addImport(importDeclaration_langMessage);
         ballerinaAstRoot.addImport(importDeclaration_netHttp);
 
         //service definition
         var serviceDefinitions = [];
         var serviceDefinition_passthroughService = ballerinaASTFactory.createServiceDefinition();
-        serviceDefinition_passthroughService.setServiceName("PassthroughService");
-        serviceDefinition_passthroughService.addAnnotation("BasePath", "/account");
+        serviceDefinition_passthroughService.setServiceName('PassthroughService');
+        serviceDefinition_passthroughService.addAnnotation('BasePath', '/account');
 
         // Adding Resources
         var resource_passthrough = ballerinaASTFactory.createResourceDefinition();
 
         //Adding resource argument
         var resourceArgument_m = ballerinaASTFactory.createResourceArgument();
-        resourceArgument_m.setBType("message");
-        resourceArgument_m.setIdentifier("m");
-        resource_passthrough.addArgument("message", "m");
+        resourceArgument_m.setBType('message');
+        resourceArgument_m.setIdentifier('m');
+        resource_passthrough.addArgument('message', 'm');
 
         //Adding reply statement
         var statement_reply = ballerinaASTFactory.createReplyStatement();
-        statement_reply.setReplyMessage("m");
+        statement_reply.setReplyMessage('m');
         var statements = [];
         statements.push(statement_reply);
         resource_passthrough.setStatements(statements);

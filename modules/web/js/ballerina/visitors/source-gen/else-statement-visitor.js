@@ -52,7 +52,7 @@ class ElseStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     endVisitElseStatement(elseStatement) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}");
+        this.appendSource(this.getIndentation() + '}');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Else Statement Definition');
     }

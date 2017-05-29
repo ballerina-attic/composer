@@ -28,17 +28,17 @@ import VariableDeclaration from './variable-declaration';
 class ConstantDefinition extends VariableDeclaration {
     constructor(args) {
         super({
-            type: "Constant-Declaration",
-            bType: _.get(args, "bType"),
-            identifier: _.get(args, "identifier")
+            type: 'Constant-Declaration',
+            bType: _.get(args, 'bType'),
+            identifier: _.get(args, 'identifier')
         });
-        this._value = _.get(args, "value");
+        this._value = _.get(args, 'value');
     }
 
     setValue(value, options) {
         if (_.isNil(value) || _.isEmpty(value)) {
-            log.error("A constant requires to have a value.");
-            throw "A constant requires to have a value.";
+            log.error('A constant requires to have a value.');
+            throw 'A constant requires to have a value.';
         } else {
             this.setAttribute('_value', value, options);
         }
@@ -49,10 +49,10 @@ class ConstantDefinition extends VariableDeclaration {
     }
 
     getConstantDefinitionAsString() {
-        if (this._bType === "string") {
-            return "const " + this._bType + " " + this._identifier + " = \"" + this._value + "\"";
+        if (this._bType === 'string') {
+            return 'const ' + this._bType + ' ' + this._identifier + ' = "' + this._value + '"';
         } else {
-            return "const " + this._bType + " " + this._identifier + " = " + this._value;
+            return 'const ' + this._bType + ' ' + this._identifier + ' = ' + this._value;
         }
     }
 

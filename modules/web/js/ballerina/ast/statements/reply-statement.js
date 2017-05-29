@@ -28,14 +28,14 @@ class ReplyStatement extends Statement {
     constructor(args) {
         super();
         this._message = _.get(args, 'message') || '';
-        this.type = "ReplyStatement";
+        this.type = 'ReplyStatement';
     }
 
     setReplyMessage(message, options) {
         if (!_.isNil(message)) {
             this.setAttribute('_message', message, options);
         } else {
-            log.error("Cannot set undefined to the reply statement.");
+            log.error('Cannot set undefined to the reply statement.');
         }
     }
 
@@ -58,7 +58,7 @@ class ReplyStatement extends Statement {
     }
 
     getReplyExpression() {
-        return "reply " + this.getReplyMessage();
+        return 'reply ' + this.getReplyMessage();
     }
 
     messageDrawTargetAllowed(target) {

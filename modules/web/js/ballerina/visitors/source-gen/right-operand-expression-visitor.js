@@ -30,7 +30,7 @@ class RightOperandExpressionVisitor extends AbstractStatementSourceGenVisitor {
 
     beginVisitRightOperandExpression(rightOperandExpression) {
         //FIXME: Need to refactor this if logic
-        this.appendSource(" = ");
+        this.appendSource(' = ');
         if (!_.isUndefined(rightOperandExpression.getRightOperandExpressionString())) {
             this.appendSource(rightOperandExpression.getRightOperandExpressionString());
         }

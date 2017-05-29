@@ -35,7 +35,7 @@ class FunctionDefinition extends CallableDefinition {
         super('FunctionDefinition');
         this.id = autoGenerateId();
         this._functionName = _.get(args, 'functionName');
-        this._isPublic = _.get(args, "isPublic") || false;
+        this._isPublic = _.get(args, 'isPublic') || false;
         this._annotations = _.get(args, 'annotations', []);
     }
 
@@ -43,7 +43,7 @@ class FunctionDefinition extends CallableDefinition {
         if (!_.isNil(name) && ASTNode.isValidIdentifier(name)) {
             this.setAttribute('_functionName', name, options);
         } else {
-            var errorString = "Invalid function name: " + name;
+            var errorString = 'Invalid function name: ' + name;
             log.error(errorString);
             throw errorString;
         }
@@ -154,7 +154,7 @@ class FunctionDefinition extends CallableDefinition {
             returnTypes.push(returnType.getParameterDefinitionAsString());
         });
 
-        return _.join(returnTypes, ", ");
+        return _.join(returnTypes, ', ');
     }
 
     /**
@@ -179,7 +179,7 @@ class FunctionDefinition extends CallableDefinition {
         if (!_.isUndefined(identifier)) {
             var child = returnParamDefHolder.findChildByIdentifier(true, identifier);
             if (_.isUndefined(child)) {
-                var errorString = "An return argument with identifier '" + identifier + "' already exists.";
+                var errorString = 'An return argument with identifier \'' + identifier + '\' already exists.';
                 log.error(errorString);
                 throw errorString;
             }
@@ -188,15 +188,15 @@ class FunctionDefinition extends CallableDefinition {
         // Validating whether return type can be added based on identifiers of other return types.
         if (!_.isUndefined(identifier)) {
             if (!this.hasNamedReturnTypes() && this.hasReturnTypes()) {
-                var errorStringWithoutIdentifiers = "Return types without identifiers already exists. Remove them to " +
-                    "add return types with identifiers.";
+                var errorStringWithoutIdentifiers = 'Return types without identifiers already exists. Remove them to ' +
+                    'add return types with identifiers.';
                 log.error(errorStringWithoutIdentifiers);
                 throw errorStringWithoutIdentifiers;
             }
         } else {
             if (this.hasNamedReturnTypes() && this.hasReturnTypes()) {
-                var errorStringWithIdentifiers = "Return types with identifiers already exists. Remove them to add " +
-                    "return types without identifiers.";
+                var errorStringWithIdentifiers = 'Return types with identifiers already exists. Remove them to add ' +
+                    'return types without identifiers.';
                 log.error(errorStringWithIdentifiers);
                 throw errorStringWithIdentifiers;
             }
@@ -259,7 +259,7 @@ class FunctionDefinition extends CallableDefinition {
         return returnParamDefHolder;
     }
 
-    //// End of return type functions.
+    // End of return type functions.
 
     getConnectionDeclarations() {
         var connectorDeclaration = [];
@@ -340,7 +340,7 @@ class FunctionDefinition extends CallableDefinition {
             var child = undefined;
             var childNodeTemp = undefined;
             //TODO : generalize this logic
-            if (childNode.type === "variable_definition_statement" && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+            if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
                 child = self.getFactory().createConnectorDeclaration();
                 childNodeTemp = childNode;
             } else {
@@ -405,9 +405,9 @@ class FunctionDefinition extends CallableDefinition {
      * @return {boolean} - true if main method, else false.
      */
     isMainFunction() {
-        return _.isEqual(this.getFunctionName(), "main")
+        return _.isEqual(this.getFunctionName(), 'main')
             && _.isEqual(_.size(this.getArguments()), 1)
-            && _.isEqual(this.getArguments()[0].getType().trim(), "string[]");
+            && _.isEqual(this.getArguments()[0].getType().trim(), 'string[]');
     }
 }
 

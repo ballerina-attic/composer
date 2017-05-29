@@ -44,7 +44,7 @@ class AbortedStatementDimensionCalculatorVisitor {
             h: 0
         };
 
-        viewState.title.w = util.getTextWidth("Aborted").w;
+        viewState.title.w = util.getTextWidth('Aborted').w;
         viewState.title.h = blockStatement.heading.height;
     }
 }

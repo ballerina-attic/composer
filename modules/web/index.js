@@ -1,6 +1,6 @@
 // provide global jquery object because wso2 theme expects it
-window.$ = window.jQuery = require("jquery");
-window.simulate = window.jQuerySimulate = require("./lib/jquery-simulate-1.0.0/jquery.simulate.js");
+window.$ = window.jQuery = require('jquery');
+window.simulate = window.jQuerySimulate = require('./lib/jquery-simulate-1.0.0/jquery.simulate.js');
 window.scope = window.location.pathname;
 
 
@@ -25,12 +25,12 @@ function waitForLangserverInitialization(app, callback) {
     setTimeout(
         function () {
             if (app.getLangserverClientController().initialized()) {
-                console.log("Language Server Connection initialized...");
+                console.log('Language Server Connection initialized...');
                 callback();
                 return;
 
             } else {
-                console.log("Wait for Language Server Connection...");
+                console.log('Wait for Language Server Connection...');
                 waitForLangserverInitialization(app, callback);
             }
 

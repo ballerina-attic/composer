@@ -36,7 +36,7 @@ class TypeMapperRightOperandExpressionVisitor extends AbstractStatementSourceGen
     }
 
     beginVisitRightOperandExpression(rightOperandExpression) {
-        this.appendSource(" = ");
+        this.appendSource(' = ');
         log.debug('Begin Visit Type Mapper Right Operand Expression');
     }
 
@@ -60,7 +60,7 @@ class TypeMapperRightOperandExpressionVisitor extends AbstractStatementSourceGen
 
     visitFuncInvocationExpression(functionInvocation) {
         var args = {model: functionInvocation, parent: this};
-        functionInvocation.accept(new FunctionInvocationExpressionVisitor(_.get(args, "parent")));
+        functionInvocation.accept(new FunctionInvocationExpressionVisitor(_.get(args, 'parent')));
         log.debug('Visit Type Mapper Function Invocation expression');
     }
 }

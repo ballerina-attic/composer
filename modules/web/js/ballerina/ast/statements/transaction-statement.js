@@ -21,7 +21,7 @@ import Statement from './statement';
 class TransactionStatement extends Statement {
     constructor() {
         super();
-        this.type = "TransactionStatement";
+        this.type = 'TransactionStatement';
     }
 
     /**

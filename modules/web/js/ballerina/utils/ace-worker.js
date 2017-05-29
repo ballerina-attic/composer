@@ -20,9 +20,9 @@ import backends from 'bal_configs/backends';
 // This import defines ace/worker/mirror so we can ace.require ace/worker/mirror later
 import './ace-mirror-worker';
 ace.define('ace/worker/ballerina', ['require', 'exports', 'module'], function(acequire, exports, module) {
-    var oop = acequire("ace/lib/oop");
+    var oop = acequire('ace/lib/oop');
 
-    var Mirror = acequire("ace/worker/mirror").Mirror;
+    var Mirror = acequire('ace/worker/mirror').Mirror;
 
     var WorkerModule = exports.WorkerModule = function(sender) {
         Mirror.call(this, sender);
@@ -36,7 +36,7 @@ ace.define('ace/worker/ballerina', ['require', 'exports', 'module'], function(ac
             var value = this.doc.getValue();
             if(value.trim()){
                 var errors = [];
-                var content = { "content": value};
+                var content = { 'content': value};
                 var request = new XMLHttpRequest();
                 var self = this;
 
@@ -44,16 +44,16 @@ ace.define('ace/worker/ballerina', ['require', 'exports', 'module'], function(ac
                     if(request.readyState === 4) {
                         if(request.status === 200) {
                             errors = (JSON.parse(request.responseText)).errors;
-                            self.sender.emit("lint", errors);
+                            self.sender.emit('lint', errors);
                         }
                     }
                 };
 
                 request.open('POST', backends.services.validator.endpoint, true);
-                request.setRequestHeader("Content-type", "application/json");
+                request.setRequestHeader('Content-type', 'application/json');
                 request.send(JSON.stringify(content));
             } else {
-                this.sender.emit("lint", []);
+                this.sender.emit('lint', []);
             }
         };
     }).call(WorkerModule.prototype);

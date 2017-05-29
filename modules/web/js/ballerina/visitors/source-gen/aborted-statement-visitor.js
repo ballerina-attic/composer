@@ -46,7 +46,7 @@ class AbortedStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     endVisitAbortedStatement(abortedStatement) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}");
+        this.appendSource(this.getIndentation() + '}');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Aborted Statement');
     }

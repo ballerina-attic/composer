@@ -32,7 +32,7 @@ class TransactionStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     beginVisitTransactionStatement(transactionStatement) {
         this.node = transactionStatement;
-        this.appendSource(this.getIndentation() + "transaction {" + "\n");
+        this.appendSource(this.getIndentation() + 'transaction {' + '\n');
         this.indent();
         log.debug('Begin Visit Transaction Statement');
     }
@@ -47,7 +47,7 @@ class TransactionStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     endVisitTransactionStatement(transactionStatement) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}");
+        this.appendSource(this.getIndentation() + '}');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Transaction Statement');
     }

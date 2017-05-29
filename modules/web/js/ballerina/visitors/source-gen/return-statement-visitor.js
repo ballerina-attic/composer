@@ -42,7 +42,7 @@ class ReturnStatementVisitor extends AbstractStatementSourceGenVisitor {
     }
 
     endVisitReturnStatement(returnStatement) {
-        this.appendSource(";\n");
+        this.appendSource(';\n');
         this.getParent().appendSource( '\n\n' + this.getIndentation() + this.getGeneratedSource());
         log.debug('End Visit Return Statement Definition');
     }

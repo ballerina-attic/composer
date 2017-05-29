@@ -46,13 +46,13 @@ class BinaryExpression extends Expression {
      */
     generateExpressionString(jsonNode) {
         var self = this;
-        var expString = "";
+        var expString = '';
         if(!_.isNil(jsonNode.children[0]) && !_.isNil(jsonNode.children[1])){
             var leftExpression = self.getFactory().createFromJson(jsonNode.children[0]);
             var rightExpression = self.getFactory().createFromJson(jsonNode.children[1]);
             leftExpression.initFromJson(jsonNode.children[0]);
             rightExpression.initFromJson(jsonNode.children[1]);
-            expString = leftExpression.getExpression() + " " + this.getOperator() + " " + rightExpression.getExpression();
+            expString = leftExpression.getExpression() + ' ' + this.getOperator() + ' ' + rightExpression.getExpression();
         }
         return expString;
     }

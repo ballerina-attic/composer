@@ -18,40 +18,40 @@
 
 define(([],function (){
     var EditMenu = {
-        id: "edit",
-        label: "Edit",
+        id: 'edit',
+        label: 'Edit',
         items: [
             {
-                id: "undo",
-                label: "Undo",
+                id: 'undo',
+                label: 'Undo',
                 command: {
-                    id: "undo",
+                    id: 'undo',
                     shortcuts: {
                         mac: {
-                            key: "command+z",
-                            label: "\u2318Z"
+                            key: 'command+z',
+                            label: '\u2318Z'
                         },
                         other: {
-                            key: "ctrl+z",
-                            label: "Ctrl+Z"
+                            key: 'ctrl+z',
+                            label: 'Ctrl+Z'
                         }
                     }
                 },
                 disabled: true
             },
             {
-                id: "redo",
-                label: "Redo",
+                id: 'redo',
+                label: 'Redo',
                 command: {
-                    id: "redo",
+                    id: 'redo',
                     shortcuts: {
                         mac: {
-                            key: "command+shift+z",
-                            label: "\u2318\u21E7Z"
+                            key: 'command+shift+z',
+                            label: '\u2318\u21E7Z'
                         },
                         other: {
-                            key: "ctrl+shift+z",
-                            label: "Ctrl+Shift+Z"
+                            key: 'ctrl+shift+z',
+                            label: 'Ctrl+Shift+Z'
                         }
                     }
                 },

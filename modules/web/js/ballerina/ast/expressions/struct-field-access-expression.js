@@ -29,7 +29,7 @@ class StructFieldAccessExpression extends Expression {
      * @returns {boolean}
      */
     isLHSExpression() {
-       return this._isLHSExpr;
+        return this._isLHSExpr;
     }
 
     /**
@@ -39,15 +39,15 @@ class StructFieldAccessExpression extends Expression {
      * @return {string}
      */
     getExpression() {
-        var variableReferenceExpression = "";
-          if (_.isEqual(_.size(this.getChildren()), 2)) {
-              variableReferenceExpression = this.getChildren()[0].generateExpression();
-              var structFieldAccessExpression = this.getChildren()[1].getExpression();
-              return variableReferenceExpression + "." + structFieldAccessExpression;
-          } else if (_.isEqual(_.size(this.getChildren()), 1)) {
-              variableReferenceExpression = this.getChildren()[0].generateExpression();
-              return variableReferenceExpression;
-          }
+        var variableReferenceExpression = '';
+        if (_.isEqual(_.size(this.getChildren()), 2)) {
+            variableReferenceExpression = this.getChildren()[0].generateExpression();
+            var structFieldAccessExpression = this.getChildren()[1].getExpression();
+            return variableReferenceExpression + '.' + structFieldAccessExpression;
+        } else if (_.isEqual(_.size(this.getChildren()), 1)) {
+            variableReferenceExpression = this.getChildren()[0].generateExpression();
+            return variableReferenceExpression;
+        }
     }
 
     /**

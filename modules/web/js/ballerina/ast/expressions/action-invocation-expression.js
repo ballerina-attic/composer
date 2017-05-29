@@ -26,16 +26,16 @@ import Expression from './expression';
  */
 class ActionInvocationExpression extends Expression {
     constructor(args) {
-        super("ActionInvocationExpression");
+        super('ActionInvocationExpression');
         this._actionName = _.get(args, 'action', undefined);
         this._actionPackageName = _.get(args, 'actionPackageName', undefined);
         this._actionConnectorName = _.get(args, 'actionConnectorName', undefined);
-        this._arguments = _.get(args, "arguments", []);
+        this._arguments = _.get(args, 'arguments', []);
         this._connector = _.get(args, 'connector');
         this._fullPackageName = _.get(args, 'fullPackageName', undefined);
         //create the default expression for action invocation
         this.setExpression(this.generateExpression());
-        this.type = "ActionInvocationExpression";
+        this.type = 'ActionInvocationExpression';
     }
 
     /**
@@ -109,7 +109,7 @@ class ActionInvocationExpression extends Expression {
 
     setConnector(connector, options) {
         if(!_.isNil(connector)){
-            this.setAttribute("_connector", connector, options);
+            this.setAttribute('_connector', connector, options);
             this.setAttribute('_expression', this.generateExpression(), options);
         }
     }
@@ -172,7 +172,7 @@ class ActionInvocationExpression extends Expression {
      * @return {string} action invocation statement
      */
     generateExpression() {
-        var argsString = "";
+        var argsString = '';
         var args = this.getArguments();
 
         for (var itr = 0; itr < args.length; itr++) {
@@ -191,7 +191,7 @@ class ActionInvocationExpression extends Expression {
 
         if (!_.isUndefined(this.getConnector()) && !_.isNil(this.getConnector())) {
             if (!_.isEmpty(argsString)) {
-                argsString = this.getConnector().getConnectorVariable() + ", " + argsString;
+                argsString = this.getConnector().getConnectorVariable() + ', ' + argsString;
             } else {
                 argsString = this.getConnector().getConnectorVariable();
             }
@@ -200,7 +200,7 @@ class ActionInvocationExpression extends Expression {
         var expression = this.getActionConnectorName() + '.' + this.getActionName() + '(' + argsString +  ')';
         if(!_.isUndefined(this.getActionPackageName()) && !_.isNil(this.getActionPackageName())
                 && !_.isEqual(this.getActionPackageName(), 'Current Package')){
-            expression = this.getActionPackageName() + ":" + expression;
+            expression = this.getActionPackageName() + ':' + expression;
         }
         return expression;
     }

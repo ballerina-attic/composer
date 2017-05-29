@@ -28,7 +28,7 @@ import CatchStatement from './catch-statement';
 class TryCatchStatement extends Statement {
     constructor(args) {
         super();
-        this.type = "TryCatchStatement";
+        this.type = 'TryCatchStatement';
     }
 
     /**
@@ -39,7 +39,7 @@ class TryCatchStatement extends Statement {
         if (!_.isNil(exception)) {
             this.setAttribute('_exceptionType', exception, options);
         } else {
-            log.error("Cannot set undefined to the exception.");
+            log.error('Cannot set undefined to the exception.');
         }
     }
 

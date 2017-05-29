@@ -28,24 +28,24 @@ class Search extends EventChannel {
         super();
         _.extend(this, Backbone.Events);
         var self = this;        
-        this.el = $("#modalSearch");
-        this.search_box = $("#modal-search-field");
-        this.list = $(".search-results > ul");
+        this.el = $('#modalSearch');
+        this.search_box = $('#modal-search-field');
+        this.list = $('.search-results > ul');
 
         this.template = _.template('<li class="list-group-item" data-key="<%= key %>"><%= item %></li>');
 
         //add events
         this.el.on('shown.bs.modal', function () {
-            self.search_box.focus()
+            self.search_box.focus();
         });
 
-        this.search_box.on("keydown keyup paste", _.bindKey(this, 'search'));
-        this.list.on("click", 'li', _.bindKey(this, 'select'));
+        this.search_box.on('keydown keyup paste', _.bindKey(this, 'search'));
+        this.list.on('click', 'li', _.bindKey(this, 'select'));
     }
 
     show() {
         this.search_box.val('');
-        this.result = this.adapter.search("");
+        this.result = this.adapter.search('');
         this.render(this.result);            
         this.el.modal();      
     }
@@ -65,7 +65,7 @@ class Search extends EventChannel {
     }
 
     render(result) {
-        var html = "";
+        var html = '';
         var adapter = this.adapter;
         var self = this;
         _.forEach(this.result , function(value, key){
@@ -77,14 +77,14 @@ class Search extends EventChannel {
 
     select(e) {
         var key = $(e.target).attr('data-key');
-        this.trigger("select", this.result[key]);
+        this.trigger('select', this.result[key]);
         this.hide();
     }
 }
 
 export default function getSearch(adapter) {
     if(adapter == undefined){
-        throw "Undefined adapter passed for search box.";
+        throw 'Undefined adapter passed for search box.';
     }
     var i = (instance || new Search());
     i.setAdapter(adapter);        

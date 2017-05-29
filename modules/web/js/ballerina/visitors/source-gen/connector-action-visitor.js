@@ -78,7 +78,7 @@ class ConnectorActionVisitor extends AbstractSourceGenVisitor {
      */
     endVisitConnectorAction(connectorAction) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}\n");
+        this.appendSource(this.getIndentation() + '}\n');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit FunctionDefinition');
     }

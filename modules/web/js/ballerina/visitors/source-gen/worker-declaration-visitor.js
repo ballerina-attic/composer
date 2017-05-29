@@ -52,7 +52,7 @@ class WorkerDeclarationVisitor extends AbstractSourceGenVisitor {
 
     endVisitWorkerDeclaration(workerDeclaration) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}\n");
+        this.appendSource(this.getIndentation() + '}\n');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Worker Declaration');
     }

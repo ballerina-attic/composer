@@ -27,8 +27,8 @@ import Statement from './statement';
 class CommentStatement extends Statement {
     constructor(args) {
         super();
-        this.type = "CommentStatement";
-        this._commentString = _.get(args, 'commentString', "");
+        this.type = 'CommentStatement';
+        this._commentString = _.get(args, 'commentString', '');
     }
 
     /**
@@ -48,7 +48,7 @@ class CommentStatement extends Statement {
         if (!_.isNil(commentString)) {
             this.setAttribute('_commentString', commentString, options);
         } else {
-            log.error("Cannot set undefined to the commentString.");
+            log.error('Cannot set undefined to the commentString.');
         }
     }
 

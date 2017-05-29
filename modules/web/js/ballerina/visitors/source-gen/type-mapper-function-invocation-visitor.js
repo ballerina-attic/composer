@@ -38,7 +38,7 @@ class TypeMapperFunctionInvocationVisitor extends AbstractStatementSourceGenVisi
     }
 
     endVisitFuncInvocationStatement(functionInvocation) {
-        this.appendSource(";\n");
+        this.appendSource(';\n');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Type Mapper Function Invocation Statement');
     }

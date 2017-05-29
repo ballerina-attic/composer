@@ -30,7 +30,7 @@ class TypeMapperRefTypeInitExpressionVisitor extends AbstractExpressionSourceGen
     }
 
     beginVisitReferenceTypeInitExpression(expression) {
-        this.appendSource("{}");
+        this.appendSource('{}');
         log.debug('Begin Visit Type Mapper Ref Type Init Expression');
     }
 

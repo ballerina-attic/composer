@@ -52,7 +52,7 @@ class CatchStatementVisitor extends AbstractStatementSourceGenVisitor {
 
     endVisitCatchStatement(catchStatement) {
         this.outdent();
-        this.appendSource(this.getIndentation() + "}");
+        this.appendSource(this.getIndentation() + '}');
         this.getParent().appendSource(this.getGeneratedSource());
         log.debug('End Visit Catch Statement');
     }

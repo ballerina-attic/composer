@@ -28,9 +28,9 @@ import ConditionalStatement from './conditional-statement';
 class CatchStatement extends ConditionalStatement {
     constructor(args) {
         super();
-        this._parameter = _.get(args, "parameter", "exception e");
+        this._parameter = _.get(args, 'parameter', 'exception e');
 
-        this.type = "CatchStatement";
+        this.type = 'CatchStatement';
     }
 
     setParameter(parameter, options) {

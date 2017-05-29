@@ -23,16 +23,16 @@ import {util} from './../sizing-utils';
 
 class AnnotationDefinitionDimensionCalculatorVisitor {
     canVisit(node) {
-        log.debug("can visit AnnotationDefinitionDimensionCalc");
+        log.debug('can visit AnnotationDefinitionDimensionCalc');
         return true;
     }
 
     beginVisit(node) {
-        log.debug("beign visit AnnotationDefinitionDimensionCalc");
+        log.debug('beign visit AnnotationDefinitionDimensionCalc');
     }
 
     visit(node) {
-        log.debug("visit AnnotationDefinitionDimensionCalc");
+        log.debug('visit AnnotationDefinitionDimensionCalc');
     }
 
     endVisit(node) {

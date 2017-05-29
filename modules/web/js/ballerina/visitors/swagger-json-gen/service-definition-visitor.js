@@ -70,7 +70,7 @@ class ServiceDefinitionVisitor extends AbstractSwaggerJsonGenVisitor {
             }
         });
         if(_.isUndefined(basePath)){
-            _.set(this.getSwaggerJson(), 'basePath', "/" + serviceDefinition.getServiceName());
+            _.set(this.getSwaggerJson(), 'basePath', '/' + serviceDefinition.getServiceName());
         }
 
         // Setting required 'info' annotation

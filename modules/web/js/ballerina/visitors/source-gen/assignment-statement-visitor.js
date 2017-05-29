@@ -54,7 +54,7 @@ class AssignmentStatementVisitor extends AbstractStatementSourceGenVisitor {
     }
 
     endVisitAssignmentStatement(assignmentStatement) {
-        this.getParent().appendSource(this.getGeneratedSource() + ";\n");
+        this.getParent().appendSource(this.getGeneratedSource() + ';\n');
         log.debug('End Visit Assignment Statement');
     }
 }

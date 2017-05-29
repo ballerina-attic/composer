@@ -18,7 +18,7 @@ import $ from 'jquery';
 import 'brace';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
-import '../ballerina/utils/ace-mode'
+import '../ballerina/utils/ace-mode';
 import { completerFactory } from './completer-factory.js';
 var ace = global.ace;
 var Range = ace.acequire('ace/range');
@@ -32,17 +32,17 @@ requireAll(require.context('ace', false, /theme-/));
 
 // require ballerina mode
 var mode = ace.acequire('ace/mode/ballerina');
-var langTools = ace.acequire("ace/ext/language_tools");
+var langTools = ace.acequire('ace/ext/language_tools');
 
 class ExpressionEditor{
 
     constructor( bBox, container , callback , props , packageScope ) {
         this.props = props;
-        let expression = _.isNil(props.getterMethod.call(props.model)) ? "" : props.getterMethod.call(props.model);
+        let expression = _.isNil(props.getterMethod.call(props.model)) ? '' : props.getterMethod.call(props.model);
         // workaround to handle http://stackoverflow.com/questions/21926083/failed-to-execute-removechild-on-node
         this.removed = false;
 
-        this.expressionEditor = $("<div class='expression_editor'>");
+        this.expressionEditor = $('<div class=\'expression_editor\'>');
         this.expressionEditor.width(bBox.w + 2);
         this.expressionEditor.height(bBox.h + 2);
         this.expressionEditor.offset({ top: bBox.y-1 , left: bBox.x-1 });
@@ -53,24 +53,24 @@ class ExpressionEditor{
         this.expressionEditor.css('min-width', bBox.w + 2);
         container.append(this.expressionEditor);
 
-        var editorContainer = $("<div class='expression_editor_container'>").appendTo(this.expressionEditor);
+        var editorContainer = $('<div class=\'expression_editor_container\'>').appendTo(this.expressionEditor);
         $(editorContainer).css('height', '22px');
         $(editorContainer).text(expression);
         this._editor =  ace.edit(editorContainer[0]);
 
-        var mode = ace.acequire("ace/mode/ballerina").Mode;
-        this._editor.getSession().setMode("ace/mode/ballerina");
+        var mode = ace.acequire('ace/mode/ballerina').Mode;
+        this._editor.getSession().setMode('ace/mode/ballerina');
         //Avoiding ace warning
         this._editor.$blockScrolling = Infinity;
 
-        var editorTheme = ace.acequire("ace/theme/chrome");
+        var editorTheme = ace.acequire('ace/theme/chrome');
         this._editor.setTheme(editorTheme);
 
         // set OS specific font size to prevent Mac fonts getting oversized.
         if(this.isRunningOnMacOS()){
-            this._editor.setFontSize("10pt");
+            this._editor.setFontSize('10pt');
         }else{
-            this._editor.setFontSize("12pt");
+            this._editor.setFontSize('12pt');
         }
 
         let completers = completerFactory.getCompleters(props.key, packageScope);
@@ -91,7 +91,7 @@ class ExpressionEditor{
         this._editor.gotoLine(1, expression.length);
 
         // resize the editor to the text width.
-        this.expressionEditor.css("width", this.getNecessaryWidth(expression));
+        this.expressionEditor.css('width', this.getNecessaryWidth(expression));
         this.expressionEditor.focus();
         this._editor.resize();
 
@@ -103,12 +103,12 @@ class ExpressionEditor{
         });
 
         // remove newlines in pasted text
-        this._editor.on("paste", function(e) {
-            e.text = e.text.replace(/[\r\n]+/g, " ");
+        this._editor.on('paste', function(e) {
+            e.text = e.text.replace(/[\r\n]+/g, ' ');
         });
 
         // when enter is pressed we will commit the change.
-        this._editor.commands.bindKey("Enter|Shift-Enter", (e)=>{
+        this._editor.commands.bindKey('Enter|Shift-Enter', (e)=>{
             let text = this._editor.getSession().getValue();
             props.setterMethod.call(props.model, text);
             props.model.trigger('update-property-text', text , props.key);
@@ -122,7 +122,7 @@ class ExpressionEditor{
         // When the user is typing text we will resize the editor.
         this._editor.on('change', (event) => {
             var text = this._editor.getSession().getValue();
-            $(this.expressionEditor).css("width" , this.getNecessaryWidth(text));
+            $(this.expressionEditor).css('width' , this.getNecessaryWidth(text));
             this._editor.resize();
         });
 
@@ -142,12 +142,12 @@ class ExpressionEditor{
         // following snipet is to handle adding ";" at the end of statement.
         this.end_check = /^([^"]|"[^"]*")*?(;)/;
         this._editor.commands.addCommand({
-            name: "semicolon",
+            name: 'semicolon',
             exec: (e) => {
                 // get the value and append ';' to get the end result of the key action
                 let curser = this._editor.selection.getCursor().column;
                 let text = this._editor.getSession().getValue();
-                let textWithSemicolon = [text.slice(0, curser), ";" , text.slice(curser)].join('');
+                let textWithSemicolon = [text.slice(0, curser), ';' , text.slice(curser)].join('');
                 if(this.end_check.exec(textWithSemicolon)){
                     props.setterMethod.call(props.model, text);
                     props.model.trigger('update-property-text', text , props.key);
@@ -157,10 +157,10 @@ class ExpressionEditor{
                         callback(text);
                     }
                 }else{
-                    this._editor.insert(";");
+                    this._editor.insert(';');
                 }
             },
-            bindKey: ";"
+            bindKey: ';'
         });
     }
 
@@ -180,24 +180,24 @@ class ExpressionEditor{
         let width = text.length * 8 + 40;
         if(width < this.default_with ){
             return this.default_with;
-        };
+        }
         return width;
     }
 
 
     getOperatingSystem() {
-        var operatingSystem = "Unknown OS";
-        if (navigator.appVersion.indexOf("Win") != -1) {
-            operatingSystem = "Windows";
+        var operatingSystem = 'Unknown OS';
+        if (navigator.appVersion.indexOf('Win') != -1) {
+            operatingSystem = 'Windows';
         }
-        else if (navigator.appVersion.indexOf("Mac") != -1) {
-            operatingSystem = "MacOS";
+        else if (navigator.appVersion.indexOf('Mac') != -1) {
+            operatingSystem = 'MacOS';
         }
-        else if (navigator.appVersion.indexOf("X11") != -1) {
-            operatingSystem = "UNIX";
+        else if (navigator.appVersion.indexOf('X11') != -1) {
+            operatingSystem = 'UNIX';
         }
-        else if (navigator.appVersion.indexOf("Linux") != -1) {
-            operatingSystem = "Linux";
+        else if (navigator.appVersion.indexOf('Linux') != -1) {
+            operatingSystem = 'Linux';
         }
         return operatingSystem;
     }

@@ -38,7 +38,7 @@ class ConnectorDefinition extends ASTNode {
      * @return {string} connector_name - Connector Name
      */
     getConnectorName() {
-        return this.connector_name
+        return this.connector_name;
     }
 
     /**
@@ -46,7 +46,7 @@ class ConnectorDefinition extends ASTNode {
      * @return {string[]} annotations - Connector Annotations
      */
     getAnnotations() {
-        return this.annotations
+        return this.annotations;
     }
 
     /**
@@ -115,7 +115,7 @@ class ConnectorDefinition extends ASTNode {
         if (!_.isNil(name) && ASTNode.isValidIdentifier(name)) {
             this.setAttribute('connector_name', name, options);
         } else {
-            let errorString = "Invalid connector name: " + name;
+            let errorString = 'Invalid connector name: ' + name;
             log.error(errorString);
             throw errorString;
         }
@@ -186,7 +186,7 @@ class ConnectorDefinition extends ASTNode {
 
         // Check is identifier is not null or empty.
         if (_.isNil(identifier) || _.isEmpty(identifier)) {
-            let errorStringOfEmptyIdentifier = "A variable definition requires an identifier.";
+            let errorStringOfEmptyIdentifier = 'A variable definition requires an identifier.';
             log.error(errorStringOfEmptyIdentifier);
             throw errorStringOfEmptyIdentifier;
         }
@@ -200,13 +200,13 @@ class ConnectorDefinition extends ASTNode {
         // If variable definition statement with the same identifier exists, then throw an error. Else create the new
         // variable definition statement.
         if (identifierAlreadyExists) {
-            let errorString = "A variable definition with identifier '" + identifier + "' already exists.";
+            let errorString = 'A variable definition with identifier \'' + identifier + '\' already exists.';
             log.error(errorString);
             throw errorString;
         } else {
             // Creating new constant definition.
             let newVariableDefinitionStatement = this.getFactory().createVariableDefinitionStatement();
-            newVariableDefinitionStatement.setLeftExpression(bType + " " + identifier);
+            newVariableDefinitionStatement.setLeftExpression(bType + ' ' + identifier);
             if (!_.isNil(assignedValue) && !_.isEmpty(assignedValue)) {
                 newVariableDefinitionStatement.setRightExpression(assignedValue);
             }
@@ -221,7 +221,7 @@ class ConnectorDefinition extends ASTNode {
             if (index === -1) {
                 index = _.findLastIndex(this.getChildren(), function (child) {
                     return self.getFactory().isConnectorDeclaration(child);
-                })
+                });
             }
 
             this.addChild(newVariableDefinitionStatement, index + 1);
@@ -282,7 +282,7 @@ class ConnectorDefinition extends ASTNode {
         _.each(jsonNode.children, function (childNode) {
             let child = undefined;
             let childNodeTemp = undefined;
-            if (childNode.type === "variable_definition_statement" && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+            if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
                 child = self.getFactory().createConnectorDeclaration();
                 childNodeTemp = childNode;
             } else {

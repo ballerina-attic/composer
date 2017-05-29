@@ -31,7 +31,7 @@ import VariableDeclaration from './../variable-declaration';
 class VariableDefinitionStatement extends Statement {
     constructor(args) {
         super('VariableDefinitionStatement');
-        this._leftExpression = _.get(args, 'leftExpression', "int i");
+        this._leftExpression = _.get(args, 'leftExpression', 'int i');
         this._rightExpression = _.get(args, 'rightExpression');
     }
 
@@ -60,7 +60,7 @@ class VariableDefinitionStatement extends Statement {
         if (_.isNil(this._rightExpression) || _.isEmpty(this._rightExpression)) {
             variableDefinitionStatementString = this._leftExpression;
         } else {
-            variableDefinitionStatementString = this._leftExpression + " = " + this._rightExpression;
+            variableDefinitionStatementString = this._leftExpression + ' = ' + this._rightExpression;
         }
         return variableDefinitionStatementString;
     }
@@ -70,7 +70,7 @@ class VariableDefinitionStatement extends Statement {
      * @param {string} leftExpression - Left expression
      */
     setLeftExpression(leftExpression) {
-        this.setAttribute("_leftExpression", leftExpression.trim());
+        this.setAttribute('_leftExpression', leftExpression.trim());
     }
 
     /**
@@ -78,7 +78,7 @@ class VariableDefinitionStatement extends Statement {
      * @param {string} rightExpression - Right expression
      */
     setRightExpression(rightExpression) {
-        this.setAttribute("_rightExpression", rightExpression.trim());
+        this.setAttribute('_rightExpression', rightExpression.trim());
     }
 
     /**
@@ -86,7 +86,7 @@ class VariableDefinitionStatement extends Statement {
      * @return {string} - The ballerina type.
      */
     getBType() {
-        return (this._leftExpression.split(" ")[0]).trim();
+        return (this._leftExpression.split(' ')[0]).trim();
     }
 
     /**
@@ -94,7 +94,7 @@ class VariableDefinitionStatement extends Statement {
      * @return {string} - The identifier.
      */
     getIdentifier() {
-        return (this._leftExpression.split(" ")[1]).trim();
+        return (this._leftExpression.split(' ')[1]).trim();
     }
 
     /**
@@ -106,11 +106,11 @@ class VariableDefinitionStatement extends Statement {
     }
 
     setIdentifier(identifier) {
-        this.setLeftExpression(this.getBType() + " " + identifier);
+        this.setLeftExpression(this.getBType() + ' ' + identifier);
     }
 
     setBType(bType) {
-        this.setLeftExpression(bType + " " + this.getIdentifier());
+        this.setLeftExpression(bType + ' ' + this.getIdentifier());
     }
 
     setValue(value) {
@@ -130,8 +130,8 @@ class VariableDefinitionStatement extends Statement {
             var rightOperand = variableDefinitionStatementString.substring(equalIndex + 1);
         }
 
-        this.setLeftExpression(!_.isNil(leftOperand) ? leftOperand.trim() : "");
-        this.setRightExpression(!_.isNil(rightOperand) ? rightOperand.trim() : "");
+        this.setLeftExpression(!_.isNil(leftOperand) ? leftOperand.trim() : '');
+        this.setRightExpression(!_.isNil(rightOperand) ? rightOperand.trim() : '');
     }
 
     /**
@@ -144,7 +144,7 @@ class VariableDefinitionStatement extends Statement {
                 node: this,
                 attributes: [{
                     checkEvenIfDefined: true,
-                    defaultValue: "i",
+                    defaultValue: 'i',
                     setter: this.setIdentifier,
                     getter: this.getIdentifier,
                     parents: [{

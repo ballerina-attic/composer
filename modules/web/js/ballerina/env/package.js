@@ -51,7 +51,7 @@ class Package extends EventChannel {
         if(!_.isNil(name) && _.isString(name)){
             this._name = name;
         } else {
-            log.error("Invalid value for package name: ", name);
+            log.error('Invalid value for package name: ', name);
         }
     }
 
@@ -67,7 +67,7 @@ class Package extends EventChannel {
     addConstantDefinitions(constantDefinitions) {
         var err;
         if(!_.isArray(constantDefinitions) && !(constantDefinitions instanceof  ConstantDefinition)){
-            err = "Adding constant def failed. Not an instance of ConstantDefinition" + constantDefinitions;
+            err = 'Adding constant def failed. Not an instance of ConstantDefinition' + constantDefinitions;
             log.error(err);
             throw err;
         }
@@ -75,7 +75,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(constantDefinitions)){
                 _.each(constantDefinitions, function(constantDefinition){
                     if(!(constantDefinition instanceof  ConstantDefinition)){
-                        err = "Adding constant def failed. Not an instance of ConstantDefinition" + constantDefinition;
+                        err = 'Adding constant def failed. Not an instance of ConstantDefinition' + constantDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -89,7 +89,7 @@ class Package extends EventChannel {
          * @event Package#constant-defs-added
          * @type {[ConstantDefinition]}
          */
-        this.trigger("constant-defs-added", constantDefinitions);
+        this.trigger('constant-defs-added', constantDefinitions);
     }
 
     /**
@@ -119,7 +119,7 @@ class Package extends EventChannel {
         var err;
         var self = this;
         if(!_.isArray(typeMapperDefinitions) && !(typeMapperDefinitions instanceof  TypeMapperDefinition)){
-            err = "Adding type mapper def failed. Not an instance of TypeMapperDefinition" + typeMapperDefinitions;
+            err = 'Adding type mapper def failed. Not an instance of TypeMapperDefinition' + typeMapperDefinitions;
             log.error(err);
             throw err;
         }
@@ -127,7 +127,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(typeMapperDefinitions)){
                 _.each(typeMapperDefinitions, function(typeMapperDefinition){
                     if(!(typeMapperDefinition instanceof  TypeMapperDefinition)){
-                        err = "Adding type mapper def failed. Not an instance of TypeMapperDefinition" + typeMapperDefinition;
+                        err = 'Adding type mapper def failed. Not an instance of TypeMapperDefinition' + typeMapperDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -141,7 +141,7 @@ class Package extends EventChannel {
          * @event Package#type-mapper-defs-added
          * @type {[TypeMapperDefinition]}
          */
-        this.trigger("type-mapper-defs-added", typeMapperDefinitions);
+        this.trigger('type-mapper-defs-added', typeMapperDefinitions);
     }
 
     /**
@@ -170,7 +170,7 @@ class Package extends EventChannel {
     addTypeDefinitions(typeDefinitions) {
         var err;
         if(!_.isArray(typeDefinitions) && !(typeDefinitions instanceof  TypeDefinition)){
-            err = "Adding type def failed. Not an instance of TypeDefinition" + typeDefinitions;
+            err = 'Adding type def failed. Not an instance of TypeDefinition' + typeDefinitions;
             log.error(err);
             throw err;
         }
@@ -178,7 +178,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(typeDefinitions)){
                 _.each(typeDefinitions, function(typeDefinition){
                     if(!(typeDefinition instanceof  TypeDefinition)){
-                        err = "Adding type def failed. Not an instance of TypeDefinition" + typeDefinition;
+                        err = 'Adding type def failed. Not an instance of TypeDefinition' + typeDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -192,7 +192,7 @@ class Package extends EventChannel {
          * @event Package#type-defs-added
          * @type {[TypeDefinition]}
          */
-        this.trigger("type-defs-added", typeDefinitions);
+        this.trigger('type-defs-added', typeDefinitions);
     }
 
     /**
@@ -222,7 +222,7 @@ class Package extends EventChannel {
         var self = this;
         var err;
         if(!_.isArray(connectors) && !(BallerinaEnvFactory.isConnector(connectors))){
-            err = "Adding connector failed. Not an instance of connector " + connectors;
+            err = 'Adding connector failed. Not an instance of connector ' + connectors;
             log.error(err);
             throw err;
         }
@@ -230,7 +230,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(connectors)){
                 _.each(connectors, function(connector){
                     if(!BallerinaEnvFactory.isConnector(connector)){
-                        err = "Adding connector failed. Not an instance of connector" + connector;
+                        err = 'Adding connector failed. Not an instance of connector' + connector;
                         log.error(err);
                         throw err;
                     }
@@ -243,7 +243,7 @@ class Package extends EventChannel {
          * @event Package#connector-defs-added
          * @type {[Connector]}
          */
-        this.trigger("connector-defs-added", connectors);
+        this.trigger('connector-defs-added', connectors);
     }
 
     /**
@@ -271,7 +271,7 @@ class Package extends EventChannel {
     addAnnotationDefinitions(annotationDefinitions){
         var err;
         if(!_.isArray(annotationDefinitions) && !(BallerinaEnvFactory.isAnnotation(annotationDefinitions))){
-            err = "Adding annotation def failed. Not an instance of AnnotationDefinition" + annotationDefinitions;
+            err = 'Adding annotation def failed. Not an instance of AnnotationDefinition' + annotationDefinitions;
             log.error(err);
             throw err;
         }
@@ -279,7 +279,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(annotationDefinitions)){
                 _.each(annotationDefinitions, function(annotationDefinition){
                     if(!(annotationDefinition instanceof  AnnotationDefinition)){
-                        err = "Adding annotation def failed. Not an instance of AnnotationDefinitions" + annotationDefinition;
+                        err = 'Adding annotation def failed. Not an instance of AnnotationDefinitions' + annotationDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -293,7 +293,7 @@ class Package extends EventChannel {
          * @event Package#annotation-defs-added
          * @type {[AnnotationDefinition]}
          */
-        this.trigger("annotation-defs-added", annotationDefinitions);
+        this.trigger('annotation-defs-added', annotationDefinitions);
     }
 
     /**
@@ -321,7 +321,7 @@ class Package extends EventChannel {
     addServiceDefinitions(serviceDefinitions) {
         var err;
         if(!_.isArray(serviceDefinitions) && !(serviceDefinitions instanceof  ServiceDefinition)){
-            err = "Adding service def failed. Not an instance of ServiceDefinition" + serviceDefinitions;
+            err = 'Adding service def failed. Not an instance of ServiceDefinition' + serviceDefinitions;
             log.error(err);
             throw err;
         }
@@ -329,7 +329,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(serviceDefinitions)){
                 _.each(serviceDefinitions, function(serviceDefinition){
                     if(!(serviceDefinition instanceof  ServiceDefinition)){
-                        err = "Adding service def failed. Not an instance of ServiceDefinition" + serviceDefinition;
+                        err = 'Adding service def failed. Not an instance of ServiceDefinition' + serviceDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -343,7 +343,7 @@ class Package extends EventChannel {
          * @event Package#service-defs-added
          * @type {[ServiceDefinition]}
          */
-        this.trigger("service-defs-added", serviceDefinitions);
+        this.trigger('service-defs-added', serviceDefinitions);
     }
 
     /**
@@ -372,7 +372,7 @@ class Package extends EventChannel {
         var self = this;
         var err;
         if(!_.isArray(functionDefinitions) && !(BallerinaEnvFactory.isFunction(functionDefinitions))){
-            err = "Adding function def failed. Not an instance of FunctionDefinition" + functionDefinitions;
+            err = 'Adding function def failed. Not an instance of FunctionDefinition' + functionDefinitions;
             log.error(err);
             throw err;
         }
@@ -380,7 +380,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(functionDefinitions)){
                 _.each(functionDefinitions, function(functionDefinition){
                     if(!(functionDefinition instanceof  FunctionDefinition)){
-                        err = "Adding function def failed. Not an instance of FunctionDefinition" + functionDefinition;
+                        err = 'Adding function def failed. Not an instance of FunctionDefinition' + functionDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -394,7 +394,7 @@ class Package extends EventChannel {
          * @event Package#function-defs-added
          * @type {[FunctionDefinition]}
          */
-        this.trigger("function-defs-added", functionDefinitions);
+        this.trigger('function-defs-added', functionDefinitions);
     }
 
     /**
@@ -406,7 +406,7 @@ class Package extends EventChannel {
             //TODO Need to check param types along with function name to support overloaded functions
             return _.isEqual(functionDefinitionItem.getName(), functionDefinition.getFunctionName());
         });
-        this.trigger("function-def-removed", functionDefinition);
+        this.trigger('function-def-removed', functionDefinition);
     }
 
     /**
@@ -421,7 +421,7 @@ class Package extends EventChannel {
         // removing child connector actions
         connector[0].removeAllActions(connectorDefinition);
         _.remove(this._connectorDefinitions, connector[0]);
-        this.trigger("connector-def-removed", connectorDefinition);
+        this.trigger('connector-def-removed', connectorDefinition);
     }
 
     /**
@@ -459,7 +459,7 @@ class Package extends EventChannel {
     addStructDefinitions(structDefinitions) {
         var err;
         if(!_.isArray(structDefinitions) && !(structDefinitions instanceof StructDefinition)){
-            err = "Adding struct def failed. Not an instance of StructDefinition: " + structDefinitions;
+            err = 'Adding struct def failed. Not an instance of StructDefinition: ' + structDefinitions;
             log.error(err);
             throw err;
         }
@@ -467,7 +467,7 @@ class Package extends EventChannel {
             if(!_.isEmpty(structDefinitions)){
                 _.each(structDefinitions, function(structDefinition){
                     if(!(structDefinition instanceof  StructDefinition)){
-                        err = "Adding struct def failed. Not an instance of StructDefinition: " + structDefinition;
+                        err = 'Adding struct def failed. Not an instance of StructDefinition: ' + structDefinition;
                         log.error(err);
                         throw err;
                     }
@@ -482,15 +482,15 @@ class Package extends EventChannel {
             _.uniqBy(
                 _.reverse(
                     _.concat(this._structDefinitions, structDefinitions)), function (structDefinition) {
-                    return structDefinition.getStructName();
-                })
+                return structDefinition.getStructName();
+            })
         );
         /**
          * Fired when new struct defs are added to the package.
          * @event Package#struct-defs-added
          * @type {FunctionDefinition}
          */
-        this.trigger("struct-defs-added", structDefinitions);
+        this.trigger('struct-defs-added', structDefinitions);
     }
 
     /**

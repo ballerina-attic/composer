@@ -200,7 +200,7 @@ class BallerinaFileEditor extends EventChannel {
         var canvasContainer = $('<div></div>');
         canvasContainer.addClass(_.get(viewOptions, 'cssClass.canvas_container'));
         var canvasTopControlsContainer = $('<div></div>')
-            .addClass(_.get(viewOptions, 'cssClass.canvas_top_controls_container'))
+            .addClass(_.get(viewOptions, 'cssClass.canvas_top_controls_container'));
         canvasContainer.append(canvasTopControlsContainer);
 
         this._$designViewContainer.append(canvasContainer);
@@ -508,7 +508,7 @@ class BallerinaFileEditor extends EventChannel {
             swaggerViewBtn.show();
             designViewBtn.hide();
             self.setActiveView('design');
-            self.trigger("update-diagram");
+            self.trigger('update-diagram');
             if(isSourceChanged || isSwaggerChanged || savedWhileInSourceView){
                 self._environment.resetCurrentPackage();
                 self.rerenderCurrentPackageTool();
@@ -689,7 +689,7 @@ class BallerinaFileEditor extends EventChannel {
             $(addImportButton).show();
         });
 
-        var importsDeclarationContentWrapper = $("<span class='imports-content-wrapper'/>")
+        var importsDeclarationContentWrapper = $('<span class=\'imports-content-wrapper\'/>')
             .appendTo(importDeclarationControlsWrapper);
 
         var substringMatcher = function(strs) {
@@ -867,7 +867,7 @@ class BallerinaFileEditor extends EventChannel {
      * Will be used to re adjest diagram when browser window resized.
      */
     reRender(){
-        this.trigger("update-diagram");
+        this.trigger('update-diagram');
     }
 
     /**

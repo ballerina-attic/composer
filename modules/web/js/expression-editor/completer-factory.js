@@ -25,26 +25,26 @@ class CompleterFactory{
 
     getCompleters(key , packageScope){
         switch (key) {
-            case "VariableDefinition":
-                return this.getVariableDefinitionCompleters();
-            case "Function":
-                return this.getFunctionCompleters(packageScope);
-            default:
-                return false;
+        case 'VariableDefinition':
+            return this.getVariableDefinitionCompleters();
+        case 'Function':
+            return this.getFunctionCompleters(packageScope);
+        default:
+            return false;
         }
     }
 
     getVariableDefinitionCompleters(){
         return [{
             getCompletions: (editor, session, pos, prefix, callback) => {
-                 if(this.variable_dec.exec(editor.getSession().getValue())){
-                     return [];
-                 }
-                 let types = BallerinaEnvironment.getTypes();
-                 var completions = types.map(function(item){
-                    return { name:item, value:item + " ", meta: "type" };
-                 });
-                 callback(null, completions);
+                if(this.variable_dec.exec(editor.getSession().getValue())){
+                    return [];
+                }
+                let types = BallerinaEnvironment.getTypes();
+                var completions = types.map(function(item){
+                    return { name:item, value:item + ' ', meta: 'type' };
+                });
+                callback(null, completions);
             }
         }];
     }
@@ -58,11 +58,11 @@ class CompleterFactory{
                         searchPackage(editor.getSession().getValue().trim(),null);
                     completions = packages.map((item) => {
                         return {
-                          name: item.getName(),
-                          caption: item.getName(),
-                          value: this.getPackagePrefix(item.getName()) + ":",
-                          meta: "package",
-                          score:1
+                            name: item.getName(),
+                            caption: item.getName(),
+                            value: this.getPackagePrefix(item.getName()) + ':',
+                            meta: 'package',
+                            score:1
                         };
                     });
 
@@ -70,27 +70,27 @@ class CompleterFactory{
                         .getFunctionDefinitions();
                     var functions = scopeFunctions.map((item) => {
                         return {
-                          name:item.getName(),
-                          caption: item.getName(),
-                          value: item.getName() + "(",
-                          meta: "local function",
-                          score:100
+                            name:item.getName(),
+                            caption: item.getName(),
+                            value: item.getName() + '(',
+                            meta: 'local function',
+                            score:100
                         };
                     });
 
                     callback(null, _.concat(completions, functions));
                 }else{
                     let packages = BallerinaEnvironment.
-                        searchPackage(editor.getSession().getValue().split(":")[0].trim());
+                        searchPackage(editor.getSession().getValue().split(':')[0].trim());
                     if(_.isArray(packages) && packages.length > 0){
                         let packageItem = packages[0];
                         let functions = packageItem.getFunctionDefinitions();
                         completions = functions.map((item) => {
                             return {
-                              name:item.getName(),
-                              caption: item.getName(),
-                              value: item.getName() + "(",
-                              meta: "function"
+                                name:item.getName(),
+                                caption: item.getName(),
+                                value: item.getName() + '(',
+                                meta: 'function'
                             };
                         });
                     }
@@ -101,7 +101,7 @@ class CompleterFactory{
     }
 
     getPackagePrefix(name){
-        let array = name.split(".");
+        let array = name.split('.');
         return array[array.length -1 ];
     }
 }

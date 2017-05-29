@@ -33,15 +33,15 @@ import CommonUtils from '../utils/common-utils';
  */
 class ConnectorDeclaration extends ASTNode {
     constructor(options) {
-        super("ConnectorDeclaration");
-        this._connectorName = _.get(options, "connectorName", "ClientConnector");
-        this._connectorVariable = _.get(options, "connectorVariable");
-        this._connectorType = _.get(options, "connectorType", "ConnectorDeclaration");
-        this._connectorPkgName = _.get(options, "connectorPackageName", "http");
-        this._timeout = _.get(options, "timeout", "");
-        this._params = _.get(options, "params", '\"http://localhost:9090\"');
-        this._arguments = _.get(options, "arguments", []);
-        this._connectorActionsReference = _.get(options, "connectorActionsReference", []);
+        super('ConnectorDeclaration');
+        this._connectorName = _.get(options, 'connectorName', 'ClientConnector');
+        this._connectorVariable = _.get(options, 'connectorVariable');
+        this._connectorType = _.get(options, 'connectorType', 'ConnectorDeclaration');
+        this._connectorPkgName = _.get(options, 'connectorPackageName', 'http');
+        this._timeout = _.get(options, 'timeout', '');
+        this._params = _.get(options, 'params', '\"http://localhost:9090\"');
+        this._arguments = _.get(options, 'arguments', []);
+        this._connectorActionsReference = _.get(options, 'connectorActionsReference', []);
         this._fullPackageName = _.get(options, 'fullPackageName', '');
     }
 
@@ -84,7 +84,7 @@ class ConnectorDeclaration extends ASTNode {
      * @param {object} options
      * */
     setParams(params, options) {
-        this.setAttribute("_params", params, options);
+        this.setAttribute('_params', params, options);
     }
 
     /**
@@ -94,36 +94,36 @@ class ConnectorDeclaration extends ASTNode {
      * @param {object} options
      * */
     setConnectorExpression(expression, options) {
-        if (!_.isNil(expression) && expression !== "") {
-            var firstAssignmentIndex = expression.indexOf("=");
+        if (!_.isNil(expression) && expression !== '') {
+            var firstAssignmentIndex = expression.indexOf('=');
             var leftSide = expression.slice(0, firstAssignmentIndex);
             var rightSide = expression.slice((firstAssignmentIndex + 1), expression.length);
 
             if (leftSide) {
                 leftSide = leftSide.trim();
-                this.setAttribute("_connectorPkgName", leftSide.includes(":") ?
-                    leftSide.split(":", 1)[0]
-                    : "");
+                this.setAttribute('_connectorPkgName', leftSide.includes(':') ?
+                    leftSide.split(':', 1)[0]
+                    : '');
 
-                this.setAttribute("_connectorName", leftSide.includes(":") ?
-                    leftSide.split(":", 2)[1].split(" ", 1)[0]
-                    : (leftSide.indexOf(" ") !== (leftSide.length - 1) ? leftSide.split(" ", 1)[0] : ""));
+                this.setAttribute('_connectorName', leftSide.includes(':') ?
+                    leftSide.split(':', 2)[1].split(' ', 1)[0]
+                    : (leftSide.indexOf(' ') !== (leftSide.length - 1) ? leftSide.split(' ', 1)[0] : ''));
 
-                this.setAttribute("_connectorVariable", leftSide.includes(":") ?
-                    leftSide.split(":", 2)[1].split(" ", 2)[1]
-                    : (leftSide.indexOf(" ") !== (leftSide.length - 1) ? leftSide.split(" ", 2)[1] : ""));
+                this.setAttribute('_connectorVariable', leftSide.includes(':') ?
+                    leftSide.split(':', 2)[1].split(' ', 2)[1]
+                    : (leftSide.indexOf(' ') !== (leftSide.length - 1) ? leftSide.split(' ', 2)[1] : ''));
             }
             if (rightSide) {
                 rightSide = rightSide.trim();
-                this.setAttribute("_params", rightSide.includes("(") ?
-                    rightSide.split("(", 2)[1].slice(0, (rightSide.split("(", 2)[1].length - 1))
-                    : "", options);
+                this.setAttribute('_params', rightSide.includes('(') ?
+                    rightSide.split('(', 2)[1].slice(0, (rightSide.split('(', 2)[1].length - 1))
+                    : '', options);
             }
         }
     }
 
     setTimeout(timeout, options) {
-        this.setAttribute("_timeout", timeout, options);
+        this.setAttribute('_timeout', timeout, options);
     }
 
     setArguments(argument) {
@@ -182,7 +182,7 @@ class ConnectorDeclaration extends ASTNode {
      */
     initFromJson(jsonNode) {
         if(jsonNode.children[1].connector_name) {
-            var connectorName = jsonNode.children[1].connector_name.split(":");
+            var connectorName = jsonNode.children[1].connector_name.split(':');
             if (connectorName.length > 1) {
                 this.setConnectorName(connectorName[1], {doSilently: true});
                 this.setConnectorPkgName(connectorName[0], {doSilently: true});
@@ -216,7 +216,7 @@ class ConnectorDeclaration extends ASTNode {
         var uniqueIDGenObject = {
             node: this,
             attributes: [{
-                defaultValue: "endpoint",
+                defaultValue: 'endpoint',
                 setter: this.setConnectorVariable,
                 getter: this.getConnectorVariable,
                 parents: [{
@@ -234,7 +234,7 @@ class ConnectorDeclaration extends ASTNode {
                 node: this.parent.parent,
                 getChildrenFunc: this.parent.getConnectionDeclarations,
                 getter: this.getConnectorVariable
-            })
+            });
         } else if (this.getFactory().isServiceDefinition(this.parent)) {
             var resourceDefinitions = this.parent.getResourceDefinitions();
             _.forEach(resourceDefinitions, function (resourceDefinition) {
@@ -243,7 +243,7 @@ class ConnectorDeclaration extends ASTNode {
                     node: resourceDefinition,
                     getChildrenFunc: self.parent.getConnectionDeclarations,
                     getter: self.getConnectorVariable
-                })
+                });
             });
         } else if (this.getFactory().isConnectorAction(this.parent)) {
             uniqueIDGenObject.attributes[0].parents.push({
@@ -251,7 +251,7 @@ class ConnectorDeclaration extends ASTNode {
                 node: this.parent.parent,
                 getChildrenFunc: this.parent.getConnectionDeclarations,
                 getter: this.getConnectorVariable
-            })
+            });
         } else if (this.getFactory().isConnectorDefinition(this.parent)) {
             var connectorActions = this.parent.getConnectorActionDefinitions();
             _.forEach(connectorActions, function (connectionAction) {
@@ -260,7 +260,7 @@ class ConnectorDeclaration extends ASTNode {
                     node: connectionAction,
                     getChildrenFunc: self.parent.getConnectionDeclarations,
                     getter: self.getConnectorVariable
-                })
+                });
             });
         }
 
@@ -274,11 +274,11 @@ class ConnectorDeclaration extends ASTNode {
  * @param {object} self Connector declaration
  * */
 var generateParamString = function (self) {
-    self._params = "";
+    self._params = '';
     for (var i = 0; i < self._arguments.length; i++) {
         self._params += self._arguments[i].getExpression();
         if (i !== (self._arguments.length - 1)) {
-            self._params += ",";
+            self._params += ',';
         }
     }
 };
@@ -290,40 +290,40 @@ var generateParamString = function (self) {
  * @return {string} expression
  * */
 var generateExpression = function (self) {
-    var expression = "";
+    var expression = '';
     if (!shouldSkipPackageName(self._connectorPkgName)) {
-        expression += self._connectorPkgName + ":";
+        expression += self._connectorPkgName + ':';
     }
 
     if (!_.isUndefined(self._connectorName) && !_.isNil(self._connectorName)) {
-        expression += self._connectorName + " ";
+        expression += self._connectorName + ' ';
     }
 
     if (!_.isUndefined(self._connectorVariable) && !_.isNil(self._connectorVariable)) {
-        expression += self._connectorVariable + " = ";
+        expression += self._connectorVariable + ' = ';
     }
 
-    expression += "create ";
+    expression += 'create ';
 
     if (!shouldSkipPackageName(self._connectorPkgName)) {
-        expression += self._connectorPkgName + ":";
+        expression += self._connectorPkgName + ':';
     }
 
     if (!_.isUndefined(self._connectorName) && !_.isNil(self._connectorName)) {
         expression += self._connectorName;
     }
 
-    expression += "(";
+    expression += '(';
     if (!_.isUndefined(self._params) && !_.isNil(self._params)) {
         expression += self._params;
     }
-    expression += ")";
+    expression += ')';
     return expression;
 };
 
 var shouldSkipPackageName = function(packageName) {
     return _.isUndefined(packageName) || _.isNil(packageName) ||
-        _.isEqual(packageName, 'Current Package') || _.isEqual(packageName, '')
-}
+        _.isEqual(packageName, 'Current Package') || _.isEqual(packageName, '');
+};
 
 export default ConnectorDeclaration;

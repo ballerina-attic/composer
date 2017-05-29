@@ -39,9 +39,9 @@ class ReferenceTypeInitExpression extends Expression {
             var child = self.getFactory().createFromJson(childNode);
             self.addChild(child);
             child.initFromJson(childNode);
-            generateExpression +=child.getExpression() + ",";
+            generateExpression +=child.getExpression() + ',';
         });
-        this.setExpression("{" + (generateExpression.substring(0, generateExpression.length-1)) + "}",{doSilently: true});
+        this.setExpression('{' + (generateExpression.substring(0, generateExpression.length-1)) + '}',{doSilently: true});
     }
 
     generateExpression() {
