@@ -139,28 +139,9 @@ public class BLangFileRestService {
      * @return A string which contains a json model.
      * @throws IOException
      */
-    private String parseJsonDataModel(InputStream stream, java.nio.file.Path filePath) throws IOException {
+    private static String parseJsonDataModel(InputStream stream, java.nio.file.Path filePath) throws IOException {
 
-        ANTLRInputStream antlrInputStream = new ANTLRInputStream(stream);
-        BallerinaLexer ballerinaLexer = new BallerinaLexer(antlrInputStream);
-        CommonTokenStream ballerinaToken = new CommonTokenStream(ballerinaLexer);
-
-        BallerinaParser ballerinaParser = new BallerinaParser(ballerinaToken);
-        BallerinaComposerErrorStrategy errorStrategy = new BallerinaComposerErrorStrategy();
-        ballerinaParser.setErrorHandler(errorStrategy);
-
-        GlobalScope globalScope = GlobalScope.getInstance();
-        BTypes.loadBuiltInTypes(globalScope);
-        BLangPackage bLangPackage = new BLangPackage(globalScope);
-        BLangPackage.PackageBuilder packageBuilder = new BLangPackage.PackageBuilder(bLangPackage);
-        BallerinaComposerModelBuilder bLangModelBuilder = new BallerinaComposerModelBuilder(packageBuilder,
-                StringUtils.EMPTY);
-        BLangAntlr4Listener ballerinaBaseListener = new BLangAntlr4Listener(true, ballerinaToken, bLangModelBuilder,
-                filePath);
-        ballerinaParser.addParseListener(ballerinaBaseListener);
-        ballerinaParser.compilationUnit();
-        BallerinaFile bFile = bLangModelBuilder.build();
-
+        BallerinaFile bFile = getBFile(stream, filePath);
         JsonObject response = new JsonObject();
         BLangJSONModelBuilder jsonModelBuilder = new BLangJSONModelBuilder(response);
         bFile.accept(jsonModelBuilder);
@@ -202,9 +183,10 @@ public class BLangFileRestService {
                 if (parentDir == null) {
                     return;
                 }
+                java.nio.file.Path programDir = getProgramDirectory(bFile, filePath);
 
                 // get packages in program directory
-                Map<String, ModelPackage> packages = getPackagesInProgramDirectory(parentDir);
+                Map<String, ModelPackage> packages = getPackagesInProgramDirectory(programDir);
                 Collection<ModelPackage> modelPackages = packages.values();
 
                 // add package info into response
@@ -221,6 +203,60 @@ public class BLangFileRestService {
                 // exception
             }
         }
+    }
+
+    private static BallerinaFile getBFile(InputStream stream, java.nio.file.Path filePath) throws IOException {
+        ANTLRInputStream antlrInputStream = new ANTLRInputStream(stream);
+        BallerinaLexer ballerinaLexer = new BallerinaLexer(antlrInputStream);
+        CommonTokenStream ballerinaToken = new CommonTokenStream(ballerinaLexer);
+
+        BallerinaParser ballerinaParser = new BallerinaParser(ballerinaToken);
+        BallerinaComposerErrorStrategy errorStrategy = new BallerinaComposerErrorStrategy();
+        ballerinaParser.setErrorHandler(errorStrategy);
+
+        GlobalScope globalScope = GlobalScope.getInstance();
+        BTypes.loadBuiltInTypes(globalScope);
+        BLangPackage bLangPackage = new BLangPackage(globalScope);
+        BLangPackage.PackageBuilder packageBuilder = new BLangPackage.PackageBuilder(bLangPackage);
+        BallerinaComposerModelBuilder bLangModelBuilder = new BallerinaComposerModelBuilder(packageBuilder,
+                StringUtils.EMPTY);
+        BLangAntlr4Listener ballerinaBaseListener = new BLangAntlr4Listener(true, ballerinaToken, bLangModelBuilder,
+                filePath);
+        ballerinaParser.addParseListener(ballerinaBaseListener);
+        ballerinaParser.compilationUnit();
+        BallerinaFile bFile = bLangModelBuilder.build();
+        return bFile;
+    }
+
+    public static java.nio.file.Path getProgramDirectory(BallerinaFile bFile, String filePath) {
+        return getProgramDirectory(bFile, Paths.get(filePath));
+    }
+
+    public static BallerinaFile getBFile(String filePath) throws IOException {
+        InputStream stream = null;
+        try {
+            stream = new FileInputStream(new File(filePath));
+
+            BallerinaFile bFile = getBFile(stream, Paths.get(filePath));
+            return bFile;
+        } finally {
+            if (null != stream) {
+                IOUtils.closeQuietly(stream);
+            }
+        }
+    }
+
+    private static java.nio.file.Path getProgramDirectory(BallerinaFile bFile, java.nio.file.Path filePath) {
+        // find nested directory count using package name
+        int directoryCount = (bFile.getPackagePath().contains(".")) ? bFile.getPackagePath().split("\\.").length
+                : 1;
+
+        // find program directory
+        java.nio.file.Path parentDir = filePath.getParent();
+        for (int i = 0; i < directoryCount; ++i) {
+            parentDir = parentDir.getParent();
+        }
+        return parentDir;
     }
 
     /**
