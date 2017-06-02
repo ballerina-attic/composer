@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ballerinalang.BLangProgramLoader;
 import org.ballerinalang.composer.service.workspace.Constants;
+import org.ballerinalang.composer.service.workspace.common.Utils;
 import org.ballerinalang.composer.service.workspace.model.ModelPackage;
 import org.ballerinalang.composer.service.workspace.util.WorkspaceUtils;
 import org.ballerinalang.model.BLangPackage;
@@ -139,28 +140,9 @@ public class BLangFileRestService {
      * @return A string which contains a json model.
      * @throws IOException
      */
-    private String parseJsonDataModel(InputStream stream, java.nio.file.Path filePath) throws IOException {
+    private static String parseJsonDataModel(InputStream stream, java.nio.file.Path filePath) throws IOException {
 
-        ANTLRInputStream antlrInputStream = new ANTLRInputStream(stream);
-        BallerinaLexer ballerinaLexer = new BallerinaLexer(antlrInputStream);
-        CommonTokenStream ballerinaToken = new CommonTokenStream(ballerinaLexer);
-
-        BallerinaParser ballerinaParser = new BallerinaParser(ballerinaToken);
-        BallerinaComposerErrorStrategy errorStrategy = new BallerinaComposerErrorStrategy();
-        ballerinaParser.setErrorHandler(errorStrategy);
-
-        GlobalScope globalScope = GlobalScope.getInstance();
-        BTypes.loadBuiltInTypes(globalScope);
-        BLangPackage bLangPackage = new BLangPackage(globalScope);
-        BLangPackage.PackageBuilder packageBuilder = new BLangPackage.PackageBuilder(bLangPackage);
-        BallerinaComposerModelBuilder bLangModelBuilder = new BallerinaComposerModelBuilder(packageBuilder,
-                StringUtils.EMPTY);
-        BLangAntlr4Listener ballerinaBaseListener = new BLangAntlr4Listener(true, ballerinaToken, bLangModelBuilder,
-                filePath);
-        ballerinaParser.addParseListener(ballerinaBaseListener);
-        ballerinaParser.compilationUnit();
-        BallerinaFile bFile = bLangModelBuilder.build();
-
+        BallerinaFile bFile = Utils.getBFile(stream, filePath);
         JsonObject response = new JsonObject();
         BLangJSONModelBuilder jsonModelBuilder = new BLangJSONModelBuilder(response);
         bFile.accept(jsonModelBuilder);
@@ -202,9 +184,10 @@ public class BLangFileRestService {
                 if (parentDir == null) {
                     return;
                 }
+                java.nio.file.Path programDir = Utils.getProgramDirectory(bFile, filePath);
 
                 // get packages in program directory
-                Map<String, ModelPackage> packages = getPackagesInProgramDirectory(parentDir);
+                Map<String, ModelPackage> packages = getPackagesInProgramDirectory(programDir);
                 Collection<ModelPackage> modelPackages = packages.values();
 
                 // add package info into response
