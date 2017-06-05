@@ -48,8 +48,10 @@ class ASTNode extends EventChannel {
         });
 
         this._generateUniqueIdentifiers = undefined;
-        this.whiteSpaceDescriptor = {};
-        this.shouldCalculateIndentation = true;
+        this.whiteSpace = {};
+        this.whiteSpace.defaultDescriptor = {};
+        this.whiteSpace.currentDescriptor = {};
+        this.whiteSpace.useDefault = true;
 
         /**
          * View State Object to keep track of the model's view properties
@@ -488,11 +490,22 @@ class ASTNode extends EventChannel {
     generateUniqueIdentifiers() {}
 
     getWhiteSpaceDescriptor() {
-        return this.whiteSpaceDescriptor;
+        return (this.whiteSpace.useDefault) ? this.whiteSpace.defaultDescriptor :
+              this.whiteSpace.currentDescriptor;
     }
 
-    setWhiteSpaceDescriptor(whiteSpaceDescriptor, options) {
-        this.setAttribute('whiteSpaceDescriptor', whiteSpaceDescriptor, options);
+    setWhiteSpaceDescriptor(whiteSpaceDescriptor) {
+        this.whiteSpace.currentDescriptor = whiteSpaceDescriptor;
+    }
+
+    getWSRegion(regionId) {
+        let region = _.get(this.getWhiteSpaceDescriptor().regions, regionId);
+        return (!_.isNil(region)) ? region : '';
+    }
+
+    getChildWSRegion(childId, regionId) {
+        let region = _.get(_.get(this.getWhiteSpaceDescriptor().children, childId).regions, regionId);
+        return (!_.isNil(region)) ? region : '';
     }
 
     /** Gets the children of a specific type.

@@ -15,39 +15,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import Statement from './statement';
+
+import ASTNode from '../../ast/node';
+import ASTVisitor from '../ast-visitor';
 
 /**
- * Class for break statement in ballerina.
+ * Constructor for the Enable Format Visitor
+ * @param parent
  * @constructor
- * @augments Statement
  */
-class BreakStatement extends Statement {
-    constructor() {
-        super();
-        this.type = "BreakStatement";
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: '',
-            1: '',
-            2: '\n'
-        }
+class EnableDefaultWSVisitor extends ASTVisitor {
+
+    canVisit(node) {
+        return node instanceof ASTNode;
     }
 
-    canBeAChildOf(node) {
-        return this.getFactory().isStatement(node);
-    }
-
-    /**
-     * initialize from json
-     * @param jsonNode
-     */
-    initFromJson(jsonNode) {
-
-    }
-
-    getStatement() {
-        return 'break';
+    visit(node) {
+        node.whiteSpace.useDefault = true;
     }
 }
 
-export default BreakStatement;
+export default EnableDefaultWSVisitor;

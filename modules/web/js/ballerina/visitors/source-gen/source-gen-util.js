@@ -15,39 +15,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import Statement from './statement';
+import _ from 'lodash';
 
-/**
- * Class for break statement in ballerina.
- * @constructor
- * @augments Statement
- */
-class BreakStatement extends Statement {
-    constructor() {
-        super();
-        this.type = "BreakStatement";
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: '',
-            1: '',
-            2: '\n'
-        }
+class SourceGenUtil {
+
+    static getTailingIndentation(content) {
+        return _.last(_.split(content, '\n'));
     }
 
-    canBeAChildOf(node) {
-        return this.getFactory().isStatement(node);
-    }
-
-    /**
-     * initialize from json
-     * @param jsonNode
-     */
-    initFromJson(jsonNode) {
-
-    }
-
-    getStatement() {
-        return 'break';
+    static replaceTailingIndentation(content, newIndentation) {
+        let tokens = _.split(content, '\n');
+        tokens.pop();
+        tokens.push(newIndentation);
+        return _.join(tokens, '\n');
     }
 }
 
-export default BreakStatement;
+export default SourceGenUtil;

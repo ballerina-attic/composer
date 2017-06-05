@@ -35,6 +35,14 @@ class ResourceDefinition extends ASTNode {
         this._resourceName = _.get(args, 'resourceName');
 
         this.BallerinaASTFactory = this.getFactory();
+        this.whiteSpace.defaultDescriptor.regions =  {
+            0: ' ',
+            1: ' ',
+            2: '',
+            3: ' ',
+            4: '\n',
+            5: '\n'
+        }
     }
 
     setResourceName(resourceName, options) {
@@ -109,10 +117,10 @@ class ResourceDefinition extends ASTNode {
         let params = this.getArguments();
 
         _.forEach(params, function (parameter, index) {
-            paramsAsString += parameter.getParameterDefinitionAsString();
-            if (params.length - 1 != index) {
-                paramsAsString += ", ";
+            if (index != 0) {
+                paramsAsString += ((parameter.whiteSpace.useDefault) ? ', ' : ',');
             }
+            paramsAsString += parameter.getParameterDefinitionAsString();
         });
 
         return paramsAsString;
