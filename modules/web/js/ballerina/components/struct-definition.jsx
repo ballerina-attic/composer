@@ -288,7 +288,7 @@ class StructDefinition extends React.Component {
                           </g>
                             <rect x={coDimensions.x + DesignerDefaults.structDefinitionStatement.width - DesignerDefaults.structDefinitionStatement.deleteButtonOffset}
                                        y={y} onClick={ ()=> this.deleteStatement(child) }
-                                       width="30" height="30" className="parameter-delete-icon-wrapper"/>
+                                       width="30" height="30" className="struct-delete-icon-wrapper"/>
                              <image x={coDimensions.x + DesignerDefaults.structDefinitionStatement.width - DesignerDefaults.structDefinitionStatement.deleteButtonOffset + 9}
                                     y={y + 9 } onClick={ ()=> this.deleteStatement(child) }
                                     width="12" height="12" className="parameter-delete-icon" xlinkHref={ImageUtil.getSVGIconString('cancel')}>
