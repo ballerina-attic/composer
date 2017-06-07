@@ -17,8 +17,11 @@
 package org.ballerinalang.composer.service.workspace.launcher;
 
 import org.ballerinalang.composer.service.workspace.launcher.util.LaunchUtils;
+import org.ballerinalang.composer.service.workspace.rest.datamodel.BLangFileRestService;
+import org.ballerinalang.model.BallerinaFile;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Command class represent the launcher commands.
@@ -104,7 +107,7 @@ public class Command {
         String ballerinaBin, ballerinaCommand, programType, scriptLocation, debugSwitch = "", commandArgs = "";
         int port = -1;
         
-        // path to bi directory
+        // path to bin directory
         ballerinaBin = System.getProperty("ballerina.home") + File.separator + "bin" + File.separator;
         
         if (LaunchUtils.isWindows()) {
@@ -122,13 +125,38 @@ public class Command {
         scriptLocation = getScript();
         
         if (debug) {
-            debugSwitch = "  --ballerina.debug " + this.port;
+            debugSwitch = "  --ballerina-debug " + this.port;
         }
 
         if (this.commandArgs != null) {
             commandArgs = " " + this.commandArgs;
         }
-        return ballerinaBin + ballerinaCommand + programType + scriptLocation + debugSwitch + commandArgs;
+
+        String packageDir;
+        String packagePath = "";
+        try {
+            BallerinaFile bFile = BLangFileRestService.getBFile(scriptLocation);
+            String packageName = bFile.getPackagePath();
+            if(packageName.equals(".")) {
+                packagePath = null;
+                packageDir = null;
+            } else {
+                packagePath = bFile.getPackagePath().replace(".", File.separator);
+                packageDir = BLangFileRestService.getProgramDirectory(bFile, scriptLocation).toString();
+            }
+
+        } catch (IOException e) {
+            packageDir = null;
+        }
+
+
+        if (packageDir != null) {
+            return ballerinaBin + ballerinaCommand + programType + " -pd " + packageDir + " "
+                    + packagePath + debugSwitch + commandArgs;
+        } else {
+            return ballerinaBin + ballerinaCommand + programType + scriptLocation + debugSwitch + commandArgs;
+        }
+
     }
     
     public String getScript() {
