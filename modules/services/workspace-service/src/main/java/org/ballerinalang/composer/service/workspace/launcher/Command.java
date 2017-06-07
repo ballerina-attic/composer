@@ -16,9 +16,12 @@
 
 package org.ballerinalang.composer.service.workspace.launcher;
 
+import org.ballerinalang.composer.service.workspace.common.Utils;
 import org.ballerinalang.composer.service.workspace.launcher.util.LaunchUtils;
+import org.ballerinalang.model.BallerinaFile;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Command class represent the launcher commands.
@@ -101,10 +104,11 @@ public class Command {
     
     @Override
     public String toString() {
-        String ballerinaBin, ballerinaCommand, programType, scriptLocation, debugSwitch = "", commandArgs = "";
+        String ballerinaBin, ballerinaCommand, programType, scriptLocation, debugSwitch = "",
+                commandArgs = "", packageDirSwitch = "";
         int port = -1;
         
-        // path to bi directory
+        // path to bin directory
         ballerinaBin = System.getProperty("ballerina.home") + File.separator + "bin" + File.separator;
         
         if (LaunchUtils.isWindows()) {
@@ -122,13 +126,29 @@ public class Command {
         scriptLocation = getScript();
         
         if (debug) {
-            debugSwitch = "  --ballerina.debug " + this.port;
+            debugSwitch = "  --ballerina-debug " + this.port;
         }
 
         if (this.commandArgs != null) {
             commandArgs = " " + this.commandArgs;
         }
-        return ballerinaBin + ballerinaCommand + programType + scriptLocation + debugSwitch + commandArgs;
+
+        String packageDir = null, packagePath = null;
+        try {
+            BallerinaFile bFile = Utils.getBFile(scriptLocation);
+            String packageName = bFile.getPackagePath();
+            if (!".".equals(packageName)) {
+                packagePath = bFile.getPackagePath().replace(".", File.separator);
+                packageDir = Utils.getProgramDirectory(bFile, scriptLocation).toString();
+            }
+        } catch (IOException e) {
+            
+        }
+
+        if (packagePath != null) {
+            debugSwitch = " -pd " + packageDir + " " + packagePath;
+        }
+        return ballerinaBin + ballerinaCommand + programType + packageDirSwitch + debugSwitch + commandArgs;
     }
     
     public String getScript() {
