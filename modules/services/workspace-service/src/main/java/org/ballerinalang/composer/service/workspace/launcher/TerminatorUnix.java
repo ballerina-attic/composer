@@ -18,7 +18,6 @@ public class TerminatorUnix implements Terminator {
     TerminatorUnix(Command command) {
         this.command = command;
     }
-
     private String[] getFindProcessCommand(String script) {
         String[] cmd = {
                 "/bin/sh",
