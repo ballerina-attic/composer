@@ -29,60 +29,60 @@ import ASTNode from './node';
  * @extends ASTNode
  */
 class Argument extends ASTNode {
-    constructor(args) {
-        super('Argument');
-        this.bType = _.get(args, 'type', 'ArgumentType');
-        this.identifier = _.get(args, 'identifier');
+  constructor(args) {
+    super('Argument');
+    this.bType = _.get(args, 'type', 'ArgumentType');
+    this.identifier = _.get(args, 'identifier');
 
         // Validating the argument.
-        if (!_.isUndefined(this.identifier) && !ASTNode.isValidIdentifier(this.identifier)) {
-            var exceptionString = 'Invalid identifier: \'' + this.identifier + '\'. An identifier must match the regex ' +
+    if (!_.isUndefined(this.identifier) && !ASTNode.isValidIdentifier(this.identifier)) {
+      const exceptionString = `Invalid identifier: '${this.identifier}'. An identifier must match the regex ` +
                 '^[a-zA-Z$_][a-zA-Z0-9$_]*$';
-            log.error(exceptionString);
-            throw exceptionString;
-        }
+      log.error(exceptionString);
+      throw exceptionString;
     }
+  }
 
-    setBType(type, options) {
-        if (!_.isNil(type)) {
-            this.setAttribute('bType', type, options);
-        }
+  setBType(type, options) {
+    if (!_.isNil(type)) {
+      this.setAttribute('bType', type, options);
     }
+  }
 
-    getBType() {
-        return this.bType;
-    }
+  getBType() {
+    return this.bType;
+  }
 
-    getArgumentAsString() {
-        var argAsString = '';
-        argAsString += this.bType;
-        argAsString += !_.isUndefined(this.identifier) ? ' ' + this.identifier : '';
-        return argAsString.trim();
-    }
+  getArgumentAsString() {
+    let argAsString = '';
+    argAsString += this.bType;
+    argAsString += !_.isUndefined(this.identifier) ? ` ${this.identifier}` : '';
+    return argAsString.trim();
+  }
 
-    setIdentifier(identifier, options) {
-        if (_.isNil(identifier) || ASTNode.isValidIdentifier(identifier)) {
-            this.setAttribute('identifier', identifier, options);
-        } else {
-            var exceptionString = 'Invalid identifier: \'' + identifier + '\'. An identifier must match the regex ' +
+  setIdentifier(identifier, options) {
+    if (_.isNil(identifier) || ASTNode.isValidIdentifier(identifier)) {
+      this.setAttribute('identifier', identifier, options);
+    } else {
+      const exceptionString = `Invalid identifier: '${identifier}'. An identifier must match the regex ` +
                 '^[a-zA-Z$_][a-zA-Z0-9$_]*$';
-            log.error(exceptionString);
-            throw exceptionString;
-        }
+      log.error(exceptionString);
+      throw exceptionString;
     }
+  }
 
     // TODO: This function is to temporary fix the issue of function drag and drop until the model refactor
-    getParameterAsString() {
-        var paramAsString = "";
-        paramAsString += "" + this.getBType() + " ";
-        paramAsString += this.getIdentifier();
+  getParameterAsString() {
+    let paramAsString = '';
+    paramAsString += `${this.getBType()} `;
+    paramAsString += this.getIdentifier();
 
-        return paramAsString.trim();
-    }
+    return paramAsString.trim();
+  }
 
-    getIdentifier() {
-        return this.identifier;
-    }
+  getIdentifier() {
+    return this.identifier;
+  }
 
     /**
      * initialize Argument from json object
@@ -90,14 +90,14 @@ class Argument extends ASTNode {
      * @param {string} jsonNode.parameter_type - Type of the argument
      * @param {string} jsonNode.parameter_name - Identifier of the argument
      */
-    initFromJson(jsonNode) {
-        this.setBType(jsonNode.parameter_type, {doSilently: true});
-        this.setIdentifier(jsonNode.parameter_name, {doSilently: true});
-    }
+  initFromJson(jsonNode) {
+    this.setBType(jsonNode.parameter_type, { doSilently: true });
+    this.setIdentifier(jsonNode.parameter_name, { doSilently: true });
+  }
 
-    toString() {
-        return this.getArgumentAsString();
-    }
+  toString() {
+    return this.getArgumentAsString();
+  }
 }
 
 export default Argument;

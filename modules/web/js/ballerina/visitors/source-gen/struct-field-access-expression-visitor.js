@@ -19,27 +19,27 @@ import log from 'log';
 import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen-visitor';
 
 class SructFieldAccessExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitStructFieldAccessExpression(structFieldAccessExpression) {
-        return true;
-    }
+  canVisitStructFieldAccessExpression(structFieldAccessExpression) {
+    return true;
+  }
 
-    beginVisitStructFieldAccessExpression(structFieldAccessExpression) {
-        this.appendSource(structFieldAccessExpression.getExpressionString());
-        log.debug('Begin Visit Struct Field Access Expression');
-    }
+  beginVisitStructFieldAccessExpression(structFieldAccessExpression) {
+    this.appendSource(structFieldAccessExpression.getExpressionString());
+    log.debug('Begin Visit Struct Field Access Expression');
+  }
 
-    visitStructFieldAccessExpression(structFieldAccessExpression) {
-        log.debug('Visit Struct Field Access Expression');
-    }
+  visitStructFieldAccessExpression(structFieldAccessExpression) {
+    log.debug('Visit Struct Field Access Expression');
+  }
 
-    endVisitStructFieldAccessExpression(structFieldAccessExpression) {
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Struct Field Access Expression');
-    }
+  endVisitStructFieldAccessExpression(structFieldAccessExpression) {
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Struct Field Access Expression');
+  }
 }
 
 export default SructFieldAccessExpressionVisitor;

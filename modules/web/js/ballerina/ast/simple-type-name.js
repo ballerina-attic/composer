@@ -19,66 +19,66 @@ import _ from 'lodash';
 import ASTNode from './node';
 
 class SimpleTypeName extends ASTNode {
-    constructor(args) {
-        super('SimpleTypeName');
-        this._typeName = _.get(args, 'typeName', '');
-        this._packageName = _.get(args, 'packageName', '');
-        this._fullPackageName = _.get(args, 'fullPackageName', '');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: ' ',
-            1: '',
-            2: '',
-            3: ''
-        };
-    }
+  constructor(args) {
+    super('SimpleTypeName');
+    this._typeName = _.get(args, 'typeName', '');
+    this._packageName = _.get(args, 'packageName', '');
+    this._fullPackageName = _.get(args, 'fullPackageName', '');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: '',
+      2: '',
+      3: '',
+    };
+  }
 
-    setTypeName(typename, options) {
-        if (!_.isNil(typename)) {
-            this.setAttribute('_typeName', typename, options);
-        }
+  setTypeName(typename, options) {
+    if (!_.isNil(typename)) {
+      this.setAttribute('_typeName', typename, options);
     }
+  }
 
-    getTypeName() {
-        return this._typeName;
-    }
+  getTypeName() {
+    return this._typeName;
+  }
 
-    setPackageName(packageName, options) {
-        if (!_.isNil(packageName)) {
-            this.setAttribute('_packageName', packageName, options);
-        }
+  setPackageName(packageName, options) {
+    if (!_.isNil(packageName)) {
+      this.setAttribute('_packageName', packageName, options);
     }
+  }
 
-    setFullPackageName(packageName, options) {
-        if (!_.isNil(packageName)) {
-            this.setAttribute('_fullPackageName', packageName, options);
-        }
+  setFullPackageName(packageName, options) {
+    if (!_.isNil(packageName)) {
+      this.setAttribute('_fullPackageName', packageName, options);
     }
+  }
 
-    getPackageName() {
-        return this._packageName;
-    }
+  getPackageName() {
+    return this._packageName;
+  }
 
-    getFullPackageName() {
-        return this._fullPackageName;
-    }
+  getFullPackageName() {
+    return this._fullPackageName;
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        this.setTypeName(jsonNode.type_name, {doSilently: true});
-        this.setPackageName(jsonNode.package_name, {doSilently: true});
-        this.setFullPackageName(jsonNode.full_package_name, {doSilently: true});
-    }
+  initFromJson(jsonNode) {
+    this.setTypeName(jsonNode.type_name, { doSilently: true });
+    this.setPackageName(jsonNode.package_name, { doSilently: true });
+    this.setFullPackageName(jsonNode.full_package_name, { doSilently: true });
+  }
 
-    toString() {
-        let typeNameString = '';
-        typeNameString += ((!_.isEmpty(this.getPackageName())) ?  this.getPackageName()
-                  + this.getWSRegion(1) + ':' + this.getWSRegion(2) : '');
-        typeNameString += this.getTypeName() + this.getWSRegion(3);
-        return typeNameString;
-    }
+  toString() {
+    let typeNameString = '';
+    typeNameString += ((!_.isEmpty(this.getPackageName())) ? `${this.getPackageName()
+                  + this.getWSRegion(1)}:${this.getWSRegion(2)}` : '');
+    typeNameString += this.getTypeName() + this.getWSRegion(3);
+    return typeNameString;
+  }
 }
 
 export default SimpleTypeName;

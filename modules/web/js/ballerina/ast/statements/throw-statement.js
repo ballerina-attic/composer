@@ -26,18 +26,18 @@ import FragmentUtils from './../../utils/fragment-utils';
  * @constructor
  */
 class ThrowStatement extends Statement {
-    constructor(args) {
-        super('ThrowStatement');
-        this.type = "ThrowStatement";
-    }
+  constructor(args) {
+    super('ThrowStatement');
+    this.type = 'ThrowStatement';
+  }
 
-    setExpression(expression, options) {
-        if (!_.isNil(expression)) {
-            this.setAttribute('_expression', expression, options);
-        } else {
-            log.error("Cannot set undefined to the throw statement.");
-        }
+  setExpression(expression, options) {
+    if (!_.isNil(expression)) {
+      this.setAttribute('_expression', expression, options);
+    } else {
+      log.error('Cannot set undefined to the throw statement.');
     }
+  }
 
     /**
      * Set the throw statement string
@@ -45,56 +45,53 @@ class ThrowStatement extends Statement {
      * @param {function} callback
      * @override
      */
-    setStatementFromString(statementString, callback) {
-        const fragment = FragmentUtils.createStatementFragment(statementString + ';');
-        const parsedJson = FragmentUtils.parseFragment(fragment);
+  setStatementFromString(statementString, callback) {
+    const fragment = FragmentUtils.createStatementFragment(`${statementString};`);
+    const parsedJson = FragmentUtils.parseFragment(fragment);
 
-        if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+    if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
             && _.isEqual(parsedJson.type, 'throw_statement')) {
-
-            this.initFromJson(parsedJson);
+      this.initFromJson(parsedJson);
 
             // Manually firing the tree-modified event here.
             // TODO: need a proper fix to avoid breaking the undo-redo
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: 'Throw Statement Custom Tree modified',
-                context: this,
-            });
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title: 'Throw Statement Custom Tree modified',
+        context: this,
+      });
 
-            if (_.isFunction(callback)) {
-                callback({isValid: true});
-            }
-        } else {
-            if (_.isFunction(callback)) {
-                callback({isValid: false, response: parsedJson});
-            }
-        }
+      if (_.isFunction(callback)) {
+        callback({ isValid: true });
+      }
+    } else if (_.isFunction(callback)) {
+      callback({ isValid: false, response: parsedJson });
     }
+  }
 
     /**
      * Get the throw statement string
      * @return {string} throw statement string
      * @override
      */
-    getStatementString() {
-        return 'throw ' + this.getChildren()[0].getExpressionString();
-    }
+  getStatementString() {
+    return `throw ${this.getChildren()[0].getExpressionString()}`;
+  }
 
     /**
      * initialize ThrowStatement from json object
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        this.getChildren().length = 0;
-        var self = this;
-        _.each(jsonNode.children, function (childNode) {
-            var child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    this.getChildren().length = 0;
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default ThrowStatement;

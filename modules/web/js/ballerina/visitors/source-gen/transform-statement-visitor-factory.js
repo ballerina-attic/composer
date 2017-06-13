@@ -19,11 +19,11 @@ import ASTFactory from '../../ast/ballerina-ast-factory';
 import TransformAssignmentStatementVisitor from './transform-assignment-statement-visitor';
 
 class TransformStatementVisitorFactory {
-    getStatementVisitor(statement, parent) {
-        if (ASTFactory.isAssignmentStatement(statement)) {
-            return new TransformAssignmentStatementVisitor(parent);
-        }
+  getStatementVisitor(statement, parent) {
+    if (ASTFactory.isAssignmentStatement(statement)) {
+      return new TransformAssignmentStatementVisitor(parent);
     }
+  }
 }
 
 export default TransformStatementVisitorFactory;

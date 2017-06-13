@@ -25,52 +25,52 @@ import VariableDefinitionStatementVisitor from './variable-definition-statement-
  * @constructor
  */
 class StructDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitStructDefinition(structDefinition) {
-        return true;
-    }
+  canVisitStructDefinition(structDefinition) {
+    return true;
+  }
 
-    beginVisitStructDefinition(structDefinition) {
-        let useDefaultWS = structDefinition.whiteSpace.useDefault;
-        if (useDefaultWS) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation('\n' + this.getIndentation());
-        }
+  beginVisitStructDefinition(structDefinition) {
+    const useDefaultWS = structDefinition.whiteSpace.useDefault;
+    if (useDefaultWS) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(`\n${this.getIndentation()}`);
+    }
 
         // Adding annotations
-        let constructedSourceSegment = '';
-        _.forEach(structDefinition.getChildrenOfType(structDefinition.getFactory().isAnnotation), annotationNode => {
-            if (annotationNode.isSupported()) {
-                constructedSourceSegment += annotationNode.toString()
+    let constructedSourceSegment = '';
+    _.forEach(structDefinition.getChildrenOfType(structDefinition.getFactory().isAnnotation), (annotationNode) => {
+      if (annotationNode.isSupported()) {
+        constructedSourceSegment += annotationNode.toString()
                     + ((annotationNode.whiteSpace.useDefault) ? this.getIndentation() : '');
-            }
-        });
+      }
+    });
 
-        constructedSourceSegment += 'struct' + structDefinition.getWSRegion(0)
-              + structDefinition.getStructName() + structDefinition.getWSRegion(1)
-              + '{' + structDefinition.getWSRegion(2);
-        this.appendSource(constructedSourceSegment);
-        this.appendSource((useDefaultWS) ? this.getIndentation() : '');
-        this.indent();
-        _.forEach(structDefinition.getVariableDefinitionStatements(), (variableDefStatement) => {
-            let varDefVisitor = new VariableDefinitionStatementVisitor(this);
-            variableDefStatement.accept(varDefVisitor);
-        });
-    }
+    constructedSourceSegment += `struct${structDefinition.getWSRegion(0)
+               }${structDefinition.getStructName()}${structDefinition.getWSRegion(1)
+               }{${structDefinition.getWSRegion(2)}`;
+    this.appendSource(constructedSourceSegment);
+    this.appendSource((useDefaultWS) ? this.getIndentation() : '');
+    this.indent();
+    _.forEach(structDefinition.getVariableDefinitionStatements(), (variableDefStatement) => {
+      const varDefVisitor = new VariableDefinitionStatementVisitor(this);
+      variableDefStatement.accept(varDefVisitor);
+    });
+  }
 
-    visitStructDefinition(structDefinition) {
-    }
+  visitStructDefinition(structDefinition) {
+  }
 
-    endVisitStructDefinition(structDefinition) {
-        this.outdent();
-        this.appendSource('}' + structDefinition.getWSRegion(3));
-        this.appendSource((structDefinition.whiteSpace.useDefault) ?
+  endVisitStructDefinition(structDefinition) {
+    this.outdent();
+    this.appendSource(`}${structDefinition.getWSRegion(3)}`);
+    this.appendSource((structDefinition.whiteSpace.useDefault) ?
                       this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default StructDefinitionVisitor;

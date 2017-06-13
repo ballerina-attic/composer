@@ -15,54 +15,54 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {canvas, panel} from './../../configs/designer-defaults';
+import { canvas, panel } from './../../configs/designer-defaults';
 
 class BallerinaASTRootDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
+  endVisit(node) {
         // get the visit state to set ast root dimentions.
-        let viewState = node.getViewState();
+    const viewState = node.getViewState();
         // set the state to 0 since we re-calculate
-        viewState.bBox.h = 0;
-        viewState.bBox.w = 0;
+    viewState.bBox.h = 0;
+    viewState.bBox.w = 0;
 
         // get the children of ast root
-        let children = node.getChildren();
+    const children = node.getChildren();
 
-        //now lets iterate and calculate height and width.
+        // now lets iterate and calculate height and width.
         // height = sum of all the children height ( this is only for now it might change if we
         // have same level items in the future )
         // width = maximum with of the containing children.
-        //@todo filter out children
-        children.forEach(function (element, index) {
-            let childViewState = element.getViewState();
-            viewState.bBox.h = viewState.bBox.h + childViewState.bBox.h;
+        // @todo filter out children
+    children.forEach((element, index) => {
+      const childViewState = element.getViewState();
+      viewState.bBox.h = viewState.bBox.h + childViewState.bBox.h;
 
             // add an extra gutter if there are more than one child.
-            if (index !== 0) {
-                viewState.bBox.h = viewState.bBox.h + panel.wrapper.gutter.h;
-            }
+      if (index !== 0) {
+        viewState.bBox.h = viewState.bBox.h + panel.wrapper.gutter.h;
+      }
 
             // if we find a child with a wider width we will assign that as the canvas width.
-            if (viewState.bBox.w < childViewState.bBox.w) {
-                viewState.bBox.w = childViewState.bBox.w;
-            }
-        }, this);
+      if (viewState.bBox.w < childViewState.bBox.w) {
+        viewState.bBox.w = childViewState.bBox.w;
+      }
+    }, this);
 
         // add canvas padding to the bBox
-        viewState.bBox.h = viewState.bBox.h + canvas.padding.top + canvas.padding.bottom;
-        viewState.bBox.w = viewState.bBox.w + canvas.padding.right + canvas.padding.left;
-    }
+    viewState.bBox.h = viewState.bBox.h + canvas.padding.top + canvas.padding.bottom;
+    viewState.bBox.w = viewState.bBox.w + canvas.padding.right + canvas.padding.left;
+  }
 }
 
 export default BallerinaASTRootDimensionCalculatorVisitor;

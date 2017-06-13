@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-class SimpleBBox  {
+class SimpleBBox {
 
     /**
      * @param x
@@ -24,12 +24,12 @@ class SimpleBBox  {
      * @param h
      * @constructor
      */
-    constructor(x, y, w, h) {
-        this.x = x || 0;
-        this.y = y || 0;
-        this.w = w || 0;
-        this.h = h || 0;
-    }
+  constructor(x, y, w, h) {
+    this.x = x || 0;
+    this.y = y || 0;
+    this.w = w || 0;
+    this.h = h || 0;
+  }
 
     /**
      * init from a top center
@@ -37,12 +37,12 @@ class SimpleBBox  {
      * @param w
      * @param h
      */
-    fromTopCenter(topCenter, w, h) {
-        this.x(topCenter.x() - w/2);
-        this.y(topCenter.y());
-        this.w(w);
-        this.h(h);
-    }
+  fromTopCenter(topCenter, w, h) {
+    this.x(topCenter.x() - w / 2);
+    this.y(topCenter.y());
+    this.w(w);
+    this.h(h);
+  }
 
     /**
      * init from a top left point
@@ -50,56 +50,56 @@ class SimpleBBox  {
      * @param w
      * @param h
      */
-    fromTopLeft(topLeft, w, h) {
-        this.x(topLeft.x());
-        this.y(topLeft.y());
-        this.w(w);
-        this.h(h);
-    }
+  fromTopLeft(topLeft, w, h) {
+    this.x(topLeft.x());
+    this.y(topLeft.y());
+    this.w(w);
+    this.h(h);
+  }
 
-    getTop() {
-        return this.y;
-    }
+  getTop() {
+    return this.y;
+  }
 
-    getBottom() {
-        return this.y + this.h;
-    }
+  getBottom() {
+    return this.y + this.h;
+  }
 
-    getLeft() {
-        return this.x;
-    }
+  getLeft() {
+    return this.x;
+  }
 
-    getRight() {
-        return this.x + this.w;
-    }
+  getRight() {
+    return this.x + this.w;
+  }
 
-    getTopCenterX() {
-        return this.getLeft() + this.w()/2;
-    }
+  getTopCenterX() {
+    return this.getLeft() + this.w() / 2;
+  }
 
     /**
      * Returns the center point of this bounding box.
      * @return {{x: number, y: number}} center poin
      */
-    getCenter() {
-        return {x: this.getCenterX(), y: this.getCenterY()};
-    }
+  getCenter() {
+    return { x: this.getCenterX(), y: this.getCenterY() };
+  }
 
     /**
      * Returns X coordinate of the center point of this bounding box.
      * @return {number} X coordinate
      */
-    getCenterX() {
-        return this.x + (this.w / 2);
-    }
+  getCenterX() {
+    return this.x + (this.w / 2);
+  }
 
     /**
      * Returns Y coordinate of the center point of this bounding box.
      * @return {number} Y coordinate
      */
-    getCenterY() {
-        return this.y + (this.h / 2);
-    }
+  getCenterY() {
+    return this.y + (this.h / 2);
+  }
 }
 
 export default SimpleBBox;

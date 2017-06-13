@@ -20,43 +20,43 @@ import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 import SimpleBBox from './../../ast/simple-bounding-box';
 import BallerinaASTFactory from './../../ast/ballerina-ast-factory';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ConnectorDeclarationDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        let viewState = node.getViewState();
-        let components = {};
+  endVisit(node) {
+    const viewState = node.getViewState();
+    const components = {};
 
-        components['statementContainer'] = new SimpleBBox();
-        const statementContainerWidthPadding = DesignerDefaults.statementContainer.padding.left +
+    components.statementContainer = new SimpleBBox();
+    const statementContainerWidthPadding = DesignerDefaults.statementContainer.padding.left +
             DesignerDefaults.statementContainer.padding.right;
-        let textWidth = util.getTextWidth(node.getConnectorVariable(), DesignerDefaults.lifeLine.width, DesignerDefaults.lifeLine.width);
-        viewState.variableTextWidth = textWidth.w;
-        viewState.variableTextTrimmed = textWidth.text;
+    const textWidth = util.getTextWidth(node.getConnectorVariable(), DesignerDefaults.lifeLine.width, DesignerDefaults.lifeLine.width);
+    viewState.variableTextWidth = textWidth.w;
+    viewState.variableTextTrimmed = textWidth.text;
 
-        let statementContainerWidth = (DesignerDefaults.statementContainer.width + statementContainerWidthPadding) > viewState.variableTextWidth ? (DesignerDefaults.statementContainer.width + statementContainerWidthPadding)
+    const statementContainerWidth = (DesignerDefaults.statementContainer.width + statementContainerWidthPadding) > viewState.variableTextWidth ? (DesignerDefaults.statementContainer.width + statementContainerWidthPadding)
             : viewState.variableTextWidth;
-        let statementContainerHeight = DesignerDefaults.statementContainer.height;
+    const statementContainerHeight = DesignerDefaults.statementContainer.height;
 
-        viewState.bBox.h = statementContainerHeight + DesignerDefaults.lifeLine.head.height * 2;
-        viewState.bBox.w = statementContainerWidth;
+    viewState.bBox.h = statementContainerHeight + DesignerDefaults.lifeLine.head.height * 2;
+    viewState.bBox.w = statementContainerWidth;
 
-        components['statementContainer'].h = statementContainerHeight;
-        components['statementContainer'].w = statementContainerWidth;
+    components.statementContainer.h = statementContainerHeight;
+    components.statementContainer.w = statementContainerWidth;
 
-        viewState.components = components;
-    }
+    viewState.components = components;
+  }
 }
 
 export default ConnectorDeclarationDimensionCalculatorVisitor;

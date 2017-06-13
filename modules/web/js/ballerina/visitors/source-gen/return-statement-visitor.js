@@ -21,42 +21,42 @@ import ReturnStatement from '../../ast/statements/return-statement';
 import ExpressionVisitorFactory from './expression-visitor-factory';
 
 class ReturnStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitReturnStatement(returnStatement) {
-        return returnStatement instanceof ReturnStatement;
-    }
+  canVisitReturnStatement(returnStatement) {
+    return returnStatement instanceof ReturnStatement;
+  }
 
-    beginVisitReturnStatement(returnStatement) {
+  beginVisitReturnStatement(returnStatement) {
         /**
          * set the configuration start for the reply statement definition language construct
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        if (returnStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        this.appendSource(returnStatement.getReturnExpression());
-        log.debug('Begin Visit Return Statement Definition');
+    if (returnStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    this.appendSource(returnStatement.getReturnExpression());
+    log.debug('Begin Visit Return Statement Definition');
+  }
 
-    endVisitReturnStatement(returnStatement) {
-        this.appendSource(';' + returnStatement.getWSRegion(3));
-        this.appendSource((returnStatement.whiteSpace.useDefault)
+  endVisitReturnStatement(returnStatement) {
+    this.appendSource(`;${returnStatement.getWSRegion(3)}`);
+    this.appendSource((returnStatement.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Return Statement Definition');
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Return Statement Definition');
+  }
 
-    visitExpression(expression) {
-        var expressionVisitorFactory = new ExpressionVisitorFactory();
-        var expressionVisitor = expressionVisitorFactory.getExpressionView({model:expression, parent:this});
-        expression.accept(expressionVisitor);
-        log.debug('Visit Expression');
-    }
+  visitExpression(expression) {
+    const expressionVisitorFactory = new ExpressionVisitorFactory();
+    const expressionVisitor = expressionVisitorFactory.getExpressionView({ model: expression, parent: this });
+    expression.accept(expressionVisitor);
+    log.debug('Visit Expression');
+  }
 }
 
 export default ReturnStatementVisitor;

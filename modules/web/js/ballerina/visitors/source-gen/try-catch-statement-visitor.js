@@ -19,44 +19,44 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class TryCatchStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitTryCatchStatement(statement) {
-        return true;
-    }
+  canVisitTryCatchStatement(statement) {
+    return true;
+  }
 
-    beginVisitTryCatchStatement(statement) {
-        if (statement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
+  beginVisitTryCatchStatement(statement) {
+    if (statement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+  }
 
-    visitTryStatement(statement) {
-        let statementVisitorFactory = new StatementVisitorFactory();
-        let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitTryStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 
-    visitCatchStatement(statement) {
-        let statementVisitorFactory = new StatementVisitorFactory();
-        let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitCatchStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 
-    visitFinallyStatement(statement) {
-        let statementVisitorFactory = new StatementVisitorFactory();
-        let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitFinallyStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 
-    endVisitTryCatchStatement(statement) {
-        this.appendSource((statement.whiteSpace.useDefault)
+  endVisitTryCatchStatement(statement) {
+    this.appendSource((statement.whiteSpace.useDefault)
           ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default TryCatchStatementVisitor;

@@ -20,22 +20,22 @@ import * as DesignerDefaults from './../../configs/designer-defaults';
 
 class WhileStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-        Utils.getSimpleStatementPosition(node);
-        node.getViewState().components.statementContainer.x = node.getViewState().bBox.x;
-        node.getViewState().components.statementContainer.y = node.getViewState().bBox.y +
+  beginVisit(node) {
+    Utils.getSimpleStatementPosition(node);
+    node.getViewState().components.statementContainer.x = node.getViewState().bBox.x;
+    node.getViewState().components.statementContainer.y = node.getViewState().bBox.y +
             DesignerDefaults.blockStatement.heading.height + DesignerDefaults.statement.gutter.v;
-    }
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-    }
+  endVisit(node) {
+  }
 }
 
 export default WhileStatementPositionCalcVisitor;

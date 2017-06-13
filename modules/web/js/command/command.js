@@ -26,11 +26,11 @@ import Mousetrap from 'mousetrap';
  */
 class CommandManager {
 
-    constructor(application) {
-        this.app = application;
-        this.commandBus = new EventChannel();
-        this.commands = [];
-    }
+  constructor(application) {
+    this.app = application;
+    this.commandBus = new EventChannel();
+    this.commands = [];
+  }
 
     /**
      * Register a command.
@@ -38,31 +38,31 @@ class CommandManager {
      * @param cmd  String command ID
      * @param options key-bindings etc.
      */
-    registerCommand(cmd, options) {
-        if (_.isEqual(_.findIndex(this.commands,  ['id', cmd.id]), -1)) {
-            var command = {id: cmd};
-            if(_.has(options, 'shortcuts')){
-                _.set(command, 'shortcuts', _.get(options, 'shortcuts'));
-            }
-            this.commands.push(command);
-            log.debug('Command: ' + cmd +
-                ' is registered.');
+  registerCommand(cmd, options) {
+    if (_.isEqual(_.findIndex(this.commands, ['id', cmd.id]), -1)) {
+      const command = { id: cmd };
+      if (_.has(options, 'shortcuts')) {
+        _.set(command, 'shortcuts', _.get(options, 'shortcuts'));
+      }
+      this.commands.push(command);
+      log.debug(`Command: ${cmd
+                } is registered.`);
             // do shortcut key bindings
-            if(_.has(options, 'shortcuts')){
-                var shortcuts = _.get(options, 'shortcuts'),
-                    key = this.app.isRunningOnMacOS() ? shortcuts.mac.key : shortcuts.other.key,
-                    commandBus = this.commandBus;
-                Mousetrap.bind(key, function(e) {
-                    commandBus.trigger(cmd);
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            }
-        } else {
-            log.error('Command: ' + cmd +
-                ' is already registered. ');
-        }
+      if (_.has(options, 'shortcuts')) {
+        let shortcuts = _.get(options, 'shortcuts'),
+          key = this.app.isRunningOnMacOS() ? shortcuts.mac.key : shortcuts.other.key,
+          commandBus = this.commandBus;
+        Mousetrap.bind(key, (e) => {
+          commandBus.trigger(cmd);
+          e.preventDefault();
+          e.stopPropagation();
+        });
+      }
+    } else {
+      log.error(`Command: ${cmd
+                } is already registered. `);
     }
+  }
 
     /**
      * Removes a registered command - with all the handlers registered under it.
@@ -70,18 +70,18 @@ class CommandManager {
      * @param cmd  String command ID
      *
      */
-    unRegisterCommand(cmd) {
-        if (!_.isEqual(_.findIndex(this.commands,  ['id', cmd.id]), -1)) {
-            _.remove(this.commands, ['id', cmd.id]);
-            //remove all handlers for the command
-            this.commandBus.off(cmd, null, this.app);
-            log.debug('Command: ' + cmd +
-                ' is unregistered.');
-        } else {
-            log.warn('Command: ' + cmd +
-                ' cannot be found in registered commands. ');
-        }
+  unRegisterCommand(cmd) {
+    if (!_.isEqual(_.findIndex(this.commands, ['id', cmd.id]), -1)) {
+      _.remove(this.commands, ['id', cmd.id]);
+            // remove all handlers for the command
+      this.commandBus.off(cmd, null, this.app);
+      log.debug(`Command: ${cmd
+                } is unregistered.`);
+    } else {
+      log.warn(`Command: ${cmd
+                } cannot be found in registered commands. `);
     }
+  }
 
     /**
      * Register a command handler.
@@ -90,13 +90,13 @@ class CommandManager {
      * @param handler
      * @param context this context for the handler, default is app instance
      */
-    registerHandler(cmd, handler, context) {
-        if(_.isEqual(_.findIndex(this.commands,  ['id', cmd]), -1)){
-            var message = 'No such registered command found. Command: ' + cmd;
-            log.debug(message);
-        }
-        this.commandBus.on(cmd, handler, context || this.app);
+  registerHandler(cmd, handler, context) {
+    if (_.isEqual(_.findIndex(this.commands, ['id', cmd]), -1)) {
+      const message = `No such registered command found. Command: ${cmd}`;
+      log.debug(message);
     }
+    this.commandBus.on(cmd, handler, context || this.app);
+  }
 
     /**
      * Removes a registered command handler.
@@ -104,9 +104,9 @@ class CommandManager {
      * @param cmd  String command ID
      * @param handler
      */
-    unRegisterHandler(cmd, handler) {
-        this.commandBus.off(cmd, handler, this.app);
-    }
+  unRegisterHandler(cmd, handler) {
+    this.commandBus.off(cmd, handler, this.app);
+  }
 
     /**
      * Dispatch a command with give args
@@ -118,19 +118,19 @@ class CommandManager {
      * using implicit arguments object instead of traditional
      * function parameter defs to enable dynamic number of args
      */
-    dispatch() {
-        var cmdID = arguments[0];
-        if (!_.isUndefined(cmdID)) {
+  dispatch() {
+    const cmdID = arguments[0];
+    if (!_.isUndefined(cmdID)) {
             // get only needed args for trigger - right now all are wanted
-            var triggerArgs = _.takeRight(arguments, arguments.length);
-            var triggerFn = this.commandBus.trigger;
-            triggerFn.apply(this.commandBus, triggerArgs);
-        }
+      const triggerArgs = _.takeRight(arguments, arguments.length);
+      const triggerFn = this.commandBus.trigger;
+      triggerFn.apply(this.commandBus, triggerArgs);
     }
+  }
 
-    getCommands(){
-        return this.commands;
-    }
+  getCommands() {
+    return this.commands;
+  }
 }
 
 export default CommandManager;

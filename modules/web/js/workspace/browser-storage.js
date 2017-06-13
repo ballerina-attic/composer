@@ -18,61 +18,60 @@
 
 class BrowserStorage {
 
-    constuctor(name) {
-        this.name = name;
-    }
+  constuctor(name) {
+    this.name = name;
+  }
 
     // Generate four random hex digits.
-    S4() {
-        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    }
+  S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
 
     // Generate a pseudo-GUID by concatenating random hexadecimal.
-    guid() {
-        return (this.S4() + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + '-' + this.S4() + this.S4() + this.S4());
-    }
+  guid() {
+    return (`${this.S4() + this.S4()}-${this.S4()}-${this.S4()}-${this.S4()}-${this.S4()}${this.S4()}${this.S4()}`);
+  }
 
 
-    put(key, value) {
-        this.localStorage().setItem(this.name + '-' + key, JSON.stringify(value));
-    }
+  put(key, value) {
+    this.localStorage().setItem(`${this.name}-${key}`, JSON.stringify(value));
+  }
 
-    get(key) {
-        return this.jsonData(this.localStorage().getItem(this.name + '-' + key));
-    }
+  get(key) {
+    return this.jsonData(this.localStorage().getItem(`${this.name}-${key}`));
+  }
 
-    create(model) {
-        if (!model.id) {
-            model.id = this.guid();
-            model.set(model.idAttribute, model.id);
-        }
-        this.localStorage().setItem(this.name + '-' + model.id, JSON.stringify(model));
-        return this.find(model);
+  create(model) {
+    if (!model.id) {
+      model.id = this.guid();
+      model.set(model.idAttribute, model.id);
     }
+    this.localStorage().setItem(`${this.name}-${model.id}`, JSON.stringify(model));
+    return this.find(model);
+  }
 
-    update(model) {
-        this.localStorage().setItem(this.name + '-' + model.id, JSON.stringify(model));
-        return this.find(model);
-    }
+  update(model) {
+    this.localStorage().setItem(`${this.name}-${model.id}`, JSON.stringify(model));
+    return this.find(model);
+  }
 
-    find(model) {
-        return this.jsonData(this.localStorage().getItem(this.name + '-' + model.id));
-    }
+  find(model) {
+    return this.jsonData(this.localStorage().getItem(`${this.name}-${model.id}`));
+  }
 
-    destroy(model) {
-        if (model.isNew())
-            return false;
-        this.localStorage().removeItem(this.name + '-' + model.id);
-        return model;
-    }
+  destroy(model) {
+    if (model.isNew()) { return false; }
+    this.localStorage().removeItem(`${this.name}-${model.id}`);
+    return model;
+  }
 
-    localStorage() {
-        return localStorage;
-    }
+  localStorage() {
+    return localStorage;
+  }
 
-    jsonData(data) {
-        return data && JSON.parse(data);
-    }
+  jsonData(data) {
+    return data && JSON.parse(data);
+  }
 
 }
 

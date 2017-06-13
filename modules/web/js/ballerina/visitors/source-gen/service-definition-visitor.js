@@ -26,62 +26,62 @@ import StatementVisitorFactory from './statement-visitor-factory';
  * @constructor
  */
 class ServiceDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitServiceDefinition(serviceDefinition) {
-        return true;
-    }
+  canVisitServiceDefinition(serviceDefinition) {
+    return true;
+  }
 
-    beginVisitServiceDefinition(serviceDefinition) {
+  beginVisitServiceDefinition(serviceDefinition) {
         /**
          * set the configuration start for the service definition language construct
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        let useDefaultWS = serviceDefinition.whiteSpace.useDefault;
-        if (useDefaultWS) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation('\n' + this.getIndentation());
-        }
-        let constructedSourceSegment = '';
-        _.forEach(serviceDefinition.getChildrenOfType(serviceDefinition.getFactory().isAnnotation),
-            annotationNode => {
-                constructedSourceSegment += annotationNode.toString()
+    const useDefaultWS = serviceDefinition.whiteSpace.useDefault;
+    if (useDefaultWS) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(`\n${this.getIndentation()}`);
+    }
+    let constructedSourceSegment = '';
+    _.forEach(serviceDefinition.getChildrenOfType(serviceDefinition.getFactory().isAnnotation),
+            (annotationNode) => {
+              constructedSourceSegment += annotationNode.toString()
                       + ((annotationNode.whiteSpace.useDefault) ? this.getIndentation() : '');
             });
-        constructedSourceSegment += 'service' + serviceDefinition.getWSRegion(0)
-              + serviceDefinition.getServiceName()
-              + serviceDefinition.getWSRegion(1) + '{'
-              + serviceDefinition.getWSRegion(2);
-        this.appendSource(constructedSourceSegment);
-        this.indent();
-    }
+    constructedSourceSegment += `service${serviceDefinition.getWSRegion(0)
+               }${serviceDefinition.getServiceName()
+               }${serviceDefinition.getWSRegion(1)}{${
+               serviceDefinition.getWSRegion(2)}`;
+    this.appendSource(constructedSourceSegment);
+    this.indent();
+  }
 
-    endVisitServiceDefinition(serviceDefinition) {
-        this.outdent();
-        this.appendSource('}' + serviceDefinition.getWSRegion(3));
-        this.appendSource((serviceDefinition.whiteSpace.useDefault) ?
+  endVisitServiceDefinition(serviceDefinition) {
+    this.outdent();
+    this.appendSource(`}${serviceDefinition.getWSRegion(3)}`);
+    this.appendSource((serviceDefinition.whiteSpace.useDefault) ?
                       this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 
-    visitStatement(statement) {
-        var statementVisitorFactory = new StatementVisitorFactory();
-        var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 
-    visitResourceDefinition(resourceDefinition) {
-        var resourceDefinitionVisitor = new ResourceDefinitionVisitor(this);
-        resourceDefinition.accept(resourceDefinitionVisitor);
-    }
+  visitResourceDefinition(resourceDefinition) {
+    const resourceDefinitionVisitor = new ResourceDefinitionVisitor(this);
+    resourceDefinition.accept(resourceDefinitionVisitor);
+  }
 
-    visitConnectorDeclaration(connectorDeclaration) {
-        var connectorDeclarationVisitor = new ConnectorDeclarationVisitor(this);
-        connectorDeclaration.accept(connectorDeclarationVisitor);
-    }
+  visitConnectorDeclaration(connectorDeclaration) {
+    const connectorDeclarationVisitor = new ConnectorDeclarationVisitor(this);
+    connectorDeclaration.accept(connectorDeclarationVisitor);
+  }
 }
 
 export default ServiceDefinitionVisitor;

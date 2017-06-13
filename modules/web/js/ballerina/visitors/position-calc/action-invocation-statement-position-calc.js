@@ -21,23 +21,23 @@ import * as PositioningUtils from './utils';
 
 class ActionInvocationStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ActionInvocationStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ActionInvocationStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit ActionInvocationStatementPositionCalcVisitor');
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit ActionInvocationStatementPositionCalcVisitor');
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit ActionInvocationStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit ActionInvocationStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ActionInvocationStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit ActionInvocationStatementPositionCalcVisitor');
+  }
 }
 
 export default ActionInvocationStatementPositionCalcVisitor;

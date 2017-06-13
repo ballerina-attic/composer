@@ -26,29 +26,29 @@ import UndoableOperation from './undoable-operation';
  * @constructor
  */
 class SourceModifyOperation extends UndoableOperation {
-    constructor(args) {
-        super(args);
-    }
+  constructor(args) {
+    super(args);
+  }
 
-    undo() {
-        if(this.canUndo()){
-            this.getEditor().getSourceView().undo();
-        }
+  undo() {
+    if (this.canUndo()) {
+      this.getEditor().getSourceView().undo();
     }
+  }
 
-    redo() {
-        if(this.canRedo()){
-            this.getEditor().getSourceView().redo();
-        }
+  redo() {
+    if (this.canRedo()) {
+      this.getEditor().getSourceView().redo();
     }
+  }
 
-    canUndo() {
-        return  this.getEditor().isInSourceView();
-    }
+  canUndo() {
+    return this.getEditor().isInSourceView();
+  }
 
-    canRedo() {
-        return this.getEditor().isInSourceView();
-    }
+  canRedo() {
+    return this.getEditor().isInSourceView();
+  }
 }
 
 export default SourceModifyOperation;

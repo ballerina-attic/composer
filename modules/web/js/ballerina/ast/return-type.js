@@ -20,34 +20,34 @@ import log from 'log';
 import Argument from './argument';
 
 class ReturnType extends Argument {
-    constructor(args) {
-        super(args);
-        this.annotationType = _.get(args, "annotationType");
-        this.annotationText = _.get(args, "annotationText");
-        this.type = "ReturnType";
-    }
+  constructor(args) {
+    super(args);
+    this.annotationType = _.get(args, 'annotationType');
+    this.annotationText = _.get(args, 'annotationText');
+    this.type = 'ReturnType';
+  }
 
     /**
      * Gets the return type as a string.
      */
-    getReturnTypeAsString() {
-        return super.getArgumentAsString();
-    }
+  getReturnTypeAsString() {
+    return super.getArgumentAsString();
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        var self = this;
-        var BallerinaASTFactory = this.getFactory();
+  initFromJson(jsonNode) {
+    const self = this;
+    const BallerinaASTFactory = this.getFactory();
 
-        _.each(jsonNode.children, function (childNode) {
-            var child = BallerinaASTFactory.createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      const child = BallerinaASTFactory.createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default ReturnType;

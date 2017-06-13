@@ -20,23 +20,23 @@ import log from 'log';
 import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen-visitor';
 
 class RightOperandExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitRightOperandExpression(rightOperandExpression) {
-        return true;
-    }
+  canVisitRightOperandExpression(rightOperandExpression) {
+    return true;
+  }
 
-    beginVisitRightOperandExpression(rightOperandExpression) {
-        if (!_.isUndefined(rightOperandExpression.getExpressionString())) {
-            this.appendSource(rightOperandExpression.getExpressionString());
-        }
+  beginVisitRightOperandExpression(rightOperandExpression) {
+    if (!_.isUndefined(rightOperandExpression.getExpressionString())) {
+      this.appendSource(rightOperandExpression.getExpressionString());
     }
+  }
 
-    endVisitRightOperandExpression(rightOperandExpression) {
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitRightOperandExpression(rightOperandExpression) {
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default RightOperandExpressionVisitor;

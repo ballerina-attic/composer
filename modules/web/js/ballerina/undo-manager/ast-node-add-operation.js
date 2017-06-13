@@ -26,28 +26,28 @@ import ASTManipulationOperation from './ast-manipulation-operation';
  * @constructor
  */
 class ASTNodeAddOperation extends ASTManipulationOperation {
-    constructor(args) {
-        super(args);
-        if(_.isNil(this.getTitle())){
-            this.setTitle('Add ' + this._data.child.getType());
-        }
+  constructor(args) {
+    super(args);
+    if (_.isNil(this.getTitle())) {
+      this.setTitle(`Add ${this._data.child.getType()}`);
     }
+  }
 
-    redo() {
-        if(this.canUndo()) {
-            this._originNode.addChild(this._data.child, this._data.index, true);
-            this.getEditor().trigger('content-modified');
-            this.getEditor().trigger('update-diagram');
-        }
+  redo() {
+    if (this.canUndo()) {
+      this._originNode.addChild(this._data.child, this._data.index, true);
+      this.getEditor().trigger('content-modified');
+      this.getEditor().trigger('update-diagram');
     }
+  }
 
-    undo() {
-        if(this.canRedo()) {
-            this._data.child.remove({ignoreTreeModifiedEvent: true});
-            this.getEditor().trigger('content-modified');
-            this.getEditor().trigger('update-diagram');
-        }
+  undo() {
+    if (this.canRedo()) {
+      this._data.child.remove({ ignoreTreeModifiedEvent: true });
+      this.getEditor().trigger('content-modified');
+      this.getEditor().trigger('update-diagram');
     }
+  }
 }
 
 export default ASTNodeAddOperation;

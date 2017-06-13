@@ -19,26 +19,26 @@
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 import SimpleBBox from './../../ast/simple-bounding-box';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 
 class StatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        var viewState = node.getViewState();
-        viewState.bBox.w = DesignerDefaults.statement.width;
-        viewState.bBox.h = DesignerDefaults.statement.height;     
-    }
+  endVisit(node) {
+    const viewState = node.getViewState();
+    viewState.bBox.w = DesignerDefaults.statement.width;
+    viewState.bBox.h = DesignerDefaults.statement.height;
+  }
 }
 
 export default StatementDimensionCalculatorVisitor;

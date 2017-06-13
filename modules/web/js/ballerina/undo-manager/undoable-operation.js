@@ -26,47 +26,47 @@ import EventChannel from 'event_channel';
  * @constructor
  */
 class UndoableOperation extends EventChannel {
-    constructor(args) {
-        super();
-        this.setTitle(_.get(args, 'title', undefined));
-        this.setEditor(_.get(args, 'editor', undefined));
-        this.setSkipInSourceView(_.get(args, 'skipInSourceView', false));
-    }
+  constructor(args) {
+    super();
+    this.setTitle(_.get(args, 'title', undefined));
+    this.setEditor(_.get(args, 'editor', undefined));
+    this.setSkipInSourceView(_.get(args, 'skipInSourceView', false));
+  }
 
-    canUndo() {
-        return !(this.getEditor().isInSourceView() && this.skipInSourceView());
-    }
+  canUndo() {
+    return !(this.getEditor().isInSourceView() && this.skipInSourceView());
+  }
 
-    canRedo() {
-        return !(this.getEditor().isInSourceView() && this.skipInSourceView());
-    }
+  canRedo() {
+    return !(this.getEditor().isInSourceView() && this.skipInSourceView());
+  }
 
-    getTitle() {
-        return this._title;
-    }
+  getTitle() {
+    return this._title;
+  }
 
-    setTitle(title) {
-        this._title = title;
-    }
+  setTitle(title) {
+    this._title = title;
+  }
 
-    getEditor() {
-        return this._editor;
-    }
+  getEditor() {
+    return this._editor;
+  }
 
-    setEditor(editor) {
-        this._editor = editor;
-    }
+  setEditor(editor) {
+    this._editor = editor;
+  }
 
-    skipInSourceView() {
-        return this._skipInSourceView;
-    }
+  skipInSourceView() {
+    return this._skipInSourceView;
+  }
 
-    setSkipInSourceView(skipInSourceView) {
-        this._skipInSourceView = skipInSourceView;
-    }
+  setSkipInSourceView(skipInSourceView) {
+    this._skipInSourceView = skipInSourceView;
+  }
 
-    undo() {}
-    redo() {}
+  undo() {}
+  redo() {}
 }
 
 export default UndoableOperation;

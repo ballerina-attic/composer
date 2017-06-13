@@ -25,24 +25,24 @@ import Expression from './expression';
  */
 class NullLiteralExpression extends Expression {
 
-    constructor(args) {
-        super('NullLiteralExpression');
-        this._expression = "null";
-    }
+  constructor(args) {
+    super('NullLiteralExpression');
+    this._expression = 'null';
+  }
 
     /**
      * setting parameters from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
+  initFromJson(jsonNode) {
         // nothing to do
-    }
+  }
 
-    getExpressionString() {
+  getExpressionString() {
         // directly return null sine this is a null expression.
         // todo need to add white space.
-        return "null";
-    }
+    return 'null';
+  }
 
 }
 

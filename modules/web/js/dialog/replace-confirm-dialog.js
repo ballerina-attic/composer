@@ -21,36 +21,36 @@ import ModalDialog from './modal-dialog';
 import './dialog.css';
 
 class ReplaceConfirmDialog extends ModalDialog {
-    constructor(options) {
-        super();
-        this._options = options;
-        this._$container = $(_.get(options, 'container', 'body'));
-    }
+  constructor(options) {
+    super();
+    this._options = options;
+    this._$container = $(_.get(options, 'container', 'body'));
+  }
 
-    askConfirmation(options) {
-        var self = this;
+  askConfirmation(options) {
+    const self = this;
 
-        this.setSubmitBtnText('Replace');
-        this.setCloseBtnText('Cancel');
-        this._$modalContainer.addClass("replace-confirm-dialog");
-        this.setTitle("Replace File?");
+    this.setSubmitBtnText('Replace');
+    this.setCloseBtnText('Cancel');
+    this._$modalContainer.addClass('replace-confirm-dialog');
+    this.setTitle('Replace File?');
 
-        var path = options.path;
-        var body = this.getBody();
-        body.empty();
-        body.append($("<p><br>File '" + path + "' already exists. Do you want to overwrite its contents?</p>"));
+    const path = options.path;
+    const body = this.getBody();
+    body.empty();
+    body.append($(`<p><br>File '${path}' already exists. Do you want to overwrite its contents?</p>`));
 
-        this.getSubmitBtn().unbind('click');
+    this.getSubmitBtn().unbind('click');
 
-        this.getSubmitBtn().click(function(){
-            if(_.has(options, 'handleConfirm')){
-                self.hide();
-                options.handleConfirm(true);
-            }
-        });
+    this.getSubmitBtn().click(() => {
+      if (_.has(options, 'handleConfirm')) {
+        self.hide();
+        options.handleConfirm(true);
+      }
+    });
 
-        this.show();
-    }
+    this.show();
+  }
 }
 
 export default ReplaceConfirmDialog;

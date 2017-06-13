@@ -21,40 +21,40 @@ import log from 'log';
 
 class PositionCalculatorVisitor {
 
-    canVisit(node) {
-        if (Visitors[node.getType() + 'PositionCalcVisitor']) {
-            let nodeVisitor = new Visitors[node.getType() + 'PositionCalcVisitor']();
-            return nodeVisitor['canVisit'](node);
-        } else {
-            log.debug("Unable to find position visitor for : " + node.getType());
-        }
-
-        return undefined;
+  canVisit(node) {
+    if (Visitors[`${node.getType()}PositionCalcVisitor`]) {
+      const nodeVisitor = new Visitors[`${node.getType()}PositionCalcVisitor`]();
+      return nodeVisitor.canVisit(node);
     }
+    log.debug(`Unable to find position visitor for : ${node.getType()}`);
 
-    visit(node) {
-        if (Visitors[node.getType() + 'PositionCalcVisitor']) {
-            let nodeVisitor = new Visitors[node.getType() + 'PositionCalcVisitor']();
-            return nodeVisitor['visit'](node);
-        }
-        return undefined;
-    }
 
-    beginVisit(node) {
-        if (Visitors[node.getType() + 'PositionCalcVisitor']) {
-            let nodeVisitor = new Visitors[node.getType() + 'PositionCalcVisitor']();
-            return nodeVisitor['beginVisit'](node);
-        }
-        return undefined;
-    }
+    return undefined;
+  }
 
-    endVisit(node) {
-        if (Visitors[node.getType() + 'PositionCalcVisitor']) {
-            let nodeVisitor = new Visitors[node.getType() + 'PositionCalcVisitor']();
-            return nodeVisitor['endVisit'](node);
-        }
-        return undefined;
+  visit(node) {
+    if (Visitors[`${node.getType()}PositionCalcVisitor`]) {
+      const nodeVisitor = new Visitors[`${node.getType()}PositionCalcVisitor`]();
+      return nodeVisitor.visit(node);
     }
+    return undefined;
+  }
+
+  beginVisit(node) {
+    if (Visitors[`${node.getType()}PositionCalcVisitor`]) {
+      const nodeVisitor = new Visitors[`${node.getType()}PositionCalcVisitor`]();
+      return nodeVisitor.beginVisit(node);
+    }
+    return undefined;
+  }
+
+  endVisit(node) {
+    if (Visitors[`${node.getType()}PositionCalcVisitor`]) {
+      const nodeVisitor = new Visitors[`${node.getType()}PositionCalcVisitor`]();
+      return nodeVisitor.endVisit(node);
+    }
+    return undefined;
+  }
 }
 
 export default PositionCalculatorVisitor;

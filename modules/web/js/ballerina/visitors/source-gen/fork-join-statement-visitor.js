@@ -21,46 +21,46 @@ import StatementVisitorFactory from './statement-visitor-factory';
 import WorkerDeclarationVisitor from './worker-declaration-visitor';
 
 class ForkJoinStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-        this.closed = false;
-    }
+  constructor(parent) {
+    super(parent);
+    this.closed = false;
+  }
 
-    canVisitForkJoinStatement(forkJoinStatement) {
-        return true;
-    }
+  canVisitForkJoinStatement(forkJoinStatement) {
+    return true;
+  }
 
-    beginVisitForkJoinStatement(forkJoinStatement) {
-        this.node = forkJoinStatement;
-        this.closed = false;
-        this.appendSource('fork {');
-    }
+  beginVisitForkJoinStatement(forkJoinStatement) {
+    this.node = forkJoinStatement;
+    this.closed = false;
+    this.appendSource('fork {');
+  }
 
-    visitWorkerDeclaration(workerDeclaration) {
-        const workerDeclarationVisitor = new WorkerDeclarationVisitor(this);
-        workerDeclaration.accept(workerDeclarationVisitor);
-    }
+  visitWorkerDeclaration(workerDeclaration) {
+    const workerDeclarationVisitor = new WorkerDeclarationVisitor(this);
+    workerDeclaration.accept(workerDeclarationVisitor);
+  }
 
-    endVisitForkJoinStatement(forkJoinStatement) {
-        if (!this.closed) {
-            this.appendSource('}\n');
-            this.closed = true;
-        }
-        this.getParent().appendSource(this.getGeneratedSource());
+  endVisitForkJoinStatement(forkJoinStatement) {
+    if (!this.closed) {
+      this.appendSource('}\n');
+      this.closed = true;
     }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 
 
-    visitStatement(statement) {
-        if (!_.isEqual(this.node, statement)) {
-            if (!this.closed) {
-                this.appendSource('}\n');
-                this.closed = true;
-            }
-            let statementVisitorFactory = new StatementVisitorFactory();
-            let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      if (!this.closed) {
+        this.appendSource('}\n');
+        this.closed = true;
+      }
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 }
 
 export default ForkJoinStatementVisitor;

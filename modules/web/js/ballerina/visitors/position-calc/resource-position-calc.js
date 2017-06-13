@@ -19,30 +19,30 @@
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 import * as PositioningUtils from './utils';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ResourceDefinitionPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ResourceDefinitionPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ResourceDefinitionPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit ResourceDefinitionPositionCalc');
+  beginVisit(node) {
+    log.debug('begin visit ResourceDefinitionPositionCalc');
         // populate inner panel BBox position.
-        PositioningUtils.populateInnerPanelDecoratorBBoxPosition(node);
+    PositioningUtils.populateInnerPanelDecoratorBBoxPosition(node);
         // populate panel heading positions.
-        PositioningUtils.populatePanelHeadingPositioning(node, this.createPositioningForParameter);
-    }
+    PositioningUtils.populatePanelHeadingPositioning(node, this.createPositioningForParameter);
+  }
 
-    visit(node) {
-        log.debug('visit ResourceDefinitionPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit ResourceDefinitionPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ResourceDefinitionPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit ResourceDefinitionPositionCalc');
+  }
 
     /**
      * Sets positioning for a parameter.
@@ -54,18 +54,18 @@ class ResourceDefinitionPositionCalcVisitor {
      *
      * @memberof ResourceDefinitionPositionCalcVisitor
      */
-    createPositioningForParameter(parameter, x, y) {
-        let viewState = parameter.getViewState();
+  createPositioningForParameter(parameter, x, y) {
+    const viewState = parameter.getViewState();
         // Positioning the parameter
-        viewState.bBox.x = x;
-        viewState.bBox.y = y;
+    viewState.bBox.x = x;
+    viewState.bBox.y = y;
 
         // Positioning the delete icon
-        viewState.components.deleteIcon.x = x + viewState.w;
-        viewState.components.deleteIcon.y = y;
+    viewState.components.deleteIcon.x = x + viewState.w;
+    viewState.components.deleteIcon.y = y;
 
-        return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
-    }
+    return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
+  }
 }
 
 export default ResourceDefinitionPositionCalcVisitor;

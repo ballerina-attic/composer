@@ -47,67 +47,67 @@ import JoinStatementVisitor from './join-statement-visitor';
 import CommittedStatementVisitor from './committed-statement-visitor';
 
 class StatementVisitorFactor {
-    getStatementVisitor(statement, parent) {
-        if (ASTFactory.isTryCatchStatement(statement)) {
-            return new TryCatchStatementVisitor(parent);
-        } else if (ASTFactory.isTryStatement(statement)) {
-            return new TryStatementVisitor(parent);
-        } else if (ASTFactory.isCatchStatement(statement)) {
-            return new CatchStatementVisitor(parent);
-        } else if (ASTFactory.isFinallyStatement(statement)) {
-            return new FinallyStatementVisitor(parent);
-        } else if (ASTFactory.isIfElseStatement(statement)) {
-            return new IfElseStatementVisitor(parent);
-        } else if (ASTFactory.isIfStatement(statement)) {
-            return new IfStatementVisitor(parent);
-        } else if (ASTFactory.isElseStatement(statement)) {
-            return new ElseStatementVisitor(parent);
-        } else if (ASTFactory.isElseIfStatement(statement)) {
-            return new ElseIfStatementVisitor(parent);
-        } else if (ASTFactory.isWhileStatement(statement)) {
-            return new WhileStatementVisitor(parent);
-        } else if (ASTFactory.isAssignmentStatement(statement)) {
-            return new AssignmentStatementVisitor(parent);
-        } else if (ASTFactory.isTransformStatement(statement)) {
-            return new TransformStatementVisitor(parent);
-        } else if (ASTFactory.isReplyStatement(statement)) {
-            return new ReplyStatementVisitor(parent);
-        } else if (ASTFactory.isReturnStatement(statement)) {
-            return new ReturnStatementVisitor(parent);
-        } else if (ASTFactory.isFunctionInvocationStatement(statement)) {
-            return new FunctionInvocationVisitor(parent);
-        } else if (ASTFactory.isVariableDefinitionStatement(statement)) {
-            return new VariableDefinitionStatement(parent);
-        } else if (ASTFactory.isWorkerInvocationStatement(statement)) {
-            return new WorkerInvocationStatementVisitor(parent);
-        } else if (ASTFactory.isWorkerReplyStatement(statement)) {
-            return new WorkerReplyStatementVisitor(parent);
-        } else if (ASTFactory.isActionInvocationStatement(statement)) {
-            return new ActionInvocationStatementVisitor(parent);
-        } else if (ASTFactory.isBreakStatement(statement)) {
-            return new BreakStatementVisitor(parent);
-        } else if (ASTFactory.isThrowStatement(statement)) {
-            return new ThrowStatementVisitor(parent);
+  getStatementVisitor(statement, parent) {
+    if (ASTFactory.isTryCatchStatement(statement)) {
+      return new TryCatchStatementVisitor(parent);
+    } else if (ASTFactory.isTryStatement(statement)) {
+      return new TryStatementVisitor(parent);
+    } else if (ASTFactory.isCatchStatement(statement)) {
+      return new CatchStatementVisitor(parent);
+    } else if (ASTFactory.isFinallyStatement(statement)) {
+      return new FinallyStatementVisitor(parent);
+    } else if (ASTFactory.isIfElseStatement(statement)) {
+      return new IfElseStatementVisitor(parent);
+    } else if (ASTFactory.isIfStatement(statement)) {
+      return new IfStatementVisitor(parent);
+    } else if (ASTFactory.isElseStatement(statement)) {
+      return new ElseStatementVisitor(parent);
+    } else if (ASTFactory.isElseIfStatement(statement)) {
+      return new ElseIfStatementVisitor(parent);
+    } else if (ASTFactory.isWhileStatement(statement)) {
+      return new WhileStatementVisitor(parent);
+    } else if (ASTFactory.isAssignmentStatement(statement)) {
+      return new AssignmentStatementVisitor(parent);
+    } else if (ASTFactory.isTransformStatement(statement)) {
+      return new TransformStatementVisitor(parent);
+    } else if (ASTFactory.isReplyStatement(statement)) {
+      return new ReplyStatementVisitor(parent);
+    } else if (ASTFactory.isReturnStatement(statement)) {
+      return new ReturnStatementVisitor(parent);
+    } else if (ASTFactory.isFunctionInvocationStatement(statement)) {
+      return new FunctionInvocationVisitor(parent);
+    } else if (ASTFactory.isVariableDefinitionStatement(statement)) {
+      return new VariableDefinitionStatement(parent);
+    } else if (ASTFactory.isWorkerInvocationStatement(statement)) {
+      return new WorkerInvocationStatementVisitor(parent);
+    } else if (ASTFactory.isWorkerReplyStatement(statement)) {
+      return new WorkerReplyStatementVisitor(parent);
+    } else if (ASTFactory.isActionInvocationStatement(statement)) {
+      return new ActionInvocationStatementVisitor(parent);
+    } else if (ASTFactory.isBreakStatement(statement)) {
+        return new BreakStatementVisitor(parent);
+      } else if (ASTFactory.isThrowStatement(statement)) {
+          return new ThrowStatementVisitor(parent);
         } else if (ASTFactory.isCommentStatement(statement)) {
-            return new CommentStatementVisitor(parent);
+          return new CommentStatementVisitor(parent);
         } else if (ASTFactory.isTimeoutStatement(statement)) {
-            return new TimeoutStatementVisitor(parent);
+          return new TimeoutStatementVisitor(parent);
         } else if (ASTFactory.isForkJoinStatement(statement)) {
-            return new ForkJoinStatementVisitor(parent);
+          return new ForkJoinStatementVisitor(parent);
         } else if (ASTFactory.isJoinStatement(statement)) {
-            return new JoinStatementVisitor(parent);
+          return new JoinStatementVisitor(parent);
         } else if (ASTFactory.isTransactionAbortedStatement(statement)) {
-            return new TransactionAbortedStatementVisitor(parent);
+          return new TransactionAbortedStatementVisitor(parent);
         } else if (ASTFactory.isTransactionStatement(statement)) {
-            return new TransactionStatementVisitor(parent);
+          return new TransactionStatementVisitor(parent);
         } else if (ASTFactory.isAbortedStatement(statement)) {
-            return new AbortedStatementVisitor(parent);
+          return new AbortedStatementVisitor(parent);
         } else if (ASTFactory.isAbortStatement(statement)) {
-            return new AbortStatementVisitor(parent);
+          return new AbortStatementVisitor(parent);
         } else if (ASTFactory.isCommittedStatement(statement)) {
-            return new CommittedStatementVisitor(parent);
+          return new CommittedStatementVisitor(parent);
         }
-    }
+  }
 }
 
 export default StatementVisitorFactor;

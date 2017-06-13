@@ -24,66 +24,64 @@ import FragmentUtils from '../../utils/fragment-utils';
  * @augments Expression
  * */
 class UnaryExpression extends Expression {
-    constructor(args) {
-        super('UnaryExpression');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: '',
-            2: ' '
-        };
-        this._operator = _.get(args, 'operator');
-    }
+  constructor(args) {
+    super('UnaryExpression');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: ' ',
+    };
+    this._operator = _.get(args, 'operator');
+  }
 
     /**
      * setting parameters from json
      * @param {Object} jsonNode to initialize from
      * */
-    initFromJson(jsonNode) {
-        if(!_.isEmpty(jsonNode.children)) {
-            jsonNode.children.forEach((childNode) => {
-                var child = this.getFactory().createFromJson(childNode);
-                child.initFromJson(childNode);
-                this.addChild(child);
-            });
-        }
+  initFromJson(jsonNode) {
+    if (!_.isEmpty(jsonNode.children)) {
+      jsonNode.children.forEach((childNode) => {
+        const child = this.getFactory().createFromJson(childNode);
+        child.initFromJson(childNode);
+        this.addChild(child);
+      });
     }
+  }
 
     /**
      * Set the expression from the expression string
      * @param {string} expressionString
      * @override
      */
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)){
-            let fragment = FragmentUtils.createExpressionFragment(expression);
-            let parsedJson = FragmentUtils.parseFragment(fragment);
-            if ((!_.has(parsedJson, 'error')
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
+      if ((!_.has(parsedJson, 'error')
                    || !_.has(parsedJson, 'syntax_errors'))) {
-                this.initFromJson(parsedJson);
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        this.initFromJson(parsedJson);
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
-    getExpressionString() {
-        let expString = this.getOperator() + this.getWSRegion(1);
-        expString += (!_.isEmpty(this.children)) ? this.children[0].getExpressionString() : '';
-        return expString;
-    }
+  getExpressionString() {
+    let expString = this.getOperator() + this.getWSRegion(1);
+    expString += (!_.isEmpty(this.children)) ? this.children[0].getExpressionString() : '';
+    return expString;
+  }
 
     /**
      * Get the operator.
      * @return {String} Operator
      * */
-    getOperator() {
-        return this._operator;
-    }
+  getOperator() {
+    return this._operator;
+  }
 }
 
 export default UnaryExpression;

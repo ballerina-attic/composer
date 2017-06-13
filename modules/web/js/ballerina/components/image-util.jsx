@@ -18,26 +18,26 @@
 
 // require all react images
 function requireAll(requireContext) {
-    let components = {};
-    requireContext.keys().map((item) => {
-        var module = requireContext(item);
-        if (module) {
-            components[_getBasename(item, '.svg')] = module;
-        }
-    });
-    return components;
+  const components = {};
+  requireContext.keys().map((item) => {
+    const module = requireContext(item);
+    if (module) {
+      components[_getBasename(item, '.svg')] = module;
+    }
+  });
+  return components;
 }
 
 function _getBasename(filename, ext) {
-    return filename.substring(2, filename.indexOf(ext));
+  return filename.substring(2, filename.indexOf(ext));
 }
 
 const images = requireAll(require.context('images', true, /\.svg$/));
 
 class ImageUtils {
-    static getSVGIconString (iconName) {
-        return images[iconName];
-    }
+  static getSVGIconString(iconName) {
+    return images[iconName];
+  }
 }
 
 export default ImageUtils;

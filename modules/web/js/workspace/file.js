@@ -19,127 +19,127 @@ import _ from 'lodash';
 import Backbone from 'backbone';
 import log from 'log';
 
-var File = Backbone.Model.extend(
-    {
-        defaults: {
-            path: 'temp',
-            name: 'untitled',
-            content: undefined,
-            isPersisted: false,
-            lastPersisted: _.now(),
-            isDirty: true,
-            langserverCallbacks: undefined
+let File = Backbone.Model.extend(
+  {
+    defaults: {
+          path: 'temp',
+          name: 'untitled',
+          content: undefined,
+          isPersisted: false,
+          lastPersisted: _.now(),
+          isDirty: true,
+          langserverCallbacks: undefined,
         },
 
-        initialize: function (attrs, options) {
-            var errMsg;
-            if (!this.get('isPersisted')){
-                if(!_.has(options, 'storage')){
-                    errMsg = 'unable to find storage' + _.toString(attrs);
-                    log.error(errMsg);
-                    throw errMsg;
+    initialize: function (attrs, options) {
+          var errMsg;
+          if (!this.get('isPersisted')) {
+              if (!_.has(options, 'storage')) {
+                  errMsg = `unable to find storage${  _.toString(attrs)}`;
+                  log.error(errMsg);
+                  throw errMsg;
                 }
-                this._storage = _.get(options, 'storage');
-                this._storage .create(this);
+              this._storage = _.get(options, 'storage');
+              this._storage.create(this);
             }
         },
 
-        save: function(){
-            if(!_.isNil(this._storage.get(this.id))){
-                this._storage.update(this);
+    save: function () {
+          if (!_.isNil(this._storage.get(this.id))) {
+              this._storage.update(this);
             } else {
-                this._storage.create(this);
+              this._storage.create(this);
             }
 
-            if (this.isPersisted()) {
+          if (this.isPersisted()) {
                 /**
                  * We send the fileDidSave notification to the language server on the file save
                  */
-                const docUri = this.getPath() + '/' + this.getName();
+              const docUri = `${this.getPath()  }/${  this.getName()}`;
                 // Send document closed notification to the language server
-                let didSaveOptions = {
-                    didSaveParams: {
-                        textDocument: {
-                            documentUri: docUri,
-                            documentId: this.id
+              let didSaveOptions = {
+                  didSaveParams: {
+                      textDocument: {
+                          documentUri: docUri,
+                          documentId: this.id,
                         },
-                        text: this.getContent()
-                    }
+                      text: this.getContent(),
+                    },
                 };
-                this.getLangserverCallbacks().documentDidSaveNotification(didSaveOptions);
+              this.getLangserverCallbacks().documentDidSaveNotification(didSaveOptions);
             }
-            return this;
+          return this;
         },
 
-        setPath: function(path){
-            this.set('path', path);
-            return this;
+    setPath: function (path) {
+          this.set('path', path);
+          return this;
         },
 
-        setStorage: function(storage){
-            this._storage = storage;
-            return this;
+    setStorage: function (storage) {
+          this._storage = storage;
+          return this;
         },
 
-        setPersisted: function(isPersisted){
-            this.set('isPersisted', isPersisted);
-            return this;
+    setPersisted: function (isPersisted) {
+          this.set('isPersisted', isPersisted);
+          return this;
         },
 
-        setLastPersisted: function(lsatPersisted){
-            this.set('lastPersisted', lsatPersisted);
-            return this;
+    setLastPersisted: function (lsatPersisted) {
+          this.set('lastPersisted', lsatPersisted);
+          return this;
         },
 
-        setDirty: function(isDirty){
-            this.set('isDirty', isDirty);
-            this.trigger('dirty-state-change', isDirty);
-            return this;
+    setDirty: function (isDirty) {
+          this.set('isDirty', isDirty);
+          this.trigger('dirty-state-change', isDirty);
+          return this;
         },
 
-        setName: function(name){
-            this.set('name', name);
-            return this;
+    setName: function (name) {
+          this.set('name', name);
+          return this;
         },
 
-        setContent: function(name){
-            this.set('content', name);
-            return this;
+    setContent: function (name) {
+          this.set('content', name);
+          return this;
         },
 
-        getPath: function(){
-            return this.get('path');
+    getPath: function () {
+          return this.get('path');
         },
 
-        getName: function(){
-            return this.get('name');
+    getName: function () {
+          return this.get('name');
         },
 
-        getContent: function(){
-            return this.get('content');
+    getContent: function () {
+          return this.get('content');
         },
 
-        getLastPersisted: function(){
-            return this.get('lastPersisted');
+    getLastPersisted: function () {
+          return this.get('lastPersisted');
         },
 
 
-        isPersisted: function(){
-            return this.get('isPersisted');
+    isPersisted: function () {
+          return this.get('isPersisted');
         },
 
-        isDirty: function(){
-            return this.get('isDirty');
+    isDirty: function () {
+          return this.get('isDirty');
         },
 
-        setLangserverCallbacks(callbacks) {
-            this.set('langserverCallbacks',callbacks);
+    setLangserverCallbacks(callbacks) {
+          this.set('langserverCallbacks', callbacks);
         },
 
-        getLangserverCallbacks() {
-            return this.get('langserverCallbacks');
-        }
-    }
+    getLangserverCallbacks() {
+          return this.get('langserverCallbacks');
+        },
+  },
 );
 
 export default File;

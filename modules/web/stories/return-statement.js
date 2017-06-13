@@ -17,7 +17,7 @@
  */
 
 import React from 'react';
-import {storiesOf, action, linkTo} from '@kadira/storybook';
+import { storiesOf, action, linkTo } from '@kadira/storybook';
 import CanvasDecorator from '../js/ballerina/components/canvas-decorator';
 import StatementContainer from '../js/ballerina/components/statement-container';
 import { components } from '../js/ballerina/components/components';
@@ -25,23 +25,23 @@ import '../css/diagram/diagram.css';
 
 const canvasBbox = {
   w: 500,
-  h: 500
+  h: 500,
 };
 
 storiesOf('Return-Statement', module)
     .add('default view', () => {
-        const returnStatement = React.createElement(components['ReturnStatement'],
-            {
-                model: {
-                    viewState: {bBox: {x: 0, y: 0, w: 200, h: 50}},
-                    expression: "return a"
-                }
-            }, null);
-        return (
-            <CanvasDecorator bBox={canvasBbox}>
-                <StatementContainer>
-                    {returnStatement}
-                </StatementContainer>
-            </CanvasDecorator>
-        );
+      const returnStatement = React.createElement(components.ReturnStatement,
+        {
+          model: {
+            viewState: { bBox: { x: 0, y: 0, w: 200, h: 50 } },
+            expression: 'return a',
+          },
+        }, null);
+      return (
+        <CanvasDecorator bBox={canvasBbox}>
+          <StatementContainer>
+            {returnStatement}
+          </StatementContainer>
+        </CanvasDecorator>
+      );
     });

@@ -25,112 +25,110 @@ import log from 'log';
 
 
 // ################ Handle the websocket closing and error as well #######################
-class LangServerClientController extends EventChannel{
-    constructor(options) {
-        super();
-        this.langserverChannel = undefined;
-        this.endpoint = _.get(options, 'application.config.services.langserver.endpoint');
-        this.requestSessions = [];
-        this.isInitialized = false;
-        this.init();
-    }
+class LangServerClientController extends EventChannel {
+  constructor(options) {
+    super();
+    this.langserverChannel = undefined;
+    this.endpoint = _.get(options, 'application.config.services.langserver.endpoint');
+    this.requestSessions = [];
+    this.isInitialized = false;
+    this.init();
+  }
 
-    init() {
-        this.langserverChannel = new LangserverChannel({ endpoint : this.endpoint, clientController: this });
-        this.langserverChannel.on('connected', () => {
-            this.initializeRequest();
-        });
-    }
+  init() {
+    this.langserverChannel = new LangserverChannel({ endpoint: this.endpoint, clientController: this });
+    this.langserverChannel.on('connected', () => {
+      this.initializeRequest();
+    });
+  }
 
     // Start Language server requests
 
     /**
      * Send the initialize request to the language server
      */
-    initializeRequest() {
-        let session = new RequestSession();
-        var message = {
-            id: session.getId(),
-            jsonrpc: '2.0',
-            method : "initialize"
-        };
-        session.setMessage(message);
-        session.setCallback(() => {
-            this.initializeResponseHandler(session);
-        });
-        this.requestSessions.push(session);
-        this.langserverChannel.sendMessage(message);
-    }
+  initializeRequest() {
+    const session = new RequestSession();
+    const message = {
+      id: session.getId(),
+      jsonrpc: '2.0',
+      method: 'initialize',
+    };
+    session.setMessage(message);
+    session.setCallback(() => {
+      this.initializeResponseHandler(session);
+    });
+    this.requestSessions.push(session);
+    this.langserverChannel.sendMessage(message);
+  }
 
     /**
      * Send the workspace symbol request
      * @param {string} query
      * @param {function} callback Callback method for handling the response
      */
-    workspaceSymbolRequest(query, callback) {
-        let session = new RequestSession();
-        var message = {
-            id: session.getId(),
-            jsonrpc: '2.0',
-            method : "workspace/symbol",
-            params: {
-                query: query
-            }
-        };
-        session.setMessage(message);
-        session.setCallback((responseMsg) => {
-            callback(responseMsg);
-        });
-        this.requestSessions.push(session);
-        this.langserverChannel.sendMessage(message);
-    }
+  workspaceSymbolRequest(query, callback) {
+    const session = new RequestSession();
+    const message = {
+      id: session.getId(),
+      jsonrpc: '2.0',
+      method: 'workspace/symbol',
+      params: {
+        query,
+      },
+    };
+    session.setMessage(message);
+    session.setCallback((responseMsg) => {
+      callback(responseMsg);
+    });
+    this.requestSessions.push(session);
+    this.langserverChannel.sendMessage(message);
+  }
 
     // End Language server requests
 
     // Start language server notifications
 
-    documentDidOpenNotification(options) {
-        var message = {
-            jsonrpc: '2.0',
-            method: 'textDocument/didOpen',
-            params: {
-                textDocument: options.textDocument
-            }
-        };
+  documentDidOpenNotification(options) {
+    const message = {
+      jsonrpc: '2.0',
+      method: 'textDocument/didOpen',
+      params: {
+        textDocument: options.textDocument,
+      },
+    };
 
-        this.langserverChannel.sendMessage(message);
-    }
+    this.langserverChannel.sendMessage(message);
+  }
 
-    documentDidCloseNotification(options) {
-        var message = {
-            jsonrpc: '2.0',
-            method: 'textDocument/didClose',
-            params: {
-                textDocument: options.textDocument
-            }
-        };
+  documentDidCloseNotification(options) {
+    const message = {
+      jsonrpc: '2.0',
+      method: 'textDocument/didClose',
+      params: {
+        textDocument: options.textDocument,
+      },
+    };
 
-        this.langserverChannel.sendMessage(message);
-    }
+    this.langserverChannel.sendMessage(message);
+  }
 
-    documentDidSaveNotification(options) {
-        var message = {
-            jsonrpc: '2.0',
-            method: 'textDocument/didSave',
-            params: options.didSaveParams
-        };
+  documentDidSaveNotification(options) {
+    const message = {
+      jsonrpc: '2.0',
+      method: 'textDocument/didSave',
+      params: options.didSaveParams,
+    };
 
-        this.langserverChannel.sendMessage(message);
-    }
+    this.langserverChannel.sendMessage(message);
+  }
 
     // End language server notifications
 
-    processMessage(message) {
-        let session = _.find(this.requestSessions, (session) => {
-            return session.getId() === message.id;
-        });
-        session.executeCallback(message);
-    }
+  processMessage(message) {
+    const session = _.find(this.requestSessions, session => session.getId() === message.id);
+    session.executeCallback(message);
+  }
 
     // Start Language server response handlers
 
@@ -138,15 +136,15 @@ class LangServerClientController extends EventChannel{
      * Handle initialize response
      * @param {RequestSession} requestSession
      */
-    initializeResponseHandler(requestSession) {
+  initializeResponseHandler(requestSession) {
         // initialize response message received
-        this.trigger('langserver-initialized');
-        this.isInitialized = true;
-    }
+    this.trigger('langserver-initialized');
+    this.isInitialized = true;
+  }
 
-    initialized() {
-        return this.isInitialized;
-    }
+  initialized() {
+    return this.isInitialized;
+  }
 
     // End language server response handlers
 

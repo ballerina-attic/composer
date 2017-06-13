@@ -18,24 +18,24 @@
 import BallerinaEnvironment from './../env/environment';
 
 class ImportSearchAdapter {
-    constructor() {
-        this._excludes = [];
-    }
+  constructor() {
+    this._excludes = [];
+  }
 
-    search(query) {
-        return BallerinaEnvironment.searchPackage(query, this._excludes);
-    }
+  search(query) {
+    return BallerinaEnvironment.searchPackage(query, this._excludes);
+  }
 
-    render(item) {
-        return item.getName();
-    }
+  render(item) {
+    return item.getName();
+  }
 
-    setExcludes(excludes) {
-        var self = this;
-        _.forEach(excludes,function(exclude){
-            self._excludes.push(exclude.getName());
-        });
-    }
+  setExcludes(excludes) {
+    const self = this;
+    _.forEach(excludes, (exclude) => {
+      self._excludes.push(exclude.getName());
+    });
+  }
 }
 
 export default ImportSearchAdapter;

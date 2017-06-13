@@ -21,44 +21,44 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class CatchStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitCatchStatement(catchStatement) {
-        return true;
-    }
+  canVisitCatchStatement(catchStatement) {
+    return true;
+  }
 
-    beginVisitCatchStatement(catchStatement) {
-        this.node = catchStatement;
+  beginVisitCatchStatement(catchStatement) {
+    this.node = catchStatement;
         /**
          * set the configuration start for the catch statement
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        this.appendSource('catch' + catchStatement.getWSRegion(1) + '('
-                            + catchStatement.getWSRegion(2)
-                            + catchStatement.getParameterDefString() // FIXME fix the model to support different catches
-                            + catchStatement.getWSRegion(4) + ')'
-                            + catchStatement.getWSRegion(5) + '{'
-                            + catchStatement.getWSRegion(6));
-        this.appendSource((catchStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
-        this.indent();
-    }
+    this.appendSource(`catch${catchStatement.getWSRegion(1)}(${
+                             catchStatement.getWSRegion(2)
+                             }${catchStatement.getParameterDefString() // FIXME fix the model to support different catches
+                             }${catchStatement.getWSRegion(4)})${
+                             catchStatement.getWSRegion(5)}{${
+                             catchStatement.getWSRegion(6)}`);
+    this.appendSource((catchStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
+    this.indent();
+  }
 
-    visitStatement(statement) {
-        if(!_.isEqual(this.node, statement)) {
-            var statementVisitorFactory = new StatementVisitorFactory();
-            var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitCatchStatement(catchStatement) {
-        this.outdent();
-        this.appendSource('}' + catchStatement.getWSRegion(7));
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitCatchStatement(catchStatement) {
+    this.outdent();
+    this.appendSource(`}${catchStatement.getWSRegion(7)}`);
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default CatchStatementVisitor;

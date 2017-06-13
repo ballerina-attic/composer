@@ -17,24 +17,24 @@
  */
 
 import * as PositioningUtils from './utils';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class WorkerReplyStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-        util.syncWorkerReplyDimension(node);
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    util.syncWorkerReplyDimension(node);
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-    }
+  endVisit(node) {
+  }
 }
 
 export default WorkerReplyStatementPositionCalcVisitor;

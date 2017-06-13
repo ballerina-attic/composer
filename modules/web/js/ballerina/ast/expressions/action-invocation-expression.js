@@ -26,210 +26,209 @@ import FragmentUtils from '../../utils/fragment-utils';
  * @constructor
  */
 class ActionInvocationExpression extends Expression {
-    constructor(args) {
-        super("ActionInvocationExpression");
-        this._actionName = _.get(args, 'action', undefined);
-        this._actionPackageName = _.get(args, 'actionPackageName', undefined);
-        this._actionConnectorName = _.get(args, 'actionConnectorName', undefined);
-        this._arguments = _.get(args, "arguments", []);
-        this._connector = _.get(args, 'connector');
-        this._connectorExpr = _.get(args, 'connectorExpr');
-        this._fullPackageName = _.get(args, 'fullPackageName', undefined);
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: '',
-            2: '',
-            3: '',
-            4: '',
-            5: ''
-        };
-        this.whiteSpace.defaultDescriptor.children = {
-            nameRef: {
-                0: ' ',
-                1: '',
-                2: '',
-                3: ''
-            }
-        };
+  constructor(args) {
+    super('ActionInvocationExpression');
+    this._actionName = _.get(args, 'action', undefined);
+    this._actionPackageName = _.get(args, 'actionPackageName', undefined);
+    this._actionConnectorName = _.get(args, 'actionConnectorName', undefined);
+    this._arguments = _.get(args, 'arguments', []);
+    this._connector = _.get(args, 'connector');
+    this._connectorExpr = _.get(args, 'connectorExpr');
+    this._fullPackageName = _.get(args, 'fullPackageName', undefined);
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: '',
+      3: '',
+      4: '',
+      5: '',
+    };
+    this.whiteSpace.defaultDescriptor.children = {
+      nameRef: {
+        0: ' ',
+        1: '',
+        2: '',
+        3: '',
+      },
+    };
 
-        this.type = "ActionInvocationExpression";
-    }
+    this.type = 'ActionInvocationExpression';
+  }
 
     /**
      * Set the full package name
      * @param {String} fullPkgName full package name
      * @param {Object} options
      * */
-    setFullPackageName(fullPkgName, options) {
-        this.setAttribute('_fullPackageName', fullPkgName, options);
-    }
+  setFullPackageName(fullPkgName, options) {
+    this.setAttribute('_fullPackageName', fullPkgName, options);
+  }
 
     /**
      * Get the full package name
      * @return {String} full package name
      * */
-    getFullPackageName() {
-        return this._fullPackageName;
-    }
+  getFullPackageName() {
+    return this._fullPackageName;
+  }
 
     /**
      * Set action name
      * @param {string} actionName
      */
-    setActionName(actionName, options) {
-        this.setAttribute('_actionName', actionName, options);
-    }
+  setActionName(actionName, options) {
+    this.setAttribute('_actionName', actionName, options);
+  }
 
     /**
      * Get action name
      * @returns {string}
      */
-    getActionName() {
-        return this._actionName;
-    }
+  getActionName() {
+    return this._actionName;
+  }
 
     /**
      * Set Action package name
      * @param {string} actionPackageName
      */
-    setActionPackageName(actionPackageName, options) {
-        this.setAttribute('_actionPackageName', actionPackageName, options);
-    }
+  setActionPackageName(actionPackageName, options) {
+    this.setAttribute('_actionPackageName', actionPackageName, options);
+  }
 
     /**
      * Get Action Package Name
      * @returns {string}
      */
-    getActionPackageName() {
-        return this._actionPackageName;
-    }
+  getActionPackageName() {
+    return this._actionPackageName;
+  }
 
     /**
      * Set Action Connector name
      * @param {string} actionConnectorName
      */
-    setActionConnectorName(actionConnectorName, options) {
-        this.setAttribute('_actionConnectorName', actionConnectorName, options);
-    }
+  setActionConnectorName(actionConnectorName, options) {
+    this.setAttribute('_actionConnectorName', actionConnectorName, options);
+  }
 
     /**
      * Get action connector Name
      * @returns {string}
      */
-    getActionConnectorName() {
-        return this._actionConnectorName;
-    }
+  getActionConnectorName() {
+    return this._actionConnectorName;
+  }
 
-    getConnector() {
-        return this._connector;
-    }
+  getConnector() {
+    return this._connector;
+  }
 
-    setConnector(connector, options) {
-        this.setAttribute('_connector', connector, options);
-    }
+  setConnector(connector, options) {
+    this.setAttribute('_connector', connector, options);
+  }
 
     /**
      * initialize ActionInvocationExpression from json object
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        this.getChildren().length = 0;
-        this.setActionName(jsonNode.action_name, {doSilently: true});
-        this.setActionPackageName(jsonNode.action_pkg_name, {doSilently: true});
-        this.setActionConnectorName(jsonNode.action_connector_name, {doSilently: true});
+  initFromJson(jsonNode) {
+    this.getChildren().length = 0;
+    this.setActionName(jsonNode.action_name, { doSilently: true });
+    this.setActionPackageName(jsonNode.action_pkg_name, { doSilently: true });
+    this.setActionConnectorName(jsonNode.action_connector_name, { doSilently: true });
 
-        if (jsonNode.children.length > 0) {
-            this._connectorExpr = this.getFactory().createFromJson(jsonNode.children[0]);
-            this._connectorExpr.initFromJson(jsonNode.children[0]);
-            var connector = this.getInvocationConnector(this._connectorExpr.getExpressionString());
-            this.setConnector(connector, {doSilently: true});
+    if (jsonNode.children.length > 0) {
+      this._connectorExpr = this.getFactory().createFromJson(jsonNode.children[0]);
+      this._connectorExpr.initFromJson(jsonNode.children[0]);
+      const connector = this.getInvocationConnector(this._connectorExpr.getExpressionString());
+      this.setConnector(connector, { doSilently: true });
 
-            var self = this;
+      const self = this;
 
-            //get params apart from first param which is the connector variable
-            _.each(_.slice(jsonNode.children, 1), function (argNode) {
-                var arg = self.getFactory().createFromJson(argNode);
-                arg.initFromJson(argNode);
-                self.addArgument(arg);
-            });
-        }
+            // get params apart from first param which is the connector variable
+      _.each(_.slice(jsonNode.children, 1), (argNode) => {
+        const arg = self.getFactory().createFromJson(argNode);
+        arg.initFromJson(argNode);
+        self.addArgument(arg);
+      });
     }
+  }
 
-    addArgument(argument) {
-        this._arguments.push(argument);
-    }
+  addArgument(argument) {
+    this._arguments.push(argument);
+  }
 
-    getArguments() {
-        return this._arguments;
-    }
+  getArguments() {
+    return this._arguments;
+  }
 
-    getInvocationConnector(connectorVariable) {
-        var parent = this.getParent();
-        var factory = this.getFactory();
+  getInvocationConnector(connectorVariable) {
+    let parent = this.getParent();
+    const factory = this.getFactory();
 
         // Iteratively we find the most atomic parent node which can hold a connector
         // ATM those are [FunctionDefinition, ResourceDefinition, ConnectorAction]
-        while (!factory.isBallerinaAstRoot(parent)) {
-            if (factory.isResourceDefinition(parent) || factory.isFunctionDefinition(parent)
+    while (!factory.isBallerinaAstRoot(parent)) {
+      if (factory.isResourceDefinition(parent) || factory.isFunctionDefinition(parent)
                 || factory.isConnectorAction(parent)) {
-                break;
-            }
-            parent = parent.getParent();
-        }
-
-        var connector = parent.getConnectorByName(connectorVariable);
-        return connector;
+        break;
+      }
+      parent = parent.getParent();
     }
+
+    const connector = parent.getConnectorByName(connectorVariable);
+    return connector;
+  }
 
     /**
      * Get the expression string
      * @returns {string} expression string
      * @override
      */
-    getExpressionString() {
-        var argsString = "";
-        var args = this.getArguments();
+  getExpressionString() {
+    let argsString = '';
+    const args = this.getArguments();
 
-        for (var itr = 0; itr < args.length; itr++) {
-
+    for (let itr = 0; itr < args.length; itr++) {
             // TODO: we need to refactor this along with the action invocation argument types as well
-            if (this.getFactory().isExpression(args[itr])) {
-                argsString += args[itr].getExpressionString();
-            } else if (this.getFactory().isResourceParameter(args[itr])) {
-                argsString += args[itr].getParameterAsString();
-            }
+      if (this.getFactory().isExpression(args[itr])) {
+        argsString += args[itr].getExpressionString();
+      } else if (this.getFactory().isResourceParameter(args[itr])) {
+        argsString += args[itr].getParameterAsString();
+      }
 
-            if (itr !== args.length - 1) {
-                argsString += ', ';
-            }
-        }
+      if (itr !== args.length - 1) {
+        argsString += ', ';
+      }
+    }
 
-        let connectorRef = '';
+    let connectorRef = '';
 
         // Get the Connector expression reference name
-        if (!_.isNil(this.getConnector())) {
-            connectorRef = this.getConnector().getConnectorVariable();
-        } else if (!_.isNil(this._connectorExpr)) {
-            connectorRef = this._connectorExpr.getExpressionString();
-        }
+    if (!_.isNil(this.getConnector())) {
+      connectorRef = this.getConnector().getConnectorVariable();
+    } else if (!_.isNil(this._connectorExpr)) {
+      connectorRef = this._connectorExpr.getExpressionString();
+    }
 
         // Append the connector reference expression name to the arguments string
-        if (!_.isEmpty(argsString)) {
-            argsString = connectorRef + ", " + argsString;
-        } else {
-            argsString = connectorRef;
-        }
-
-        var expression = this.getActionConnectorName() + this.getWSRegion(1)
-            + '.' + this.getWSRegion(2) + this.getActionName() + this.getWSRegion(3)
-            + '(' + this.getWSRegion(4) + argsString +  ')' + this.getWSRegion(5);
-        if(!_.isUndefined(this.getActionPackageName()) && !_.isNil(this.getActionPackageName())
-            && !_.isEqual(this.getActionPackageName(), 'Current Package')){
-            expression = this.getActionPackageName() + this.getChildWSRegion('nameRef', 1) + ':'
-                + this.getChildWSRegion('nameRef', 2) + expression;
-        }
-        return expression;
+    if (!_.isEmpty(argsString)) {
+      argsString = `${connectorRef}, ${argsString}`;
+    } else {
+      argsString = connectorRef;
     }
+
+    let expression = `${this.getActionConnectorName() + this.getWSRegion(1)
+             }.${this.getWSRegion(2)}${this.getActionName()}${this.getWSRegion(3)
+             }(${this.getWSRegion(4)}${argsString})${this.getWSRegion(5)}`;
+    if (!_.isUndefined(this.getActionPackageName()) && !_.isNil(this.getActionPackageName())
+            && !_.isEqual(this.getActionPackageName(), 'Current Package')) {
+      expression = `${this.getActionPackageName() + this.getChildWSRegion('nameRef', 1)}:${
+                 this.getChildWSRegion('nameRef', 2)}${expression}`;
+    }
+    return expression;
+  }
 
     /**
      * Set the expression model from the given expression string
@@ -237,39 +236,36 @@ class ActionInvocationExpression extends Expression {
      * @param {function} callback
      * @override
      */
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)) {
-            const fragment = FragmentUtils.createExpressionFragment(expression);
-            const parsedJson = FragmentUtils.parseFragment(fragment);
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
 
-            if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+      if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
                 && _.isEqual(parsedJson.type, 'action_invocation_statement')) {
-
-                this.initFromJson(parsedJson);
+        this.initFromJson(parsedJson);
 
                 // Manually firing the tree-modified event here.
                 // TODO: need a proper fix to avoid breaking the undo-redo
-                this.trigger('tree-modified', {
-                    origin: this,
-                    type: 'custom',
-                    title: 'Action Invocation Expression Custom Tree modified',
-                    context: this,
-                });
+        this.trigger('tree-modified', {
+          origin: this,
+          type: 'custom',
+          title: 'Action Invocation Expression Custom Tree modified',
+          context: this,
+        });
 
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
-    messageDrawTargetAllowed(target) {
-        return this.getFactory().isConnectorDeclaration(target);
-    }
+  messageDrawTargetAllowed(target) {
+    return this.getFactory().isConnectorDeclaration(target);
+  }
 }
 
 export default ActionInvocationExpression;

@@ -22,57 +22,55 @@ import * as DesignerDefaults from './../../configs/designer-defaults';
 
 class ForkJoinStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ForkJoinStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ForkJoinStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit ForkJoinStatementPositionCalcVisitor');
-        let viewState = node.getViewState();
-        let bBox = viewState.bBox;
-        const parent = node.getParent();
-        const parentViewState = parent.getViewState();
-        const parentStatementContainer = parentViewState.components.statementContainer;
-        let parentStatements = parent.filterChildren(function (child) {
-            return ASTFactory.isStatement(child) || ASTFactory.isExpression(child);
-        });
-        const currentIndex = _.findIndex(parentStatements, node);
-        let x, y;
+  beginVisit(node) {
+    log.debug('visit ForkJoinStatementPositionCalcVisitor');
+    const viewState = node.getViewState();
+    const bBox = viewState.bBox;
+    const parent = node.getParent();
+    const parentViewState = parent.getViewState();
+    const parentStatementContainer = parentViewState.components.statementContainer;
+    const parentStatements = parent.filterChildren(child => ASTFactory.isStatement(child) || ASTFactory.isExpression(child));
+    const currentIndex = _.findIndex(parentStatements, node);
+    let x,
+      y;
 
         /**
          * Here we center the statement based on the parent's statement container's dimensions
          * Always the statement container's width should be greater than the statements/expressions
          */
-        if (parentStatementContainer.w < bBox.w) {
-            throw 'Invalid statement container width found, statement width should be greater than or equal to ' +
+    if (parentStatementContainer.w < bBox.w) {
+      throw 'Invalid statement container width found, statement width should be greater than or equal to ' +
             'statement/ statement width ';
-        }
-        x = parentStatementContainer.x + (parentStatementContainer.w - bBox.w) / 2;
-        if (currentIndex === 0) {
-            y = parentStatementContainer.y;
-        } else if (currentIndex > 0) {
-            y = parentStatements[currentIndex - 1].getViewState().bBox.getBottom();
-        } else {
-            throw 'Invalid Index found for ' + node.getType();
-        }
-
-        bBox.x = x;
-        bBox.y = y;
-
-        let body = viewState.components.body;
-        body.x = x;
-        body.y = y + DesignerDefaults.statement.gutter.v + DesignerDefaults.blockStatement.heading.height;
-
+    }
+    x = parentStatementContainer.x + (parentStatementContainer.w - bBox.w) / 2;
+    if (currentIndex === 0) {
+      y = parentStatementContainer.y;
+    } else if (currentIndex > 0) {
+      y = parentStatements[currentIndex - 1].getViewState().bBox.getBottom();
+    } else {
+      throw `Invalid Index found for ${node.getType()}`;
     }
 
-    visit(node) {
-        log.debug('visit ForkJoinStatementPositionCalcVisitor');
-    }
+    bBox.x = x;
+    bBox.y = y;
 
-    endVisit(node) {
-        log.debug('end visit ForkJoinStatementPositionCalcVisitor');
-    }
+    const body = viewState.components.body;
+    body.x = x;
+    body.y = y + DesignerDefaults.statement.gutter.v + DesignerDefaults.blockStatement.heading.height;
+  }
+
+  visit(node) {
+    log.debug('visit ForkJoinStatementPositionCalcVisitor');
+  }
+
+  endVisit(node) {
+    log.debug('end visit ForkJoinStatementPositionCalcVisitor');
+  }
 }
 
 export default ForkJoinStatementPositionCalcVisitor;

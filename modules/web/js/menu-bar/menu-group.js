@@ -20,61 +20,58 @@ import _ from 'lodash';
 import EventChannel from 'event_channel';
 import MenuItem from './menu-item';
 
-var MenuGroup = function(args){
-    _.assign(this, args);
+const MenuGroup = function (args) {
+  _.assign(this, args);
 };
 
 MenuGroup.prototype = Object.create(EventChannel.prototype);
 MenuGroup.prototype.constructor = MenuGroup;
 
-MenuGroup.prototype.render = function(){
+MenuGroup.prototype.render = function () {
+  const menuItemDefinitions = _.get(this, 'definition.items');
+  const parent = _.get(this, 'options.parent');
+  const menuItemOpts = _.cloneDeep(_.get(this, 'options.menu_item'));
 
-    var menuItemDefinitions = _.get(this, 'definition.items');
-    var parent = _.get(this, 'options.parent');
-    var menuItemOpts = _.cloneDeep(_.get(this, 'options.menu_item'));
+  const toolBarDiv = $('<div></div>');
+  toolBarDiv.addClass(_.get(this, 'options.cssClass.group'));
+  parent.append(toolBarDiv);
 
-    var toolBarDiv = $('<div></div>');
-    toolBarDiv.addClass(_.get(this, 'options.cssClass.group'));
-    parent.append(toolBarDiv);
-
-    var title = $('<a></a>');
-    title.text(_.get(this, 'definition.label'));
-    title.addClass(_.get(this, 'options.cssClass.toggle'));
-    title.attr("data-toggle", "dropdown");
-    title.on('mouseover', function(e){
-        var thisElem = $(e.target).parent();
-        var toggleClass = 'open';
-        _.some(thisElem.siblings(), function (el) {
-            if($(el).hasClass(toggleClass)){
-                thisElem.addClass(toggleClass);
-                $(el).removeClass(toggleClass);
-                return;
-            }
-        });
+  const title = $('<a></a>');
+  title.text(_.get(this, 'definition.label'));
+  title.addClass(_.get(this, 'options.cssClass.toggle'));
+  title.attr('data-toggle', 'dropdown');
+  title.on('mouseover', (e) => {
+    const thisElem = $(e.target).parent();
+    const toggleClass = 'open';
+    _.some(thisElem.siblings(), (el) => {
+      if ($(el).hasClass(toggleClass)) {
+        thisElem.addClass(toggleClass);
+        $(el).removeClass(toggleClass);
+      }
     });
-    toolBarDiv.append(title);
+  });
+  toolBarDiv.append(title);
 
-    var menu = $('<ul></ul>');
-    menu.addClass(_.get(this, 'options.cssClass.menu'));
-    toolBarDiv.append(menu);
+  const menu = $('<ul></ul>');
+  menu.addClass(_.get(this, 'options.cssClass.menu'));
+  toolBarDiv.append(menu);
 
-    var self = this;
+  const self = this;
 
     // Iterate over menu items
-    _.forEach(menuItemDefinitions, function (menuItemDef) {
-
-        var menuItemOptions = {definition: _.cloneDeep(menuItemDef)};
-        _.set(menuItemOptions, 'options', menuItemOpts);
-        _.set(menuItemOptions, 'options.parent', menu);
-        _.set(menuItemOptions, 'options.application', _.get(self, 'options.application'));
-        var menuItem = new MenuItem(menuItemOptions);
-        menuItem.render();
-        _.set(self, menuItem.getID(), menuItem);
-    });
+  _.forEach(menuItemDefinitions, (menuItemDef) => {
+    const menuItemOptions = { definition: _.cloneDeep(menuItemDef) };
+    _.set(menuItemOptions, 'options', menuItemOpts);
+    _.set(menuItemOptions, 'options.parent', menu);
+    _.set(menuItemOptions, 'options.application', _.get(self, 'options.application'));
+    const menuItem = new MenuItem(menuItemOptions);
+    menuItem.render();
+    _.set(self, menuItem.getID(), menuItem);
+  });
 };
 
-MenuGroup.prototype.getID = function(){
-    return _.get(this, 'definition.id');
+MenuGroup.prototype.getID = function () {
+  return _.get(this, 'definition.id');
 };
 
 export default MenuGroup;

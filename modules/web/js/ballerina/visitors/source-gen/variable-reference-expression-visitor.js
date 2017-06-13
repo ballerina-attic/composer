@@ -19,31 +19,31 @@ import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen
 import VariableDefinitionVisitor from './variable-definition-visitor';
 
 class VariableReferenceExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitVariableReferenceExpression(expression) {
-        return true;
-    }
+  canVisitVariableReferenceExpression(expression) {
+    return true;
+  }
 
-    beginVisitVariableReferenceExpression(expression) {
-    }
+  beginVisitVariableReferenceExpression(expression) {
+  }
 
-    visitVariableReferenceExpression(expression) {
-    }
+  visitVariableReferenceExpression(expression) {
+  }
 
-    endVisitVariableReferenceExpression(expression) {
-        if (expression.getVariableName()) {
-            this.appendSource(expression.getVariableName());
-        }
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+  endVisitVariableReferenceExpression(expression) {
+    if (expression.getVariableName()) {
+      this.appendSource(expression.getVariableName());
     }
+    this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+  }
 
-    visitVariableDefinition(variableDefinition) {
-        var variableDefinitionVisitor = new VariableDefinitionVisitor(this);
-        variableDefinition.accept(variableDefinitionVisitor);
-    }
+  visitVariableDefinition(variableDefinition) {
+    const variableDefinitionVisitor = new VariableDefinitionVisitor(this);
+    variableDefinition.accept(variableDefinitionVisitor);
+  }
 }
 
 export default VariableReferenceExpressionVisitor;

@@ -18,26 +18,26 @@
 import React from 'react';
 import CompoundStatementDecorator from './compound-statement-decorator';
 import PropTypes from 'prop-types';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 
 class TransactionAbortedStatement extends React.Component {
-    render() {
-        let model = this.props.model;
-        let bBox = model.viewState.bBox;
-        let children = getComponentForNodeArray(model.getChildren());
-        return (<CompoundStatementDecorator model={model} bBox={bBox}>
-            {children}
-        </CompoundStatementDecorator>);
-    }
+  render() {
+    const model = this.props.model;
+    const bBox = model.viewState.bBox;
+    const children = getComponentForNodeArray(model.getChildren());
+    return (<CompoundStatementDecorator model={model} bBox={bBox}>
+      {children}
+    </CompoundStatementDecorator>);
+  }
 }
 
 TransactionAbortedStatement.propsTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
 };
 
 export default TransactionAbortedStatement;

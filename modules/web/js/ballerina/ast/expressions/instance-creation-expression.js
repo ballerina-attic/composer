@@ -26,32 +26,32 @@ import Expression from './expression';
  * @augments Expression
  */
 class InstanceCreationExpression extends Expression {
-    constructor(args) {
-        super('InstanceCreationExpression');
-        this._typeName = _.get(args, 'typeName', 'newType');
-    }
+  constructor(args) {
+    super('InstanceCreationExpression');
+    this._typeName = _.get(args, 'typeName', 'newType');
+  }
 
-    setTypeName(typeName, options) {
-        this.setAttribute('_typeName', typeName, options);
-    }
+  setTypeName(typeName, options) {
+    this.setAttribute('_typeName', typeName, options);
+  }
 
-    getTypeName() {
-        return this._typeName;
-    }
+  getTypeName() {
+    return this._typeName;
+  }
 
     /**
      * initialize InstanceCreationExpression from json object
      * @param {Object} jsonNode to initialize from
      * @param {string} [jsonNode.instance_type] - instance type
      */
-    initFromJson(jsonNode) {
-        this.setTypeName(jsonNode.instance_type, {doSilently: true});
-        this.setExpression(this.generateExpression(), {doSilently: true});
-    }
+  initFromJson(jsonNode) {
+    this.setTypeName(jsonNode.instance_type, { doSilently: true });
+    this.setExpression(this.generateExpression(), { doSilently: true });
+  }
 
-    generateExpression() {
-        this._expression = 'new ' + this.getTypeName();
-    }
+  generateExpression() {
+    this._expression = `new ${this.getTypeName()}`;
+  }
 }
 
 export default InstanceCreationExpression;

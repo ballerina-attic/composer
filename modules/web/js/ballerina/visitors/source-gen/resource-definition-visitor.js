@@ -29,72 +29,72 @@ import WorkerDeclarationVisitor from './worker-declaration-visitor';
  * @constructor
  */
 class ResourceDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitResourceDefinition(resourceDefinition) {
-        return true;
-    }
+  canVisitResourceDefinition(resourceDefinition) {
+    return true;
+  }
 
-    beginVisitResourceDefinition(resourceDefinition) {
+  beginVisitResourceDefinition(resourceDefinition) {
         /**
          * set the configuration start for the resource definition language construct
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        let useDefaultWS = resourceDefinition.whiteSpace.useDefault;
-        if (useDefaultWS) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation('\n' + this.getIndentation());
-        }
-        let constructedSourceSegment = '';
-        _.forEach(resourceDefinition.getChildrenOfType(resourceDefinition.getFactory().isAnnotation), annotationNode => {
-            if (annotationNode.isSupported()) {
-                constructedSourceSegment += annotationNode.toString()
+    const useDefaultWS = resourceDefinition.whiteSpace.useDefault;
+    if (useDefaultWS) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(`\n${this.getIndentation()}`);
+    }
+    let constructedSourceSegment = '';
+    _.forEach(resourceDefinition.getChildrenOfType(resourceDefinition.getFactory().isAnnotation), (annotationNode) => {
+      if (annotationNode.isSupported()) {
+        constructedSourceSegment += annotationNode.toString()
                     + ((annotationNode.whiteSpace.useDefault) ? this.getIndentation() : '');
-            }
-        });
+      }
+    });
 
-        constructedSourceSegment += 'resource' + resourceDefinition.getWSRegion(0)
-                  + resourceDefinition.getResourceName()
-                  + resourceDefinition.getWSRegion(1)
-                  + '(';
+    constructedSourceSegment += `resource${resourceDefinition.getWSRegion(0)
+                   }${resourceDefinition.getResourceName()
+                   }${resourceDefinition.getWSRegion(1)
+                   }(`;
 
-        constructedSourceSegment += resourceDefinition.getParametersAsString()
-                + ')' + resourceDefinition.getWSRegion(3)
-                + '{' + resourceDefinition.getWSRegion(4);
-        this.appendSource(constructedSourceSegment);
-        this.appendSource((useDefaultWS) ? this.getIndentation() : '');
-        this.indent();
-    }
+    constructedSourceSegment += `${resourceDefinition.getParametersAsString()
+                 })${resourceDefinition.getWSRegion(3)
+                 }{${resourceDefinition.getWSRegion(4)}`;
+    this.appendSource(constructedSourceSegment);
+    this.appendSource((useDefaultWS) ? this.getIndentation() : '');
+    this.indent();
+  }
 
-    visitResourceDefinition(resourceDefinition) {
-    }
+  visitResourceDefinition(resourceDefinition) {
+  }
 
-    visitStatement(statement) {
-        var statementVisitorFactory = new StatementVisitorFactory();
-        var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 
-    visitConnectorDeclaration(connectorDeclaration) {
-        var connectorDeclarationVisitor = new ConnectorDeclarationVisitor(this);
-        connectorDeclaration.accept(connectorDeclarationVisitor);
-    }
+  visitConnectorDeclaration(connectorDeclaration) {
+    const connectorDeclarationVisitor = new ConnectorDeclarationVisitor(this);
+    connectorDeclaration.accept(connectorDeclarationVisitor);
+  }
 
-    visitWorkerDeclaration(workerDeclaration) {
-        var workerDeclarationVisitor = new WorkerDeclarationVisitor(this);
-        workerDeclaration.accept(workerDeclarationVisitor);
-    }
+  visitWorkerDeclaration(workerDeclaration) {
+    const workerDeclarationVisitor = new WorkerDeclarationVisitor(this);
+    workerDeclaration.accept(workerDeclarationVisitor);
+  }
 
-    endVisitResourceDefinition(resourceDefinition) {
-        this.outdent();
-        this.appendSource("}" + resourceDefinition.getWSRegion(5));
-        this.appendSource((resourceDefinition.whiteSpace.useDefault) ?
+  endVisitResourceDefinition(resourceDefinition) {
+    this.outdent();
+    this.appendSource(`}${resourceDefinition.getWSRegion(5)}`);
+    this.appendSource((resourceDefinition.whiteSpace.useDefault) ?
                       this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default ResourceDefinitionVisitor;

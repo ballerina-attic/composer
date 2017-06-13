@@ -19,33 +19,33 @@ import _ from 'lodash';
 import ASTNode from './node';
 
 class StructType extends ASTNode {
-    constructor(args) {
-        super('StructType');
-        this._typeName = _.get(args, 'typeName', 'TypeName');
-        //TODO : Inherit from BType
-    }
+  constructor(args) {
+    super('StructType');
+    this._typeName = _.get(args, 'typeName', 'TypeName');
+        // TODO : Inherit from BType
+  }
 
     /**
-     * 
+     *
      * @param typeName
      * @param options
      */
-    setTypeName(typeName, options) {
-        if (!_.isNil(typeName)) {
-            this.setAttribute('_typeName', typeName, options);
-        } else {
-            log.error('Invalid Type Name [' + typeName + '] Provided');
-            throw 'Invalid Type Name [' + typeName + '] Provided';
-        }
+  setTypeName(typeName, options) {
+    if (!_.isNil(typeName)) {
+      this.setAttribute('_typeName', typeName, options);
+    } else {
+      log.error(`Invalid Type Name [${typeName}] Provided`);
+      throw `Invalid Type Name [${typeName}] Provided`;
     }
+  }
 
     /**
      * returns the typeNme
      * @returns {*}
      */
-    getTypeName() {
-        return this._typeName;
-    }
+  getTypeName() {
+    return this._typeName;
+  }
 }
 
 export default StructType;

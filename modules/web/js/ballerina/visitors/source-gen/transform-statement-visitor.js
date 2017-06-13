@@ -21,41 +21,41 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import TransformStatementVisitorFactory from './transform-statement-visitor-factory';
 
 class TransformStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitTransformStatement() {
-        return true;
-    }
+  canVisitTransformStatement() {
+    return true;
+  }
 
-    beginVisitTransformStatement(transformStatement) {
-        this.node = transformStatement;
-        var constructedSourceSegment = '\n' + this.getIndentation() +
-                   transformStatement.getStatementString() + ' {\n';
-        this.appendSource(constructedSourceSegment);
-        this.indent();
-        log.debug('Begin Visit TransformStatement');
-    }
+  beginVisitTransformStatement(transformStatement) {
+    this.node = transformStatement;
+    const constructedSourceSegment = `\n${this.getIndentation()
+                   }${transformStatement.getStatementString()} {\n`;
+    this.appendSource(constructedSourceSegment);
+    this.indent();
+    log.debug('Begin Visit TransformStatement');
+  }
 
-    visitTransformStatement() {
-        log.debug('Visit TransformStatement');
-    }
+  visitTransformStatement() {
+    log.debug('Visit TransformStatement');
+  }
 
-    visitStatement(statement){
-        if(!_.isEqual(this.node, statement)) {
-            var statementVisitorFactory = new TransformStatementVisitorFactory();
-            var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new TransformStatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitTransformStatement() {
-        this.outdent();
-        this.appendSource(this.getIndentation() + '}\n');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit TransformStatement');
-    }
+  endVisitTransformStatement() {
+    this.outdent();
+    this.appendSource(`${this.getIndentation()}}\n`);
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit TransformStatement');
+  }
 
 
 }

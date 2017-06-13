@@ -30,75 +30,75 @@ import SimpleBBox from './simple-bounding-box';
  * @constructor
  */
 class ASTNode extends EventChannel {
-    constructor(type) {
-        super();
-        this.object = undefined;
-        this.parent = undefined;
-        this.children = [];
+  constructor(type) {
+    super();
+    this.object = undefined;
+    this.parent = undefined;
+    this.children = [];
         // TODO : Rename this to bType.
-        this.type = type;
-        this.id = uuid();
-        this.on('tree-modified', function (event) {
-            if (!_.isNil(this.parent)) {
-                this.parent.trigger('tree-modified', event);
-            } else {
-                log.debug("Cannot find the parent node to propagate tree modified event up. Node: " + this.getType() +
-                    ", EventType: " + event.type + ", EventTitle: " + event.title);
-            }
-        });
+    this.type = type;
+    this.id = uuid();
+    this.on('tree-modified', function (event) {
+      if (!_.isNil(this.parent)) {
+        this.parent.trigger('tree-modified', event);
+      } else {
+        log.debug(`Cannot find the parent node to propagate tree modified event up. Node: ${this.getType()
+                    }, EventType: ${event.type}, EventTitle: ${event.title}`);
+      }
+    });
 
-        this._generateUniqueIdentifiers = undefined;
-        this.whiteSpace = {};
-        this.whiteSpace.defaultDescriptor = {};
-        this.whiteSpace.currentDescriptor = {};
-        this.whiteSpace.useDefault = true;
+    this._generateUniqueIdentifiers = undefined;
+    this.whiteSpace = {};
+    this.whiteSpace.defaultDescriptor = {};
+    this.whiteSpace.currentDescriptor = {};
+    this.whiteSpace.useDefault = true;
 
         /**
          * View State Object to keep track of the model's view properties
          * @type {{bBox: SimpleBBox, components: {}, dimensionsSynced: boolean}}
          */
-        this.viewState = {
-            bBox: new SimpleBBox(),
-            components: {},
-            dimensionsSynced: false
-        };
-    }
+    this.viewState = {
+      bBox: new SimpleBBox(),
+      components: {},
+      dimensionsSynced: false,
+    };
+  }
 
     /**
      * Get the node's view state
      * @return {{bBox: BBox}} node's view state
      */
-    getViewState(){
-        return this.viewState;
-    }
+  getViewState() {
+    return this.viewState;
+  }
 
-    getParent() {
-        return this.parent;
-    }
+  getParent() {
+    return this.parent;
+  }
 
-    setParent(parent, options) {
-        this.setAttribute('parent', parent, options);
-    }
+  setParent(parent, options) {
+    this.setAttribute('parent', parent, options);
+  }
 
-    getChildren() {
-        return this.children;
-    }
+  getChildren() {
+    return this.children;
+  }
 
-    getType() {
-        return this.type;
-    }
+  getType() {
+    return this.type;
+  }
 
-    getID() {
-        return this.id;
-    }
+  getID() {
+    return this.id;
+  }
 
-    getLength() {
-        return this.length;
-    }
+  getLength() {
+    return this.length;
+  }
 
-    getStartIndex() {
-        return this.startIndex;
-    }
+  getStartIndex() {
+    return this.startIndex;
+  }
 
     /**
      * Insert a given child to the children array for a given index or otherwise to the array normally
@@ -110,42 +110,42 @@ class ASTNode extends EventChannel {
      * @fires  ASTNode#child-added
      * @fires  ASTNode#tree-modified
      */
-    addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent = false, generateId = false) {
-        if (_.isUndefined(index)) {
-            this.children.push(child);
-        } else {
-            this.children.splice(index, 0, child);
-        }
+  addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent = false, generateId = false) {
+    if (_.isUndefined(index)) {
+      this.children.push(child);
+    } else {
+      this.children.splice(index, 0, child);
+    }
 
-        //setting the parent node - doing silently avoid subsequent change events
-        child.setParent(this, {
-            doSilently: true
-        });
-        if (generateId) {
-            child.generateUniqueIdentifiers();
-        }
+        // setting the parent node - doing silently avoid subsequent change events
+    child.setParent(this, {
+      doSilently: true,
+    });
+    if (generateId) {
+      child.generateUniqueIdentifiers();
+    }
 
-        if (!ignoreChildAddedEvent) {
+    if (!ignoreChildAddedEvent) {
             /**
              * @event ASTNode#child-added
              */
-            this.trigger('child-added', child, index);
-        }
+      this.trigger('child-added', child, index);
+    }
 
-        if (!ignoreTreeModifiedEvent) {
+    if (!ignoreTreeModifiedEvent) {
             /**
              * @event ASTNode#tree-modified
              */
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'child-added',
-                data: {
-                    child: child,
-                    index: index
-                }
-            });
-        }
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'child-added',
+        data: {
+          child,
+          index,
+        },
+      });
     }
+  }
 
     /**
      * Remove a given child from the AST tree
@@ -154,75 +154,75 @@ class ASTNode extends EventChannel {
      * @fires  ASTNode#child-removed
      * @fires  ASTNode#tree-modified
      */
-    removeChild(child, ignoreTreeModifiedEvent) {
-        var parentModelChildren = this.children;
-        for (var itr = 0; itr < parentModelChildren.length; itr++) {
-            if (parentModelChildren[itr].id === child.id) {
-                parentModelChildren.splice(itr, 1);
+  removeChild(child, ignoreTreeModifiedEvent) {
+    const parentModelChildren = this.children;
+    for (let itr = 0; itr < parentModelChildren.length; itr++) {
+      if (parentModelChildren[itr].id === child.id) {
+        parentModelChildren.splice(itr, 1);
 
                 /**
                  * @event ASTNode#child-removed
                  */
-                this.trigger("child-removed", child);
+        this.trigger('child-removed', child);
 
-                if (!ignoreTreeModifiedEvent) {
+        if (!ignoreTreeModifiedEvent) {
                     /**
                      * @event ASTNode#tree-modified
                      */
-                    this.trigger('tree-modified', {
-                        origin: this,
-                        type: 'child-removed',
-                        data: {
-                            child: child,
-                            index: itr
-                        }
-                    });
-                }
-                break;
-            }
+          this.trigger('tree-modified', {
+            origin: this,
+            type: 'child-removed',
+            data: {
+              child,
+              index: itr,
+            },
+          });
         }
+        break;
+      }
     }
+  }
 
     /**
      * finds the child from the AST tree by ID
      * @param id
      * @returns {*}
      */
-    getChildById(id) {
-        return _.find(this.children, ['id', id]);
-    }
+  getChildById(id) {
+    return _.find(this.children, ['id', id]);
+  }
 
     /**
      * remove the child from the AST tree by ID
      * @param id
      * @param ignoreTreeModifiedEvent {boolean}
      */
-    removeChildById(id, ignoreTreeModifiedEvent) {
-        var child = this.getChildById(id);
-        this.removeChild(child, ignoreTreeModifiedEvent);
-    }
+  removeChildById(id, ignoreTreeModifiedEvent) {
+    const child = this.getChildById(id);
+    this.removeChild(child, ignoreTreeModifiedEvent);
+  }
 
     /**
      * Accept function in visitor pattern
      * @param visitor {ASTVisitor}
      */
-    accept(visitor) {
-        if (visitor.canVisit(this)) {
-            visitor.beginVisit(this);
-            visitor.visit(this);
-            _.forEach(this.children, function (child) {
-                if (child) {
-                    visitor.visit(child);
+  accept(visitor) {
+    if (visitor.canVisit(this)) {
+      visitor.beginVisit(this);
+      visitor.visit(this);
+      _.forEach(this.children, (child) => {
+        if (child) {
+          visitor.visit(child);
                     // forward visitor down the hierarchy to visit children of current child
                     // if visitor doesn't support visiting children of current child, it will break
-                    if(visitor.canVisit(child)) {
-                        child.accept(visitor);
-                    }
-                }
-            });
-            visitor.endVisit(this);
+          if (visitor.canVisit(child)) {
+            child.accept(visitor);
+          }
         }
+      });
+      visitor.endVisit(this);
     }
+  }
 
     /**
      * Indicates whether this can be the parent node for the give node
@@ -230,9 +230,9 @@ class ASTNode extends EventChannel {
      * @param node {ASTNode}
      * @return {boolean} Default is true
      */
-    canBeParentOf(node) {
-        return true;
-    }
+  canBeParentOf(node) {
+    return true;
+  }
 
     /**
      * Indicates whether this can be a child node of given node.
@@ -240,66 +240,64 @@ class ASTNode extends EventChannel {
      * @param node {ASTNode}
      * @return {boolean} Default is true
      */
-    canBeAChildOf(node) {
-        return true;
-    }
+  canBeAChildOf(node) {
+    return true;
+  }
 
     /**
      * Get factory.
      * @return {BallerinaASTFactory}
      */
-    getFactory() {
-        return BallerinaAstFactory;
-    }
+  getFactory() {
+    return BallerinaAstFactory;
+  }
 
     /**
      * Get index of child.
      * @param {ASTNode}
      * @return {number}
      */
-    getIndexOfChild(child) {
-        return _.findIndex(this.children, ['id', child.id]);
-    }
+  getIndexOfChild(child) {
+    return _.findIndex(this.children, ['id', child.id]);
+  }
 
     /**
      * Filter matching children from the predicate function
      * @param predicateFunction a function returning a boolean to match filter condition from children
      * @return {[ASTNode]} array of matching AST nodes
      */
-    filterChildren(predicateFunction) {
-        return _.filter(this.getChildren(), predicateFunction);
-    }
+  filterChildren(predicateFunction) {
+    return _.filter(this.getChildren(), predicateFunction);
+  }
 
     /**
      * Find matching child from the predicate function+
      * @param predicateFunction a function returning a boolean to match find condition from children
      */
-    findChild(predicateFunction) {
-        return _.find(this.getChildren(), predicateFunction);
-    }
+  findChild(predicateFunction) {
+    return _.find(this.getChildren(), predicateFunction);
+  }
 
     /**
      * Remove matching child from the predicate function
      * @param predicateFunction a function returning a boolean to match remove condition from children
      * @param name of child to remove
      */
-    removeChildByName(predicateFunction, name) {
-        _.remove(this.getChildren(), function (child) {
-            return predicateFunction && (child.getName() === name);
-        });
-    }
+  removeChildByName(predicateFunction, name) {
+    _.remove(this.getChildren(), child => predicateFunction && (child.getName() === name));
+  }
 
     /**
      * Find last index of matching children from the predicate function
      * @param predicateFunction a function returning a boolean to match find condition from children
      */
-    findLastIndexOfChild(predicateFunction) {
-        return _.findLastIndex(this.getChildren(), predicateFunction);
-    }
+  findLastIndexOfChild(predicateFunction) {
+    return _.findLastIndex(this.getChildren(), predicateFunction);
+  }
 
-    initFromJson(jsonNode) {
-        throw "InitFromJson not implemented";
-    }
+  initFromJson(jsonNode) {
+    throw 'InitFromJson not implemented';
+  }
 
     /**
      * A generic method to be used for setting node attributes while firing required change events
@@ -310,58 +308,57 @@ class ASTNode extends EventChannel {
      * @param [options.changeTitle=change $attributeName] {String} the title for change
      * @param [options.doSilently=false] {boolean} a flag to indicate whether events should not be fired
      */
-    setAttribute(attributeName, newValue, options) {
+  setAttribute(attributeName, newValue, options) {
+    const oldValue = _.get(this, attributeName);
 
-        var oldValue = _.get(this, attributeName);
-
-        _.set(this, attributeName, newValue);
+    _.set(this, attributeName, newValue);
 
         // fire change event with necessary callbacks for undo/redo
-        if (_.isNil(options) || !options.doSilently) {
-            var title = _.has(options, 'changeTitle') ? _.get(options, 'changeTitle') : 'Modify ' + this.getType();
+    if (_.isNil(options) || !options.doSilently) {
+      const title = _.has(options, 'changeTitle') ? _.get(options, 'changeTitle') : `Modify ${this.getType()}`;
             /**
              * @event ASTNode#tree-modified
              */
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: title,
-                context: this,
-                data: {
-                    attributeName: attributeName,
-                    newValue: newValue,
-                    oldValue: oldValue
-                },
-                undo: function () {
-                    this.setAttribute(attributeName, oldValue, {
-                        doSilently: true
-                    });
-                    if (_.has(options, 'undoCallBack') && _.isFunction(options.undoCallBack)) {
-                        var undoCallBack = _.get(options, 'undoCallBack');
-                        undoCallBack();
-                    }
-                },
-                redo: function () {
-                    this.setAttribute(attributeName, newValue, {
-                        doSilently: true
-                    });
-                    if (_.has(options, 'redoCallBack') && _.isFunction(options.redoCallBack)) {
-                        var redoCallBack = _.get(options, 'redoCallBack');
-                        redoCallBack();
-                    }
-                }
-            });
-        }
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title,
+        context: this,
+        data: {
+          attributeName,
+          newValue,
+          oldValue,
+        },
+        undo() {
+          this.setAttribute(attributeName, oldValue, {
+            doSilently: true,
+          });
+          if (_.has(options, 'undoCallBack') && _.isFunction(options.undoCallBack)) {
+            const undoCallBack = _.get(options, 'undoCallBack');
+            undoCallBack();
+          }
+        },
+        redo() {
+          this.setAttribute(attributeName, newValue, {
+            doSilently: true,
+          });
+          if (_.has(options, 'redoCallBack') && _.isFunction(options.redoCallBack)) {
+            const redoCallBack = _.get(options, 'redoCallBack');
+            redoCallBack();
+          }
+        },
+      });
     }
+  }
 
     /**
      * A generic getter for all attributes of a node
      * @param attributeName
      * @return {*}
      */
-    getAttribute(attributeName) {
-        return _.get(this, attributeName);
-    }
+  getAttribute(attributeName) {
+    return _.get(this, attributeName);
+  }
 
     /**
      * A generic method to be used for adding values for node attributes which are arrays while firing required change events
@@ -374,152 +371,150 @@ class ASTNode extends EventChannel {
      * @param [options.changeTitle=Modify $attributeName] {string} the title for change
      * @param [options.doSilently=false] {boolean} a flag to indicate whether events should not be fired
      */
-    pushToArrayAttribute(arrAttrName, newValue, options) {
-        var currentArray = _.get(this, arrAttrName);
+  pushToArrayAttribute(arrAttrName, newValue, options) {
+    const currentArray = _.get(this, arrAttrName);
 
         // Check if a value already exists for the given key
-        var existingValueIndex = -1;
-        if (_.has(options, 'predicate')) {
-            existingValueIndex = _.findIndex(currentArray, options.predicate);
-        }
+    let existingValueIndex = -1;
+    if (_.has(options, 'predicate')) {
+      existingValueIndex = _.findIndex(currentArray, options.predicate);
+    }
 
-        var existingValue;
+    let existingValue;
 
-        if (existingValueIndex === -1) {
+    if (existingValueIndex === -1) {
             // A value with this key does not exists, then add a new one.
-            currentArray.push(newValue);
-        } else {
+      currentArray.push(newValue);
+    } else {
             // keep a reference to the old object so we can 'undo' this operation
-            existingValue = currentArray[existingValueIndex];
+      existingValue = currentArray[existingValueIndex];
             // Updating existing annotation.
-            currentArray[existingValueIndex] = newValue;
-        }
+      currentArray[existingValueIndex] = newValue;
+    }
 
         // fire change event with necessary callbacks for undo/redo
-        if (_.isNil(options) || !options.doSilently) {
-            var title = _.has(options, 'changeTitle') ? _.get(options, 'changeTitle') : 'Modify ' + this.getType();
+    if (_.isNil(options) || !options.doSilently) {
+      const title = _.has(options, 'changeTitle') ? _.get(options, 'changeTitle') : `Modify ${this.getType()}`;
             /**
              * @event ASTNode#tree-modified
              */
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: title,
-                context: this,
-                undo: function () {
-                    var currentArray = _.get(this, arrAttrName);
-                    if (existingValueIndex === -1) {
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title,
+        context: this,
+        undo() {
+          const currentArray = _.get(this, arrAttrName);
+          if (existingValueIndex === -1) {
                         // A value with this key did not exist. So remove it.
-                        _.remove(currentArray, options.predicate);
-                    } else {
-                        this.pushToArrayAttribute(arrAttrName, existingValue, {
-                            predicate: options.predicate,
-                            doSilently: true
-                        });
-                    }
-                },
-                redo: function () {
-                    this.pushToArrayAttribute(arrAttrName, newValue, {
-                        predicate: options.predicate,
-                        doSilently: true
-                    });
-                }
+            _.remove(currentArray, options.predicate);
+          } else {
+            this.pushToArrayAttribute(arrAttrName, existingValue, {
+              predicate: options.predicate,
+              doSilently: true,
             });
-        }
+          }
+        },
+        redo() {
+          this.pushToArrayAttribute(arrAttrName, newValue, {
+            predicate: options.predicate,
+            doSilently: true,
+          });
+        },
+      });
     }
+  }
 
     /**
      * Checks if an string is valid as an identifier.
      * @param {string} identifier - The string value.
      * @return {boolean} - True if valid, else false.
      */
-    static isValidIdentifier(identifier) {
-        if(_.isUndefined(identifier)) {
-            return false;
-        } else if(/^[a-zA-Z0-9_]*$/.test(identifier)){
-            return true;
-        }
-        return false;
+  static isValidIdentifier(identifier) {
+    if (_.isUndefined(identifier)) {
+      return false;
+    } else if (/^[a-zA-Z0-9_]*$/.test(identifier)) {
+      return true;
     }
+    return false;
+  }
 
     /**
      * Removes node from the tree.
      * @param [options] {object}
      * @param [options.ignoreTreeModifiedEvent=false] {boolean} a flag to prevent tree-modified event being fired
      */
-    remove(options) {
-        if (!_.isNil(this.getParent())) {
-            this.trigger('before-remove');
-            this.getParent().removeChild(this, _.get(options, 'ignoreTreeModifiedEvent'));
-            this.trigger('after-remove');
-        }
+  remove(options) {
+    if (!_.isNil(this.getParent())) {
+      this.trigger('before-remove');
+      this.getParent().removeChild(this, _.get(options, 'ignoreTreeModifiedEvent'));
+      this.trigger('after-remove');
     }
+  }
 
-    addBreakpoint() {
-        this.isBreakpoint = true;
-    }
+  addBreakpoint() {
+    this.isBreakpoint = true;
+  }
 
-    removeBreakpoint() {
-        this.isBreakpoint = false;
-    }
+  removeBreakpoint() {
+    this.isBreakpoint = false;
+  }
 
-    addDebugHit() {
-        this.setAttribute('isDebugHit', true);
-    }
+  addDebugHit() {
+    this.setAttribute('isDebugHit', true);
+  }
 
-    removeDebugHit() {
-        this.setAttribute('isDebugHit', false);
-    }
+  removeDebugHit() {
+    this.setAttribute('isDebugHit', false);
+  }
 
-    setLineNumber(lineNumber, options) {
-        this.setAttribute('_lineNumber', parseInt(lineNumber), options);
-    }
+  setLineNumber(lineNumber, options) {
+    this.setAttribute('_lineNumber', parseInt(lineNumber), options);
+  }
 
-    setIsIdentifierLiteral(isLiteral, options) {
-        this.setAttribute('_is_identifier_literal', isLiteral, options);
-    }
+  setIsIdentifierLiteral(isLiteral, options) {
+    this.setAttribute('_is_identifier_literal', isLiteral, options);
+  }
 
-    getIdentifierLiteral() {
-        return this.getAttribute('_is_identifier_literal');
-    }
+  getIdentifierLiteral() {
+    return this.getAttribute('_is_identifier_literal');
+  }
 
-    getLineNumber() {
-        return this.getAttribute('_lineNumber');
-    }
+  getLineNumber() {
+    return this.getAttribute('_lineNumber');
+  }
 
     /**
      * Function which should be used to generate unique values for attributes. Ex: newStruct, newStruct1, newStruct2.
      */
-    generateUniqueIdentifiers() {}
+  generateUniqueIdentifiers() {}
 
-    getWhiteSpaceDescriptor() {
-        return (this.whiteSpace.useDefault) ? this.whiteSpace.defaultDescriptor :
+  getWhiteSpaceDescriptor() {
+    return (this.whiteSpace.useDefault) ? this.whiteSpace.defaultDescriptor :
               this.whiteSpace.currentDescriptor;
-    }
+  }
 
-    setWhiteSpaceDescriptor(whiteSpaceDescriptor) {
-        this.whiteSpace.currentDescriptor = whiteSpaceDescriptor;
-    }
+  setWhiteSpaceDescriptor(whiteSpaceDescriptor) {
+    this.whiteSpace.currentDescriptor = whiteSpaceDescriptor;
+  }
 
-    getWSRegion(regionId) {
-        let region = _.get(this.getWhiteSpaceDescriptor().regions, regionId);
-        return (!_.isNil(region)) ? region : '';
-    }
+  getWSRegion(regionId) {
+    const region = _.get(this.getWhiteSpaceDescriptor().regions, regionId);
+    return (!_.isNil(region)) ? region : '';
+  }
 
-    getChildWSRegion(childId, regionId) {
-        let region = _.get(_.get(this.getWhiteSpaceDescriptor().children, childId).regions, regionId);
-        return (!_.isNil(region)) ? region : '';
-    }
+  getChildWSRegion(childId, regionId) {
+    const region = _.get(_.get(this.getWhiteSpaceDescriptor().children, childId).regions, regionId);
+    return (!_.isNil(region)) ? region : '';
+  }
 
     /** Gets the children of a specific type.
      * @param  {function} typeCheckFunction The function thats used for type checking. Example: BallerinaASTFactory.isConnectorDeclaration
      * @return {ASTNode[]}                   An array of children.
      */
-    getChildrenOfType(typeCheckFunction) {
-        return _.filter(this.getChildren(), function (child) {
-            return typeCheckFunction.call(child.getFactory(), child);
-        });
-    }
+  getChildrenOfType(typeCheckFunction) {
+    return _.filter(this.getChildren(), child => typeCheckFunction.call(child.getFactory(), child));
+  }
 
     /**
      * Fills in the pathVector array with location/position of node by traversing through it's children. Important: The
@@ -527,14 +522,14 @@ class ASTNode extends EventChannel {
      * @param {ASTNode} node The node of which the path to be found.
      * @param {number[]} pathVector An array
      */
-    getPathToNode(node, pathVector) {
-        let nodeParent = node.getParent();
-        if (!_.isNil(nodeParent)) {
-            let nodeIndex = _.findIndex(nodeParent.getChildren(), node);
-            pathVector.push(nodeIndex);
-            this.getPathToNode(nodeParent, pathVector);
-        }
+  getPathToNode(node, pathVector) {
+    const nodeParent = node.getParent();
+    if (!_.isNil(nodeParent)) {
+      const nodeIndex = _.findIndex(nodeParent.getChildren(), node);
+      pathVector.push(nodeIndex);
+      this.getPathToNode(nodeParent, pathVector);
     }
+  }
 
     /**
      * Gets the node by vector which travers through node's children.
@@ -542,42 +537,40 @@ class ASTNode extends EventChannel {
      * @param {number[]} pathVector A reversed array of the position of the node to be found.
      * @return {ASTNode|undefined}
      */
-    getNodeByVector(root, pathVector) {
-        let returnNode = root;
-        let reverseVector = _.reverse(pathVector);
+  getNodeByVector(root, pathVector) {
+    let returnNode = root;
+    const reverseVector = _.reverse(pathVector);
 
-        _.forEach(reverseVector, function (index) {
-            returnNode = returnNode.getChildren()[index];
-        });
-        return returnNode;
-    }
+    _.forEach(reverseVector, (index) => {
+      returnNode = returnNode.getChildren()[index];
+    });
+    return returnNode;
+  }
 
     /**
      * This returns the top level parent (should be Resource, action definition, function definition or worker declaration
      * @returns {ASTNode} Parent Node
      */
-    getTopLevelParent() {
-        const parent = this.getParent();
-        if (BallerinaAstFactory.isResourceDefinition(parent) || BallerinaAstFactory.isResourceDefinition(parent) ||
+  getTopLevelParent() {
+    const parent = this.getParent();
+    if (BallerinaAstFactory.isResourceDefinition(parent) || BallerinaAstFactory.isResourceDefinition(parent) ||
             BallerinaAstFactory.isConnectorAction(parent) || BallerinaAstFactory.isFunctionDefinition(parent) ||
             BallerinaAstFactory.isWorkerDeclaration(parent)) {
-
-            return parent;
-        } else {
-            return parent.getTopLevelParent();
-        }
+      return parent;
     }
+    return parent.getTopLevelParent();
+  }
 }
 
 // Auto generated Id for service definitions (for accordion views)
 var uuid = function () {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
             .toString(16)
             .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+  }
+  return `${s4() + s4()}-${s4()}-${s4()}-${
+        s4()}-${s4()}${s4()}${s4()}`;
 };
 
 export default ASTNode;

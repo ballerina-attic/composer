@@ -25,31 +25,31 @@ import Statement from './statement';
  * @constructor
  */
 class ElseStatement extends Statement {
-    constructor() {
-        super();
-        this.type = "ElseStatement";
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: ' ',
-            2: '\n',
-            3: '\n'
-        };
-    }
+  constructor() {
+    super();
+    this.type = 'ElseStatement';
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: ' ',
+      2: '\n',
+      3: '\n',
+    };
+  }
 
-    initFromJson(jsonNode) {
-        _.each(jsonNode.children, (childNode) => {
-            var child = undefined;
+  initFromJson(jsonNode) {
+    _.each(jsonNode.children, (childNode) => {
+      let child;
             // FIXME Keeping existing fragile  logic to detect connector declaration as it is for now. We should refactor this
-            if (childNode.type === "variable_definition_statement" &&
+      if (childNode.type === 'variable_definition_statement' &&
                 !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
-                child = this.getFactory().createConnectorDeclaration();
-            } else {
-                child = this.getFactory().createFromJson(childNode);
-            }
-            this.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+        child = this.getFactory().createConnectorDeclaration();
+      } else {
+        child = this.getFactory().createFromJson(childNode);
+      }
+      this.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default ElseStatement;

@@ -20,35 +20,35 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class TimeoutStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitTimeoutStatement(timeoutStatement) {
-        return true;
-    }
+  canVisitTimeoutStatement(timeoutStatement) {
+    return true;
+  }
 
-    beginVisitTimeoutStatement(timeoutStatement) {
-        this.node = timeoutStatement;
-        this.appendSource('timeout (' + timeoutStatement.getExpression() + ') ('
-            + timeoutStatement.getParameterAsString() + '){\n');
-        log.debug('Begin Visit Timeout Statement');
-    }
+  beginVisitTimeoutStatement(timeoutStatement) {
+    this.node = timeoutStatement;
+    this.appendSource(`timeout (${timeoutStatement.getExpression()}) (${
+             timeoutStatement.getParameterAsString()}){\n`);
+    log.debug('Begin Visit Timeout Statement');
+  }
 
-    endVisitTimeoutStatement(timeoutStatement) {
-        this.appendSource('}\n');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Timeout Statement');
-    }
+  endVisitTimeoutStatement(timeoutStatement) {
+    this.appendSource('}\n');
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Timeout Statement');
+  }
 
 
-    visitStatement(statement) {
-        if (!_.isEqual(this.node, statement)) {
-            let statementVisitorFactory = new StatementVisitorFactory();
-            let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 }
 
 export default TimeoutStatementVisitor;

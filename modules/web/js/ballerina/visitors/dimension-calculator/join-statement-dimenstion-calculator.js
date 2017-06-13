@@ -16,26 +16,26 @@
  * under the License.
  */
 import log from 'log';
-import {util} from './../sizing-utils';
-import {blockStatement} from '../../configs/designer-defaults';
+import { util } from './../sizing-utils';
+import { blockStatement } from '../../configs/designer-defaults';
 
 class JoinStatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateCompoundStatementChild(node);
-        util.addParamDimenstion(node.getViewState(), node.getJoinConditionString(), node.getParameterAsString(),
+  endVisit(node) {
+    util.populateCompoundStatementChild(node);
+    util.addParamDimenstion(node.getViewState(), node.getJoinConditionString(), node.getParameterAsString(),
             blockStatement.heading.width);
-    }
+  }
 }
 
 export default JoinStatementDimensionCalculatorVisitor;

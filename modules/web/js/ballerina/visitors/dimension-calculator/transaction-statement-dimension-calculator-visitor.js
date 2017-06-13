@@ -15,25 +15,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 class TransactionStatementDimensionCalculatorVisitor {
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateCompoundStatementChild(node);
+  endVisit(node) {
+    util.populateCompoundStatementChild(node);
 
-        /// Calculate the title width and height as to the keyword width.
-        let viewState = node.getViewState();
-        viewState.titleWidth = util.getTextWidth("Transaction").w;
-    }
+        // / Calculate the title width and height as to the keyword width.
+    const viewState = node.getViewState();
+    viewState.titleWidth = util.getTextWidth('Transaction').w;
+  }
 }
 
 export default TransactionStatementDimensionCalculatorVisitor;

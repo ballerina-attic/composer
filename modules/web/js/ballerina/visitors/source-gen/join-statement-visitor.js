@@ -20,35 +20,35 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class JoinStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitJoinStatement(joinStatement) {
-        return true;
-    }
+  canVisitJoinStatement(joinStatement) {
+    return true;
+  }
 
-    beginVisitJoinStatement(joinStatement) {
-        this.node = joinStatement;
-        this.appendSource('join (' + joinStatement.getJoinConditionString() + ') (' +
-            joinStatement.getParameter().getParameterDefinitionAsString() + '){\n');
-        log.debug('Begin Visit Join Statement');
-    }
+  beginVisitJoinStatement(joinStatement) {
+    this.node = joinStatement;
+    this.appendSource(`join (${joinStatement.getJoinConditionString()}) (${
+            joinStatement.getParameter().getParameterDefinitionAsString()}){\n`);
+    log.debug('Begin Visit Join Statement');
+  }
 
-    endVisitJoinStatement(joinStatement) {
-        this.appendSource('}\n');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Join Statement');
-    }
+  endVisitJoinStatement(joinStatement) {
+    this.appendSource('}\n');
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Join Statement');
+  }
 
 
-    visitStatement(statement) {
-        if (!_.isEqual(this.node, statement)) {
-            let statementVisitorFactory = new StatementVisitorFactory();
-            let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 }
 
 export default JoinStatementVisitor;

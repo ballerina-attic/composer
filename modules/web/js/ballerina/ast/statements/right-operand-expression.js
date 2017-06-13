@@ -25,55 +25,53 @@ import FragmentUtils from '../../utils/fragment-utils';
  * @constructor
  */
 class RightOperandExpression extends Expression {
-    constructor(args) {
-        super('RightOperandExpression');
-    }
+  constructor(args) {
+    super('RightOperandExpression');
+  }
 
     /**
      * Set the expression from the expression string
      * @param {string} expressionString
      * @override
      */
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)){
-            let fragment = FragmentUtils.createExpressionFragment(expression);
-            let parsedJson = FragmentUtils.parseFragment(fragment);
-            if ((!_.has(parsedJson, 'error')
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
+      if ((!_.has(parsedJson, 'error')
                    || !_.has(parsedJson, 'syntax_errors'))
                    && _.isEqual(parsedJson.type, 'right_operand_expression')) {
-                this.initFromJson(parsedJson);
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        this.initFromJson(parsedJson);
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
-    getExpressionString() {
-        var expression = '';
-        _.forEach(this.getChildren(), child => {
-            expression += child.getExpressionString();
-        });
-        return expression;
-    }
+  getExpressionString() {
+    let expression = '';
+    _.forEach(this.getChildren(), (child) => {
+      expression += child.getExpressionString();
+    });
+    return expression;
+  }
 
     /**
      * setting parameters from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        if (!_.isEmpty(jsonNode.children)) {
-            jsonNode.children.forEach((childJsonNode) => {
-                let child = this.getFactory().createFromJson(childJsonNode);
-                this.addChild(child, undefined, true, true);
-                child.initFromJson(childJsonNode);
-            });
-        }
+  initFromJson(jsonNode) {
+    if (!_.isEmpty(jsonNode.children)) {
+      jsonNode.children.forEach((childJsonNode) => {
+        const child = this.getFactory().createFromJson(childJsonNode);
+        this.addChild(child, undefined, true, true);
+        child.initFromJson(childJsonNode);
+      });
     }
+  }
 }
 
 export default RightOperandExpression;

@@ -23,35 +23,35 @@ import ASTNode from '../node';
  * @extends ASTNode
  */
 class AnnotationEntryArray extends ASTNode {
-    constructor() {
-        super('Annotation-Entry-Array');
-    }
+  constructor() {
+    super('Annotation-Entry-Array');
+  }
 
     /**
      * An annotation array stringified along with its children.
      * @return {string}
      */
-    toString() {
-        let stringVal = '[';
-        let annotationEntries = [];
-        _.forEach(this.getChildren(), function(annotationEntry){
-            annotationEntries.push(annotationEntry.toString());
-        });
-        stringVal += _.join(annotationEntries, ',');
-        stringVal += ']';
-        return stringVal;
-    }
+  toString() {
+    let stringVal = '[';
+    const annotationEntries = [];
+    _.forEach(this.getChildren(), (annotationEntry) => {
+      annotationEntries.push(annotationEntry.toString());
+    });
+    stringVal += _.join(annotationEntries, ',');
+    stringVal += ']';
+    return stringVal;
+  }
     /**
      * Setting parameters from json
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        _.each(jsonNode.children, childNode => {
-            let child = this.getFactory().createFromJson(childNode);
-            this.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    _.each(jsonNode.children, (childNode) => {
+      const child = this.getFactory().createFromJson(childNode);
+      this.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default AnnotationEntryArray;

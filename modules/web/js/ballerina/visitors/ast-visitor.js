@@ -19,610 +19,608 @@ import EventChannel from 'event_channel';
 import ASTFactory from './../ast/ballerina-ast-factory';
 
 class ASTVisitor extends EventChannel {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
     /**
      * @param node {ASTNode}
      */
-    canVisit(node) {
-        if(ASTFactory.isBallerinaAstRoot(node)){
-            return this.canVisitBallerinaASTRoot(node);
-        } else if(ASTFactory.isServiceDefinition(node)){
-            return this.canVisitServiceDefinition(node);
-        } else if (ASTFactory.isAnnotationDefinition(node)) {
-            return this.canVisitAnnotationDefinition(node);
-        } else if(ASTFactory.isResourceDefinition(node)){
-            return this.canVisitResourceDefinition(node);
-        } else if(ASTFactory.isFunctionDefinition(node)){
-            return this.canVisitFunctionDefinition(node);
-        } else if (ASTFactory.isStatement(node)) {
-            return this.canVisitStatement(node);
-        } else if (ASTFactory.isPackageDefinition(node)) {
-            return this.canVisitPackageDefinition(node);
-        } else if (ASTFactory.isImportDeclaration(node)) {
-            return this.canVisitImportDeclaration(node);
-        } else if (ASTFactory.isConstantDefinition(node)) {
-            return this.canVisitConstantDefinition(node);
-        } else if (ASTFactory.isWorkerDeclaration(node)) {
-            return this.canVisitWorkerDeclaration(node);
-        } else if( ASTFactory.isConnectorDeclaration(node)){
-            return this.canVisitConnectorDeclaration(node);
-        } else if( ASTFactory.isFunctionInvocationExpression(node)){
-            return this.canVisitFuncInvocationExpression(node);
-        } else if(ASTFactory.isActionInvocationExpression(node)){
-            return this.canVisitActionInvocationExpression(node);
-        } else if( ASTFactory.isExpression(node)){
-            return this.canVisitExpression(node);
-        } else if(ASTFactory.isVariableDeclaration(node)){
-            return this.canVisitVariableDeclaration(node);
-        } else if(ASTFactory.isConnectorDefinition(node)){
-            return this.canVisitConnectorDefinition(node);
-        } else if(ASTFactory.isConnectorAction(node)){
-            return this.canVisitConnectorAction(node);
-        } else if(ASTFactory.isStructDefinition(node)){
-            return this.canVisitStructDefinition(node);
-        } else if(ASTFactory.isResourceParameter(node)){
-            return this.canVisitResourceParameter(node);
-        } else if(ASTFactory.isReturnType(node)){
-            return this.canVisitReturnType(node);
-        } else if(ASTFactory.isBlockStatement(node)){
-            return this.canVisitBlockStatement(node);
-        } else if(ASTFactory.isVariableDefinition(node)){
-            return this.canVisitVariableDefinition(node);
-        } else if(ASTFactory.isAnnotation(node)) {
-            return this.canVisitAnnotation(node);
-        } else if(ASTFactory.isAnnotationEntry(node)) {
-            return this.canVisitAnnotationEntry(node);
-        } else if(ASTFactory.isAnnotationEntryArray(node)) {
-            return this.canVisitAnnotationEntryArray(node);
+  canVisit(node) {
+    if (ASTFactory.isBallerinaAstRoot(node)) {
+      return this.canVisitBallerinaASTRoot(node);
+    } else if (ASTFactory.isServiceDefinition(node)) {
+      return this.canVisitServiceDefinition(node);
+    } else if (ASTFactory.isAnnotationDefinition(node)) {
+      return this.canVisitAnnotationDefinition(node);
+    } else if (ASTFactory.isResourceDefinition(node)) {
+      return this.canVisitResourceDefinition(node);
+    } else if (ASTFactory.isFunctionDefinition(node)) {
+      return this.canVisitFunctionDefinition(node);
+    } else if (ASTFactory.isStatement(node)) {
+      return this.canVisitStatement(node);
+    } else if (ASTFactory.isPackageDefinition(node)) {
+      return this.canVisitPackageDefinition(node);
+    } else if (ASTFactory.isImportDeclaration(node)) {
+      return this.canVisitImportDeclaration(node);
+    } else if (ASTFactory.isConstantDefinition(node)) {
+      return this.canVisitConstantDefinition(node);
+    } else if (ASTFactory.isWorkerDeclaration(node)) {
+      return this.canVisitWorkerDeclaration(node);
+    } else if (ASTFactory.isConnectorDeclaration(node)) {
+      return this.canVisitConnectorDeclaration(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.canVisitFuncInvocationExpression(node);
+    } else if (ASTFactory.isActionInvocationExpression(node)) {
+      return this.canVisitActionInvocationExpression(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.canVisitExpression(node);
+    } else if (ASTFactory.isVariableDeclaration(node)) {
+      return this.canVisitVariableDeclaration(node);
+    } else if (ASTFactory.isConnectorDefinition(node)) {
+      return this.canVisitConnectorDefinition(node);
+    } else if (ASTFactory.isConnectorAction(node)) {
+      return this.canVisitConnectorAction(node);
+    } else if (ASTFactory.isStructDefinition(node)) {
+      return this.canVisitStructDefinition(node);
+    } else if (ASTFactory.isResourceParameter(node)) {
+        return this.canVisitResourceParameter(node);
+      } else if (ASTFactory.isReturnType(node)) {
+          return this.canVisitReturnType(node);
+        } else if (ASTFactory.isBlockStatement(node)) {
+          return this.canVisitBlockStatement(node);
+        } else if (ASTFactory.isVariableDefinition(node)) {
+          return this.canVisitVariableDefinition(node);
+        } else if (ASTFactory.isAnnotation(node)) {
+          return this.canVisitAnnotation(node);
+        } else if (ASTFactory.isAnnotationEntry(node)) {
+          return this.canVisitAnnotationEntry(node);
+        } else if (ASTFactory.isAnnotationEntryArray(node)) {
+          return this.canVisitAnnotationEntryArray(node);
         }
-    }
+  }
 
     /**
      * @param node {ASTNode}
      */
-    beginVisit(node) {
-        if(ASTFactory.isBallerinaAstRoot(node)){
-            return this.beginVisitBallerinaASTRoot(node);
-        } else if(ASTFactory.isServiceDefinition(node)){
-            return this.beginVisitServiceDefinition(node);
-        } else if (ASTFactory.isAnnotationDefinition(node)) {
-            return this.beginVisitAnnotationDefinition(node);
-        } else if(ASTFactory.isResourceDefinition(node)){
-            return this.beginVisitResourceDefinition(node);
-        } else if(ASTFactory.isFunctionDefinition(node)){
-            return this.beginVisitFunctionDefinition(node);
-        } else if (ASTFactory.isStatement(node)) {
-            return this.beginVisitStatement(node);
-        } else if (ASTFactory.isPackageDefinition(node)) {
-            return this.beginVisitPackageDefinition(node);
-        } else if (ASTFactory.isImportDeclaration(node)) {
-            return this.beginVisitImportDeclaration(node);
-        } else if (ASTFactory.isConstantDefinition(node)) {
-            return this.beginVisitConstantDefinition(node);
-        } else if (ASTFactory.isWorkerDeclaration(node)) {
-            return this.beginVisitWorkerDeclaration(node);
-        } else if( ASTFactory.isConnectorDeclaration(node)){
-            return this.beginVisitConnectorDeclaration(node);
-        } else if(ASTFactory.isFunctionInvocationExpression(node)){
-            return this.beginVisitFuncInvocationExpression(node);
-        } else if(ASTFactory.isActionInvocationExpression(node)){
-            return this.beginVisitActionInvocationExpression(node);
-        } else if (ASTFactory.isExpression(node)) {
-            return this.beginVisitExpression(node);
-        } else if(ASTFactory.isVariableDeclaration(node)){
-            return this.beginVisitVariableDeclaration(node);
-        } else if(ASTFactory.isConnectorDefinition(node)){
-            return this.beginVisitConnectorDefinition(node);
-        } else if(ASTFactory.isConnectorAction(node)){
-            return this.beginVisitConnectorAction(node);
-        } else if(ASTFactory.isStructDefinition(node)){
-            return this.beginVisitStructDefinition(node);
-        } else if(ASTFactory.isResourceParameter(node)){
-            return this.beginVisitResourceParameter(node);
-        } else if(ASTFactory.isReturnType(node)){
-            return this.beginVisitReturnType(node);
-        } else if(ASTFactory.isBlockStatement(node)){
-            return this.beginVisitBlockStatement(node);
-        } else if(ASTFactory.isVariableDefinition(node)){
-            return this.beginVisitVariableDefinition(node);
-        } else if(ASTFactory.isAnnotation(node)) {
-            return this.beginVisitAnnotation(node);
-        } else if(ASTFactory.isAnnotationEntry(node)) {
-            return this.beginVisitAnnotationEntry(node);
-        } else if(ASTFactory.isAnnotationEntryArray(node)) {
-            return this.beginVisitAnnotationEntryArray(node);
+  beginVisit(node) {
+    if (ASTFactory.isBallerinaAstRoot(node)) {
+      return this.beginVisitBallerinaASTRoot(node);
+    } else if (ASTFactory.isServiceDefinition(node)) {
+      return this.beginVisitServiceDefinition(node);
+    } else if (ASTFactory.isAnnotationDefinition(node)) {
+      return this.beginVisitAnnotationDefinition(node);
+    } else if (ASTFactory.isResourceDefinition(node)) {
+      return this.beginVisitResourceDefinition(node);
+    } else if (ASTFactory.isFunctionDefinition(node)) {
+      return this.beginVisitFunctionDefinition(node);
+    } else if (ASTFactory.isStatement(node)) {
+      return this.beginVisitStatement(node);
+    } else if (ASTFactory.isPackageDefinition(node)) {
+      return this.beginVisitPackageDefinition(node);
+    } else if (ASTFactory.isImportDeclaration(node)) {
+      return this.beginVisitImportDeclaration(node);
+    } else if (ASTFactory.isConstantDefinition(node)) {
+      return this.beginVisitConstantDefinition(node);
+    } else if (ASTFactory.isWorkerDeclaration(node)) {
+      return this.beginVisitWorkerDeclaration(node);
+    } else if (ASTFactory.isConnectorDeclaration(node)) {
+      return this.beginVisitConnectorDeclaration(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.beginVisitFuncInvocationExpression(node);
+    } else if (ASTFactory.isActionInvocationExpression(node)) {
+      return this.beginVisitActionInvocationExpression(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.beginVisitExpression(node);
+    } else if (ASTFactory.isVariableDeclaration(node)) {
+      return this.beginVisitVariableDeclaration(node);
+    } else if (ASTFactory.isConnectorDefinition(node)) {
+      return this.beginVisitConnectorDefinition(node);
+    } else if (ASTFactory.isConnectorAction(node)) {
+      return this.beginVisitConnectorAction(node);
+    } else if (ASTFactory.isStructDefinition(node)) {
+      return this.beginVisitStructDefinition(node);
+    } else if (ASTFactory.isResourceParameter(node)) {
+        return this.beginVisitResourceParameter(node);
+      } else if (ASTFactory.isReturnType(node)) {
+          return this.beginVisitReturnType(node);
+        } else if (ASTFactory.isBlockStatement(node)) {
+          return this.beginVisitBlockStatement(node);
+        } else if (ASTFactory.isVariableDefinition(node)) {
+          return this.beginVisitVariableDefinition(node);
+        } else if (ASTFactory.isAnnotation(node)) {
+          return this.beginVisitAnnotation(node);
+        } else if (ASTFactory.isAnnotationEntry(node)) {
+          return this.beginVisitAnnotationEntry(node);
+        } else if (ASTFactory.isAnnotationEntryArray(node)) {
+          return this.beginVisitAnnotationEntryArray(node);
         }
-    }
+  }
 
     /**
      * @param node {ASTNode}
      */
-    visit(node) {
-        if(ASTFactory.isBallerinaAstRoot(node)){
-            return this.visitBallerinaASTRoot(node);
-        } else if(ASTFactory.isServiceDefinition(node)){
-            return this.visitServiceDefinition(node);
-        } else if (ASTFactory.isAnnotationDefinition(node)) {
-            return this.visitAnnotationDefinition(node);
-        } else if(ASTFactory.isResourceDefinition(node)){
-            return this.visitResourceDefinition(node);
-        } else if(ASTFactory.isFunctionDefinition(node)){
-            return this.visitFunctionDefinition(node);
-        } else if(ASTFactory.isStatement(node)){
-            return this.visitStatement(node);
-        } else if(ASTFactory.isPackageDefinition(node)){
-            return this.visitPackageDefinition(node);
-        } else if(ASTFactory.isImportDeclaration(node)){
-            return this.visitImportDeclaration(node);
-        } else if(ASTFactory.isConstantDefinition(node)){
-            return this.visitConstantDefinition(node);
-        } else if(ASTFactory.isWorkerDeclaration(node)){
-            return this.visitWorkerDeclaration(node);
-        } else if( ASTFactory.isConnectorDeclaration(node)){
-            return this.visitConnectorDeclaration(node);
-        } else if(ASTFactory.isFunctionInvocationExpression(node)){
-            return this.visitFuncInvocationExpression(node);
-        } else if(ASTFactory.isActionInvocationExpression(node)){
-            return this.visitActionInvocationExpression(node);
-        } else if(ASTFactory.isExpression(node)){
-            return this.visitExpression(node);
-        } else if(ASTFactory.isVariableDeclaration(node)){
-            return this.visitVariableDeclaration(node);
-        } else if(ASTFactory.isConnectorDefinition(node)){
-            return this.visitConnectorDefinition(node);
-        } else if(ASTFactory.isConnectorAction(node)){
-            return this.visitConnectorAction(node);
-        } else if(ASTFactory.isStructDefinition(node)){
-            return this.visitStructDefinition(node);
-        } else if(ASTFactory.isResourceParameter(node)){
-            return this.visitResourceParameter(node);
-        } else if(ASTFactory.isReturnType(node)){
-            return this.visitReturnType(node);
-        } else if(ASTFactory.isBlockStatement(node)){
-            return this.visitBlockStatement(node);
-        } else if(ASTFactory.isVariableDefinition(node)){
-            return this.visitVariableDefinition(node);
-        } else if(ASTFactory.isAnnotation(node)) {
-            return this.visitAnnotation(node);
-        } else if(ASTFactory.isAnnotationEntry(node)) {
-            return this.visitAnnotationEntry(node);
-        } else if(ASTFactory.isAnnotationEntryArray(node)) {
-            return this.visitAnnotationEntryArray(node);
+  visit(node) {
+    if (ASTFactory.isBallerinaAstRoot(node)) {
+      return this.visitBallerinaASTRoot(node);
+    } else if (ASTFactory.isServiceDefinition(node)) {
+      return this.visitServiceDefinition(node);
+    } else if (ASTFactory.isAnnotationDefinition(node)) {
+      return this.visitAnnotationDefinition(node);
+    } else if (ASTFactory.isResourceDefinition(node)) {
+      return this.visitResourceDefinition(node);
+    } else if (ASTFactory.isFunctionDefinition(node)) {
+      return this.visitFunctionDefinition(node);
+    } else if (ASTFactory.isStatement(node)) {
+      return this.visitStatement(node);
+    } else if (ASTFactory.isPackageDefinition(node)) {
+      return this.visitPackageDefinition(node);
+    } else if (ASTFactory.isImportDeclaration(node)) {
+      return this.visitImportDeclaration(node);
+    } else if (ASTFactory.isConstantDefinition(node)) {
+      return this.visitConstantDefinition(node);
+    } else if (ASTFactory.isWorkerDeclaration(node)) {
+      return this.visitWorkerDeclaration(node);
+    } else if (ASTFactory.isConnectorDeclaration(node)) {
+      return this.visitConnectorDeclaration(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.visitFuncInvocationExpression(node);
+    } else if (ASTFactory.isActionInvocationExpression(node)) {
+      return this.visitActionInvocationExpression(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.visitExpression(node);
+    } else if (ASTFactory.isVariableDeclaration(node)) {
+      return this.visitVariableDeclaration(node);
+    } else if (ASTFactory.isConnectorDefinition(node)) {
+      return this.visitConnectorDefinition(node);
+    } else if (ASTFactory.isConnectorAction(node)) {
+      return this.visitConnectorAction(node);
+    } else if (ASTFactory.isStructDefinition(node)) {
+      return this.visitStructDefinition(node);
+    } else if (ASTFactory.isResourceParameter(node)) {
+        return this.visitResourceParameter(node);
+      } else if (ASTFactory.isReturnType(node)) {
+          return this.visitReturnType(node);
+        } else if (ASTFactory.isBlockStatement(node)) {
+          return this.visitBlockStatement(node);
+        } else if (ASTFactory.isVariableDefinition(node)) {
+          return this.visitVariableDefinition(node);
+        } else if (ASTFactory.isAnnotation(node)) {
+          return this.visitAnnotation(node);
+        } else if (ASTFactory.isAnnotationEntry(node)) {
+          return this.visitAnnotationEntry(node);
+        } else if (ASTFactory.isAnnotationEntryArray(node)) {
+          return this.visitAnnotationEntryArray(node);
         }
-
-    }
+  }
 
     /**
      * @param node {ASTNode}
      */
-    endVisit(node) {
-        if(ASTFactory.isBallerinaAstRoot(node)){
-            return this.endVisitBallerinaASTRoot(node);
-        } else if(ASTFactory.isServiceDefinition(node)){
-            return this.endVisitServiceDefinition(node);
-        } else if (ASTFactory.isAnnotationDefinition(node)) {
-            return this.endVisitAnnotationDefinition(node);
-        } else if(ASTFactory.isResourceDefinition(node)){
-            return this.endVisitResourceDefinition(node);
-        } else if(ASTFactory.isFunctionDefinition(node)){
-            return this.endVisitFunctionDefinition(node);
-        } else if(ASTFactory.isStatement(node)){
-            return this.endVisitStatement(node);
-        }  else if(ASTFactory.isPackageDefinition(node)){
-            return this.endVisitPackageDefinition(node);
-        } else if(ASTFactory.isImportDeclaration(node)){
-            return this.endVisitImportDeclaration(node);
-        } else if(ASTFactory.isConstantDefinition(node)){
-            return this.endVisitConstantDefinition(node);
-        } else if(ASTFactory.isWorkerDeclaration(node)){
-            return this.endVisitWorkerDeclaration(node);
-        } else if( ASTFactory.isConnectorDeclaration(node)){
-            return this.endVisitConnectorDeclaration(node);
-        } else if(ASTFactory.isFunctionInvocationExpression(node)) {
-            return this.endVisitFuncInvocationExpression(node);
-        } else if(ASTFactory.isActionInvocationExpression(node)){
-            return this.endVisitActionInvocationExpression(node);
-        } else if(ASTFactory.isExpression(node)){
-            return this.endVisitExpression(node);
-        } else if(ASTFactory.isVariableDeclaration(node)){
-            return this.endVisitVariableDeclaration(node);
-        } else if(ASTFactory.isConnectorDefinition(node)){
-            return this.endVisitConnectorDefinition(node);
-        } else if(ASTFactory.isConnectorAction(node)){
-            return this.endVisitConnectorAction(node);
-        } else if(ASTFactory.isStructDefinition(node)){
-            return this.endVisitStructDefinition(node);
-        } else if(ASTFactory.isResourceParameter(node)){
-            return this.endVisitResourceParameter(node);
-        } else if(ASTFactory.isReturnType(node)){
-            return this.endVisitReturnType(node);
-        } else if(ASTFactory.isBlockStatement(node)){
-            return this.endVisitBlockStatement(node);
-        } else if(ASTFactory.isVariableDefinition(node)){
-            return this.endVisitVariableDefinition(node);
-        } else if(ASTFactory.isAnnotation(node)) {
-            return this.endVisitAnnotation(node);
-        } else if(ASTFactory.isAnnotationEntry(node)) {
-            return this.endVisitAnnotationEntry(node);
-        } else if(ASTFactory.isAnnotationEntryArray(node)) {
-            return this.endVisitAnnotationEntryArray(node);
+  endVisit(node) {
+    if (ASTFactory.isBallerinaAstRoot(node)) {
+      return this.endVisitBallerinaASTRoot(node);
+    } else if (ASTFactory.isServiceDefinition(node)) {
+      return this.endVisitServiceDefinition(node);
+    } else if (ASTFactory.isAnnotationDefinition(node)) {
+      return this.endVisitAnnotationDefinition(node);
+    } else if (ASTFactory.isResourceDefinition(node)) {
+      return this.endVisitResourceDefinition(node);
+    } else if (ASTFactory.isFunctionDefinition(node)) {
+      return this.endVisitFunctionDefinition(node);
+    } else if (ASTFactory.isStatement(node)) {
+      return this.endVisitStatement(node);
+    } else if (ASTFactory.isPackageDefinition(node)) {
+      return this.endVisitPackageDefinition(node);
+    } else if (ASTFactory.isImportDeclaration(node)) {
+      return this.endVisitImportDeclaration(node);
+    } else if (ASTFactory.isConstantDefinition(node)) {
+      return this.endVisitConstantDefinition(node);
+    } else if (ASTFactory.isWorkerDeclaration(node)) {
+      return this.endVisitWorkerDeclaration(node);
+    } else if (ASTFactory.isConnectorDeclaration(node)) {
+      return this.endVisitConnectorDeclaration(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.endVisitFuncInvocationExpression(node);
+    } else if (ASTFactory.isActionInvocationExpression(node)) {
+      return this.endVisitActionInvocationExpression(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.endVisitExpression(node);
+    } else if (ASTFactory.isVariableDeclaration(node)) {
+      return this.endVisitVariableDeclaration(node);
+    } else if (ASTFactory.isConnectorDefinition(node)) {
+      return this.endVisitConnectorDefinition(node);
+    } else if (ASTFactory.isConnectorAction(node)) {
+      return this.endVisitConnectorAction(node);
+    } else if (ASTFactory.isStructDefinition(node)) {
+      return this.endVisitStructDefinition(node);
+    } else if (ASTFactory.isResourceParameter(node)) {
+        return this.endVisitResourceParameter(node);
+      } else if (ASTFactory.isReturnType(node)) {
+          return this.endVisitReturnType(node);
+        } else if (ASTFactory.isBlockStatement(node)) {
+          return this.endVisitBlockStatement(node);
+        } else if (ASTFactory.isVariableDefinition(node)) {
+          return this.endVisitVariableDefinition(node);
+        } else if (ASTFactory.isAnnotation(node)) {
+          return this.endVisitAnnotation(node);
+        } else if (ASTFactory.isAnnotationEntry(node)) {
+          return this.endVisitAnnotationEntry(node);
+        } else if (ASTFactory.isAnnotationEntryArray(node)) {
+          return this.endVisitAnnotationEntryArray(node);
         }
+  }
 
-    }
+  canVisitBallerinaASTRoot(ballerinaASTRoot) {
+    return false;
+  }
 
-    canVisitBallerinaASTRoot(ballerinaASTRoot) {
-        return false;
-    }
+  beginVisitBallerinaASTRoot(ballerinaASTRoot) {
+  }
 
-    beginVisitBallerinaASTRoot(ballerinaASTRoot) {
-    }
+  visitBallerinaASTRoot(ballerinaASTRoot) {
+  }
 
-    visitBallerinaASTRoot(ballerinaASTRoot) {
-    }
+  endVisitBallerinaASTRoot(ballerinaASTRoot) {
+  }
 
-    endVisitBallerinaASTRoot(ballerinaASTRoot) {
-    }
+  canVisitServiceDefinition(serviceDefinition) {
+    return false;
+  }
 
-    canVisitServiceDefinition(serviceDefinition) {
-        return false;
-    }
+  canVisitAnnotationDefinition(annotationDefinition) {
+    return false;
+  }
 
-    canVisitAnnotationDefinition(annotationDefinition){
-        return false;
-    }
+  beginVisitServiceDefinition(serviceDefinition) {
+  }
 
-    beginVisitServiceDefinition(serviceDefinition) {
-    }
+  visitServiceDefinition(serviceDefinition) {
+  }
 
-    visitServiceDefinition(serviceDefinition) {
-    }
+  endVisitServiceDefinition(serviceDefinition) {
+  }
 
-    endVisitServiceDefinition(serviceDefinition) {
-    }
+  beginVisitAnnotationDefinition(annotationDefinition) {
+  }
 
-    beginVisitAnnotationDefinition(annotationDefinition) {
-    }
+  visitAnnotationDefinition(annotationDefinition) {
+  }
 
-    visitAnnotationDefinition(annotationDefinition) {
-    }
+  endVisitAnnotationDefinition(annotationDefinition) {
+  }
 
-    endVisitAnnotationDefinition(annotationDefinition){
-    }
+  canVisitConnectorDefinition(connectorDefinition) {
+    return false;
+  }
 
-    canVisitConnectorDefinition(connectorDefinition) {
-        return false;
-    }
+  beginVisitConnectorDefinition(connectorDefinition) {
+  }
 
-    beginVisitConnectorDefinition(connectorDefinition) {
-    }
+  visitConnectorDefinition(connectorDefinition) {
+  }
 
-    visitConnectorDefinition(connectorDefinition) {
-    }
+  endVisitConnectorDefinition(connectorDefinition) {
+  }
 
-    endVisitConnectorDefinition(connectorDefinition) {
-    }
+  canVisitFunctionDefinition(functionDefinition) {
+    return false;
+  }
 
-    canVisitFunctionDefinition(functionDefinition) {
-        return false;
-    }
+  beginVisitFunctionDefinition(functionDefinition) {
+  }
 
-    beginVisitFunctionDefinition(functionDefinition) {
-    }
+  visitFunctionDefinition(functionDefinition) {
+  }
 
-    visitFunctionDefinition(functionDefinition) {
-    }
+  endVisitFunctionDefinition(functionDefinition) {
+  }
 
-    endVisitFunctionDefinition(functionDefinition) {
-    }
+  canVisitResourceDefinition(resourceDefinition) {
+    return false;
+  }
 
-    canVisitResourceDefinition(resourceDefinition) {
-        return false;
-    }
+  beginVisitResourceDefinition(resourceDefinition) {
+  }
 
-    beginVisitResourceDefinition(resourceDefinition) {
-    }
+  visitResourceDefinition(resourceDefinition) {
+  }
 
-    visitResourceDefinition(resourceDefinition) {
-    }
+  endVisitResourceDefinition(resourceDefinition) {
+  }
 
-    endVisitResourceDefinition(resourceDefinition) {
-    }
+  canVisitFunctionDefinition(resourceDefinition) {
+    return false;
+  }
 
-    canVisitFunctionDefinition(resourceDefinition) {
-        return false;
-    }
+  beginVisitFunctionDefinition(resourceDefinition) {
+  }
 
-    beginVisitFunctionDefinition(resourceDefinition) {
-    }
+  visitFunctionDefinition(resourceDefinition) {
+  }
 
-    visitFunctionDefinition(resourceDefinition) {
-    }
+  endVisitFunctionDefinition(resourceDefinition) {
+  }
 
-    endVisitFunctionDefinition(resourceDefinition) {
-    }
+  canVisitStructDefinition(structDefinition) {
+    return false;
+  }
 
-    canVisitStructDefinition(structDefinition) {
-        return false;
-    }
+  beginVisitStructDefinition(structDefinition) {
+  }
 
-    beginVisitStructDefinition(structDefinition) {
-    }
+  visitStructDefinition(structDefinition) {
+  }
 
-    visitStructDefinition(structDefinition) {
-    }
+  endVisitStructDefinition(structDefinition) {
+  }
 
-    endVisitStructDefinition(structDefinition) {
-    }
+  canVisitResourceParameter(resourceParameter) {
+    return false;
+  }
 
-    canVisitResourceParameter(resourceParameter) {
-        return false;
-    }
+  beginVisitResourceParameter(resourceParameter) {
+  }
 
-    beginVisitResourceParameter(resourceParameter) {
-    }
+  visitResourceParameter(resourceParameter) {
+  }
 
-    visitResourceParameter(resourceParameter) {
-    }
+  endVisitResourceParameter(resourceParameter) {
+  }
 
-    endVisitResourceParameter(resourceParameter) {
-    }
+  canVisitBlockStatement(blockStatement) {
+    return false;
+  }
 
-    canVisitBlockStatement(blockStatement) {
-        return false;
-    }
+  beginVisitBlockStatement(blockStatement) {
+  }
 
-    beginVisitBlockStatement(blockStatement) {
-    }
+  visitBlockStatement(blockStatement) {
+  }
 
-    visitBlockStatement(blockStatement) {
-    }
+  endVisitBlockStatement(blockStatement) {
+  }
 
-    endVisitBlockStatement(blockStatement) {
-    }
+  canVisitReturnType(returnType) {
+    return false;
+  }
 
-    canVisitReturnType(returnType) {
-        return false;
-    }
+  beginVisitReturnType(returnType) {
+  }
 
-    beginVisitReturnType(returnType) {
-    }
+  visitReturnType(returnType) {
+  }
 
-    visitReturnType(returnType) {
-    }
+  endVisitReturnType(returnType) {
+  }
 
-    endVisitReturnType(returnType) {
-    }
+  canVisitPackageDefinition(packageDefinition) {
+    return false;
+  }
 
-    canVisitPackageDefinition(packageDefinition) {
-        return false;
-    }
+  beginVisitPackageDefinition(packageDefinition) {
+  }
 
-    beginVisitPackageDefinition(packageDefinition) {
-    }
+  visitPackageDefinition(packageDefinition) {
+  }
 
-    visitPackageDefinition(packageDefinition) {
-    }
+  endVisitPackageDefinition(packageDefinition) {
+  }
 
-    endVisitPackageDefinition(packageDefinition) {
-    }
+  canVisitImportDeclaration(importDeclaration) {
+    return false;
+  }
 
-    canVisitImportDeclaration(importDeclaration) {
-        return false;
-    }
+  beginVisitImportDeclaration(importDeclaration) {
+  }
 
-    beginVisitImportDeclaration(importDeclaration) {
-    }
+  visitImportDeclaration(importDeclaration) {
+  }
 
-    visitImportDeclaration(importDeclaration) {
-    }
+  endVisitImportDeclaration(importDeclaration) {
+  }
 
-    endVisitImportDeclaration(importDeclaration) {
-    }
+  canVisitConstantDefinition(constantDefinition) {
+    return false;
+  }
 
-    canVisitConstantDefinition(constantDefinition) {
-        return false;
-    }
+  beginVisitConstantDefinition(constantDefinition) {
+  }
 
-    beginVisitConstantDefinition(constantDefinition) {
-    }
+  visitConstantDefinition(constantDefinition) {
+  }
 
-    visitConstantDefinition(constantDefinition) {
-    }
+  endVisitConstantDefinition(constantDefinition) {
+  }
 
-    endVisitConstantDefinition(constantDefinition) {
-    }
+  canVisitWorkerDeclaration(importDeclaration) {
+    return false;
+  }
 
-    canVisitWorkerDeclaration(importDeclaration) {
-        return false;
-    }
+  beginVisitWorkerDeclaration(importDeclaration) {
+  }
 
-    beginVisitWorkerDeclaration(importDeclaration) {
-    }
+  visitWorkerDeclaration(importDeclaration) {
+  }
 
-    visitWorkerDeclaration(importDeclaration) {
-    }
+  endVisitWorkerDeclaration(importDeclaration) {
+  }
 
-    endVisitWorkerDeclaration(importDeclaration) {
-    }
+  canVisitStatement(statement) {
+    return false;
+  }
 
-    canVisitStatement(statement) {
-        return false;
-    }
+  beginVisitStatement(statement) {
+  }
 
-    beginVisitStatement(statement) {
-    }
+  visitStatement(statement) {
+  }
 
-    visitStatement(statement) {
-    }
+  endVisitStatement(statement) {
+  }
 
-    endVisitStatement(statement) {
-    }
+  canVisitExpression(statement) {
+    return false;
+  }
 
-    canVisitExpression(statement) {
-        return false;
-    }
+  beginVisitExpression(statement) {
+  }
 
-    beginVisitExpression(statement) {
-    }
+  visitExpression(statement) {
+  }
 
-    visitExpression(statement) {
-    }
+  endVisitExpression(statement) {
+  }
 
-    endVisitExpression(statement) {
-    }
+  canVisitConnectorAction(connectorAction) {
+    return false;
+  }
 
-    canVisitConnectorAction(connectorAction) {
-        return false;
-    }
+  beginVisitConnectorAction(connectorAction) {
+  }
 
-    beginVisitConnectorAction(connectorAction) {
-    }
+  visitConnectorAction(connectorAction) {
+  }
 
-    visitConnectorAction(connectorAction) {
-    }
+  endVisitConnectorAction(connectorAction) {
+  }
 
-    endVisitConnectorAction(connectorAction) {
-    }
+  canVisitActionInvocationExpression() {
+    return true;
+  }
 
-    canVisitActionInvocationExpression() {
-        return true;
-    }
+  beginVisitActionInvocationExpression(expression) {
+  }
 
-    beginVisitActionInvocationExpression(expression) {
-    }
+  visitActionInvocationExpression(expression) {
+  }
 
-    visitActionInvocationExpression(expression) {
-    }
-
-    endVisitActionInvocationExpression(expression) {
-    }
+  endVisitActionInvocationExpression(expression) {
+  }
 
     /**
      *
      * @param statement - statement which should be checked
      * @returns {boolean}
      */
-    canVisitFuncInvocationExpression(statement) {
-        return false;
-    }
+  canVisitFuncInvocationExpression(statement) {
+    return false;
+  }
 
     /**
      *
      * @param statement - statement to begin visitFuncInvocationExpression with
      */
-    beginVisitFuncInvocationExpression(statement) {
-    }
+  beginVisitFuncInvocationExpression(statement) {
+  }
 
     /**
      *
      * @param statement - statement to visit FuncInvocationExpression with
      */
-    visitFuncInvocationExpression(statement) {
-    }
+  visitFuncInvocationExpression(statement) {
+  }
 
     /**
      *
      * @param statement - statement to end visitFuncInvocationExpression with
      */
-    endVisitFuncInvocationExpression(statement) {
-    }
+  endVisitFuncInvocationExpression(statement) {
+  }
 
-    canVisitConnectorDeclaration(connectorDeclaration) {
-        return false;
-    }
+  canVisitConnectorDeclaration(connectorDeclaration) {
+    return false;
+  }
 
-    beginVisitConnectorDeclaration(connectorDeclaration) {
-    }
+  beginVisitConnectorDeclaration(connectorDeclaration) {
+  }
 
-    visitConnectorDeclaration(connectorDeclaration) {
-    }
+  visitConnectorDeclaration(connectorDeclaration) {
+  }
 
-    endVisitConnectorDeclaration(connectorDeclaration) {
-    }
+  endVisitConnectorDeclaration(connectorDeclaration) {
+  }
 
-    canVisitAssignment(assignment) {
-        return false;
-    }
+  canVisitAssignment(assignment) {
+    return false;
+  }
 
-    beginVisitAssignment(assignment) {
-    }
+  beginVisitAssignment(assignment) {
+  }
 
-    visitAssignment(assignment) {
-    }
+  visitAssignment(assignment) {
+  }
 
-    endVisitAssignment(assignment) {
-    }
+  endVisitAssignment(assignment) {
+  }
 
-    canVisitVariableDeclaration(variableDeclaration) {
-        return false;
-    }
+  canVisitVariableDeclaration(variableDeclaration) {
+    return false;
+  }
 
-    beginVisitVariableDeclaration(variableDeclaration) {
-    }
+  beginVisitVariableDeclaration(variableDeclaration) {
+  }
 
-    visitVariableDeclaration(variableDeclaration) {
-    }
+  visitVariableDeclaration(variableDeclaration) {
+  }
 
-    endVisitVariableDeclaration(variableDeclaration) {
-    }
+  endVisitVariableDeclaration(variableDeclaration) {
+  }
 
-    canVisitVariableDefinition(variableDefinition) {
-        return false;
-    }
+  canVisitVariableDefinition(variableDefinition) {
+    return false;
+  }
 
-    beginVisitVariableDefinition(variableDefinition) {
-    }
+  beginVisitVariableDefinition(variableDefinition) {
+  }
 
-    visitVariableDefinition(variableDefinition) {
-    }
+  visitVariableDefinition(variableDefinition) {
+  }
 
-    endVisitVariableDefinition(variableDefinition) {
-    }
+  endVisitVariableDefinition(variableDefinition) {
+  }
 
-    canVisitAnnotation(annotation){
-        return false;
-    }
+  canVisitAnnotation(annotation) {
+    return false;
+  }
 
-    beginVisitAnnotation(annotation){
-    }
+  beginVisitAnnotation(annotation) {
+  }
 
-    visitAnnotation(annotation){
-    }
+  visitAnnotation(annotation) {
+  }
 
-    endVisitAnnotation(annotation){
-    }
+  endVisitAnnotation(annotation) {
+  }
 
-    canVisitAnnotationEntry(annotationEntry){
-        return false;
-    }
+  canVisitAnnotationEntry(annotationEntry) {
+    return false;
+  }
 
-    beginVisitAnnotationEntry(annotationEntry){
-    }
+  beginVisitAnnotationEntry(annotationEntry) {
+  }
 
-    visitAnnotationEntry(annotationEntry){
-    }
+  visitAnnotationEntry(annotationEntry) {
+  }
 
-    endVisitAnnotationEntry(annotationEntry){
-    }
+  endVisitAnnotationEntry(annotationEntry) {
+  }
 
-    canVisitAnnotationEntryArray(annotationEntryArray){
-        return false;
-    }
+  canVisitAnnotationEntryArray(annotationEntryArray) {
+    return false;
+  }
 
-    beginVisitAnnotationEntryArray(annotationEntryArray){
-    }
+  beginVisitAnnotationEntryArray(annotationEntryArray) {
+  }
 
-    visitAnnotationEntryArray(annotationEntryArray){
-    }
+  visitAnnotationEntryArray(annotationEntryArray) {
+  }
 
-    visitJoinStatement(joinStatement){
-    }
+  visitJoinStatement(joinStatement) {
+  }
 
-    endVisitAnnotationEntryArray(annotationEntryArray){
-    }
+  endVisitAnnotationEntryArray(annotationEntryArray) {
+  }
 }
 
 export default ASTVisitor;

@@ -19,37 +19,40 @@ import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 
 class TransactionStatementPositionCalcVisitor {
-    canVisit(node) {
-        log.debug('can visit TransactionStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit TransactionStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit TransactionStatementPositionCalcVisitor');
-        let parentViewState = node.getParent().getViewState();
-        let parentBBox = parentViewState.bBox;
-        let viewState = node.getViewState();
-        let bBox = viewState.bBox;
-        let x, y, statementContainerX, statementContainerY;
+  beginVisit(node) {
+    log.debug('begin visit TransactionStatementPositionCalcVisitor');
+    const parentViewState = node.getParent().getViewState();
+    const parentBBox = parentViewState.bBox;
+    const viewState = node.getViewState();
+    const bBox = viewState.bBox;
+    let x,
+      y,
+      statementContainerX,
+      statementContainerY;
 
-        x = parentBBox.x;
-        y = parentBBox.y + parentViewState.components['drop-zone'].h;
-        statementContainerX = x;
-        statementContainerY = y + DesignerDefaults.blockStatement.heading.height;
+    x = parentBBox.x;
+    y = parentBBox.y + parentViewState.components['drop-zone'].h;
+    statementContainerX = x;
+    statementContainerY = y + DesignerDefaults.blockStatement.heading.height;
 
-        bBox.x = x;
-        bBox.y = y;
-        viewState.components.statementContainer.x = statementContainerX;
-        viewState.components.statementContainer.y = statementContainerY;
-    }
+    bBox.x = x;
+    bBox.y = y;
+    viewState.components.statementContainer.x = statementContainerX;
+    viewState.components.statementContainer.y = statementContainerY;
+  }
 
-    visit(node) {
-        log.debug('visit TransactionStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit TransactionStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit TransactionStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit TransactionStatementPositionCalcVisitor');
+  }
 }
 
 export default TransactionStatementPositionCalcVisitor;

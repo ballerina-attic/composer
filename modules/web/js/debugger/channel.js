@@ -25,60 +25,58 @@ const WS_NORMAL_CODE = 1000;
 const WS_SSL_CODE = 1015;
 
 class Channel extends EventChannel {
-    constructor(args) {
-        super();
-        if(_.isNil(args.endpoint)){
-            throw 'Invalid Endpoint';
-        }
-        _.assign(this, args);
+  constructor(args) {
+    super();
+    if (_.isNil(args.endpoint)) {
+      throw 'Invalid Endpoint';
     }
+    _.assign(this, args);
+  }
 
-    connect() {
-        const websocket = new WebSocket(this.endpoint);
-        websocket.onmessage = (strMessage) => { this.parseMessage(strMessage); };
-        websocket.onopen = () => { this.onOpen(); };
-        websocket.onclose = (event) => { this.onClose(event); };
-        websocket.onerror = () => { this.onError(); };
-        this.websocket = websocket;
-    }
+  connect() {
+    const websocket = new WebSocket(this.endpoint);
+    websocket.onmessage = (strMessage) => { this.parseMessage(strMessage); };
+    websocket.onopen = () => { this.onOpen(); };
+    websocket.onclose = (event) => { this.onClose(event); };
+    websocket.onerror = () => { this.onError(); };
+    this.websocket = websocket;
+  }
 
-    parseMessage(strMessage) {
-        const message = JSON.parse(strMessage.data);
-        this.debugger.processMesssage(message);
-    }
+  parseMessage(strMessage) {
+    const message = JSON.parse(strMessage.data);
+    this.debugger.processMesssage(message);
+  }
 
-    sendMessage(message) {
-        this.websocket.send(JSON.stringify(message));
-    }
+  sendMessage(message) {
+    this.websocket.send(JSON.stringify(message));
+  }
 
-    onClose(event) {
-        this.debugger.active = false;
-        this.debugger.trigger('session-terminated');
-        let reason;
-        if (event.code === WS_NORMAL_CODE){
-            reason = 'Normal closure';
-            this.trigger('session-ended');
-            this.debugger.active = false;
-            return;
-        }
-        else if(event.code === WS_SSL_CODE){
-            reason = 'Certificate Issue';
-        }
-        else{
-            reason = 'Unknown reason :' + event.code;
-        }
-        log.error(reason);
+  onClose(event) {
+    this.debugger.active = false;
+    this.debugger.trigger('session-terminated');
+    let reason;
+    if (event.code === WS_NORMAL_CODE) {
+      reason = 'Normal closure';
+      this.trigger('session-ended');
+      this.debugger.active = false;
+      return;
+    } else if (event.code === WS_SSL_CODE) {
+      reason = 'Certificate Issue';
+    } else {
+      reason = `Unknown reason :${event.code}`;
     }
+    log.error(reason);
+  }
 
-    onError() {
-        this.debugger.active = false;
-        this.debugger.trigger('session-error');
-    }
+  onError() {
+    this.debugger.active = false;
+    this.debugger.trigger('session-error');
+  }
 
-    onOpen() {
-        this.debugger.active = true;
-        this.debugger.trigger('session-started');
-    }
+  onOpen() {
+    this.debugger.active = true;
+    this.debugger.trigger('session-started');
+  }
 }
 
 export default Channel;

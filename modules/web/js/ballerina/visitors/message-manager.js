@@ -23,171 +23,169 @@ import EventChannel from 'event_channel';
  * Handle Message drawing by Message manager
  * @class MessageManager
  */
-class MessageManager extends EventChannel{
+class MessageManager extends EventChannel {
     /**
      * Constructor for MessageManager
      * @param {args} args for constructor
      * @constructor
      */
-    constructor(args) {
-        super();
-        log.debug('Initialising Message Manager');
-        this._fileEditor = args.fileEditor;
-        this._typeBeingDragged = undefined;
-        this._isOnDrag = false;
-        this._source = undefined;
-        this._destination = undefined;
-        this._messageEnd = {
-            x: 0,
-            y: 0
-        };
-        this._messageStart = {
-            x: 0,
-            y: 0
-        };
-        this._arrowDecorator = undefined;
-        this._backwardArrowDecorator = undefined;
-        this._container = undefined;
-        this._targetValidationCallback = undefined;
-    }
+  constructor(args) {
+    super();
+    log.debug('Initialising Message Manager');
+    this._fileEditor = args.fileEditor;
+    this._typeBeingDragged = undefined;
+    this._isOnDrag = false;
+    this._source = undefined;
+    this._destination = undefined;
+    this._messageEnd = {
+      x: 0,
+      y: 0,
+    };
+    this._messageStart = {
+      x: 0,
+      y: 0,
+    };
+    this._arrowDecorator = undefined;
+    this._backwardArrowDecorator = undefined;
+    this._container = undefined;
+    this._targetValidationCallback = undefined;
+  }
 
     /**
      * Set the type being dragged at a given moment.
      * @param source being dragged
      */
-    setSource(source) {
-        this._source = source;
-    }
+  setSource(source) {
+    this._source = source;
+  }
 
-    getSource() {
-        return this._source;
-    }
+  getSource() {
+    return this._source;
+  }
 
-    setDestination(destination) {
-        this._destination = destination;
-    }
+  setDestination(destination) {
+    this._destination = destination;
+  }
 
-    getDestination() {
-        return this._destination;
-    }
+  getDestination() {
+    return this._destination;
+  }
 
     /**
      * Gets the type which is being dragged at a given moment - if any.
      * @return type
      */
-    getTypeBeingDragged() {
-        return this._typeBeingDragged;
-    }
+  getTypeBeingDragged() {
+    return this._typeBeingDragged;
+  }
 
-    isOnDrag() {
-        return this._isOnDrag;
-    }
+  isOnDrag() {
+    return this._isOnDrag;
+  }
 
-    setIsOnDrag(status) {
-        this._isOnDrag = status;
-    }
+  setIsOnDrag(status) {
+    this._isOnDrag = status;
+  }
 
-    setMessageEnd(x, y) {
-        this._messageEnd.x = x;
-        this._messageEnd.y = y;
-    }
+  setMessageEnd(x, y) {
+    this._messageEnd.x = x;
+    this._messageEnd.y = y;
+  }
 
-    getMessageEnd() {
-        return this._messageEnd;
-    }
+  getMessageEnd() {
+    return this._messageEnd;
+  }
 
-    setMessageStart(x, y) {
-        this._messageStart.x = x;
-        this._messageStart.y = y;
-    }
+  setMessageStart(x, y) {
+    this._messageStart.x = x;
+    this._messageStart.y = y;
+  }
 
-    getMessageStart() {
-        return this._messageStart;
-    }
+  getMessageStart() {
+    return this._messageStart;
+  }
 
-    setArrowDecorator(arrowDecorator) {
-        this._arrowDecorator = arrowDecorator;
-    }
+  setArrowDecorator(arrowDecorator) {
+    this._arrowDecorator = arrowDecorator;
+  }
 
-    setBackwardArrowDecorator(arrowDecorator) {
-        this._backwardArrowDecorator = arrowDecorator;
-    }
+  setBackwardArrowDecorator(arrowDecorator) {
+    this._backwardArrowDecorator = arrowDecorator;
+  }
 
-    getArrowDecorator() {
-        return this._arrowDecorator;
-    }
+  getArrowDecorator() {
+    return this._arrowDecorator;
+  }
 
-    getBackwardArrowDecorator() {
-        return this._backwardArrowDecorator;
-    }
+  getBackwardArrowDecorator() {
+    return this._backwardArrowDecorator;
+  }
 
-    setContainer(container) {
-        this._container = container;
-    }
+  setContainer(container) {
+    this._container = container;
+  }
 
-    getContainer() {
-        return this._container;
-    }
+  getContainer() {
+    return this._container;
+  }
 
-    setTargetValidationCallback(validationCallback) {
-        this._targetValidationCallback = validationCallback;
-    }
+  setTargetValidationCallback(validationCallback) {
+    this._targetValidationCallback = validationCallback;
+  }
 
-    getTargetValidationCallback() {
-        return this._targetValidationCallback;
-    }
+  getTargetValidationCallback() {
+    return this._targetValidationCallback;
+  }
 
-    reset() {
+  reset() {
         /**
          * @event MessageManager#drag-stop
          * @type {ASTNode}
          */
-        this.setSource(undefined);
-        this.setDestination(undefined);
-        this.getArrowDecorator().setState({drawOnMouseMoveFlag: -1});
-        this.getBackwardArrowDecorator().setState({drawOnMouseMoveFlag: -1});
-        this.setIsOnDrag(false);
-    }
+    this.setSource(undefined);
+    this.setDestination(undefined);
+    this.getArrowDecorator().setState({ drawOnMouseMoveFlag: -1 });
+    this.getBackwardArrowDecorator().setState({ drawOnMouseMoveFlag: -1 });
+    this.setIsOnDrag(false);
+  }
 
-    startDrawMessage(mouseUpCallback, targetValidationCallback) {
+  startDrawMessage(mouseUpCallback, targetValidationCallback) {
+    let self = this,
+      container = d3.select(self._fileEditor._$canvasContainer.find('.svg-container').get(0));
 
-        var self = this,
-            container = d3.select(self._fileEditor._$canvasContainer.find('.svg-container').get(0));
+    container.on('mousemove', function (e) {
+      self.trigger('message-draw-start');
+      const m = d3.mouse(this);
+      self.setMessageEnd(m[0] - 5, self.getMessageStart().y);
+      if (self.getMessageEnd().x > self.getMessageStart().x) {
+        const currentDrawOnMouseMoveFlag = self.getArrowDecorator().state.drawOnMouseMoveFlag;
+        self.getBackwardArrowDecorator().setState({ drawOnMouseMoveFlag: -1 });
+        self.getArrowDecorator().setState({ drawOnMouseMoveFlag: (currentDrawOnMouseMoveFlag + 1) });
+      } else {
+        const currentDrawOnMouseMoveFlag = self.getBackwardArrowDecorator().state.drawOnMouseMoveFlag;
+        self.getArrowDecorator().setState({ drawOnMouseMoveFlag: -1 });
+        self.getBackwardArrowDecorator().setState({ drawOnMouseMoveFlag: (currentDrawOnMouseMoveFlag + 1) });
+      }
+    });
 
-        container.on('mousemove', function (e) {
-            self.trigger('message-draw-start');
-            var m = d3.mouse(this);
-            self.setMessageEnd(m[0] - 5, self.getMessageStart().y);
-            if (self.getMessageEnd().x > self.getMessageStart().x) {
-                const currentDrawOnMouseMoveFlag = self.getArrowDecorator().state.drawOnMouseMoveFlag;
-                self.getBackwardArrowDecorator().setState({drawOnMouseMoveFlag: -1});
-                self.getArrowDecorator().setState({drawOnMouseMoveFlag: (currentDrawOnMouseMoveFlag + 1)});
-            } else {
-                const currentDrawOnMouseMoveFlag = self.getBackwardArrowDecorator().state.drawOnMouseMoveFlag;
-                self.getArrowDecorator().setState({drawOnMouseMoveFlag: -1});
-                self.getBackwardArrowDecorator().setState({drawOnMouseMoveFlag: (currentDrawOnMouseMoveFlag + 1)});
-            }
-
-        });
-
-        container.on('mouseup', function () {
+    container.on('mouseup', () => {
             // unbind current listeners
-            container.on('mousemove', null);
-            container.on('mouseup', null);
-            const messageSource= self.getSource();
-            const messageDestination = self.getDestination();
-            const validDestination = self.isAtValidDestination();
-            self.reset();
-            self.trigger('message-draw-stop');
-            if (validDestination) {
-                mouseUpCallback(messageSource, messageDestination);
-            }
-        });
-    }
+      container.on('mousemove', null);
+      container.on('mouseup', null);
+      const messageSource = self.getSource();
+      const messageDestination = self.getDestination();
+      const validDestination = self.isAtValidDestination();
+      self.reset();
+      self.trigger('message-draw-stop');
+      if (validDestination) {
+        mouseUpCallback(messageSource, messageDestination);
+      }
+    });
+  }
 
-    isAtValidDestination() {
-        return this._targetValidationCallback(this.getDestination());
-    }
+  isAtValidDestination() {
+    return this._targetValidationCallback(this.getDestination());
+  }
 }
 
 export default MessageManager;

@@ -20,44 +20,44 @@ import ASTFactory from '../../ast/ballerina-ast-factory';
 
 class PackageDefinitionDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        let viewState = node.getViewState();
-        const topGutter = 10;
-        const topBarHeight = 25;
-        const importInputHeight = 40;
+  endVisit(node) {
+    const viewState = node.getViewState();
+    const topGutter = 10;
+    const topBarHeight = 25;
+    const importInputHeight = 40;
 
-        let height = 0;
-        const astRoot = node.parent;
+    let height = 0;
+    const astRoot = node.parent;
 
-        if(viewState.importsExpanded) {
-            const imports = astRoot.children.filter(
-                c => {return ASTFactory.isImportDeclaration(c);});
+    if (viewState.importsExpanded) {
+      const imports = astRoot.children.filter(
+                c => ASTFactory.isImportDeclaration(c));
 
-            height += topGutter + topBarHeight + importInputHeight +
+      height += topGutter + topBarHeight + importInputHeight +
                       imports.length * packageDefinition.importDeclaration.itemHeight;
-        }
-
-        if(viewState.globalsExpanded) {
-            const globals = astRoot.children.filter(
-                c => {return ASTFactory.isConstantDefinition(c);});
-
-            height += topGutter + topBarHeight + importInputHeight +
-                      globals.length * packageDefinition.importDeclaration.itemHeight;
-        }
-
-        viewState.bBox.h = height;
-        viewState.bBox.w = 0;
     }
+
+    if (viewState.globalsExpanded) {
+      const globals = astRoot.children.filter(
+                c => ASTFactory.isConstantDefinition(c));
+
+      height += topGutter + topBarHeight + importInputHeight +
+                      globals.length * packageDefinition.importDeclaration.itemHeight;
+    }
+
+    viewState.bBox.h = height;
+    viewState.bBox.w = 0;
+  }
 }
 
 export default PackageDefinitionDimensionCalculatorVisitor;

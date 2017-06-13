@@ -32,192 +32,184 @@ import ImportDeclaration from './import-declaration';
  * @constructor
  */
 class BallerinaASTRoot extends ASTNode {
-    constructor(args) {
-        super("BallerinaASTRoot");
-        this.packageDefinition = _.get(args, 'packageDefinition');
-        const self = this;
-        const factory = self.getFactory();
+  constructor(args) {
+    super('BallerinaASTRoot');
+    this.packageDefinition = _.get(args, 'packageDefinition');
+    const self = this;
+    const factory = self.getFactory();
         // Add new imports on new child added to the canvas.
         // Ignore if already added or if it is a current package
-        const addImport = function (fullPackageName) {
-            if (!self.isExistingPackage(fullPackageName)
-                && !_.isEqual(fullPackageName, "Current Package")) {
-                let importDeclaration = factory.createImportDeclaration();
-                importDeclaration.setPackageName(fullPackageName);
-                importDeclaration.setParent(self);
-                self.addImport(importDeclaration);
-            }
-        };
+    const addImport = function (fullPackageName) {
+      if (!self.isExistingPackage(fullPackageName)
+                && !_.isEqual(fullPackageName, 'Current Package')) {
+        const importDeclaration = factory.createImportDeclaration();
+        importDeclaration.setPackageName(fullPackageName);
+        importDeclaration.setParent(self);
+        self.addImport(importDeclaration);
+      }
+    };
 
-        const addImportsForTopLevel = function (child, options) {
-            if (factory.isAssignmentStatement(child)) {
-                if (child._fullPackageName) {
-                    addImport(child.getFullPackageName(), options);
-                }
-            } else if (factory.isConnectorDeclaration(child)) {
-                if (child._fullPackageName) {
-                    addImport(child.getFullPackageName(), options);
-                }
-            } else if (factory.isServiceDefinition(child)) {
-                const annotations = child.getChildrenOfType(factory.isAnnotation);
-                const resources = child.getChildrenOfType(factory.isResourceDefinition);
-                _.forEach(annotations, annotation => {
-                    addImport(annotation.getFullPackageName(), options);
-                });
-                _.forEach(resources, resource => {
-                    addImportsForTopLevel(resource, options);
-                });
-            } else if (factory.isResourceDefinition(child)) {
-                let annotations = child.getChildrenOfType(factory.isAnnotation);
-                _.forEach(annotations, annotation => {
-                    addImport(annotation.getFullPackageName(), options);
-                });
-            } else if (factory.isActionInvocationExpression(child)) {
-                if (child._fullPackageName) {
-                    addImport(child.getFullPackageName(), options);
-                }
-            } else if (factory.isFunctionInvocationStatement(child)) {
-                const functionInvocationExpression = _.find(child.children, function (child) {
-                    return factory.isFunctionInvocationExpression(child);
-                });
-                if (functionInvocationExpression &&
-                    functionInvocationExpression._fullPackageName) {
-                    addImport(functionInvocationExpression.getFullPackageName(), options);
-                }
-            }
-        };
-        this.on('tree-modified', function (e) {
-            if (e.type === "child-added") {
-                //to add the imports based on the function/action drag and drop to editor
-                addImportsForTopLevel(e.data.child, {doSilently: true});
-            }
-        });
-
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: '',
-            1: ' ',
-            2: '',
-            3: '\n'
+    const addImportsForTopLevel = function (child, options) {
+      if (factory.isAssignmentStatement(child)) {
+        if (child._fullPackageName) {
+          addImport(child.getFullPackageName(), options);
         }
-    }
+      } else if (factory.isConnectorDeclaration(child)) {
+        if (child._fullPackageName) {
+          addImport(child.getFullPackageName(), options);
+        }
+      } else if (factory.isServiceDefinition(child)) {
+        const annotations = child.getChildrenOfType(factory.isAnnotation);
+        const resources = child.getChildrenOfType(factory.isResourceDefinition);
+        _.forEach(annotations, (annotation) => {
+          addImport(annotation.getFullPackageName(), options);
+        });
+        _.forEach(resources, (resource) => {
+          addImportsForTopLevel(resource, options);
+        });
+      } else if (factory.isResourceDefinition(child)) {
+        const annotations = child.getChildrenOfType(factory.isAnnotation);
+        _.forEach(annotations, (annotation) => {
+          addImport(annotation.getFullPackageName(), options);
+        });
+      } else if (factory.isActionInvocationExpression(child)) {
+        if (child._fullPackageName) {
+          addImport(child.getFullPackageName(), options);
+        }
+      } else if (factory.isFunctionInvocationStatement(child)) {
+        const functionInvocationExpression = _.find(child.children, child => factory.isFunctionInvocationExpression(child));
+        if (functionInvocationExpression &&
+                    functionInvocationExpression._fullPackageName) {
+          addImport(functionInvocationExpression.getFullPackageName(), options);
+        }
+      }
+    };
+    this.on('tree-modified', (e) => {
+      if (e.type === 'child-added') {
+                // to add the imports based on the function/action drag and drop to editor
+        addImportsForTopLevel(e.data.child, { doSilently: true });
+      }
+    });
+
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: ' ',
+      2: '',
+      3: '\n',
+    };
+  }
 
     /**
      * Setter function for PackageDefinition
      * @param packageDefinition
      */
-    setPackageDefinition(packageDefinition, options) {
-        if(!_.isNil(packageDefinition)){
-            packageDefinition.setParent(this, options);
-            this.setAttribute('packageDefinition', packageDefinition, options);
-        }
+  setPackageDefinition(packageDefinition, options) {
+    if (!_.isNil(packageDefinition)) {
+      packageDefinition.setParent(this, options);
+      this.setAttribute('packageDefinition', packageDefinition, options);
     }
+  }
 
     /**
      * Getter function for PackageDefinition
      * @return {*}
      */
-    getPackageDefinition() {
-        return this.packageDefinition;
-    }
+  getPackageDefinition() {
+    return this.packageDefinition;
+  }
 
     /**
      * Getter function for import declarations.
      * @return {*}
      */
-    getImportDeclarations() {
-        var importDeclarations = [];
-        var ballerinaASTFactory = this.getFactory();
-        _.forEach(this.getChildren(), function(child){
-            if (ballerinaASTFactory.isImportDeclaration(child)) {
-                importDeclarations.push(child);
-            }
-        });
-        return importDeclarations;
-    }
+  getImportDeclarations() {
+    const importDeclarations = [];
+    const ballerinaASTFactory = this.getFactory();
+    _.forEach(this.getChildren(), (child) => {
+      if (ballerinaASTFactory.isImportDeclaration(child)) {
+        importDeclarations.push(child);
+      }
+    });
+    return importDeclarations;
+  }
 
     /**
      * This is the root element of ballerina ast - so cannot be a child of anyone.
      * @param node
      * @return {boolean}
      */
-    canBeAChildOf(node) {
-        return false;
-    }
+  canBeAChildOf(node) {
+    return false;
+  }
 
     /**
      * Deletes an import with given package name.
      */
-    deleteImport(packageName, options) {
-        var ballerinaASTFactory = this.getFactory();
-        var importDeclaration = _.find(this.getChildren(), function (child) {
-            return ballerinaASTFactory.isImportDeclaration(child) && child.getPackageName() == packageName;
-        });
+  deleteImport(packageName, options) {
+    const ballerinaASTFactory = this.getFactory();
+    const importDeclaration = _.find(this.getChildren(), child => ballerinaASTFactory.isImportDeclaration(child) && child.getPackageName() == packageName);
 
-        var modifiedEvent = {
-            origin: this,
-            type: 'child-removed',
-            title: 'remove import',
-            data: {
-                child: importDeclaration,
-                index: this.getIndexOfChild(importDeclaration)
-            }
-        };
+    const modifiedEvent = {
+      origin: this,
+      type: 'child-removed',
+      title: 'remove import',
+      data: {
+        child: importDeclaration,
+        index: this.getIndexOfChild(importDeclaration),
+      },
+    };
 
-        _.remove(this.getChildren(), function (child) {
-            return ballerinaASTFactory.isImportDeclaration(child) && child.getPackageName() == packageName;
-        });
+    _.remove(this.getChildren(), child => ballerinaASTFactory.isImportDeclaration(child) && child.getPackageName() == packageName);
 
         /**
          * @event ASTNode#tree-modified
          */
-        if (options === undefined || !options.doSilently) {
-            this.trigger('tree-modified', modifiedEvent);
-        }
+    if (options === undefined || !options.doSilently) {
+      this.trigger('tree-modified', modifiedEvent);
     }
+  }
 
     /**
      * Adds new import declaration.
      * @param {ImportDeclaration} importDeclaration - New import declaration.
      */
-    addImport(importDeclaration, options) {
-        if (this.isExistingPackage(importDeclaration.getPackageName())) {
-            var errorString = "Package \"" + importDeclaration.getPackageName() + "\" is already imported.";
-            log.error(errorString);
-            throw errorString;
-        }
+  addImport(importDeclaration, options) {
+    if (this.isExistingPackage(importDeclaration.getPackageName())) {
+      const errorString = `Package "${importDeclaration.getPackageName()}" is already imported.`;
+      log.error(errorString);
+      throw errorString;
+    }
 
-        var ballerinaASTFactory = this.getFactory();
-        var index = _.findLastIndex(this.getChildren(), function(child){
-            return ballerinaASTFactory.isImportDeclaration(child);
-        });
+    const ballerinaASTFactory = this.getFactory();
+    let index = _.findLastIndex(this.getChildren(), child => ballerinaASTFactory.isImportDeclaration(child));
 
         // If there are no imports index is -1. Then we need to add the first import after the package
         // definition which is the first child of the ast root
-        if (index === -1) {
-            index = 0;
-        }
-        this.getChildren().splice(index + 1, 0, importDeclaration);
+    if (index === -1) {
+      index = 0;
+    }
+    this.getChildren().splice(index + 1, 0, importDeclaration);
 
-        var modifiedEvent = {
-            origin: this,
-            type: 'child-added',
-            title: 'add import',
-            data: {
-                child: importDeclaration,
-                index: index + 1
-            }
-        };
+    const modifiedEvent = {
+      origin: this,
+      type: 'child-added',
+      title: 'add import',
+      data: {
+        child: importDeclaration,
+        index: index + 1,
+      },
+    };
 
         /**
          * @event ASTNode#tree-modified
          */
-        this.trigger('import-new-package', importDeclaration.getPackageName());
-        if (options === undefined || !options.doSilently) {
-            this.trigger('tree-modified', modifiedEvent);
-        }
+    this.trigger('import-new-package', importDeclaration.getPackageName());
+    if (options === undefined || !options.doSilently) {
+      this.trigger('tree-modified', modifiedEvent);
     }
+  }
 
-    //// Start of constant definition functions
+    // // Start of constant definition functions
 
     /**
      * Adds a new constance definition.
@@ -225,160 +217,151 @@ class BallerinaASTRoot extends ASTNode {
      * @param {string} identifier - The identifier.
      * @param {string} value - The value of the constant.
      */
-    addConstantDefinition(bType, identifier, value) {
-
+  addConstantDefinition(bType, identifier, value) {
         // Check if already constant declaration exists with same identifier.
-        var identifierAlreadyExists = _.findIndex(this.getConstantDefinitions(), function (constantDefinition) {
-            return constantDefinition.getIdentifier() === identifier;
-        }) !== -1;
+    const identifierAlreadyExists = _.findIndex(this.getConstantDefinitions(), constantDefinition => constantDefinition.getIdentifier() === identifier) !== -1;
 
         // If constant declaration with the same identifier exists, then throw an error. Else create the new constant
         // declaration.
-        if (identifierAlreadyExists) {
-            var errorString = "A constant with identifier '" + identifier + "' already exists.";
-            log.error(errorString);
-            throw errorString;
-        } else {
+    if (identifierAlreadyExists) {
+      const errorString = `A constant with identifier '${identifier}' already exists.`;
+      log.error(errorString);
+      throw errorString;
+    } else {
             // Creating new constant definition.
-            var newConstantDefinition = this.getFactory().createConstantDefinition();
-            newConstantDefinition.setBType(bType);
-            newConstantDefinition.setIdentifier(identifier);
-            newConstantDefinition.setValue(value);
+      const newConstantDefinition = this.getFactory().createConstantDefinition();
+      newConstantDefinition.setBType(bType);
+      newConstantDefinition.setIdentifier(identifier);
+      newConstantDefinition.setValue(value);
 
-            var self = this;
+      const self = this;
 
             // Get the index of the last constant declaration.
-            var index = _.findLastIndex(this.getChildren(), function (child) {
-                return self.getFactory().isConstantDefinition(child);
-            });
+      let index = _.findLastIndex(this.getChildren(), child => self.getFactory().isConstantDefinition(child));
 
             // If index is still -1, then get the index of the last import.
-            if (index == -1) {
-                index = _.findLastIndex(this.getChildren(), function (child) {
-                    return self.getFactory().isImportDeclaration(child);
-                });
-            }
+      if (index == -1) {
+        index = _.findLastIndex(this.getChildren(), child => self.getFactory().isImportDeclaration(child));
+      }
 
             // If index is still -1, then consider the package definition.
-            if (_.isEqual(index, -1) && !_.isNil(this.getPackageDefinition())) {
-                index = 0;
-            }
+      if (_.isEqual(index, -1) && !_.isNil(this.getPackageDefinition())) {
+        index = 0;
+      }
 
-            this.addChild(newConstantDefinition, index + 1);
-        }
+      this.addChild(newConstantDefinition, index + 1);
     }
+  }
 
     /**
      * Removes a constant definition.
      * @param {string} modelID - The ID of the constant definition.
      */
-    removeConstantDefinition(modelID) {
-        var self = this;
+  removeConstantDefinition(modelID) {
+    const self = this;
         // Deleting the variable from the children.
-        var resourceParameter = _.find(this.getChildren(), function (child) {
-            return self.getFactory().isConstantDefinition(child) && child.id === modelID;
-        });
+    const resourceParameter = _.find(this.getChildren(), child => self.getFactory().isConstantDefinition(child) && child.id === modelID);
 
-        this.removeChild(resourceParameter);
-    }
+    this.removeChild(resourceParameter);
+  }
 
     /**
      * Gets all the constant definitions.
      * @return {ConstantDefinition[]} - The constant definitions.
      */
-    getConstantDefinitions() {
-        var constantDeclarations = [];
-        var self = this;
+  getConstantDefinitions() {
+    const constantDeclarations = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isConstantDefinition(child)) {
-                constantDeclarations.push(child);
-            }
-        });
-        return constantDeclarations;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isConstantDefinition(child)) {
+        constantDeclarations.push(child);
+      }
+    });
+    return constantDeclarations;
+  }
 
-    //// End of constant definition functions
+    // // End of constant definition functions
 
-    //// Start of annotation definitions functions
+    // // Start of annotation definitions functions
 
-    getAnnotationDefinitions() {
-        var annotationDefinition = [];
-        var self = this;
+  getAnnotationDefinitions() {
+    const annotationDefinition = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isAnnotationDefinition(child)) {
-                annotationDefinition.push(child);
-            }
-        });
-        return annotationDefinition;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isAnnotationDefinition(child)) {
+        annotationDefinition.push(child);
+      }
+    });
+    return annotationDefinition;
+  }
 
-    //// End of annotation definitions functions
+    // // End of annotation definitions functions
 
-    //// Start of service definitions functions
+    // // Start of service definitions functions
 
-    getServiceDefinitions() {
-        var serviceDefinition = [];
-        var self = this;
+  getServiceDefinitions() {
+    const serviceDefinition = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isServiceDefinition(child)) {
-                serviceDefinition.push(child);
-            }
-        });
-        return serviceDefinition;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isServiceDefinition(child)) {
+        serviceDefinition.push(child);
+      }
+    });
+    return serviceDefinition;
+  }
 
-    //// End of service definitions functions
+    // // End of service definitions functions
 
-    //// Start of connector definitions functions
+    // // Start of connector definitions functions
 
-    getConnectorDefinitions() {
-        var connectorDefinitions = [];
-        var self = this;
+  getConnectorDefinitions() {
+    const connectorDefinitions = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isConnectorDefinition(child)) {
-                connectorDefinitions.push(child);
-            }
-        });
-        return connectorDefinitions;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isConnectorDefinition(child)) {
+        connectorDefinitions.push(child);
+      }
+    });
+    return connectorDefinitions;
+  }
 
-    //// End of connector definitions functions
+    // // End of connector definitions functions
 
-    //// Start of function definitions functions
+    // // Start of function definitions functions
 
-    getFunctionDefinitions() {
-        var functionDefinitions = [];
-        var self = this;
+  getFunctionDefinitions() {
+    const functionDefinitions = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isFunctionDefinition(child)) {
-                functionDefinitions.push(child);
-            }
-        });
-        return functionDefinitions;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isFunctionDefinition(child)) {
+        functionDefinitions.push(child);
+      }
+    });
+    return functionDefinitions;
+  }
 
-    //// End of function definitions functions
+    // // End of function definitions functions
 
-    //// Start of struct definitions functions
+    // // Start of struct definitions functions
 
-    getStructDefinitions() {
-        var structDefinitions = [];
-        var self = this;
+  getStructDefinitions() {
+    const structDefinitions = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isStructDefinition(child)) {
-                structDefinitions.push(child);
-            }
-        });
-        return structDefinitions;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isStructDefinition(child)) {
+        structDefinitions.push(child);
+      }
+    });
+    return structDefinitions;
+  }
 
-    //// End of struct definitions functions
+    // // End of struct definitions functions
 
     /**
      * Validates possible immediate child types.
@@ -386,36 +369,32 @@ class BallerinaASTRoot extends ASTNode {
      * @param node
      * @return {boolean}
      */
-    canBeParentOf(node) {
-        var BallerinaASTFactory = this.getFactory();
+  canBeParentOf(node) {
+    const BallerinaASTFactory = this.getFactory();
 
-        var existingMainFunction = _.find(this.getFunctionDefinitions(), function(functionDef){
-            return functionDef.isMainFunction();
-        });
+    const existingMainFunction = _.find(this.getFunctionDefinitions(), functionDef => functionDef.isMainFunction());
 
-        if (!_.isNil(existingMainFunction) && BallerinaASTFactory.isFunctionDefinition(node) && node.isMainFunction()) {
-            return false;
-        }
+    if (!_.isNil(existingMainFunction) && BallerinaASTFactory.isFunctionDefinition(node) && node.isMainFunction()) {
+      return false;
+    }
 
-        return BallerinaASTFactory.isServiceDefinition(node)
+    return BallerinaASTFactory.isServiceDefinition(node)
             || BallerinaASTFactory.isFunctionDefinition(node)
             || BallerinaASTFactory.isConnectorDefinition(node)
             || BallerinaASTFactory.isTypeDefinition(node)
             || BallerinaASTFactory.isConnectorDefinition(node)
             || BallerinaASTFactory.isStructDefinition(node)
             || BallerinaASTFactory.isAnnotationDefinition(node);
-    }
+  }
 
     /**
      * Check whether package name is existing one or not.
      * @param {String} packageName
      * @return {Boolean} if exist returns true if doesn't return false
      * */
-    isExistingPackage(packageName) {
-        return _.find(this.getImportDeclarations(), function (child) {
-            return _.isEqual(child.getPackageName(), packageName);
-        }) ? true : false;
-    }
+  isExistingPackage(packageName) {
+    return !!_.find(this.getImportDeclarations(), child => _.isEqual(child.getPackageName(), packageName));
+  }
 }
 
 export default BallerinaASTRoot;

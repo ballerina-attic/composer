@@ -21,23 +21,23 @@ import * as Utils from './utils';
 
 class ElseStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ElseStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ElseStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit ElseStatementPositionCalcVisitor');
-        Utils.getCompoundStatementChildPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit ElseStatementPositionCalcVisitor');
+    Utils.getCompoundStatementChildPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit ElseStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit ElseStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ElseStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit ElseStatementPositionCalcVisitor');
+  }
 }
 
 export default ElseStatementPositionCalcVisitor;

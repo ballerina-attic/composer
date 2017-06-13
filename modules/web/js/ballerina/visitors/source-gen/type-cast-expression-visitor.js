@@ -22,34 +22,34 @@ import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen
 import ExpressionVisitorFactory from './expression-visitor-factory';
 
 class TypeCastExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitTypeCastExpression(expression) {
-        return true;
-    }
+  canVisitTypeCastExpression(expression) {
+    return true;
+  }
 
-    beginVisitTypeCastExpression(expression) {
-        this.appendSource('(' + expression.getName() + ')');
-        log.debug('Begin Visit Type Cast Expression');
-    }
+  beginVisitTypeCastExpression(expression) {
+    this.appendSource(`(${expression.getName()})`);
+    log.debug('Begin Visit Type Cast Expression');
+  }
 
-    visitTypeCastExpression(expression) {
-        log.debug('Visit Ref Type Type Cast Expression');
-    }
+  visitTypeCastExpression(expression) {
+    log.debug('Visit Ref Type Type Cast Expression');
+  }
 
-    endVisitTypeCastExpression(expression) {
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Type Cast Expression');
-    }
+  endVisitTypeCastExpression(expression) {
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Type Cast Expression');
+  }
 
-    visitExpression(expression) {
-        var expressionVisitorFactory = new ExpressionVisitorFactory();
-        var expressionVisitor = expressionVisitorFactory.getExpressionView({model:expression, parent:this});
-        expression.accept(expressionVisitor);
-        log.debug('Visit Expression');
-    }
+  visitExpression(expression) {
+    const expressionVisitorFactory = new ExpressionVisitorFactory();
+    const expressionVisitor = expressionVisitorFactory.getExpressionView({ model: expression, parent: this });
+    expression.accept(expressionVisitor);
+    log.debug('Visit Expression');
+  }
 }
 
 export default TypeCastExpressionVisitor;

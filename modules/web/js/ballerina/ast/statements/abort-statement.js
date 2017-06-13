@@ -18,41 +18,41 @@
 import Statement from './statement';
 
 class AbortStatement extends Statement {
-    constructor() {
-        super();
-        this.type = "AbortStatement";
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: '',
-            1: '',
-            2: '\n'
-        }
-    }
+  constructor() {
+    super();
+    this.type = 'AbortStatement';
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: '\n',
+    };
+  }
 
     /**
      * Define what type of nodes that this node can be added as a child.
      * @param {ASTNode} node - Parent node that this node becoming a child of.
      * @return {boolean} true|false.
      * */
-    canBeAChildOf(node) {
-        return this.getFactory().isTransactionStatement(node);
-    }
+  canBeAChildOf(node) {
+    return this.getFactory().isTransactionStatement(node);
+  }
 
     /**
      * initialize the node from the node json object.
      * @param {object} jsonNode - json model for the node.
      * */
-    initFromJson(jsonNode) {
+  initFromJson(jsonNode) {
         // No Children Available to Iterate Through.
-    }
+  }
 
     /**
      * Get the statement string.
      * @return {string} statement string
      * @override
      * */
-    getStatementString() {
-        return "abort";
-    }
+  getStatementString() {
+    return 'abort';
+  }
 }
 
 export default AbortStatement;

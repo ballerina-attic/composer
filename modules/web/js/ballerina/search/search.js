@@ -20,74 +20,74 @@ import $ from 'jquery';
 import Backbone from 'backbone';
 import EventChannel from 'event_channel';
 
-var instance = null;
+const instance = null;
 
 
 class Search extends EventChannel {
-    constructor() {
-        super();
-        _.extend(this, Backbone.Events);
-        var self = this;        
-        this.el = $("#modalSearch");
-        this.search_box = $("#modal-search-field");
-        this.list = $(".search-results > ul");
+  constructor() {
+    super();
+    _.extend(this, Backbone.Events);
+    const self = this;
+    this.el = $('#modalSearch');
+    this.search_box = $('#modal-search-field');
+    this.list = $('.search-results > ul');
 
-        this.template = _.template('<li class="list-group-item" data-key="<%= key %>"><%= item %></li>');
+    this.template = _.template('<li class="list-group-item" data-key="<%= key %>"><%= item %></li>');
 
-        //add events
-        this.el.on('shown.bs.modal', function () {
-            self.search_box.focus();
-        });
+        // add events
+    this.el.on('shown.bs.modal', () => {
+      self.search_box.focus();
+    });
 
-        this.search_box.on("keydown keyup paste", _.bindKey(this, 'search'));
-        this.list.on("click", 'li', _.bindKey(this, 'select'));
-    }
+    this.search_box.on('keydown keyup paste', _.bindKey(this, 'search'));
+    this.list.on('click', 'li', _.bindKey(this, 'select'));
+  }
 
-    show() {
-        this.search_box.val('');
-        this.result = this.adapter.search("");
-        this.render(this.result);            
-        this.el.modal();      
-    }
+  show() {
+    this.search_box.val('');
+    this.result = this.adapter.search('');
+    this.render(this.result);
+    this.el.modal();
+  }
 
-    hide() {
-        this.el.modal('hide');
-    }
+  hide() {
+    this.el.modal('hide');
+  }
 
-    search(e) {
-        var text = this.search_box.val();
-        this.result = this.adapter.search(text);
-        this.render(this.result);
-    }
+  search(e) {
+    const text = this.search_box.val();
+    this.result = this.adapter.search(text);
+    this.render(this.result);
+  }
 
-    setAdapter(a) {
-        this.adapter = a;
-    }
+  setAdapter(a) {
+    this.adapter = a;
+  }
 
-    render(result) {
-        var html = "";
-        var adapter = this.adapter;
-        var self = this;
-        _.forEach(this.result , function(value, key){
-            var item = adapter.render(value);
-            html = html + self.template({ 'item':item, 'key':key });
-        });
-        this.list.html(html);
-    }
+  render(result) {
+    let html = '';
+    const adapter = this.adapter;
+    const self = this;
+    _.forEach(this.result, (value, key) => {
+      const item = adapter.render(value);
+      html += self.template({ item, key });
+    });
+    this.list.html(html);
+  }
 
-    select(e) {
-        var key = $(e.target).attr('data-key');
-        this.trigger("select", this.result[key]);
-        this.hide();
-    }
+  select(e) {
+    const key = $(e.target).attr('data-key');
+    this.trigger('select', this.result[key]);
+    this.hide();
+  }
 }
 
 export default function getSearch(adapter) {
-    if(adapter == undefined){
-        throw "Undefined adapter passed for search box.";
-    }
-    var i = (instance || new Search());
-    i.setAdapter(adapter);        
-    return i;
+  if (adapter == undefined) {
+    throw 'Undefined adapter passed for search box.';
+  }
+  const i = (instance || new Search());
+  i.setAdapter(adapter);
+  return i;
 }
 

@@ -19,23 +19,23 @@ import log from 'log';
 import * as Utils from './utils';
 
 class CommittedStatementPositionCalcVisitor {
-    canVisit(node) {
-        log.debug('can visit CommittedStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit CommittedStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit CommittedStatementPositionCalcVisitor');
-        Utils.getCompoundStatementChildPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit CommittedStatementPositionCalcVisitor');
+    Utils.getCompoundStatementChildPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit CommittedStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit CommittedStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end Visit CommittedStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end Visit CommittedStatementPositionCalcVisitor');
+  }
 }
 
 export default CommittedStatementPositionCalcVisitor;

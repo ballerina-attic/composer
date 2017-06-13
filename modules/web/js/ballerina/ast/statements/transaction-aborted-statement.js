@@ -22,61 +22,61 @@ import FragmentUtils from './../../utils/fragment-utils';
 import EnableDefaultWSVisitor from './../../visitors/source-gen/enable-default-ws-visitor';
 
 class TransactionAbortedStatement extends Statement {
-    constructor(args) {
-        super();
-        this.type = "TransactionAbortedStatement";
-    }
+  constructor(args) {
+    super();
+    this.type = 'TransactionAbortedStatement';
+  }
 
     /**
      * Get Aborted Statement associated with transaction.
      * @return {AbortedStatement}
      * */
-    getAbortedStatement() {
-        return this.children.find(c => (BallerinaASTFactory.isAbortedStatement(c)));
-    }
+  getAbortedStatement() {
+    return this.children.find(c => (BallerinaASTFactory.isAbortedStatement(c)));
+  }
 
     /**
      * Get Committed Statement associated with transaction.
      * @return {CommittedStatement}
      * */
-    getCommittedStatement() {
-        return this.children.find(c => (BallerinaASTFactory.isCommittedStatement(c)));
-    }
+  getCommittedStatement() {
+    return this.children.find(c => (BallerinaASTFactory.isCommittedStatement(c)));
+  }
 
     /**
      * Create Aborted Statement.
      * @param {object} args
      * @return {AbortedStatement}
      * */
-    createAbortedStatement(args) {
-        let abortedStatement = BallerinaASTFactory.createAbortedStatement(args);
-        this.addChild(abortedStatement);
-        return abortedStatement;
-    }
+  createAbortedStatement(args) {
+    const abortedStatement = BallerinaASTFactory.createAbortedStatement(args);
+    this.addChild(abortedStatement);
+    return abortedStatement;
+  }
 
     /**
      * Create Committed Statement.
      * @param {object} args
      * @return {CommittedStatement}
      * */
-    createCommittedStatement(args) {
-        let committedStatement = BallerinaASTFactory.createCommittedStatement(args);
-        this.addChild(committedStatement);
-        return committedStatement;
-    }
+  createCommittedStatement(args) {
+    const committedStatement = BallerinaASTFactory.createCommittedStatement(args);
+    this.addChild(committedStatement);
+    return committedStatement;
+  }
 
     /**
      * Initialize the node from the node related model json.
      * @param {object} jsonNode - json object for the node.
      * */
-    initFromJson(jsonNode) {
-        let self = this;
-        _.each(jsonNode.children, function (childNode) {
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 
     /**
      * Set the statement from string
@@ -84,33 +84,31 @@ class TransactionAbortedStatement extends Statement {
      * @param {function} callback
      * @override
      */
-    setStatementFromString(statementString, callback) {
-        const fragment = FragmentUtils.createStatementFragment(statementString);
-        const parsedJson = FragmentUtils.parseFragment(fragment);
+  setStatementFromString(statementString, callback) {
+    const fragment = FragmentUtils.createStatementFragment(statementString);
+    const parsedJson = FragmentUtils.parseFragment(fragment);
 
-        if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+    if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
             && _.isEqual(parsedJson.type, 'transaction_aborted_statement')) {
-            let nodeToFireEvent = this;
-            this.initFromJson(parsedJson);
-            nodeToFireEvent.accept(new EnableDefaultWSVisitor());
+      const nodeToFireEvent = this;
+      this.initFromJson(parsedJson);
+      nodeToFireEvent.accept(new EnableDefaultWSVisitor());
             // Manually firing the tree-modified event here.
             // TODO: need a proper fix to avoid breaking the undo-redo
-            this.trigger('tree-modified', {
-                origin: nodeToFireEvent,
-                type: 'custom',
-                title: 'TransactionAborted Statement Custom Tree modified',
-                context: nodeToFireEvent,
-            });
+      this.trigger('tree-modified', {
+        origin: nodeToFireEvent,
+        type: 'custom',
+        title: 'TransactionAborted Statement Custom Tree modified',
+        context: nodeToFireEvent,
+      });
 
-            if (_.isFunction(callback)) {
-                callback({isValid: true});
-            }
-        } else {
-            if (_.isFunction(callback)) {
-                callback({isValid: false, response: parsedJson});
-            }
-        }
+      if (_.isFunction(callback)) {
+        callback({ isValid: true });
+      }
+    } else if (_.isFunction(callback)) {
+      callback({ isValid: false, response: parsedJson });
     }
+  }
 }
 
 export default TransactionAbortedStatement;

@@ -21,23 +21,23 @@ import * as PositioningUtils from './utils';
 
 class BreakStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit BreakStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit BreakStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit BreakStatementPositionCalcVisitor');
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit BreakStatementPositionCalcVisitor');
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit BreakStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit BreakStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit BreakStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit BreakStatementPositionCalcVisitor');
+  }
 }
 
 export default BreakStatementPositionCalcVisitor;

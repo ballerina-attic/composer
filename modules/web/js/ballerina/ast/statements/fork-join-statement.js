@@ -25,36 +25,35 @@ import Statement from './statement';
  * @constructor
  */
 class ForkJoinStatement extends Statement {
-    constructor(args) {
-        super('ForkJoinStatement');
-    }
+  constructor(args) {
+    super('ForkJoinStatement');
+  }
 
     /**
      * return {boolean}
      */
-    hasTimeout() {
-        if (this.children.length === 0) {
-            return false;
-        } else {
-            const child = this.children[this.children.length - 1];
-            const factory = this.getFactory();
-            return factory.isTimeoutStatement(child);
-        }
+  hasTimeout() {
+    if (this.children.length === 0) {
+      return false;
     }
+    const child = this.children[this.children.length - 1];
+    const factory = this.getFactory();
+    return factory.isTimeoutStatement(child);
+  }
 
-    getWorkerDeclarations() {
-        const workerDeclarations = [];
-        const self = this;
+  getWorkerDeclarations() {
+    const workerDeclarations = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isWorkerDeclaration(child)) {
-                workerDeclarations.push(child);
-            }
-        });
-        return _.sortBy(workerDeclarations, [function (workerDeclaration) {
-            return workerDeclaration.getWorkerName();
-        }]);
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isWorkerDeclaration(child)) {
+        workerDeclarations.push(child);
+      }
+    });
+    return _.sortBy(workerDeclarations, [function (workerDeclaration) {
+      return workerDeclaration.getWorkerName();
+    }]);
+  }
 
     /**
      * Validates possible immediate child types.
@@ -62,39 +61,39 @@ class ForkJoinStatement extends Statement {
      * @param node
      * @return {boolean}
      */
-    canBeParentOf(node) {
-        return this.getFactory().isWorkerDeclaration(node);
-    }
+  canBeParentOf(node) {
+    return this.getFactory().isWorkerDeclaration(node);
+  }
 
-    initFromJson(jsonNode) {
-        let self = this;
-        _.each(jsonNode.children, function (childNode) {
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 
-    addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) {
-        if (_.isUndefined(index)) {
-            const factory = this.getFactory();
-            let index = this.children.length;
-            if (factory.isWorkerDeclaration(child)) {
-                while (factory.isJoinStatement(this.children[index - 1]) || factory.isTimeoutStatement(this.children[index - 1])) {
-                    index--;
-                }
-            } else if (factory.isJoinStatement(child)) {
-                while (factory.isTimeoutStatement(this.children[index - 1])) {
-                    index--;
-                }
-            } else if (!factory.isTimeoutStatement(child)) {
-                throw "Illegal child type in join";
-            }
-            super.addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
-        } else {
-            super.addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
+  addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) {
+    if (_.isUndefined(index)) {
+      const factory = this.getFactory();
+      let index = this.children.length;
+      if (factory.isWorkerDeclaration(child)) {
+        while (factory.isJoinStatement(this.children[index - 1]) || factory.isTimeoutStatement(this.children[index - 1])) {
+          index--;
         }
+      } else if (factory.isJoinStatement(child)) {
+        while (factory.isTimeoutStatement(this.children[index - 1])) {
+          index--;
+        }
+      } else if (!factory.isTimeoutStatement(child)) {
+        throw 'Illegal child type in join';
+      }
+      super.addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
+    } else {
+      super.addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
     }
+  }
 }
 
 export default ForkJoinStatement;

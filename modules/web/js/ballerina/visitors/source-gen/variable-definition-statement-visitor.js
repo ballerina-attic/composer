@@ -19,29 +19,29 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import VariableDefinitionStatement from '../../ast/statements/variable-definition-statement';
 
 class VariableDefinitionStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitVariableDefinitionStatement(variableDefinitionStatement) {
-        return variableDefinitionStatement instanceof VariableDefinitionStatement;
-    }
+  canVisitVariableDefinitionStatement(variableDefinitionStatement) {
+    return variableDefinitionStatement instanceof VariableDefinitionStatement;
+  }
 
-    beginVisitVariableDefinitionStatement(variableDefinitionStatement) {
-        if (variableDefinitionStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        var constructedSource = variableDefinitionStatement.getStatementString();
-        this.appendSource(constructedSource);
+  beginVisitVariableDefinitionStatement(variableDefinitionStatement) {
+    if (variableDefinitionStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    const constructedSource = variableDefinitionStatement.getStatementString();
+    this.appendSource(constructedSource);
+  }
 
-    endVisitVariableDefinitionStatement(variableDefinitionStatement) {
-        this.appendSource(';' + variableDefinitionStatement.getWSRegion(4));
-        this.appendSource((variableDefinitionStatement.whiteSpace.useDefault)
+  endVisitVariableDefinitionStatement(variableDefinitionStatement) {
+    this.appendSource(`;${variableDefinitionStatement.getWSRegion(4)}`);
+    this.appendSource((variableDefinitionStatement.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default VariableDefinitionStatementVisitor;

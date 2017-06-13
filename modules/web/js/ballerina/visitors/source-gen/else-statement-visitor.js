@@ -21,41 +21,41 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class ElseStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitElseStatement(elseStatement) {
-        return true;
-    }
+  canVisitElseStatement(elseStatement) {
+    return true;
+  }
 
-    beginVisitElseStatement(elseStatement) {
-        this.node = elseStatement;
+  beginVisitElseStatement(elseStatement) {
+    this.node = elseStatement;
         /**
         * set the configuration start for the if statement definition language construct
         * If we need to add additional parameters which are dynamically added to the configuration start
         * that particular source generation has to be constructed here
         */
-        this.appendSource('else' + elseStatement.getWSRegion(1) + '{' + elseStatement.getWSRegion(2));
-        this.appendSource((elseStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
-        this.indent();
-        log.debug('Begin visit Else Statement Definition');
-    }
+    this.appendSource(`else${elseStatement.getWSRegion(1)}{${elseStatement.getWSRegion(2)}`);
+    this.appendSource((elseStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
+    this.indent();
+    log.debug('Begin visit Else Statement Definition');
+  }
 
-    visitStatement(statement) {
-        if(!_.isEqual(this.node, statement)) {
-            var statementVisitorFactory = new StatementVisitorFactory();
-            var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitElseStatement(elseStatement) {
-        this.outdent();
-        this.appendSource('}' + elseStatement.getWSRegion(3));
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Else Statement Definition');
-    }
+  endVisitElseStatement(elseStatement) {
+    this.outdent();
+    this.appendSource(`}${elseStatement.getWSRegion(3)}`);
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Else Statement Definition');
+  }
 }
 
 export default ElseStatementVisitor;

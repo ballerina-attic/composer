@@ -27,27 +27,27 @@ import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
  * @constructor
  */
 class AbstractExpressionSourceGenVisitor extends ExpressionVisitor {
-    constructor(parent) {
-        super();
-        this._generatedSource = '';
-        this.parent = parent;
-    }
+  constructor(parent) {
+    super();
+    this._generatedSource = '';
+    this.parent = parent;
+  }
 
-    getGeneratedSource() {
-        return this._generatedSource;
-    }
+  getGeneratedSource() {
+    return this._generatedSource;
+  }
 
-    setGeneratedSource(generatedSource) {
-        this._generatedSource = generatedSource;
-    }
+  setGeneratedSource(generatedSource) {
+    this._generatedSource = generatedSource;
+  }
 
-    appendSource(source) {
-        this._generatedSource += source;
-    }
+  appendSource(source) {
+    this._generatedSource += source;
+  }
 
-    getParent() {
-        return this.parent;
-    }
+  getParent() {
+    return this.parent;
+  }
 }
 
 AbstractExpressionSourceGenVisitor.prototype.constructor = AbstractSourceGenVisitor;

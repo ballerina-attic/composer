@@ -25,57 +25,57 @@ import Statement from './statement';
  * @constructor
  */
 class ReplyStatement extends Statement {
-    constructor(args) {
-        super();
-        this._message = _.get(args, 'message') || '';
-        this.type = "ReplyStatement";
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: ' ',
-            2: '\n'
-        };
-    }
+  constructor(args) {
+    super();
+    this._message = _.get(args, 'message') || '';
+    this.type = 'ReplyStatement';
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: ' ',
+      2: '\n',
+    };
+  }
 
-    setReplyMessage(message, options) {
-        if (!_.isNil(message)) {
-            this.setAttribute('_message', message, options);
-        } else {
-            log.error("Cannot set undefined to the reply statement.");
-        }
+  setReplyMessage(message, options) {
+    if (!_.isNil(message)) {
+      this.setAttribute('_message', message, options);
+    } else {
+      log.error('Cannot set undefined to the reply statement.');
     }
+  }
 
-    getReplyMessage() {
-        return this._message;
-    }
+  getReplyMessage() {
+    return this._message;
+  }
 
-    canBeAChildOf(node) {
-        return this.getFactory().isResourceDefinition(node)
+  canBeAChildOf(node) {
+    return this.getFactory().isResourceDefinition(node)
                 || this.getFactory().isWorkerDeclaration(node)
                 || this.getFactory().isStatement(node);
-    }
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        let {expression} = jsonNode;
-        const child = jsonNode.children[0] || {};
-        if (child.is_identifier_literal) {
-            expression = `|${jsonNode.expression}|`;
-        }
-        this.setReplyMessage(expression, {doSilently: true});
+  initFromJson(jsonNode) {
+    let { expression } = jsonNode;
+    const child = jsonNode.children[0] || {};
+    if (child.is_identifier_literal) {
+      expression = `|${jsonNode.expression}|`;
     }
+    this.setReplyMessage(expression, { doSilently: true });
+  }
 
-    getReplyExpression() {
-        return `reply ${this.getReplyMessage()}`;
-    }
+  getReplyExpression() {
+    return `reply ${this.getReplyMessage()}`;
+  }
 
-    messageDrawTargetAllowed(target) {
-        return this.getFactory().isResourceDefinition(target)
+  messageDrawTargetAllowed(target) {
+    return this.getFactory().isResourceDefinition(target)
             || this.getFactory().isConnectorAction(target)
             || this.getFactory().isFunctionDefinition(target);
-    }
+  }
 }
 
 export default ReplyStatement;

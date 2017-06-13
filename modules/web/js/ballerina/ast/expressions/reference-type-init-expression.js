@@ -25,44 +25,44 @@ import FragmentUtils from './../../utils/fragment-utils';
  * @constructor
  */
 class ReferenceTypeInitExpression extends Expression {
-    constructor(args) {
-        super('ReferenceTypeInitExpression');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: '',
-            2: ''
-        };
-    }
+  constructor(args) {
+    super('ReferenceTypeInitExpression');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: '',
+    };
+  }
 
     /**
      * initialize ReferenceTypeInitExpression from json object
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        this.getChildren().length = 0;
-        var self = this;
-        _.each(jsonNode.children, function (childNode) {
-            var child = self.getFactory().createFromJson(childNode);
-            self.addChild(child, undefined, true, true);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    this.getChildren().length = 0;
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child, undefined, true, true);
+      child.initFromJson(childNode);
+    });
+  }
 
     /**
      * Get the expression String
      * @returns {string}
      * @override
      */
-    getExpressionString() {
-        var generatedExpression = '';
-        this.children.forEach((child) => {
-            generatedExpression += child.getExpressionString() + ',';
-        });
-        generatedExpression = '{' + this.getWSRegion(1) + (generatedExpression.substring(0, generatedExpression.length-1))
-            + '}' + this.getWSRegion(2);
+  getExpressionString() {
+    let generatedExpression = '';
+    this.children.forEach((child) => {
+      generatedExpression += `${child.getExpressionString()},`;
+    });
+    generatedExpression = `{${this.getWSRegion(1)}${generatedExpression.substring(0, generatedExpression.length - 1)
+             }}${this.getWSRegion(2)}`;
 
-        return generatedExpression;
-    }
+    return generatedExpression;
+  }
 
     /**
      * Set the expression from the string
@@ -70,33 +70,30 @@ class ReferenceTypeInitExpression extends Expression {
      * @param {function} callback
      * @override
      */
-    setExpressionFromString(expressionString, callback) {
-        const fragment = FragmentUtils.createExpressionFragment(expressionString);
-        const parsedJson = FragmentUtils.parseFragment(fragment);
+  setExpressionFromString(expressionString, callback) {
+    const fragment = FragmentUtils.createExpressionFragment(expressionString);
+    const parsedJson = FragmentUtils.parseFragment(fragment);
 
-        if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+    if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
             && _.isEqual(parsedJson.type, 'reference_type_init_expression')) {
-
-            this.initFromJson(parsedJson);
+      this.initFromJson(parsedJson);
 
             // Manually firing the tree-modified event here.
             // TODO: need a proper fix to avoid breaking the undo-redo
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: 'Reference Type Init Expression Custom Tree modified',
-                context: this,
-            });
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title: 'Reference Type Init Expression Custom Tree modified',
+        context: this,
+      });
 
-            if (_.isFunction(callback)) {
-                callback({isValid: true});
-            }
-        } else {
-            if (_.isFunction(callback)) {
-                callback({isValid: false, response: parsedJson});
-            }
-        }
+      if (_.isFunction(callback)) {
+        callback({ isValid: true });
+      }
+    } else if (_.isFunction(callback)) {
+      callback({ isValid: false, response: parsedJson });
     }
+  }
 }
 
 export default ReferenceTypeInitExpression;

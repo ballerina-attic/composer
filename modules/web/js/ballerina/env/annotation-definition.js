@@ -21,7 +21,7 @@ import BallerinaEnvFactory from './ballerina-env-factory';
 
 /**
  * Represents an annotation definition in the ballerina-env.
- * 
+ *
  * @class AnnotationDefinition
  * @extends {EventChannel}
  */
@@ -31,96 +31,94 @@ class AnnotationDefinition extends EventChannel {
      * @param {Object} args Object to initialize
      * @param {string} args.packagePath The package name of the annotation definition.
      * @param {string} args.name The name of the annotation definition.
-     * @param {string[]} args.attachmentPoints The points which the annotation definition can be attached as an 
+     * @param {string[]} args.attachmentPoints The points which the annotation definition can be attached as an
      * annotation attachment.
      * @param {AnnotationAttributeDefinition[]} The fields of the annotation definition.
-     * 
+     *
      * @memberof AnnotationDefinition
      */
-    constructor(args) {
-        super(args);
-        this._packagePath = _.get(args, 'packagePath');
-        this._name = _.get(args, 'name');
-        this._attachmentPoints = _.get(args, 'attachmentPoints', []);
-        this._annotationAttributeDefinitions = _.get(args, 'annotationAttributeDefinitions', []);
-    }
+  constructor(args) {
+    super(args);
+    this._packagePath = _.get(args, 'packagePath');
+    this._name = _.get(args, 'name');
+    this._attachmentPoints = _.get(args, 'attachmentPoints', []);
+    this._annotationAttributeDefinitions = _.get(args, 'annotationAttributeDefinitions', []);
+  }
 
-    setPackagePath(packagePath) {
-        this._packagePath = packagePath;
-    }
+  setPackagePath(packagePath) {
+    this._packagePath = packagePath;
+  }
 
-    getPackagePath() {
-        return this._packagePath;
-    }
+  getPackagePath() {
+    return this._packagePath;
+  }
 
-    setName(name) {
-        this._name = name;
-    }
-    
-    getName() {
-        return this._name;
-    }
+  setName(name) {
+    this._name = name;
+  }
 
-    setAttachmentPoints(attachmentPoints) {
-        this._attachmentPoints = attachmentPoints;
-    }
+  getName() {
+    return this._name;
+  }
 
-    getAttachmentPoints() {
-        return this._attachmentPoints;
-    }
+  setAttachmentPoints(attachmentPoints) {
+    this._attachmentPoints = attachmentPoints;
+  }
 
-    addAttachmentPoint(attachmentPoint) {
-        this._attachmentPoints.push(attachmentPoint);
-    }
+  getAttachmentPoints() {
+    return this._attachmentPoints;
+  }
 
-    removeAttachmentPoint(attachmentPoint) {
-        _.pull(this._attachmentPoints, attachmentPoint);
-    }
+  addAttachmentPoint(attachmentPoint) {
+    this._attachmentPoints.push(attachmentPoint);
+  }
 
-    setAnnotationAttributeDefinitions(annotationAttribtueDefinitions) {
-        this._annotationAttributeDefinitions = annotationAttribtueDefinitions;
-    }
+  removeAttachmentPoint(attachmentPoint) {
+    _.pull(this._attachmentPoints, attachmentPoint);
+  }
 
-    getAnnotationAttributeDefinitions() {
-        return this._annotationAttributeDefinitions;
-    }
+  setAnnotationAttributeDefinitions(annotationAttribtueDefinitions) {
+    this._annotationAttributeDefinitions = annotationAttribtueDefinitions;
+  }
 
-    addAnnotationAttributeDefinition(annotationAttributeDefinition) {
-        this._annotationAttributeDefinitions.push(annotationAttributeDefinition);
-    }
+  getAnnotationAttributeDefinitions() {
+    return this._annotationAttributeDefinitions;
+  }
 
-    removeAnnotationAttributeDefinition(annotationAttributeDefinition) {
-        let annotationAttributeDefinitionToBeRemoved = annotationAttributeDefinition;
-        this._annotationAttributeDefinitions = 
-            _.remove(this._annotationAttributeDefinitions, (annotationAttributeDefinition) => {
-                return annotationAttributeDefinition.getIdentifier() === 
-                                                            annotationAttributeDefinitionToBeRemoved.getIdentifier();
-            });
-    }
+  addAnnotationAttributeDefinition(annotationAttributeDefinition) {
+    this._annotationAttributeDefinitions.push(annotationAttributeDefinition);
+  }
+
+  removeAnnotationAttributeDefinition(annotationAttributeDefinition) {
+    const annotationAttributeDefinitionToBeRemoved = annotationAttributeDefinition;
+    this._annotationAttributeDefinitions =
+            _.remove(this._annotationAttributeDefinitions, annotationAttributeDefinition => annotationAttributeDefinition.getIdentifier() ===
+                                                            annotationAttributeDefinitionToBeRemoved.getIdentifier());
+  }
 
     /**
      * Sets values from a json object
-     * 
+     *
      * @param {Object} jsonNode json object with values.
      * @param {string} jsonNode.packagePath The package of the annotation definition.
      * @param {string} jsonNode.name The name of the annotation definition.
      * @param {string[]} jsonNode.attachmentPoints The attachment points of the annotation definition.
      * @param {Object[]} jsonNode.annotationAttributeDefs The field attributes of the annotation definition.
-     * 
+     *
      * @memberof AnnotationDefinition
      */
-    initFromJson(jsonNode) {
-        this.setPackagePath(jsonNode.packagePath);
-        this.setName(jsonNode.name);
-        this.setAttachmentPoints(jsonNode.attachmentPoints);
+  initFromJson(jsonNode) {
+    this.setPackagePath(jsonNode.packagePath);
+    this.setName(jsonNode.name);
+    this.setAttachmentPoints(jsonNode.attachmentPoints);
 
         // Setting the fields of the annotation definition.
-        for (let annotationattributeDef of jsonNode.annotationAttributeDefs) {
-            let annotationAttributeDefinition = BallerinaEnvFactory.createAnnotationAttributeDefinition();
-            annotationAttributeDefinition.initFromJson(annotationattributeDef);
-            this.addAnnotationAttributeDefinition(annotationAttributeDefinition);
-        }
+    for (const annotationattributeDef of jsonNode.annotationAttributeDefs) {
+      const annotationAttributeDefinition = BallerinaEnvFactory.createAnnotationAttributeDefinition();
+      annotationAttributeDefinition.initFromJson(annotationattributeDef);
+      this.addAnnotationAttributeDefinition(annotationAttributeDefinition);
     }
+  }
 }
 
 export default AnnotationDefinition;

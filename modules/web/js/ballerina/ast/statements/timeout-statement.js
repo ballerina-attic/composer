@@ -25,81 +25,81 @@ import Statement from './statement';
  * @constructor
  */
 class TimeoutStatement extends Statement {
-    constructor(args) {
-        super('TimeoutStatement');
-        const parameterDefinition = this.getFactory().createParameterDefinition({typeName: 'map', name: 'm'});
-        this._timeoutParameter = _.get(args, 'timeoutParameter', parameterDefinition);
-        this._expression = _.get(args, 'expression', '60');
+  constructor(args) {
+    super('TimeoutStatement');
+    const parameterDefinition = this.getFactory().createParameterDefinition({ typeName: 'map', name: 'm' });
+    this._timeoutParameter = _.get(args, 'timeoutParameter', parameterDefinition);
+    this._expression = _.get(args, 'expression', '60');
+  }
+
+  getWorkerDeclarations() {
+    const workerDeclarations = [];
+    const self = this;
+
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isWorkerDeclaration(child)) {
+        workerDeclarations.push(child);
+      }
+    });
+    return _.sortBy(workerDeclarations, [function (workerDeclaration) {
+      return workerDeclaration.getWorkerName();
+    }]);
+  }
+
+  getParameterAsString() {
+    return this.getParameter().getParameterDefinitionAsString();
+  }
+
+  setExpression(expression, options) {
+    if (!_.isNil(expression)) {
+      this.setAttribute('_expression', expression, options);
     }
+  }
 
-    getWorkerDeclarations() {
-        const workerDeclarations = [];
-        const self = this;
-
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isWorkerDeclaration(child)) {
-                workerDeclarations.push(child);
-            }
-        });
-        return _.sortBy(workerDeclarations, [function (workerDeclaration) {
-            return workerDeclaration.getWorkerName();
-        }]);
+  setParameterAsString(str) {
+    const myRegexp = /^\s*(map\s*)([^\s\[\]]+)\s*$/g;
+    const match = myRegexp.exec(str);
+    if (match) {
+      const factory = this.getFactory();
+      const typeName = match[1];
+      const name = match[2];
+      const parameterDefinition = factory.createParameterDefinition({ typeName, name });
+      this.setParameter(parameterDefinition);
     }
+  }
 
-    getParameterAsString() {
-        return this.getParameter().getParameterDefinitionAsString();
+  getExpression() {
+    return this._expression;
+  }
+
+  setParameter(type, options) {
+    if (!_.isNil(type)) {
+      this.setAttribute('_timeoutParameter', type, options);
     }
+  }
 
-    setExpression(expression, options) {
-        if (!_.isNil(expression)) {
-            this.setAttribute('_expression', expression, options);
-        }
-    }
+  getParameter() {
+    return this._timeoutParameter;
+  }
 
-    setParameterAsString(str) {
-        const myRegexp = /^\s*(map\s*)([^\s\[\]]+)\s*$/g;
-        const match = myRegexp.exec(str);
-        if (match) {
-            const factory = this.getFactory();
-            const typeName = match[1];
-            const name = match[2];
-            const parameterDefinition = factory.createParameterDefinition({typeName, name});
-            this.setParameter(parameterDefinition);
-        }
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    const expressionChildNode = jsonNode.expression;
+    const expressionChild = self.getFactory().createFromJson(expressionChildNode);
+    expressionChild.initFromJson(expressionChildNode);
+    self.setExpression(expressionChild.getExpressionString());
 
-    getExpression() {
-        return this._expression;
-    }
+    const paramJsonNode = jsonNode.timeout_parameter;
+    const paramChild = self.getFactory().createFromJson(paramJsonNode);
+    paramChild.initFromJson(paramJsonNode);
+    self.setParameter(paramChild);
 
-    setParameter(type, options) {
-        if (!_.isNil(type)) {
-            this.setAttribute('_timeoutParameter', type, options);
-        }
-    }
-
-    getParameter() {
-        return this._timeoutParameter;
-    }
-
-    initFromJson(jsonNode) {
-        let self = this;
-        const expressionChildNode = jsonNode['expression'];
-        const expressionChild = self.getFactory().createFromJson(expressionChildNode);
-        expressionChild.initFromJson(expressionChildNode);
-        self.setExpression(expressionChild.getExpressionString());
-
-        const paramJsonNode = jsonNode['timeout_parameter'];
-        const paramChild = self.getFactory().createFromJson(paramJsonNode);
-        paramChild.initFromJson(paramJsonNode);
-        self.setParameter(paramChild);
-
-        _.each(jsonNode.children, function (childNode) {
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default TimeoutStatement;

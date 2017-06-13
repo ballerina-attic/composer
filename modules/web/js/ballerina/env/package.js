@@ -33,28 +33,28 @@ import BallerinaEnvFactory from './ballerina-env-factory';
  * @constructor
  */
 class Package extends EventChannel {
-    constructor(args) {
-        super();
-        this.setName(_.get(args, 'name', ''));
-        this.addServiceDefinitions(_.get(args, 'serviceDefinitions', []));
-        this.addFunctionDefinitions(_.get(args, 'functionDefinitions', []));
-        this.addStructDefinitions(_.get(args, 'structDefinitions', []));
-        this._connectorDefinitions = _.get(args, 'connectors', []);
-        this.addTypeDefinitions(_.get(args, 'typeDefinitions', []));
-        this.addConstantDefinitions(_.get(args, 'constantDefinitions', []));
-        this.addAnnotationDefinitions(_.get(args, 'annotationDefinitions', []));
+  constructor(args) {
+      super();
+      this.setName(_.get(args, 'name', ''));
+      this.addServiceDefinitions(_.get(args, 'serviceDefinitions', []));
+      this.addFunctionDefinitions(_.get(args, 'functionDefinitions', []));
+      this.addStructDefinitions(_.get(args, 'structDefinitions', []));
+      this._connectorDefinitions = _.get(args, 'connectors', []);
+      this.addTypeDefinitions(_.get(args, 'typeDefinitions', []));
+      this.addConstantDefinitions(_.get(args, 'constantDefinitions', []));
+      this.addAnnotationDefinitions(_.get(args, 'annotationDefinitions', []));
     }
 
-    setName(name) {
-        if(!_.isNil(name) && _.isString(name)){
-            this._name = name;
+  setName(name) {
+      if (!_.isNil(name) && _.isString(name)) {
+          this._name = name;
         } else {
-            log.error("Invalid value for package name: ", name);
+          log.error('Invalid value for package name: ', name);
         }
     }
 
-    getName() {
-        return this._name;
+  getName() {
+      return this._name;
     }
 
     /**
@@ -62,32 +62,32 @@ class Package extends EventChannel {
      * @param constantDefinitions - can be an array of constantDefinitions or a single constantDefinition
      * @fires Package#constant-defs-added
      */
-    addConstantDefinitions(constantDefinitions) {
-        var err;
-        if(!_.isArray(constantDefinitions) && !(constantDefinitions instanceof  ConstantDefinition)){
-            err = "Adding constant def failed. Not an instance of ConstantDefinition" + constantDefinitions;
-            log.error(err);
-            throw err;
+  addConstantDefinitions(constantDefinitions) {
+      var err;
+      if (!_.isArray(constantDefinitions) && !(constantDefinitions instanceof ConstantDefinition)) {
+          err = 'Adding constant def failed. Not an instance of ConstantDefinition' + constantDefinitions;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(constantDefinitions)){
-            if(!_.isEmpty(constantDefinitions)){
-                _.each(constantDefinitions, function(constantDefinition){
-                    if(!(constantDefinition instanceof  ConstantDefinition)){
-                        err = "Adding constant def failed. Not an instance of ConstantDefinition" + constantDefinition;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(constantDefinitions)) {
+          if (!_.isEmpty(constantDefinitions)) {
+              _.each(constantDefinitions, (constantDefinition) => {
+                  if (!(constantDefinition instanceof ConstantDefinition)) {
+                      err = 'Adding constant def failed. Not an instance of ConstantDefinition' + constantDefinition;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._constantDefinitions = this._constantDefinitions || [];
-        this._constantDefinitions = _.concat(this._constantDefinitions , constantDefinitions);
+      this._constantDefinitions = this._constantDefinitions || [];
+      this._constantDefinitions = _.concat(this._constantDefinitions, constantDefinitions);
         /**
          * fired when new constant defs are added to the package.
          * @event Package#constant-defs-added
          * @type {[ConstantDefinition]}
          */
-        this.trigger("constant-defs-added", constantDefinitions);
+      this.trigger('constant-defs-added', constantDefinitions);
     }
 
     /**
@@ -95,17 +95,17 @@ class Package extends EventChannel {
      *
      * @param constantDefs
      */
-    setConstantDefinitions(constantDefs) {
-        this._constantDefinitions = null;
-        this.addConstantDefinitions(constantDefs);
+  setConstantDefinitions(constantDefs) {
+      this._constantDefinitions = null;
+      this.addConstantDefinitions(constantDefs);
     }
 
     /**
      *
      * @returns {[ConstantDefinition]}
      */
-    getConstantDefinitions() {
-        return this._constantDefinitions;
+  getConstantDefinitions() {
+      return this._constantDefinitions;
     }
 
     /**
@@ -113,32 +113,32 @@ class Package extends EventChannel {
      * @param typeDefinitions - can be an array of typeDefinitions or a single typeDefinition
      * @fires Package#type-defs-added
      */
-    addTypeDefinitions(typeDefinitions) {
-        var err;
-        if(!_.isArray(typeDefinitions) && !(typeDefinitions instanceof  TypeDefinition)){
-            err = "Adding type def failed. Not an instance of TypeDefinition" + typeDefinitions;
-            log.error(err);
-            throw err;
+  addTypeDefinitions(typeDefinitions) {
+      var err;
+      if (!_.isArray(typeDefinitions) && !(typeDefinitions instanceof TypeDefinition)) {
+          err = 'Adding type def failed. Not an instance of TypeDefinition' + typeDefinitions;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(typeDefinitions)){
-            if(!_.isEmpty(typeDefinitions)){
-                _.each(typeDefinitions, function(typeDefinition){
-                    if(!(typeDefinition instanceof  TypeDefinition)){
-                        err = "Adding type def failed. Not an instance of TypeDefinition" + typeDefinition;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(typeDefinitions)) {
+          if (!_.isEmpty(typeDefinitions)) {
+              _.each(typeDefinitions, (typeDefinition) => {
+                  if (!(typeDefinition instanceof TypeDefinition)) {
+                      err = 'Adding type def failed. Not an instance of TypeDefinition' + typeDefinition;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._typeDefinitions = this._typeDefinitions || [];
-        this._typeDefinitions = _.concat(this._typeDefinitions , typeDefinitions);
+      this._typeDefinitions = this._typeDefinitions || [];
+      this._typeDefinitions = _.concat(this._typeDefinitions, typeDefinitions);
         /**
          * fired when new type defs are added to the package.
          * @event Package#type-defs-added
          * @type {[TypeDefinition]}
          */
-        this.trigger("type-defs-added", typeDefinitions);
+      this.trigger('type-defs-added', typeDefinitions);
     }
 
     /**
@@ -146,17 +146,17 @@ class Package extends EventChannel {
      *
      * @param typeDefs
      */
-    setTypeDefinitions(typeDefs) {
-        this._typeDefinitions = null;
-        this.addTypeDefinitions(typeDefs);
+  setTypeDefinitions(typeDefs) {
+      this._typeDefinitions = null;
+      this.addTypeDefinitions(typeDefs);
     }
 
     /**
      *
      * @returns {[TypeDefinition]}
      */
-    getTypeDefinitions() {
-        return this._typeDefinitions;
+  getTypeDefinitions() {
+      return this._typeDefinitions;
     }
 
     /**
@@ -164,49 +164,49 @@ class Package extends EventChannel {
      * @param connectors - can be an array of connectors or a single connector
      * @fires Package#connector-defs-added
      */
-    addConnectors(connectors) {
-        var self = this;
-        var err;
-        if(!_.isArray(connectors) && !(BallerinaEnvFactory.isConnector(connectors))){
-            err = "Adding connector failed. Not an instance of connector " + connectors;
-            log.error(err);
-            throw err;
+  addConnectors(connectors) {
+      var self = this;
+      var err;
+      if (!_.isArray(connectors) && !(BallerinaEnvFactory.isConnector(connectors))) {
+          err = 'Adding connector failed. Not an instance of connector ' + connectors;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(connectors)){
-            if(!_.isEmpty(connectors)){
-                _.each(connectors, function(connector){
-                    if(!BallerinaEnvFactory.isConnector(connector)){
-                        err = "Adding connector failed. Not an instance of connector" + connector;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(connectors)) {
+          if (!_.isEmpty(connectors)) {
+              _.each(connectors, (connector) => {
+                  if (!BallerinaEnvFactory.isConnector(connector)) {
+                      err = 'Adding connector failed. Not an instance of connector' + connector;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._connectorDefinitions = _.concat(this._connectorDefinitions , connectors);
+      this._connectorDefinitions = _.concat(this._connectorDefinitions, connectors);
         /**
          * fired when new connectors are added to the package.
          * @event Package#connector-defs-added
          * @type {[Connector]}
          */
-        this.trigger("connector-defs-added", connectors);
+      this.trigger('connector-defs-added', connectors);
     }
 
     /**
      * Get all connectors
      * @returns {[Connector]}
      */
-    getConnectors() {
-        return this._connectorDefinitions;
+  getConnectors() {
+      return this._connectorDefinitions;
     }
 
     /**
      * returns connector definition
      * @param {string} connectorName - name of the connector to be retrieved
      */
-    getConnectorByName(connectorName) {
-        return _.find(this.getConnectors(), function (connector) {
-            return _.isEqual(connector.getName(),connectorName);
+  getConnectorByName(connectorName) {
+      return _.find(this.getConnectors(), (connector) => {
+          return _.isEqual(connector.getName(), connectorName);
         });
     }
 
@@ -214,32 +214,32 @@ class Package extends EventChannel {
      * Add annotation defs
      * @param annotationDefinitions - can be an array of annotationDefs or a single annotationDef
      */
-    addAnnotationDefinitions(annotationDefinitions){
-        var err;
-        if(!_.isArray(annotationDefinitions) && !(BallerinaEnvFactory.isAnnotationDefinition(annotationDefinitions))){
-            err = "Adding annotation def failed. Not an instance of AnnotationDefinition" + annotationDefinitions;
-            log.error(err);
-            throw err;
+  addAnnotationDefinitions(annotationDefinitions) {
+      var err;
+      if (!_.isArray(annotationDefinitions) && !(BallerinaEnvFactory.isAnnotationDefinition(annotationDefinitions))) {
+          err = 'Adding annotation def failed. Not an instance of AnnotationDefinition' + annotationDefinitions;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(annotationDefinitions)){
-            if(!_.isEmpty(annotationDefinitions)){
-                _.each(annotationDefinitions, function(annotationDefinition){
-                    if(!(annotationDefinition instanceof  AnnotationDefinition)){
-                        err = "Adding annotation def failed. Not an instance of AnnotationDefinitions" + annotationDefinition;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(annotationDefinitions)) {
+          if (!_.isEmpty(annotationDefinitions)) {
+              _.each(annotationDefinitions, (annotationDefinition) => {
+                  if (!(annotationDefinition instanceof AnnotationDefinition)) {
+                      err = 'Adding annotation def failed. Not an instance of AnnotationDefinitions' + annotationDefinition;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._annotationDefinitions = this._annotationDefinitions || [];
-        this._annotationDefinitions = _.concat(this._annotationDefinitions , annotationDefinitions);
+      this._annotationDefinitions = this._annotationDefinitions || [];
+      this._annotationDefinitions = _.concat(this._annotationDefinitions, annotationDefinitions);
         /**
          * fired when new annotation defs are added to the package.
          * @event Package#annotation-defs-added
          * @type {[AnnotationDefinition]}
          */
-        this.trigger("annotation-defs-added", annotationDefinitions);
+      this.trigger('annotation-defs-added', annotationDefinitions);
     }
 
     /**
@@ -247,49 +247,49 @@ class Package extends EventChannel {
      *
      * @param annotationDefs
      */
-    setAnnotationDefinitions(annotationDefs) {
-        this._annotationDefinitions = null;
-        this.addAnnotationDefinitions(annotationDefs);
+  setAnnotationDefinitions(annotationDefs) {
+      this._annotationDefinitions = null;
+      this.addAnnotationDefinitions(annotationDefs);
     }
 
     /**
      *
      * @returns {[AnnotationDefinition]}
      */
-    getAnnotationDefinitions() {
-        return this._annotationDefinitions;
+  getAnnotationDefinitions() {
+      return this._annotationDefinitions;
     }
 
     /**
      * Add service defs
      * @param serviceDefinitions - can be an array of serviceDefs or a single serviceDef
      */
-    addServiceDefinitions(serviceDefinitions) {
-        var err;
-        if(!_.isArray(serviceDefinitions) && !(serviceDefinitions instanceof  ServiceDefinition)){
-            err = "Adding service def failed. Not an instance of ServiceDefinition" + serviceDefinitions;
-            log.error(err);
-            throw err;
+  addServiceDefinitions(serviceDefinitions) {
+      var err;
+      if (!_.isArray(serviceDefinitions) && !(serviceDefinitions instanceof ServiceDefinition)) {
+          err = 'Adding service def failed. Not an instance of ServiceDefinition' + serviceDefinitions;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(serviceDefinitions)){
-            if(!_.isEmpty(serviceDefinitions)){
-                _.each(serviceDefinitions, function(serviceDefinition){
-                    if(!(serviceDefinition instanceof  ServiceDefinition)){
-                        err = "Adding service def failed. Not an instance of ServiceDefinition" + serviceDefinition;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(serviceDefinitions)) {
+          if (!_.isEmpty(serviceDefinitions)) {
+              _.each(serviceDefinitions, (serviceDefinition) => {
+                  if (!(serviceDefinition instanceof ServiceDefinition)) {
+                      err = 'Adding service def failed. Not an instance of ServiceDefinition' + serviceDefinition;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._serviceDefinitions = this._serviceDefinitions || [];
-        this._serviceDefinitions = _.concat(this._serviceDefinitions , serviceDefinitions);
+      this._serviceDefinitions = this._serviceDefinitions || [];
+      this._serviceDefinitions = _.concat(this._serviceDefinitions, serviceDefinitions);
         /**
          * fired when new service defs are added to the package.
          * @event Package#service-defs-added
          * @type {[ServiceDefinition]}
          */
-        this.trigger("service-defs-added", serviceDefinitions);
+      this.trigger('service-defs-added', serviceDefinitions);
     }
 
     /**
@@ -297,77 +297,77 @@ class Package extends EventChannel {
      *
      * @param serviceDefs
      */
-    setServiceDefinitions(serviceDefs) {
-        this._serviceDefinitions = null;
-        this.addServiceDefinitions(serviceDefs);
+  setServiceDefinitions(serviceDefs) {
+      this._serviceDefinitions = null;
+      this.addServiceDefinitions(serviceDefs);
     }
 
     /**
      *
      * @returns {[ServiceDefinition]}
      */
-    getServiceDefinitions() {
-        return this._serviceDefinitions;
+  getServiceDefinitions() {
+      return this._serviceDefinitions;
     }
 
     /**
      * Add function defs
      * @param functionDefinitions - can be an array of functionDefinitions or a single functionDefinition
      */
-    addFunctionDefinitions(functionDefinitions) {
-        var self = this;
-        var err;
-        if(!_.isArray(functionDefinitions) && !(BallerinaEnvFactory.isFunction(functionDefinitions))){
-            err = "Adding function def failed. Not an instance of FunctionDefinition" + functionDefinitions;
-            log.error(err);
-            throw err;
+  addFunctionDefinitions(functionDefinitions) {
+      var self = this;
+      var err;
+      if (!_.isArray(functionDefinitions) && !(BallerinaEnvFactory.isFunction(functionDefinitions))) {
+          err = 'Adding function def failed. Not an instance of FunctionDefinition' + functionDefinitions;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(functionDefinitions)){
-            if(!_.isEmpty(functionDefinitions)){
-                _.each(functionDefinitions, function(functionDefinition){
-                    if(!(functionDefinition instanceof  FunctionDefinition)){
-                        err = "Adding function def failed. Not an instance of FunctionDefinition" + functionDefinition;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(functionDefinitions)) {
+          if (!_.isEmpty(functionDefinitions)) {
+              _.each(functionDefinitions, (functionDefinition) => {
+                  if (!(functionDefinition instanceof FunctionDefinition)) {
+                      err = 'Adding function def failed. Not an instance of FunctionDefinition' + functionDefinition;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._functionDefinitions = this._functionDefinitions || [];
-        this._functionDefinitions = _.concat(this._functionDefinitions , functionDefinitions);
+      this._functionDefinitions = this._functionDefinitions || [];
+      this._functionDefinitions = _.concat(this._functionDefinitions, functionDefinitions);
         /**
          * fired when new function defs are added to the package.
          * @event Package#function-defs-added
          * @type {[FunctionDefinition]}
          */
-        this.trigger("function-defs-added", functionDefinitions);
+      this.trigger('function-defs-added', functionDefinitions);
     }
 
     /**
      * remove function definition
      * @param functionDefinition - function definition to be removed
      */
-    removeFunctionDefinition(functionDefinition) {
-        _.remove(this._functionDefinitions, function (functionDefinitionItem) {
-            //TODO Need to check param types along with function name to support overloaded functions
-            return _.isEqual(functionDefinitionItem.getName(), functionDefinition.getFunctionName());
+  removeFunctionDefinition(functionDefinition) {
+      _.remove(this._functionDefinitions, (functionDefinitionItem) => {
+            // TODO Need to check param types along with function name to support overloaded functions
+          return _.isEqual(functionDefinitionItem.getName(), functionDefinition.getFunctionName());
         });
-        this.trigger("function-def-removed", functionDefinition);
+      this.trigger('function-def-removed', functionDefinition);
     }
 
     /**
      * remove connector definition
      * @param connectorDefinition - connector definition to be removed
      */
-    removeConnectorDefinition(connectorDefinition) {
-        var connector  = _.filter(this._connectorDefinitions, function (connectorDefinitionItem) {
-            //TODO Need to check param types along with function name to support overloaded functions
-            return _.isEqual(connectorDefinitionItem.getName(), connectorDefinition.getConnectorName());
+  removeConnectorDefinition(connectorDefinition) {
+      var connector = _.filter(this._connectorDefinitions, (connectorDefinitionItem) => {
+            // TODO Need to check param types along with function name to support overloaded functions
+          return _.isEqual(connectorDefinitionItem.getName(), connectorDefinition.getConnectorName());
         });
         // removing child connector actions
-        connector[0].removeAllActions(connectorDefinition);
-        _.remove(this._connectorDefinitions, connector[0]);
-        this.trigger("connector-def-removed", connectorDefinition);
+      connector[0].removeAllActions(connectorDefinition);
+      _.remove(this._connectorDefinitions, connector[0]);
+      this.trigger('connector-def-removed', connectorDefinition);
     }
 
     /**
@@ -375,26 +375,26 @@ class Package extends EventChannel {
      *
      * @param functionDefs
      */
-    setFunctionDefinitions(functionDefs) {
-        this._functionDefinitions = null;
-        this.addFunctionDefinitions(functionDefs);
+  setFunctionDefinitions(functionDefs) {
+      this._functionDefinitions = null;
+      this.addFunctionDefinitions(functionDefs);
     }
 
     /**
      *
      * @returns {[FunctionDefinition]}
      */
-    getFunctionDefinitions() {
-        return this._functionDefinitions;
+  getFunctionDefinitions() {
+      return this._functionDefinitions;
     }
 
     /**
      * returns function definition
      * @param {string} functionName - name of the function to be retrieved
      */
-    getFunctionDefinitionByName(functionName) {
-        return _.find(this._functionDefinitions, function (functionDefinition) {
-            return _.isEqual(functionDefinition.getName(),functionName);
+  getFunctionDefinitionByName(functionName) {
+      return _.find(this._functionDefinitions, (functionDefinition) => {
+          return _.isEqual(functionDefinition.getName(), functionName);
         });
     }
 
@@ -402,41 +402,41 @@ class Package extends EventChannel {
      * Add struct definition(s) to the package.
      * @param {StructDefinition[]|StructDefinition} structDefinitions - The struct definition(s).
      */
-    addStructDefinitions(structDefinitions) {
-        var err;
-        if(!_.isArray(structDefinitions) && !(structDefinitions instanceof StructDefinition)){
-            err = "Adding struct def failed. Not an instance of StructDefinition: " + structDefinitions;
-            log.error(err);
-            throw err;
+  addStructDefinitions(structDefinitions) {
+      var err;
+      if (!_.isArray(structDefinitions) && !(structDefinitions instanceof StructDefinition)) {
+          err = 'Adding struct def failed. Not an instance of StructDefinition: ' + structDefinitions;
+          log.error(err);
+          throw err;
         }
-        if(_.isArray(structDefinitions)){
-            if(!_.isEmpty(structDefinitions)){
-                _.each(structDefinitions, function(structDefinition){
-                    if(!(structDefinition instanceof  StructDefinition)){
-                        err = "Adding struct def failed. Not an instance of StructDefinition: " + structDefinition;
-                        log.error(err);
-                        throw err;
+      if (_.isArray(structDefinitions)) {
+          if (!_.isEmpty(structDefinitions)) {
+              _.each(structDefinitions, (structDefinition) => {
+                  if (!(structDefinition instanceof StructDefinition)) {
+                      err = 'Adding struct def failed. Not an instance of StructDefinition: ' + structDefinition;
+                      log.error(err);
+                      throw err;
                     }
                 });
             }
         }
-        this._structDefinitions = this._structDefinitions || [];
+      this._structDefinitions = this._structDefinitions || [];
         // Join all struct definitions to one array(concat). Reversing the struct definitions so that the last
         // modified elements comes first(reverse). Then remove the duplicates using struct name(uniqBy).
         // Then reverse it back(reverse).
-        this._structDefinitions = _.reverse(
+      this._structDefinitions = _.reverse(
             _.uniqBy(
                 _.reverse(
-                    _.concat(this._structDefinitions, structDefinitions)), function (structDefinition) {
-                return structDefinition.getStructName();
-            })
+                    _.concat(this._structDefinitions, structDefinitions)), (structDefinition) => {
+              return structDefinition.getStructName();
+            }),
         );
         /**
          * Fired when new struct defs are added to the package.
          * @event Package#struct-defs-added
          * @type {FunctionDefinition}
          */
-        this.trigger("struct-defs-added", structDefinitions);
+      this.trigger('struct-defs-added', structDefinitions);
     }
 
     /**
@@ -444,57 +444,56 @@ class Package extends EventChannel {
      *
      * @param {StructDefinition[]} structDefinitions
      */
-    setStructDefinitions(structDefinitions) {
-        this._structDefinitions = null;
-        this.addStructDefinitions(structDefinitions);
+  setStructDefinitions(structDefinitions) {
+      this._structDefinitions = null;
+      this.addStructDefinitions(structDefinitions);
     }
 
     /**
      * Gets the struct definitions in the package.
      * @return {StructDefinition[]} - The struct definitions.
      */
-    getStructDefinitions() {
-        return this._structDefinitions;
+  getStructDefinitions() {
+      return this._structDefinitions;
     }
 
-    initFromJson(jsonNode) {
-        var self = this;
-        this.setName(jsonNode.name);
+  initFromJson(jsonNode) {
+      var self = this;
+      this.setName(jsonNode.name);
 
-        _.each(jsonNode.connectors, function (connectorNode) {
-            var connector = BallerinaEnvFactory.createConnector();
-            connector.initFromJson(connectorNode);
-            self.addConnectors(connector);
+      _.each(jsonNode.connectors, (connectorNode) => {
+          var connector = BallerinaEnvFactory.createConnector();
+          connector.initFromJson(connectorNode);
+          self.addConnectors(connector);
         });
 
-        _.each(jsonNode.functions, function(functionNode){
-            var functionDef = BallerinaEnvFactory.createFunction();
-            functionDef.initFromJson(functionNode);
-            self.addFunctionDefinitions(functionDef);
+      _.each(jsonNode.functions, (functionNode) => {
+          var functionDef = BallerinaEnvFactory.createFunction();
+          functionDef.initFromJson(functionNode);
+          self.addFunctionDefinitions(functionDef);
         });
 
-        _.each(jsonNode.annotations, function(annotationNode){
-            var annotationDef = BallerinaEnvFactory.createAnnotationDefinition();
-            annotationDef.initFromJson(annotationNode);
-            self.addAnnotationDefinitions(annotationDef);
+      _.each(jsonNode.annotations, (annotationNode) => {
+          var annotationDef = BallerinaEnvFactory.createAnnotationDefinition();
+          annotationDef.initFromJson(annotationNode);
+          self.addAnnotationDefinitions(annotationDef);
         });
-
     }
 
     /**
      * Get the list of types in the current package
      * @return {Array}
      */
-    getTypesInPackage() {
-        var types = [];
-        _.forEach(this._connectorDefinitions, (connectorDef) => {
-            types.push(connectorDef.getName());
+  getTypesInPackage() {
+      var types = [];
+      _.forEach(this._connectorDefinitions, (connectorDef) => {
+          types.push(connectorDef.getName());
         });
-        _.forEach(this.getStructDefinitions(), (structDef) => {
-            types.push(structDef.getStructName());
+      _.forEach(this.getStructDefinitions(), (structDef) => {
+          types.push(structDef.getStructName());
         });
 
-        return types;
+      return types;
     }
 }
 

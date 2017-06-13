@@ -25,37 +25,37 @@ import FragmentUtils from './../../utils/fragment-utils';
  * @constructor
  */
 class ArrayInitExpression extends Expression {
-    constructor(args) {
-        super('ArrayInitExpression');
-    }
+  constructor(args) {
+    super('ArrayInitExpression');
+  }
 
     /**
      * initialize ArrayInitExpression from json object
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        var self = this;
-        this.getChildren().length = 0;
-        _.each(jsonNode.children, function (childNode) {
-            var child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    this.getChildren().length = 0;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 
     /**
      * Get the Expression String
      * @returns {string} expression string
      * @override
      */
-    getExpressionString() {
-        var generatedExpression = '[';
-        _.each(this.getChildren(), function (child) {
-            generatedExpression += child.getExpressionString() + ",";
-        });
-        generatedExpression = generatedExpression.replace(/,\s*$/, "") + ']';
-        return generatedExpression;
-    }
+  getExpressionString() {
+    let generatedExpression = '[';
+    _.each(this.getChildren(), (child) => {
+      generatedExpression += `${child.getExpressionString()},`;
+    });
+    generatedExpression = `${generatedExpression.replace(/,\s*$/, '')}]`;
+    return generatedExpression;
+  }
 
     /**
      * Set the expression from the string
@@ -63,33 +63,30 @@ class ArrayInitExpression extends Expression {
      * @param {function} callback
      * @override
      */
-    setExpressionFromString(expressionString, callback) {
-        const fragment = FragmentUtils.createExpressionFragment(expressionString);
-        const parsedJson = FragmentUtils.parseFragment(fragment);
+  setExpressionFromString(expressionString, callback) {
+    const fragment = FragmentUtils.createExpressionFragment(expressionString);
+    const parsedJson = FragmentUtils.parseFragment(fragment);
 
-        if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+    if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
             && _.isEqual(parsedJson.type, 'array_init_expression')) {
-
-            this.initFromJson(parsedJson);
+      this.initFromJson(parsedJson);
 
             // Manually firing the tree-modified event here.
             // TODO: need a proper fix to avoid breaking the undo-redo
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: 'Array Init Expression Custom Tree modified',
-                context: this,
-            });
-            
-            if (_.isFunction(callback)) {
-                callback({isValid: true});
-            }
-        } else {
-            if (_.isFunction(callback)) {
-                callback({isValid: false, response: parsedJson});
-            }
-        }
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title: 'Array Init Expression Custom Tree modified',
+        context: this,
+      });
+
+      if (_.isFunction(callback)) {
+        callback({ isValid: true });
+      }
+    } else if (_.isFunction(callback)) {
+      callback({ isValid: false, response: parsedJson });
     }
+  }
 }
 
 export default ArrayInitExpression;

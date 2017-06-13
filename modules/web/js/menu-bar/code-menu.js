@@ -17,31 +17,31 @@
  */
 
 define(([], function () {
-    var CodeMenu = {
-        id: "code",
-        label: "Code",
-        items: [
-            {
-                id: "format",
-                label: "Reformat Code",
-                command: {
-                    id: "format",
-                    shortcuts: {
-                        mac: {
-                            key: "command+option+l",
-                            label: "\u2318\u2325L"
-                        },
-                        other: {
-                            key: "ctrl+alt+l",
-                            label: "Ctrl+Alt+L"
-                        }
-                    }
-                },
-                disabled: true
-            }
-        ]
+  const CodeMenu = {
+    id: 'code',
+    label: 'Code',
+    items: [
+      {
+        id: 'format',
+        label: 'Reformat Code',
+        command: {
+          id: 'format',
+          shortcuts: {
+            mac: {
+              key: 'command+option+l',
+              label: '\u2318\u2325L',
+            },
+            other: {
+              key: 'ctrl+alt+l',
+              label: 'Ctrl+Alt+L',
+            },
+          },
+        },
+        disabled: true,
+      },
+    ],
 
-    };
+  };
 
-    return CodeMenu;
+  return CodeMenu;
 }));

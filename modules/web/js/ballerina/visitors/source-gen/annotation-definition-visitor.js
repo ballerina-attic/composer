@@ -21,73 +21,73 @@ import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
 import SourceGenUtil from './source-gen-util';
 
 class AnnotationDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
+  constructor(parent) {
+    super(parent);
+  }
+
+  canVisitAnnotationDefinition(annotationDefinition) {
+    return true;
+  }
+
+  beginVisitAnnotationDefinition(annotationDefinition) {
+    const useDefaultWS = annotationDefinition.whiteSpace.useDefault;
+
+    if (useDefaultWS) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(`\n${this.getIndentation()}`);
     }
-
-    canVisitAnnotationDefinition(annotationDefinition) {
-        return true;
-    }
-
-    beginVisitAnnotationDefinition(annotationDefinition) {
-        let useDefaultWS = annotationDefinition.whiteSpace.useDefault;
-
-        if (useDefaultWS) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation('\n' + this.getIndentation());
-        }
-        let constructedSourceSegment = '';
-        _.forEach(annotationDefinition.getChildrenOfType(annotationDefinition.getFactory().isAnnotation), annotationNode => {
-            if (annotationNode.isSupported()) {
-                constructedSourceSegment += annotationNode.toString()
+    let constructedSourceSegment = '';
+    _.forEach(annotationDefinition.getChildrenOfType(annotationDefinition.getFactory().isAnnotation), (annotationNode) => {
+      if (annotationNode.isSupported()) {
+        constructedSourceSegment += annotationNode.toString()
                   + ((annotationNode.whiteSpace.useDefault) ? this.getIndentation() : '');
-            }
-        });
+      }
+    });
 
-        constructedSourceSegment += 'annotation' + annotationDefinition.getWSRegion(0)
-            + annotationDefinition.getAnnotationName() + annotationDefinition.getWSRegion(1);
-        if (annotationDefinition.getAttachmentPoints().length > 0) {
-            constructedSourceSegment += 'attach';
-            annotationDefinition.getAttachmentPoints().forEach((attachmentPoint, index) => {
-                constructedSourceSegment += annotationDefinition.getChildWSRegion('attachmentPoints.children.' + attachmentPoint, 0)
+    constructedSourceSegment += `annotation${annotationDefinition.getWSRegion(0)
+             }${annotationDefinition.getAnnotationName()}${annotationDefinition.getWSRegion(1)}`;
+    if (annotationDefinition.getAttachmentPoints().length > 0) {
+      constructedSourceSegment += 'attach';
+      annotationDefinition.getAttachmentPoints().forEach((attachmentPoint, index) => {
+        constructedSourceSegment += annotationDefinition.getChildWSRegion(`attachmentPoints.children.${attachmentPoint}`, 0)
                     + attachmentPoint
-                    + annotationDefinition.getChildWSRegion('attachmentPoints.children.' + attachmentPoint, 1);
-                if (index  + 1 < annotationDefinition.getAttachmentPoints().length) {
-                    constructedSourceSegment += ',';
-                }
-            });
+                    + annotationDefinition.getChildWSRegion(`attachmentPoints.children.${attachmentPoint}`, 1);
+        if (index + 1 < annotationDefinition.getAttachmentPoints().length) {
+          constructedSourceSegment += ',';
         }
-        constructedSourceSegment += '{' + annotationDefinition.getWSRegion(3);
-        if (useDefaultWS) {
-            constructedSourceSegment += this.getIndentation();
-        }
-        this.indent();
-        let self = this;
-        _.each(annotationDefinition.getAnnotationAttributeDefinitions(), function (attrDefinition) {
-            let currentPrecedingIndentation = SourceGenUtil.getTailingIndentation(constructedSourceSegment);
-            if (attrDefinition.whiteSpace.useDefault) {
-                constructedSourceSegment = SourceGenUtil.replaceTailingIndentation(constructedSourceSegment, self.getIndentation());
-            }
-            constructedSourceSegment += attrDefinition.getAttributeStatementString();
-            if (attrDefinition.whiteSpace.useDefault) {
-                constructedSourceSegment += currentPrecedingIndentation;
-            }
-        });
-
-        this.appendSource(constructedSourceSegment);
-        log.debug('Begin Visit Annotation Definition');
+      });
     }
-
-    visitAnnotationDefinition(annotationDefinition) {
-        log.debug('Visit Annotation Definition');
+    constructedSourceSegment += `{${annotationDefinition.getWSRegion(3)}`;
+    if (useDefaultWS) {
+      constructedSourceSegment += this.getIndentation();
     }
+    this.indent();
+    const self = this;
+    _.each(annotationDefinition.getAnnotationAttributeDefinitions(), (attrDefinition) => {
+      const currentPrecedingIndentation = SourceGenUtil.getTailingIndentation(constructedSourceSegment);
+      if (attrDefinition.whiteSpace.useDefault) {
+        constructedSourceSegment = SourceGenUtil.replaceTailingIndentation(constructedSourceSegment, self.getIndentation());
+      }
+      constructedSourceSegment += attrDefinition.getAttributeStatementString();
+      if (attrDefinition.whiteSpace.useDefault) {
+        constructedSourceSegment += currentPrecedingIndentation;
+      }
+    });
 
-    endVisitAnnotationDefinition(annotationDefinition) {
-        this.outdent();
-        this.appendSource('}' + annotationDefinition.getWSRegion(4));
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Annotation Definition');
-    }
+    this.appendSource(constructedSourceSegment);
+    log.debug('Begin Visit Annotation Definition');
+  }
+
+  visitAnnotationDefinition(annotationDefinition) {
+    log.debug('Visit Annotation Definition');
+  }
+
+  endVisitAnnotationDefinition(annotationDefinition) {
+    this.outdent();
+    this.appendSource(`}${annotationDefinition.getWSRegion(4)}`);
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Annotation Definition');
+  }
 }
 
 export default AnnotationDefinitionVisitor;

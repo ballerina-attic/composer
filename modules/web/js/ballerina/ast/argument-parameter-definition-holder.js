@@ -18,7 +18,7 @@
 import _ from 'lodash';
 import ASTNode from './node';
 
-class ArgumentParameterDefinitionHolder extends ASTNode{
+class ArgumentParameterDefinitionHolder extends ASTNode {
 
     /**
      * This model holds ParameterDefinition as children for representing arguments
@@ -26,22 +26,22 @@ class ArgumentParameterDefinitionHolder extends ASTNode{
      * contains {ParameterDefinition} as children
      * @constructor
      */
-    constructor(args) {
-        super('ArgumentParameterDefinitionHolder');
-    }
+  constructor(args) {
+    super('ArgumentParameterDefinitionHolder');
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        let self = this;
-        _.each(jsonNode.children, function (childNode){
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default ArgumentParameterDefinitionHolder;

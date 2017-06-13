@@ -27,54 +27,54 @@ import BallerinaASTFactory from './../ast/ballerina-ast-factory';
  * @constructor
  */
 class ConnectorAction extends ASTNode {
-    constructor(args) {
-        super('ConnectorAction');
-        this.action_name = _.get(args, 'action_name');
-        this.arguments = _.get(args, 'arguments', []);
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: ' ',
-            1: ' ',
-            2: ' ',
-            3: ' ',
-            4: ' ',
-            5: '\n',
-            6: '\n'
-        };
-    }
+  constructor(args) {
+    super('ConnectorAction');
+    this.action_name = _.get(args, 'action_name');
+    this.arguments = _.get(args, 'arguments', []);
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: ' ',
+      2: ' ',
+      3: ' ',
+      4: ' ',
+      5: '\n',
+      6: '\n',
+    };
+  }
 
     /**
      * Get the name of action
      * @return {string} action_name - Action Name
      */
-    getActionName() {
-        return this.action_name;
-    }
+  getActionName() {
+    return this.action_name;
+  }
 
     /**
      * Get the action Arguments
      * @return {Object[]} arguments - Action Arguments
      */
-    getArguments() {
-        return this.getArgumentParameterDefinitionHolder().getChildren();
-    }
+  getArguments() {
+    return this.getArgumentParameterDefinitionHolder().getChildren();
+  }
 
-    getArgumentParameterDefinitionHolder() {
-        let argParamDefHolder = this.findChild(this.getFactory().isArgumentParameterDefinitionHolder);
-        if (_.isUndefined(argParamDefHolder)) {
-            argParamDefHolder = this.getFactory().createArgumentParameterDefinitionHolder();
-            this.addChild(argParamDefHolder);
-        }
-        return argParamDefHolder;
+  getArgumentParameterDefinitionHolder() {
+    let argParamDefHolder = this.findChild(this.getFactory().isArgumentParameterDefinitionHolder);
+    if (_.isUndefined(argParamDefHolder)) {
+      argParamDefHolder = this.getFactory().createArgumentParameterDefinitionHolder();
+      this.addChild(argParamDefHolder);
     }
+    return argParamDefHolder;
+  }
 
     /**
      * Set the Action name
      * @param {string} name - Action Name
      * @param {object} options - attribute options
      */
-    setActionName(name, options) {
-        this.setAttribute('action_name', name, options);
-    }
+  setActionName(name, options) {
+    this.setAttribute('action_name', name, options);
+  }
 
     /**
      * Set the Action name
@@ -85,268 +85,257 @@ class ConnectorAction extends ASTNode {
      * @param {string} name - Action Name
      * @param {object} options - attribute options
      */
-    setConnectorActionName(name, options) {
-        this.setActionName(name, options);
-    }
+  setConnectorActionName(name, options) {
+    this.setActionName(name, options);
+  }
 
     /**
      * Get the variable Declarations
      * @return {VariableDeclaration[]} variableDeclarations
      */
-    getVariableDefinitionStatements() {
-        let variableDefinitionStatements = [];
-        let self = this;
+  getVariableDefinitionStatements() {
+    const variableDefinitionStatements = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isVariableDefinitionStatement(child)) {
-                variableDefinitionStatements.push(child);
-            }
-        });
-        return variableDefinitionStatements;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isVariableDefinitionStatement(child)) {
+        variableDefinitionStatements.push(child);
+      }
+    });
+    return variableDefinitionStatements;
+  }
 
     /**
      * Remove variable declaration.
      */
-    removeVariableDeclaration(variableDeclarationIdentifier) {
-        let self = this;
+  removeVariableDeclaration(variableDeclarationIdentifier) {
+    const self = this;
         // Removing the variable from the children.
-        let variableDeclarationChild = _.find(this.getChildren(), function (child) {
-            return self.getFactory().isVariableDeclaration(child)
-                && child.getIdentifier() === variableDeclarationIdentifier;
-        });
-        this.removeChild(variableDeclarationChild);
-    }
+    const variableDeclarationChild = _.find(this.getChildren(), child => self.getFactory().isVariableDeclaration(child)
+                && child.getIdentifier() === variableDeclarationIdentifier);
+    this.removeChild(variableDeclarationChild);
+  }
 
     /**
      * Adds new variable declaration.
      */
-    addVariableDeclaration(newVariableDeclaration) {
-        let self = this;
+  addVariableDeclaration(newVariableDeclaration) {
+    const self = this;
         // Get the index of the last variable declaration.
-        let index = _.findLastIndex(this.getChildren(), function (child) {
-            return self.getFactory().isVariableDeclaration(child);
-        });
+    let index = _.findLastIndex(this.getChildren(), child => self.getFactory().isVariableDeclaration(child));
 
         // index = -1 when there are not any variable declarations, hence get the index for connector
         // declarations.
-        if (index === -1) {
-            index = _.findLastIndex(this.getChildren(), function (child) {
-                return self.getFactory().isConnectorDeclaration(child);
-            });
-        }
-
-        this.addChild(newVariableDeclaration, index + 1);
+    if (index === -1) {
+      index = _.findLastIndex(this.getChildren(), child => self.getFactory().isConnectorDeclaration(child));
     }
 
-    //// Start of return type functions.
+    this.addChild(newVariableDeclaration, index + 1);
+  }
+
+    // // Start of return type functions.
 
     /**
      * Gets the return type as a string separated by commas.
      * @return {string} - Return types.
      */
-    getReturnTypesAsString() {
-        let returnTypes = [];
-        _.forEach(this.getReturnTypes(), function (returnTypeChild, index) {
-            let returnTypeTxt = (index !== 0 && returnTypeChild.whiteSpace.useDefault) ? ' ' : '';
-            returnTypeTxt += returnTypeChild.getParameterDefinitionAsString();
-            returnTypes.push(returnTypeTxt);
-        });
+  getReturnTypesAsString() {
+    const returnTypes = [];
+    _.forEach(this.getReturnTypes(), (returnTypeChild, index) => {
+      let returnTypeTxt = (index !== 0 && returnTypeChild.whiteSpace.useDefault) ? ' ' : '';
+      returnTypeTxt += returnTypeChild.getParameterDefinitionAsString();
+      returnTypes.push(returnTypeTxt);
+    });
 
-        return _.join(returnTypes, ',');
-    }
+    return _.join(returnTypes, ',');
+  }
 
     /**
      * Gets the defined return types.
      * @return {ParameterDefinition[]} - Array of return arguments.
      */
-    getReturnTypes() {
-        return this.getReturnParameterDefinitionHolder().getChildren();
-    }
+  getReturnTypes() {
+    return this.getReturnParameterDefinitionHolder().getChildren();
+  }
 
-    getReturnParameterDefinitionHolder() {
-        let returnParamDefHolder = this.findChild(this.getFactory().isReturnParameterDefinitionHolder);
-        if (_.isUndefined(returnParamDefHolder)) {
-            returnParamDefHolder = this.getFactory().createReturnParameterDefinitionHolder();
-            this.addChild(returnParamDefHolder);
-        }
-        return returnParamDefHolder;
+  getReturnParameterDefinitionHolder() {
+    let returnParamDefHolder = this.findChild(this.getFactory().isReturnParameterDefinitionHolder);
+    if (_.isUndefined(returnParamDefHolder)) {
+      returnParamDefHolder = this.getFactory().createReturnParameterDefinitionHolder();
+      this.addChild(returnParamDefHolder);
     }
+    return returnParamDefHolder;
+  }
 
     /**
      * Adds a new argument to return type model.
      * @param {string} type - The type of the argument.
      * @param {string} identifier - The identifier of the argument.
      */
-    addReturnType(type, identifier) {
-        let returnParamDefHolder = this.getReturnParameterDefinitionHolder();
+  addReturnType(type, identifier) {
+    const returnParamDefHolder = this.getReturnParameterDefinitionHolder();
 
         // Adding return type mode if it doesn't exists.
-        if (_.isUndefined(this.getReturnTypeModel())) {
-            this.addChild(this.getFactory().createReturnType());
-        }
+    if (_.isUndefined(this.getReturnTypeModel())) {
+      this.addChild(this.getFactory().createReturnType());
+    }
 
         // Check if there is already a return type with the same identifier.
-        if (!_.isUndefined(identifier)) {
-            let child = returnParamDefHolder.findChildByIdentifier(true, identifier);
-            if (_.isUndefined(child)) {
-                let errorString = "An return argument with identifier '" + identifier + "' already exists.";
-                log.error(errorString);
-                throw errorString;
-            }
-        }
+    if (!_.isUndefined(identifier)) {
+      const child = returnParamDefHolder.findChildByIdentifier(true, identifier);
+      if (_.isUndefined(child)) {
+        const errorString = `An return argument with identifier '${identifier}' already exists.`;
+        log.error(errorString);
+        throw errorString;
+      }
+    }
 
         // Validating whether return type can be added based on identifiers of other return types.
-        if (!_.isUndefined(identifier)) {
-            if (!this.hasNamedReturnTypes() && this.hasReturnTypes()) {
-                let errorStringWithoutIdentifiers = "Return types without identifiers already exists. Remove them to " +
-                    "add return types with identifiers.";
-                log.error(errorStringWithoutIdentifiers);
-                throw errorStringWithoutIdentifiers;
-            }
-        } else {
-            if (this.hasNamedReturnTypes() && this.hasReturnTypes()) {
-                let errorStringWithIdentifiers = "Return types with identifiers already exists. Remove them to add " +
-                    "return types without identifiers.";
-                log.error(errorStringWithIdentifiers);
-                throw errorStringWithIdentifiers;
-            }
-        }
-
-        let paramDef = this.getFactory().createParameterDefinition({typeName: type, name: identifier});
-        returnParamDefHolder.addChild(paramDef, 0);
+    if (!_.isUndefined(identifier)) {
+      if (!this.hasNamedReturnTypes() && this.hasReturnTypes()) {
+        const errorStringWithoutIdentifiers = 'Return types without identifiers already exists. Remove them to ' +
+                    'add return types with identifiers.';
+        log.error(errorStringWithoutIdentifiers);
+        throw errorStringWithoutIdentifiers;
+      }
+    } else if (this.hasNamedReturnTypes() && this.hasReturnTypes()) {
+      const errorStringWithIdentifiers = 'Return types with identifiers already exists. Remove them to add ' +
+                    'return types without identifiers.';
+      log.error(errorStringWithIdentifiers);
+      throw errorStringWithIdentifiers;
     }
 
-    hasNamedReturnTypes() {
-        if (this.getReturnParameterDefinitionHolder().getChildren().length === 0) {
-            //if there are no return types in the return type model
-            return false;
-        } else {
-            //check if any of the return types have identifiers
-            let indexWithoutIdentifiers = _.findIndex(this.getReturnParameterDefinitionHolder().getChildren(), function (child) {
-                return _.isUndefined(child.getName());
-            });
+    const paramDef = this.getFactory().createParameterDefinition({ typeName: type, name: identifier });
+    returnParamDefHolder.addChild(paramDef, 0);
+  }
 
-            return indexWithoutIdentifiers === -1;
-        }
+  hasNamedReturnTypes() {
+    if (this.getReturnParameterDefinitionHolder().getChildren().length === 0) {
+            // if there are no return types in the return type model
+      return false;
     }
+            // check if any of the return types have identifiers
+    const indexWithoutIdentifiers = _.findIndex(this.getReturnParameterDefinitionHolder().getChildren(), child => _.isUndefined(child.getName()));
 
-    hasReturnTypes() {
-        return this.getReturnParameterDefinitionHolder().getChildren().length > 0;
-    }
+    return indexWithoutIdentifiers === -1;
+  }
+
+  hasReturnTypes() {
+    return this.getReturnParameterDefinitionHolder().getChildren().length > 0;
+  }
 
     /**
      * Removes return type argument from the return type model.
      * @param {string} modelID - The id of an {Argument} which resides in the return type model.
      */
-    removeReturnType(modelID) {
-        let removeChild = this.getReturnParameterDefinitionHolder().removeChildById(this.getFactory().isParameterDefinition, modelID);
+  removeReturnType(modelID) {
+    const removeChild = this.getReturnParameterDefinitionHolder().removeChildById(this.getFactory().isParameterDefinition, modelID);
 
         // Deleting the argument from the AST.
-        if (_.isUndefined(removeChild)) {
-            let exceptionString = "Could not find a return type with id : " + modelID;
-            log.error(exceptionString);
-            throw exceptionString;
-        }
+    if (_.isUndefined(removeChild)) {
+      const exceptionString = `Could not find a return type with id : ${modelID}`;
+      log.error(exceptionString);
+      throw exceptionString;
     }
+  }
 
-    //// End of return type functions.
+    // // End of return type functions.
 
     /**
      * Returns the list of arguments as a string separated by commas.
      * @return {string} - Arguments as string.
      */
-    getArgumentsAsString() {
-        let argsAsString = "";
-        let args = this.getArguments();
-        _.forEach(args, function (argument, index) {
-            argsAsString += argument.getTypeName() + " ";
-            argsAsString += argument.getName();
-            if (args.length - 1 !== index) {
-                argsAsString += " , ";
-            }
-        });
-        return argsAsString;
-    }
+  getArgumentsAsString() {
+    let argsAsString = '';
+    const args = this.getArguments();
+    _.forEach(args, (argument, index) => {
+      argsAsString += `${argument.getTypeName()} `;
+      argsAsString += argument.getName();
+      if (args.length - 1 !== index) {
+        argsAsString += ' , ';
+      }
+    });
+    return argsAsString;
+  }
 
     /**
      * Adds new argument to the connector action.
      * @param type - The type of the argument.
      * @param identifier - The identifier of the argument.
      */
-    addArgument(type, identifier) {
-        //creating argument
-        let newArgumentParamDef = this.getFactory().createParameterDefinition();
-        newArgumentParamDef.setTypeName(type);
-        newArgumentParamDef.setName(identifier);
+  addArgument(type, identifier) {
+        // creating argument
+    const newArgumentParamDef = this.getFactory().createParameterDefinition();
+    newArgumentParamDef.setTypeName(type);
+    newArgumentParamDef.setName(identifier);
 
-        let argParamDefHolder = this.getArgumentParameterDefinitionHolder();
-        let index = argParamDefHolder.getChildren().length;
+    const argParamDefHolder = this.getArgumentParameterDefinitionHolder();
+    const index = argParamDefHolder.getChildren().length;
 
-        argParamDefHolder.addChild(newArgumentParamDef, index + 1);
-    }
+    argParamDefHolder.addChild(newArgumentParamDef, index + 1);
+  }
 
     /**
      * Removes an argument from a function definition.
      * @param identifier - The identifier of the argument.
      * @return {Array} - The removed argument.
      */
-    removeArgument(identifier) {
-        let argParamDefHolder = this.getArgumentParameterDefinitionHolder();
-        argParamDefHolder.removeChildByName(this.getFactory().isParameterDefinition, identifier);
-    }
+  removeArgument(identifier) {
+    const argParamDefHolder = this.getArgumentParameterDefinitionHolder();
+    argParamDefHolder.removeChildByName(this.getFactory().isParameterDefinition, identifier);
+  }
 
-    getConnectionDeclarations() {
-        let connectorDeclaration = [];
-        let self = this;
+  getConnectionDeclarations() {
+    const connectorDeclaration = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isConnectorDeclaration(child)) {
-                connectorDeclaration.push(child);
-            }
-        });
-        return _.sortBy(connectorDeclaration, [function (connectorDeclaration) {
-            return connectorDeclaration.getConnectorVariable();
-        }]);
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isConnectorDeclaration(child)) {
+        connectorDeclaration.push(child);
+      }
+    });
+    return _.sortBy(connectorDeclaration, [function (connectorDeclaration) {
+      return connectorDeclaration.getConnectorVariable();
+    }]);
+  }
 
-    getWorkerDeclarations() {
-        let workerDeclarations = [];
-        let self = this;
+  getWorkerDeclarations() {
+    const workerDeclarations = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isWorkerDeclaration(child)) {
-                workerDeclarations.push(child);
-            }
-        });
-        return _.sortBy(workerDeclarations, [function (workerDeclaration) {
-            return workerDeclaration.getWorkerName();
-        }]);
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isWorkerDeclaration(child)) {
+        workerDeclarations.push(child);
+      }
+    });
+    return _.sortBy(workerDeclarations, [function (workerDeclaration) {
+      return workerDeclaration.getWorkerName();
+    }]);
+  }
 
     /**
      * initialize ConnectorAction from json object
      * @param {Object} jsonNode to initialize from
      * @param {string} [jsonNode.resource_name] - Name of the resource definition
      */
-    initFromJson(jsonNode) {
-        let self = this;
-        this.setActionName(jsonNode.action_name, {doSilently: true});
+  initFromJson(jsonNode) {
+    const self = this;
+    this.setActionName(jsonNode.action_name, { doSilently: true });
 
-        _.each(jsonNode.children, function (childNode) {
-            let child = undefined;
-            let childNodeTemp = undefined;
-            if (childNode.type === "variable_definition_statement" && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
-                child = self.getFactory().createConnectorDeclaration();
-                childNodeTemp = childNode;
-            } else {
-                child = self.getFactory().createFromJson(childNode);
-                childNodeTemp = childNode;
-            }
-            self.addChild(child);
-            child.initFromJson(childNodeTemp);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      let child;
+      let childNodeTemp;
+      if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+        child = self.getFactory().createConnectorDeclaration();
+        childNodeTemp = childNode;
+      } else {
+        child = self.getFactory().createFromJson(childNode);
+        childNodeTemp = childNode;
+      }
+      self.addChild(child);
+      child.initFromJson(childNodeTemp);
+    });
+  }
 
     /**
      * Validates possible immediate child types.
@@ -354,12 +343,12 @@ class ConnectorAction extends ASTNode {
      * @param node
      * @return {boolean}
      */
-    canBeParentOf(node) {
-        return this.getFactory().isConnectorDeclaration(node)
+  canBeParentOf(node) {
+    return this.getFactory().isConnectorDeclaration(node)
             || this.getFactory().isVariableDeclaration(node)
             || this.getFactory().isWorkerDeclaration(node)
             || this.getFactory().isStatement(node);
-    }
+  }
 
     /**
      * Override the addChild method for ordering the child elements as
@@ -367,70 +356,64 @@ class ConnectorAction extends ASTNode {
      * @param {ASTNode} child
      * @param {number|undefined} index
      */
-    addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId)  {
-        if (BallerinaASTFactory.isWorkerDeclaration(child)) {
-            Object.getPrototypeOf(this.constructor.prototype)
+  addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) {
+    if (BallerinaASTFactory.isWorkerDeclaration(child)) {
+      Object.getPrototypeOf(this.constructor.prototype)
               .addChild.call(this, child, undefined, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
-        } else {
-            const firstWorkerIndex = _.findIndex(this.getChildren(), function (child) {
-                return BallerinaASTFactory.isWorkerDeclaration(child);
-            });
+    } else {
+      const firstWorkerIndex = _.findIndex(this.getChildren(), child => BallerinaASTFactory.isWorkerDeclaration(child));
 
-            if (firstWorkerIndex > -1 && _.isNil(index)) {
-                index = firstWorkerIndex;
-            }
-            Object.getPrototypeOf(this.constructor.prototype)
+      if (firstWorkerIndex > -1 && _.isNil(index)) {
+        index = firstWorkerIndex;
+      }
+      Object.getPrototypeOf(this.constructor.prototype)
             .addChild.call(this, child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
-        }
     }
+  }
 
     /**
      * @inheritDoc
      * @override
      */
-    generateUniqueIdentifiers() {
-        CommonUtils.generateUniqueIdentifier({
-            node: this,
-            attributes: [{
-                defaultValue: 'Action',
-                setter: this.setActionName,
-                getter: this.getActionName,
-                parents: [{
+  generateUniqueIdentifiers() {
+    CommonUtils.generateUniqueIdentifier({
+      node: this,
+      attributes: [{
+        defaultValue: 'Action',
+        setter: this.setActionName,
+        getter: this.getActionName,
+        parents: [{
                     // ballerina-ast-node
-                    node: this.parent,
-                    getChildrenFunc: this.parent.getConnectorActionDefinitions,
-                    getter: this.getActionName
-                }]
-            }]
-        });
-    }
+          node: this.parent,
+          getChildrenFunc: this.parent.getConnectorActionDefinitions,
+          getter: this.getActionName,
+        }],
+      }],
+    });
+  }
 
     /**
      * Get the connector by name
      * @param {string} connectorName
      * @return {ConnectorDeclaration}
      */
-    getConnectorByName(connectorName) {
-        let self = this;
-        let connectorReference = _.find(this.getChildren(), function (child) {
-            return (self.getFactory().isConnectorDeclaration(child) && (child.getConnectorVariable() === connectorName));
-        });
+  getConnectorByName(connectorName) {
+    const self = this;
+    const connectorReference = _.find(this.getChildren(), child => (self.getFactory().isConnectorDeclaration(child) && (child.getConnectorVariable() === connectorName)));
 
-        return !_.isNil(connectorReference) ? connectorReference : this.getParent().getConnectorByName(connectorName);
-    }
+    return !_.isNil(connectorReference) ? connectorReference : this.getParent().getConnectorByName(connectorName);
+  }
 
     /**
      * Get all the connector references in the immediate scope
      * @return {Array} connectorReferences
      */
-    getConnectorsInImmediateScope() {
-        let factory = this.getFactory();
-        let connectorReferences = _.filter(this.getChildren(), function (child) {
-            return factory.isConnectorDeclaration(child);
-        });
+  getConnectorsInImmediateScope() {
+    const factory = this.getFactory();
+    const connectorReferences = _.filter(this.getChildren(), child => factory.isConnectorDeclaration(child));
 
-        return !_.isEmpty(connectorReferences) ? connectorReferences : this.getParent().getConnectorsInImmediateScope();
-    }
+    return !_.isEmpty(connectorReferences) ? connectorReferences : this.getParent().getConnectorsInImmediateScope();
+  }
 }
 
 export default ConnectorAction;

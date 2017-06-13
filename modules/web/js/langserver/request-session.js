@@ -20,46 +20,46 @@ import log from 'log';
 import _ from 'lodash';
 
 class RequestSession {
-    constructor() {
-        this._callback = undefined;
-        this.message = undefined;
-        this._id = uuid();
-    }
+  constructor() {
+    this._callback = undefined;
+    this.message = undefined;
+    this._id = uuid();
+  }
 
-    getCallback() {
-        return this._callback;
-    }
+  getCallback() {
+    return this._callback;
+  }
 
-    getId() {
-        return this._id;
-    }
+  getId() {
+    return this._id;
+  }
 
-    getMessage() {
-        return this._message;
-    }
+  getMessage() {
+    return this._message;
+  }
 
-    setMessage(message) {
-        this._message = message;
-    }
+  setMessage(message) {
+    this._message = message;
+  }
 
-    setCallback(callback) {
-        this._callback = callback;
-    }
+  setCallback(callback) {
+    this._callback = callback;
+  }
 
-    executeCallback(message) {
-        this._callback(message);
-    }
+  executeCallback(message) {
+    this._callback(message);
+  }
 }
 
 // Auto generated Id for the session
-var uuid =  function (){
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
+var uuid = function () {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
             .toString(16)
             .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+  }
+  return `${s4() + s4()}-${s4()}-${s4()}-${
+        s4()}-${s4()}${s4()}${s4()}`;
 };
 
-export default  RequestSession;
+export default RequestSession;

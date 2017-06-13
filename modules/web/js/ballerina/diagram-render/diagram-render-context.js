@@ -25,69 +25,69 @@ import _ from 'lodash';
  * @constructor
  */
 class DiagramRenderContext {
-    constructor(options) {
+  constructor(options) {
         // map object for storing view references against models
-        this.viewModelMap = {};
-        this.environment = Environment;
-        this.packagedScopedEnvironemnt = PackageScopedEnvironemnt;
-        this._application = _.get(options, 'application');
-    }
+    this.viewModelMap = {};
+    this.environment = Environment;
+    this.packagedScopedEnvironemnt = PackageScopedEnvironemnt;
+    this._application = _.get(options, 'application');
+  }
 
     /**
     * getter for viewModelMap
     * @returns {{}|*}
     */
-    getViewModelMap() {
-        return this.viewModelMap;
-    }
+  getViewModelMap() {
+    return this.viewModelMap;
+  }
 
     /**
     * get view for node
     * @returns {{}|*}
     */
-    getViewOfModel(model) {
-        return _.get(this.viewModelMap, model.id);
-    }
+  getViewOfModel(model) {
+    return _.get(this.viewModelMap, model.id);
+  }
 
     /**
     * set view of node
     * @returns {{}|*}
     */
-    setViewOfModel(model, view) {
-        return _.set(this.viewModelMap, model.id, view);
-    }
+  setViewOfModel(model, view) {
+    return _.set(this.viewModelMap, model.id, view);
+  }
 
     /**
     * get environment
     * @returns {*}
     */
-    getEnvironment() {
-        return this.environment;
-    }
+  getEnvironment() {
+    return this.environment;
+  }
 
     /**
     * get packageScopedEnvironment
     * @returns {*}
     */
-    getPackagedScopedEnvironment() {
-        return this.packagedScopedEnvironemnt;
-    }
+  getPackagedScopedEnvironment() {
+    return this.packagedScopedEnvironemnt;
+  }
 
     /**
      * Get the applications
      * @return {*}
      */
-    getApplication() {
-        return this._application;
-    }
+  getApplication() {
+    return this._application;
+  }
 
     /**
      * Get the language server client controller
      * @return {LangServerClientController}
      */
-    getLanguageServerClientController() {
-        return this.getApplication().langseverClientController;
-    }
+  getLanguageServerClientController() {
+    return this.getApplication().langseverClientController;
+  }
 
 }
 

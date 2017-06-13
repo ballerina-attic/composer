@@ -16,7 +16,7 @@
  * under the License.
  */
 import React from 'react';
-import './globals-expanded.css'
+import './globals-expanded.css';
 import ImageUtil from './image-util';
 import PropTypes from 'prop-types';
 import SuggestionsText from './suggestions-text';
@@ -25,111 +25,117 @@ import EditableText from './editable-text';
 import BallerinaEnvironment from '../env/environment';
 
 export default class GlobalExpanded extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            editing: false,
-            value: '',
-        }
-        this.handleAddGlobalClick = this.handleAddGlobalClick.bind(this);
-        this.handleAddGlobalBlur = this.handleAddGlobalBlur.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.onKeyDown = this.onKeyDown.bind(this);
+  constructor() {
+    super();
+    this.state = {
+      editing: false,
+      value: '',
+    };
+    this.handleAddGlobalClick = this.handleAddGlobalClick.bind(this);
+    this.handleAddGlobalBlur = this.handleAddGlobalBlur.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  handleAddGlobalClick() {
+    this.setState({ editing: true });
+  }
+
+  handleAddGlobalBlur() {
+    this.setState({ editing: false });
+    this.props.onAddInputBlur && this.props.onAddInputBlur(this.state.value);
+  }
+
+  onChange(e) {
+    this.setState({ value: e.target.value });
+  }
+
+  onKeyDown(e) {
+    if (e.keyCode === 13) {
+      this.props.onAddNewValue(this.state.value);
+      this.setState({
+        value: '',
+      });
     }
+  }
 
-    handleAddGlobalClick() {
-        this.setState({editing: true});
-    }
+  render() {
+    const bBox = this.props.bBox;
+    const globalHeight = 30;
+    const globalInputHeight = 40;
+    const globalDeclarationWidth = 310;
+    const leftPadding = 10;
+    const topBarHeight = 25;
+    const iconSize = 20;
+    const globalElements = [];
 
-    handleAddGlobalBlur() {
-        this.setState({editing: false});
-        this.props.onAddInputBlur && this.props.onAddInputBlur(this.state.value);
-    }
+    const topBarBbox = {
+      x: bBox.x,
+      y: bBox.y,
+    };
 
-    onChange(e) {
-        this.setState({value: e.target.value});
-    }
+    let lastGlobalElementY = topBarBbox.y + topBarHeight;
 
-    onKeyDown(e) {
-        if(e.keyCode === 13) {
-            this.props.onAddNewValue(this.state.value);
-            this.setState({
-                value: ''
-            });
-        }
-    }
+    this.props.globals.forEach((globalDec) => {
+      const itemBBox = {
+        x: bBox.x,
+        y: lastGlobalElementY,
+        h: globalHeight,
+        w: globalDeclarationWidth,
+      };
 
-    render() {
-        const bBox = this.props.bBox;
-        const globalHeight = 30;
-        const globalInputHeight = 40;
-        const globalDeclarationWidth = 310;
-        const leftPadding = 10;
-        const topBarHeight = 25;
-        const iconSize = 20;
-        const globalElements = [];
+      globalElements.push(<GlobalItem
+        key={globalDec.id} bBox={itemBBox}
+        globalDec={globalDec} getValue={this.props.getValue} onDeleteClick={this.props.onDeleteClick}
+      />);
+      lastGlobalElementY += globalHeight;
+    });
 
-        const topBarBbox = {
-            x: bBox.x,
-            y: bBox.y
-        }
+    const textBoxBBox = {
+      x: bBox.x + 5,
+      y: lastGlobalElementY + 2,
+      h: globalInputHeight - 4,
+      w: globalDeclarationWidth - 10,
+    };
 
-        let lastGlobalElementY = topBarBbox.y + topBarHeight;
+    const options = {
+      bBox: textBoxBBox,
+      onChange: () => {},
+      initialValue: '',
+    };
 
-        this.props.globals.forEach(globalDec => {
-            const itemBBox = {
-                x: bBox.x,
-                y: lastGlobalElementY,
-                h: globalHeight,
-                w: globalDeclarationWidth
-            };
-
-            globalElements.push(<GlobalItem key={globalDec.id} bBox={itemBBox}
-                globalDec={globalDec} getValue={this.props.getValue} onDeleteClick={this.props.onDeleteClick} />);
-            lastGlobalElementY += globalHeight;
-        });
-
-        const textBoxBBox = {
-            x: bBox.x + 5,
-            y: lastGlobalElementY + 2,
-            h: globalInputHeight - 4,
-            w: globalDeclarationWidth - 10
-        };
-
-        const options = {
-            bBox: textBoxBBox,
-            onChange: () => {},
-            initialValue: '',
-        }
-
-        return (
-            <g className="global-definitions-collection">
-                <rect x={ topBarBbox.x } y={ topBarBbox.y } height={topBarHeight} width={globalDeclarationWidth} style={ { fill: "#ddd"} } />
-                <rect x={ topBarBbox.x } y={ topBarBbox.y } height={topBarHeight} className="global-definition-decorator" />
-                <text x={ topBarBbox.x + leftPadding } y={ topBarBbox.y + topBarHeight/2} className="global-definitions-topbar-label">
-                    {this.props.title}</text>
-                <image width={ iconSize } height={ iconSize } className="property-pane-action-button-delete"
-                    onClick={this.props.onCollapse} xlinkHref={ ImageUtil.getSVGIconString('hide') }
-                    x={bBox.x + globalDeclarationWidth - iconSize - 6 } y={topBarBbox.y + (topBarHeight-iconSize)/2}/>
-                {globalElements}
-                <rect x={ bBox.x } y={ lastGlobalElementY } height={globalInputHeight} width={globalDeclarationWidth} className="add-global-button-background" />
-                <EditableText
-                    x={ bBox.x + 5 } y={lastGlobalElementY + globalHeight/2 + 6}
-                    height={globalInputHeight - 10} width={globalDeclarationWidth-10}
-                    onBlur={this.handleAddGlobalBlur}
-                    editing={this.state.editing}
-                    onChange={this.onChange}
-                    onKeyDown={this.onKeyDown}
-                    >
-                    {this.state.value}
-                </EditableText>
-                <rect x={ bBox.x } y={ lastGlobalElementY } height={globalInputHeight} width={globalDeclarationWidth} className="global-definition-decorator" />
-                <g onClick={this.handleAddGlobalClick}>
-                    <rect x={ bBox.x + 7 } y={ lastGlobalElementY + 7 } height={globalInputHeight - 14} width={globalDeclarationWidth - 14}
-                        className="add-global-button" />
-                    <text x={ bBox.x + 14 } y={ lastGlobalElementY + globalInputHeight/2 } className="add-global-button-text" >{this.props.addText}</text>
-                </g>
-            </g>
-        );
-    }
+    return (
+      <g className="global-definitions-collection">
+        <rect x={topBarBbox.x} y={topBarBbox.y} height={topBarHeight} width={globalDeclarationWidth} style={{ fill: '#ddd' }} />
+        <rect x={topBarBbox.x} y={topBarBbox.y} height={topBarHeight} className="global-definition-decorator" />
+        <text x={topBarBbox.x + leftPadding} y={topBarBbox.y + topBarHeight / 2} className="global-definitions-topbar-label">
+          {this.props.title}</text>
+        <image
+          width={iconSize} height={iconSize} className="property-pane-action-button-delete"
+          onClick={this.props.onCollapse} xlinkHref={ImageUtil.getSVGIconString('hide')}
+          x={bBox.x + globalDeclarationWidth - iconSize - 6} y={topBarBbox.y + (topBarHeight - iconSize) / 2}
+        />
+        {globalElements}
+        <rect x={bBox.x} y={lastGlobalElementY} height={globalInputHeight} width={globalDeclarationWidth} className="add-global-button-background" />
+        <EditableText
+          x={bBox.x + 5} y={lastGlobalElementY + globalHeight / 2 + 6}
+          height={globalInputHeight - 10} width={globalDeclarationWidth - 10}
+          onBlur={this.handleAddGlobalBlur}
+          editing={this.state.editing}
+          onChange={this.onChange}
+          onKeyDown={this.onKeyDown}
+        >
+          {this.state.value}
+        </EditableText>
+        <rect x={bBox.x} y={lastGlobalElementY} height={globalInputHeight} width={globalDeclarationWidth} className="global-definition-decorator" />
+        <g onClick={this.handleAddGlobalClick}>
+          <rect
+            x={bBox.x + 7} y={lastGlobalElementY + 7} height={globalInputHeight - 14} width={globalDeclarationWidth - 14}
+            className="add-global-button"
+          />
+          <text x={bBox.x + 14} y={lastGlobalElementY + globalInputHeight / 2} className="add-global-button-text" >{this.props.addText}</text>
+        </g>
+      </g>
+    );
+  }
 }

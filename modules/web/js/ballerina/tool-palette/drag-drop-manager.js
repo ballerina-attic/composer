@@ -18,18 +18,18 @@
 import log from 'log';
 import _ from 'lodash';
 import Backbone from 'backbone';
-var DragDropManager = Backbone.Model.extend(
+const DragDropManager = Backbone.Model.extend(
     /** @lends DragDropManager.prototype */
-    {
-        modelName: "DragDropManager",
+  {
+    modelName: 'DragDropManager',
         /**
          * @augments Backbone.Model
          * @constructs
          * @class Handles validations for drag and drop
          */
-        initialize: function (attrs, options) {
-            this.idAttribute = this.cid;
-        },
+    initialize(attrs, options) {
+      this.idAttribute = this.cid;
+    },
 
         /**
          * Set the ASTNode being dragged at a given moment.
@@ -37,15 +37,15 @@ var DragDropManager = Backbone.Model.extend(
          * @param validateDropTargetCallback {DragDropManager~validateDropTargetCallback} - call back to do additional validations on drop target
          *
          */
-        setNodeBeingDragged: function (type, validateDropTargetCallback) {
-            if (!_.isUndefined(type)) {
-                this.set('nodeBeingDragged', type);
-            }
-            if (!_.isUndefined(validateDropTargetCallback)) {
-                this.set('validateDropTargetCallback', validateDropTargetCallback);
-            }
-            this.trigger('drag-start', this.get('nodeBeingDragged'));
-        },
+    setNodeBeingDragged(type, validateDropTargetCallback) {
+      if (!_.isUndefined(type)) {
+        this.set('nodeBeingDragged', type);
+      }
+      if (!_.isUndefined(validateDropTargetCallback)) {
+        this.set('validateDropTargetCallback', validateDropTargetCallback);
+      }
+      this.trigger('drag-start', this.get('nodeBeingDragged'));
+    },
 
         /**
          * This callback will be passed a ref of currently activated drop target - so they can do additional validations
@@ -59,27 +59,27 @@ var DragDropManager = Backbone.Model.extend(
          * Gets the node which is being dragged at a given moment - if any.
          * @return {ASTNode}
          */
-        getNodeBeingDragged: function () {
-            return  this.get('nodeBeingDragged');
-        },
+    getNodeBeingDragged() {
+      return this.get('nodeBeingDragged');
+    },
 
         /**
          * Reset drag-drop manager. Call this once dragging stops.
          * @fires DragDropManager#drag-stop
          */
-        reset: function(){
+    reset() {
             /**
              * @event DragDropManager#drag-stop
              * @type {ASTNode}
              */
-            this.trigger('drag-stop', this.get('nodeBeingDragged'));
-            this.trigger('drop-target-changed', undefined);
-            this.set('nodeBeingDragged', undefined);
-            this.set('validateDropTargetCallback', undefined);
-            this.set('activatedDropTarget', undefined);
-            this.set('validateDropSourceCallback', undefined);
-            this.set('getDroppedNodeIndexCallBack', undefined);
-        },
+      this.trigger('drag-stop', this.get('nodeBeingDragged'));
+      this.trigger('drop-target-changed', undefined);
+      this.set('nodeBeingDragged', undefined);
+      this.set('validateDropTargetCallback', undefined);
+      this.set('activatedDropTarget', undefined);
+      this.set('validateDropSourceCallback', undefined);
+      this.set('getDroppedNodeIndexCallBack', undefined);
+    },
 
         /**
          * Register a drop target once activated.
@@ -89,25 +89,25 @@ var DragDropManager = Backbone.Model.extend(
          * @param [getDroppedNodeIndexCallBack] {DragDropManager~getDroppedNodeIndex}
          * @fires DragDropManager#drop-target-changed
          */
-        setActivatedDropTarget: function (activatedDropTarget, validateDropSourceCallback, getDroppedNodeIndexCallBack) {
-            var lastActivatedDropTarget = this.get('activatedDropTarget');
-            if (!_.isUndefined(activatedDropTarget)) {
-                this.set('activatedDropTarget', activatedDropTarget);
-            }
-            if (!_.isUndefined(validateDropSourceCallback)) {
-                this.set('validateDropSourceCallback', validateDropSourceCallback);
-            }
-            if (!_.isUndefined(getDroppedNodeIndexCallBack)) {
-                this.set('getDroppedNodeIndexCallBack', getDroppedNodeIndexCallBack);
-            }
-            if (!_.isEqual(activatedDropTarget, lastActivatedDropTarget)){
+    setActivatedDropTarget(activatedDropTarget, validateDropSourceCallback, getDroppedNodeIndexCallBack) {
+      const lastActivatedDropTarget = this.get('activatedDropTarget');
+      if (!_.isUndefined(activatedDropTarget)) {
+        this.set('activatedDropTarget', activatedDropTarget);
+      }
+      if (!_.isUndefined(validateDropSourceCallback)) {
+        this.set('validateDropSourceCallback', validateDropSourceCallback);
+      }
+      if (!_.isUndefined(getDroppedNodeIndexCallBack)) {
+        this.set('getDroppedNodeIndexCallBack', getDroppedNodeIndexCallBack);
+      }
+      if (!_.isEqual(activatedDropTarget, lastActivatedDropTarget)) {
                 /**
                  * @event DragDropManager#drop-target-changed
                  * @type ASTNode
                  */
-                this.trigger('drop-target-changed', activatedDropTarget);
-            }
-        },
+        this.trigger('drop-target-changed', activatedDropTarget);
+      }
+    },
 
         /**
          * This callback will be passed a ref of the node which is currently being dragged - so it can do additional validations
@@ -128,76 +128,75 @@ var DragDropManager = Backbone.Model.extend(
          * Gets currently the node currently being dragged.
          * @return {ASTNode}
          */
-        getActivatedDropTarget: function () {
-            return this.get('activatedDropTarget');
-        },
+    getActivatedDropTarget() {
+      return this.get('activatedDropTarget');
+    },
 
         /**
          * Gets index of currently dropped element.
          * @return {number} index
          */
-        getDroppedNodeIndex: function () {
-            if(this.isAtValidDropTarget() && _.isFunction(this.get('getDroppedNodeIndexCallBack'))){
-                return this.get('getDroppedNodeIndexCallBack')(this.getNodeBeingDragged());
-            }
-            return -1;
-        },
+    getDroppedNodeIndex() {
+      if (this.isAtValidDropTarget() && _.isFunction(this.get('getDroppedNodeIndexCallBack'))) {
+        return this.get('getDroppedNodeIndexCallBack')(this.getNodeBeingDragged());
+      }
+      return -1;
+    },
 
         /**
          * Clears currently activated drop target. Call this when the item being dragged go away from your drop zone.
          * @fires DragDropManager#drop-target-changed
          */
-        clearActivatedDropTarget: function () {
-            this.set('activatedDropTarget', undefined);
-            this.set('validateDropSourceCallback', undefined);
-            this.set('getDroppedNodeIndexCallBack', undefined);
-            this.trigger('drop-target-changed', undefined);
-        },
+    clearActivatedDropTarget() {
+      this.set('activatedDropTarget', undefined);
+      this.set('validateDropSourceCallback', undefined);
+      this.set('getDroppedNodeIndexCallBack', undefined);
+      this.trigger('drop-target-changed', undefined);
+    },
 
         /**
          * Indicates whether the dragged element is currently at a valid drop target.
          *
          * @return {boolean} Default is false
          */
-        isAtValidDropTarget: function(){
-            var allowedBySource = true,
-                allowedByTarget = true,
-                allowedBySourceValidateCallBack = true,
-                allowedByTargetValidateCallBack = true;
+    isAtValidDropTarget() {
+      let allowedBySource = true,
+        allowedByTarget = true,
+        allowedBySourceValidateCallBack = true,
+        allowedByTargetValidateCallBack = true;
 
-            if(!_.isUndefined(this.getActivatedDropTarget())){
+      if (!_.isUndefined(this.getActivatedDropTarget())) {
+        allowedBySource = this.getNodeBeingDragged().canBeAChildOf(this.getActivatedDropTarget());
+        allowedByTarget = this.getActivatedDropTarget().canBeParentOf(this.getNodeBeingDragged());
 
-                allowedBySource = this.getNodeBeingDragged().canBeAChildOf(this.getActivatedDropTarget());
-                allowedByTarget = this.getActivatedDropTarget().canBeParentOf(this.getNodeBeingDragged());
+        const validateDropTargetCallback = this.get('validateDropTargetCallback');
+        if (!_.isUndefined(validateDropTargetCallback)) {
+          if (_.isFunction(validateDropTargetCallback)) {
+            allowedByTargetValidateCallBack = validateDropTargetCallback(this.getActivatedDropTarget());
+          }
+        }
 
-                var validateDropTargetCallback = this.get('validateDropTargetCallback');
-                if(!_.isUndefined(validateDropTargetCallback)){
-                    if(_.isFunction(validateDropTargetCallback)){
-                        allowedByTargetValidateCallBack = validateDropTargetCallback(this.getActivatedDropTarget());
-                    }
-                }
+        const validateDropSourceCallback = this.get('validateDropSourceCallback');
+        if (!_.isUndefined(validateDropSourceCallback)) {
+          if (_.isFunction(validateDropSourceCallback)) {
+            allowedBySourceValidateCallBack = validateDropSourceCallback(this.getNodeBeingDragged());
+          }
+        }
 
-                var validateDropSourceCallback = this.get('validateDropSourceCallback');
-                if(!_.isUndefined(validateDropSourceCallback)){
-                    if(_.isFunction(validateDropSourceCallback)){
-                        allowedBySourceValidateCallBack = validateDropSourceCallback(this.getNodeBeingDragged());
-                    }
-                }
-
-                return allowedBySource && allowedByTarget
+        return allowedBySource && allowedByTarget
                     && allowedBySourceValidateCallBack
                     && allowedByTargetValidateCallBack;
-            }
-            return false;
-        },
+      }
+      return false;
+    },
 
         /**
          * Indicates whether there is a node being dragged at the moment.
          * @return {boolean}
          */
-        isOnDrag: function(){
-            return !_.isNil(this.get('nodeBeingDragged'));
-        }
-    });
+    isOnDrag() {
+      return !_.isNil(this.get('nodeBeingDragged'));
+    },
+  });
 
 export default DragDropManager;

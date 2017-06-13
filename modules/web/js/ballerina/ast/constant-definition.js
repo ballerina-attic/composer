@@ -26,47 +26,47 @@ import VariableDeclaration from './variable-declaration';
  * @augments VariableDeclaration
  */
 class ConstantDefinition extends VariableDeclaration {
-    constructor(args) {
-        super({
-            type: 'Constant-Declaration',
-            bType: _.get(args, 'bType'),
-            identifier: _.get(args, 'identifier')
-        });
-        this._value = _.get(args, 'value');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: ' ',
-            1: ' ',
-            2: ' ',
-            3: ' ',
-            4: '',
-            5: '\n'
-        };
-    }
+  constructor(args) {
+    super({
+      type: 'Constant-Declaration',
+      bType: _.get(args, 'bType'),
+      identifier: _.get(args, 'identifier'),
+    });
+    this._value = _.get(args, 'value');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: ' ',
+      2: ' ',
+      3: ' ',
+      4: '',
+      5: '\n',
+    };
+  }
 
-    setValue(value, options) {
-        if (_.isNil(value) || _.isEmpty(value)) {
-            log.error('A constant requires to have a value.');
-            throw 'A constant requires to have a value.';
-        } else {
-            this.setAttribute('_value', value, options);
-        }
+  setValue(value, options) {
+    if (_.isNil(value) || _.isEmpty(value)) {
+      log.error('A constant requires to have a value.');
+      throw 'A constant requires to have a value.';
+    } else {
+      this.setAttribute('_value', value, options);
     }
+  }
 
-    getValue() {
-        return this._value;
-    }
+  getValue() {
+    return this._value;
+  }
 
-    getConstantDefinitionAsString() {
-        let sourceGen = 'const' + this.getWSRegion(0) + this._bType
-            + this.getWSRegion(1) + this._identifier
-            + this.getWSRegion(2) + '=' + this.getWSRegion(3);
-        if (this._bType === 'string') {
-            sourceGen += '"' + this._value + '"';
-        } else {
-            sourceGen += this._value;
-        }
-        return sourceGen;
+  getConstantDefinitionAsString() {
+    let sourceGen = `const${this.getWSRegion(0)}${this._bType
+             }${this.getWSRegion(1)}${this._identifier
+             }${this.getWSRegion(2)}=${this.getWSRegion(3)}`;
+    if (this._bType === 'string') {
+      sourceGen += `"${this._value}"`;
+    } else {
+      sourceGen += this._value;
     }
+    return sourceGen;
+  }
 
     /**
      * Initialize ConstantDefinition from json object for parsing.
@@ -75,21 +75,21 @@ class ConstantDefinition extends VariableDeclaration {
      * @param {string} jsonNode.constant_definition_identifier - The identifier of the constant.
      * @param {string} jsonNode.constant_definition_value - The value of the constant.
      */
-    initFromJson(jsonNode) {
-        if (!_.isNil(jsonNode.whitespace_descriptor)) {
-            this.whiteSpace.currentDescriptor = jsonNode.whitespace_descriptor;
-            this.whiteSpace.useDefault = false;
-        }
-        this.setBType(jsonNode.constant_definition_btype, { doSilently: true });
-        this.setIdentifier(jsonNode.constant_definition_identifier, { doSilently: true });
-        this.setValue(jsonNode.constant_definition_value, { doSilently: true });
-
-        for (const childNode of jsonNode.children) {
-            let child = this.getFactory().createFromJson(childNode);
-            this.addChild(child);
-            child.initFromJson(childNode);
-        }
+  initFromJson(jsonNode) {
+    if (!_.isNil(jsonNode.whitespace_descriptor)) {
+      this.whiteSpace.currentDescriptor = jsonNode.whitespace_descriptor;
+      this.whiteSpace.useDefault = false;
     }
+    this.setBType(jsonNode.constant_definition_btype, { doSilently: true });
+    this.setIdentifier(jsonNode.constant_definition_identifier, { doSilently: true });
+    this.setValue(jsonNode.constant_definition_value, { doSilently: true });
+
+    for (const childNode of jsonNode.children) {
+      const child = this.getFactory().createFromJson(childNode);
+      this.addChild(child);
+      child.initFromJson(childNode);
+    }
+  }
 }
 
 export default ConstantDefinition;

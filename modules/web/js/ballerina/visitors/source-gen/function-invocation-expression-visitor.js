@@ -26,25 +26,25 @@ import FunctionInvocationExpression from '../../ast/expressions/function-invocat
  * @constructor
  */
 class FunctionInvocationExpressionVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitFuncInvocationExpression(functionInvocation) {
-        return true;
-    }
+  canVisitFuncInvocationExpression(functionInvocation) {
+    return true;
+  }
 
-    beginVisitFuncInvocationExpression(functionInvocation) {
-        var source = functionInvocation.getFunctionalExpression();
-        this.appendSource(source);
-    }
+  beginVisitFuncInvocationExpression(functionInvocation) {
+    const source = functionInvocation.getFunctionalExpression();
+    this.appendSource(source);
+  }
 
-    visitFuncInvocationExpression(functionInvocation) {
-    }
+  visitFuncInvocationExpression(functionInvocation) {
+  }
 
-    endVisitFuncInvocationExpression(functionInvocation) {
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitFuncInvocationExpression(functionInvocation) {
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 FunctionInvocationExpressionVisitor.prototype.constructor = FunctionInvocationExpression;

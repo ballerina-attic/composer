@@ -20,27 +20,27 @@ import log from 'log';
 import _ from 'lodash';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 import ASTFactory from './../../ast/ballerina-ast-factory';
-import {panel} from './../../configs/designer-defaults';
+import { panel } from './../../configs/designer-defaults';
 import * as PositioningUtils from './utils';
 
 class ServiceDefinitionPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ServiceDefinitionPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ServiceDefinitionPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
-    }
+  beginVisit(node) {
+    PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit ServiceDefinitionPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit ServiceDefinitionPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ServiceDefinitionPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit ServiceDefinitionPositionCalc');
+  }
 }
 
 export default ServiceDefinitionPositionCalcVisitor;

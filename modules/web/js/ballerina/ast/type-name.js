@@ -19,29 +19,29 @@ import _ from 'lodash';
 import ASTNode from './node';
 
 class TypeName extends ASTNode {
-    constructor(type) {
-        super();
-        this.typename = type;
-        this.type = "TypeName";
-    }
+  constructor(type) {
+    super();
+    this.typename = type;
+    this.type = 'TypeName';
+  }
 
-    setTypeName(typename, options) {
-        if (!_.isNil(typename)) {
-            this.setAttribute('typename', typename, options);
-        }
+  setTypeName(typename, options) {
+    if (!_.isNil(typename)) {
+      this.setAttribute('typename', typename, options);
     }
+  }
 
-    getType() {
-        return this.typename;
-    }
+  getType() {
+    return this.typename;
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        this.setTypeName(jsonNode.variable_name, {doSilently: true});
-    }
+  initFromJson(jsonNode) {
+    this.setTypeName(jsonNode.variable_name, { doSilently: true });
+  }
 }
 
 export default TypeName;

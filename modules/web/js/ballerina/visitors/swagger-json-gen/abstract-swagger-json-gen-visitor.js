@@ -23,54 +23,53 @@ import ASTVisitor from '../ast-visitor';
  * @extends ASTVisitor
  */
 class AbstractSwaggerJsonGenVisitor extends ASTVisitor {
-    constructor(parent) {
-        super();
-        this._swaggerJson = {'swagger': '2.0'};
-        this.parent = parent;
-    }
+  constructor(parent) {
+    super();
+    this._swaggerJson = { swagger: '2.0' };
+    this.parent = parent;
+  }
 
-    getSwaggerJson() {
-        return this._swaggerJson;
-    }
+  getSwaggerJson() {
+    return this._swaggerJson;
+  }
 
-    setSwaggerJson(swaggerJson) {
-        this._swaggerJson = swaggerJson;
-    }
+  setSwaggerJson(swaggerJson) {
+    this._swaggerJson = swaggerJson;
+  }
 
-    getParent() {
-        return this.parent;
-    }
+  getParent() {
+    return this.parent;
+  }
 
-    astToJson(annotationEntry) {
-        if (annotationEntry.getFactory().isAnnotation(annotationEntry.getRightValue())) {
+  astToJson(annotationEntry) {
+    if (annotationEntry.getFactory().isAnnotation(annotationEntry.getRightValue())) {
             // When the right value is an annotation entry array
-            let arrayValues = [];
-            _.forEach(annotationEntry.getRightValue().getChildren(), annotationEntry => {
-                arrayValues.push(this.astToJson(annotationEntry));
-            });
+      const arrayValues = [];
+      _.forEach(annotationEntry.getRightValue().getChildren(), (annotationEntry) => {
+        arrayValues.push(this.astToJson(annotationEntry));
+      });
 
-            return {key: annotationEntry.getLeftValue(), value: arrayValues};
-        } else if (annotationEntry.getFactory().isAnnotationEntryArray(annotationEntry.getRightValue())) {
+      return { key: annotationEntry.getLeftValue(), value: arrayValues };
+    } else if (annotationEntry.getFactory().isAnnotationEntryArray(annotationEntry.getRightValue())) {
             // When the right value is an annotation entry array
-            let arrayValues = [];
-            _.forEach(annotationEntry.getRightValue().getChildren(), annotationEntry => {
-                arrayValues.push(this.astToJson(annotationEntry));
-            });
+      const arrayValues = [];
+      _.forEach(annotationEntry.getRightValue().getChildren(), (annotationEntry) => {
+        arrayValues.push(this.astToJson(annotationEntry));
+      });
 
-            return {key: annotationEntry.getLeftValue(), value: arrayValues};
-        } else {
+      return { key: annotationEntry.getLeftValue(), value: arrayValues };
+    }
             // When the right value is an BValue.
-            return {key: annotationEntry.getLeftValue(), value: annotationEntry.getRightValue().replace(/"/g, '')};
-        }
-    }
+    return { key: annotationEntry.getLeftValue(), value: annotationEntry.getRightValue().replace(/"/g, '') };
+  }
 
     /**
      * Removes the double quotes of a string value.
      * @param {string} val A string value.
      */
-    removeDoubleQuotes(val) {
-        return val.replace(/"/g, '');
-    }
+  removeDoubleQuotes(val) {
+    return val.replace(/"/g, '');
+  }
 }
 
 export default AbstractSwaggerJsonGenVisitor;

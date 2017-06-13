@@ -22,123 +22,123 @@ import 'bootstrap';
 import './dialog.css';
 
 class ModalDialog extends EventChannel {
-    constructor(options) {
-        super();
-        this._options = options;
-        this._application = _.get(options, "application");
-        this._$container = $(_.get(options, 'container', 'body'));
-    }
+  constructor(options) {
+    super();
+    this._options = options;
+    this._application = _.get(options, 'application');
+    this._$container = $(_.get(options, 'container', 'body'));
+  }
 
-    remove() {
-        this._modalContainer.remove();
-        this.off();
-    }
+  remove() {
+    this._modalContainer.remove();
+    this.off();
+  }
 
-    getBody() {
-        return this._$body;
-    }
+  getBody() {
+    return this._$body;
+  }
 
-    getHeader() {
-        return this._$header;
-    }
+  getHeader() {
+    return this._$header;
+  }
 
-    getFooter() {
-        return this._$footer;
-    }
+  getFooter() {
+    return this._$footer;
+  }
 
-    getSubmitBtn() {
-        return this._$submitBtn;
-    }
+  getSubmitBtn() {
+    return this._$submitBtn;
+  }
 
-    getErrorContainer() {
-        return this._$errorContainer;
-    }
+  getErrorContainer() {
+    return this._$errorContainer;
+  }
 
-    setTitle(title) {
-        this._$title.text(title);
-    }
+  setTitle(title) {
+    this._$title.text(title);
+  }
 
-    setSubmitBtnText(text) {
-        this._$submitBtn.text(text);
-    }
+  setSubmitBtnText(text) {
+    this._$submitBtn.text(text);
+  }
 
-    setCloseBtnText(text) {
-        this._$closeBtn.text(text);
-    }
+  setCloseBtnText(text) {
+    this._$closeBtn.text(text);
+  }
 
-    show() {
-        var self = this;
-        this._$modalContainer.modal('show').on('shown.bs.modal', function(){
-            self.trigger('loaded');
-        });
-    }
+  show() {
+    const self = this;
+    this._$modalContainer.modal('show').on('shown.bs.modal', () => {
+      self.trigger('loaded');
+    });
+  }
 
-    showError(error) {
-        this.getErrorContainer().text(error);
-        this.getErrorContainer().show();
-    }
+  showError(error) {
+    this.getErrorContainer().text(error);
+    this.getErrorContainer().show();
+  }
 
-    clearError() {
-        this.getErrorContainer().text("");
-        this.getErrorContainer().hide();
-    }
+  clearError() {
+    this.getErrorContainer().text('');
+    this.getErrorContainer().hide();
+  }
 
-    hide() {
-        var self = this;
-        this._$modalContainer.modal('hide').on('hidden.bs.modal', function(){
-            self.trigger('unloaded');
-        });
-    }
+  hide() {
+    const self = this;
+    this._$modalContainer.modal('hide').on('hidden.bs.modal', () => {
+      self.trigger('unloaded');
+    });
+  }
 
-    render() {
-        if(!_.isNil(this._$modalContainer)){
-            this._$modalContainer.remove();
-        }
-        var modalContainer = $("<div class='modal fade " + _.get(this._options, 'class') +
-            "' tabindex='-1' role='dialog' aria-hidden='true'></div>");
-        var modalDialog = $("<div class='modal-dialog file-dialog' role='document'></div>");
-        var modalContent = $("<div class='modal-content'></div>");
-        var modalHeader = $("<div class='modal-header'></div>");
-        var modalCloseBtnTop = $("<button type='button' class='close' data-dismiss='modal' aria-label='Close'>" +
+  render() {
+    if (!_.isNil(this._$modalContainer)) {
+      this._$modalContainer.remove();
+    }
+    const modalContainer = $(`<div class='modal fade ${_.get(this._options, 'class')
+            }' tabindex='-1' role='dialog' aria-hidden='true'></div>`);
+    const modalDialog = $("<div class='modal-dialog file-dialog' role='document'></div>");
+    const modalContent = $("<div class='modal-content'></div>");
+    const modalHeader = $("<div class='modal-header'></div>");
+    const modalCloseBtnTop = $("<button type='button' class='close' data-dismiss='modal' aria-label='Close'>" +
             "<span aria-hidden='true'>&times;</span></button>");
-        var modalTitle = $("<h4 class='modal-title '></h4>");
-        var modalBody = $("<div class='modal-body'></div>");
-        var modalFooter = $("<div class='modal-footer'></div>");
-        var modalCloseBtnBottom = $("<button type='button' class='btn btn-default btn-file-dialog'" +
+    const modalTitle = $("<h4 class='modal-title '></h4>");
+    const modalBody = $("<div class='modal-body'></div>");
+    const modalFooter = $("<div class='modal-footer'></div>");
+    const modalCloseBtnBottom = $("<button type='button' class='btn btn-default btn-file-dialog'" +
             " data-dismiss='modal'>Close</button>");
-        var modalSubmitBtn = $("<button type='button' class='btn btn-primary btn-file-dialog'>Submit</button>");
-        var errorContainer = $("<div class='alert alert-danger errors-container'></div>");
+    const modalSubmitBtn = $("<button type='button' class='btn btn-primary btn-file-dialog'>Submit</button>");
+    const errorContainer = $("<div class='alert alert-danger errors-container'></div>");
 
-        this._$title = modalTitle;
-        this._$body = modalBody;
-        this._$header = modalHeader;
-        this._$footer = modalFooter;
-        this._$submitBtn = modalSubmitBtn;
-        this._$closeBtn = modalCloseBtnBottom;
-        this._$modalContainer = modalContainer;
-        this._$errorContainer = errorContainer;
+    this._$title = modalTitle;
+    this._$body = modalBody;
+    this._$header = modalHeader;
+    this._$footer = modalFooter;
+    this._$submitBtn = modalSubmitBtn;
+    this._$closeBtn = modalCloseBtnBottom;
+    this._$modalContainer = modalContainer;
+    this._$errorContainer = errorContainer;
 
-        modalContainer.append(modalDialog);
-        modalDialog.append(modalContent);
-        modalContent.append(modalHeader);
-        modalHeader.append(modalCloseBtnTop);
-        modalHeader.append(modalTitle);
-        modalContent.append(modalBody);
-        modalContent.append(errorContainer);
-        errorContainer.hide();
-        modalContent.append(modalFooter);
-        modalFooter.append(modalSubmitBtn);
-        modalFooter.append(modalCloseBtnBottom);
-        this._$container.append(modalContainer);
+    modalContainer.append(modalDialog);
+    modalDialog.append(modalContent);
+    modalContent.append(modalHeader);
+    modalHeader.append(modalCloseBtnTop);
+    modalHeader.append(modalTitle);
+    modalContent.append(modalBody);
+    modalContent.append(errorContainer);
+    errorContainer.hide();
+    modalContent.append(modalFooter);
+    modalFooter.append(modalSubmitBtn);
+    modalFooter.append(modalCloseBtnBottom);
+    this._$container.append(modalContainer);
 
-        if(_.has(this._options, 'title')){
-            modalTitle.text(_.get(this._options, 'title'));
-        }
-        if(_.has(this._options, 'submitBtnText')){
-            modalSubmitBtn.text(_.get(this._options, 'submitBtnText'));
-        }
-        return modalContainer;
+    if (_.has(this._options, 'title')) {
+      modalTitle.text(_.get(this._options, 'title'));
     }
+    if (_.has(this._options, 'submitBtnText')) {
+      modalSubmitBtn.text(_.get(this._options, 'submitBtnText'));
+    }
+    return modalContainer;
+  }
 }
 
 export default ModalDialog;

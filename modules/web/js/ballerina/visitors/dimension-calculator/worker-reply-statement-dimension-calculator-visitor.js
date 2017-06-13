@@ -17,42 +17,42 @@
  */
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 import _ from 'lodash';
 import BallerinaASTFactory from './../../ast/ballerina-ast-factory';
 
 class WorkerReplyStatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateSimpleStatementBBox(node.getStatementString(), node.getViewState());
-        let workerDeclaration = node.getDestination();
-        if (!_.isUndefined(workerDeclaration)) {
-            let heightFromTop = util.getStatementHeightBefore(node);
-            let workerReplyStatement = workerDeclaration.findChild(BallerinaASTFactory.isReplyStatement);
-            if (!_.isUndefined(workerReplyStatement)) {
-                let workerHeightFromTop = util.getStatementHeightBefore(workerReplyStatement);
-                let heightDiff = heightFromTop - workerHeightFromTop;
-                if (heightDiff > 0) {
-                    //default worker height is larger than the workers' statements height
-                    workerReplyStatement.getViewState().components['drop-zone'].h += heightDiff;
-                    workerReplyStatement.getViewState().bBox.h += heightDiff;
-                } else {
-                    node.getViewState().components['drop-zone'].h += (-heightDiff);
-                    node.getViewState().bBox.h += (-heightDiff);
-                }
-            }
+  endVisit(node) {
+    util.populateSimpleStatementBBox(node.getStatementString(), node.getViewState());
+    const workerDeclaration = node.getDestination();
+    if (!_.isUndefined(workerDeclaration)) {
+      const heightFromTop = util.getStatementHeightBefore(node);
+      const workerReplyStatement = workerDeclaration.findChild(BallerinaASTFactory.isReplyStatement);
+      if (!_.isUndefined(workerReplyStatement)) {
+        const workerHeightFromTop = util.getStatementHeightBefore(workerReplyStatement);
+        const heightDiff = heightFromTop - workerHeightFromTop;
+        if (heightDiff > 0) {
+                    // default worker height is larger than the workers' statements height
+          workerReplyStatement.getViewState().components['drop-zone'].h += heightDiff;
+          workerReplyStatement.getViewState().bBox.h += heightDiff;
+        } else {
+          node.getViewState().components['drop-zone'].h += (-heightDiff);
+          node.getViewState().bBox.h += (-heightDiff);
         }
+      }
     }
+  }
 }
 
 export default WorkerReplyStatementDimensionCalculatorVisitor;

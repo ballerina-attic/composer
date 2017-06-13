@@ -15,24 +15,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ServiceDefinitionDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
+  beginVisit(node) {
 
-    }
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateOuterPanelDecoratorBBox(node);
-    }
+  endVisit(node) {
+    util.populateOuterPanelDecoratorBBox(node);
+  }
 }
 
 export default ServiceDefinitionDimensionCalculatorVisitor;

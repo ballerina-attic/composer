@@ -26,31 +26,31 @@ import ASTManipulationOperation from './ast-manipulation-operation';
  * @constructor
  */
 class ASTNodeModifyOperation extends ASTManipulationOperation {
-    constructor(args) {
-        super(args);
-        if(_.isNil(this.getTitle())){
-            this.setTitle('Modify ' + this._data.child.getType());
-        }
-        this._clonedOriginNode = _.cloneDeep(this._originNode);
-        this._parentOfOriginNode = this._originNode.getParent();
-        this._originNodeIndex = this._parentOfOriginNode.getIndexOfChild(this._originNode);
+  constructor(args) {
+    super(args);
+    if (_.isNil(this.getTitle())) {
+      this.setTitle(`Modify ${this._data.child.getType()}`);
     }
+    this._clonedOriginNode = _.cloneDeep(this._originNode);
+    this._parentOfOriginNode = this._originNode.getParent();
+    this._originNodeIndex = this._parentOfOriginNode.getIndexOfChild(this._originNode);
+  }
 
-    redo() {
-        if(this.canRedo()) {
-            this._parentOfOriginNode.addChild(this._clonedOriginNode, this._originNodeIndex, true);
-            this.getEditor().trigger('content-modified');
-            this.getEditor().trigger('update-diagram');
-        }
+  redo() {
+    if (this.canRedo()) {
+      this._parentOfOriginNode.addChild(this._clonedOriginNode, this._originNodeIndex, true);
+      this.getEditor().trigger('content-modified');
+      this.getEditor().trigger('update-diagram');
     }
+  }
 
-    undo() {
-        if(this.canUndo()) {
-            this._originNode.remove({ignoreTreeModifiedEvent: true});
-            this.getEditor().trigger('content-modified');
-            this.getEditor().trigger('update-diagram');
-        }
+  undo() {
+    if (this.canUndo()) {
+      this._originNode.remove({ ignoreTreeModifiedEvent: true });
+      this.getEditor().trigger('content-modified');
+      this.getEditor().trigger('update-diagram');
     }
+  }
 }
 
 export default ASTNodeModifyOperation;

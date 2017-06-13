@@ -21,33 +21,33 @@ import EventChannel from 'event_channel';
 import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-visitor';
 
 class CommentStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitCommentStatement(commentStatement) {
-        return true;
-    }
+  canVisitCommentStatement(commentStatement) {
+    return true;
+  }
 
-    beginVisitCommentStatement(commentStatement) {
-        if (commentStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        log.debug('Begin Visit Comment Statement Definition');
+  beginVisitCommentStatement(commentStatement) {
+    if (commentStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    log.debug('Begin Visit Comment Statement Definition');
+  }
 
-    visitCommentStatement(commentStatement) {
-        this.appendSource(commentStatement.getStatementString() + commentStatement.getWSRegion(1));
-        log.debug('Visit Comment Statement Definition');
-    }
+  visitCommentStatement(commentStatement) {
+    this.appendSource(commentStatement.getStatementString() + commentStatement.getWSRegion(1));
+    log.debug('Visit Comment Statement Definition');
+  }
 
-    endVisitCommentStatement(commentStatement) {
-        this.appendSource((commentStatement.whiteSpace.useDefault)
+  endVisitCommentStatement(commentStatement) {
+    this.appendSource((commentStatement.whiteSpace.useDefault)
           ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Comment Statement Definition');
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Comment Statement Definition');
+  }
 }
 
 export default CommentStatementVisitor;

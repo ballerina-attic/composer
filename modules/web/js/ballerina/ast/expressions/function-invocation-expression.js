@@ -26,103 +26,100 @@ import FragmentUtils from './../../utils/fragment-utils';
  * @augments Expression
  */
 class FunctionInvocationExpression extends Expression {
-    constructor(args) {
-        super('FunctionInvocationExpression');
-        this._packageName = _.get(args, 'packageName', '');
-        this._functionName = _.get(args, 'functionName', 'callFunction');
-        this._fullPackageName = _.get(args, 'fullPackageName', '');
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: '',
-            1: '',
-            2: '',
-            3: ''
-        };
-        this.whiteSpace.defaultDescriptor.children =  {
-            nameRef: {
-                0: '',
-                1: '',
-                2: '',
-                3: ''
-            }
-        };
-    }
+  constructor(args) {
+    super('FunctionInvocationExpression');
+    this._packageName = _.get(args, 'packageName', '');
+    this._functionName = _.get(args, 'functionName', 'callFunction');
+    this._fullPackageName = _.get(args, 'fullPackageName', '');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: '',
+      3: '',
+    };
+    this.whiteSpace.defaultDescriptor.children = {
+      nameRef: {
+        0: '',
+        1: '',
+        2: '',
+        3: '',
+      },
+    };
+  }
 
-    setFunctionName(functionName, options) {
-        this.setAttribute('_functionName', functionName, options);
-    }
+  setFunctionName(functionName, options) {
+    this.setAttribute('_functionName', functionName, options);
+  }
 
-    getFunctionName() {
-        return this._functionName;
-    }
+  getFunctionName() {
+    return this._functionName;
+  }
 
-    setFullPackageName(packageName, options) {
-        this.setAttribute('_fullPackageName', packageName, options);
-    }
+  setFullPackageName(packageName, options) {
+    this.setAttribute('_fullPackageName', packageName, options);
+  }
 
-    getFullPackageName() {
-        return this._fullPackageName;
-    }
+  getFullPackageName() {
+    return this._fullPackageName;
+  }
 
-    setPackageName(packageName, options) {
-        this.setAttribute('_packageName', packageName, options);
-    }
+  setPackageName(packageName, options) {
+    this.setAttribute('_packageName', packageName, options);
+  }
 
-    getPackageName() {
-        return this._packageName;
-    }
+  getPackageName() {
+    return this._packageName;
+  }
 
     /**
      * Get the expression string
      * @returns {string} expression string
      * @override
      */
-    getExpressionString() {
-        var text = '';
-        if (!_.isNil(this._packageName) && !_.isEmpty(this._packageName) && !_.isEqual(this._packageName, 'Current Package')) {
-            text += this._packageName + this.getChildWSRegion('nameRef', 1) + ':';
-        }
-        text += this.getChildWSRegion('nameRef', 2) + this._functionName + this.getWSRegion(1);
-        text += '('+ this.getWSRegion(2);
-
-        this.children.forEach((child, index) => {
-            if (index !== 0) {
-                text += ',';
-                text += child.getExpressionString({includePrecedingWS: true});
-            } else {
-                text += child.getExpressionString();
-            }
-        })
-        text += ')' + this.getWSRegion(3);
-        return text;
+  getExpressionString() {
+    let text = '';
+    if (!_.isNil(this._packageName) && !_.isEmpty(this._packageName) && !_.isEqual(this._packageName, 'Current Package')) {
+      text += `${this._packageName + this.getChildWSRegion('nameRef', 1)}:`;
     }
+    text += this.getChildWSRegion('nameRef', 2) + this._functionName + this.getWSRegion(1);
+    text += `(${this.getWSRegion(2)}`;
 
-    setExpressionFromString(expressionString, callback) {
-        const fragment = FragmentUtils.createExpressionFragment(expressionString);
-        const parsedJson = FragmentUtils.parseFragment(fragment);
+    this.children.forEach((child, index) => {
+      if (index !== 0) {
+        text += ',';
+        text += child.getExpressionString({ includePrecedingWS: true });
+      } else {
+        text += child.getExpressionString();
+      }
+    });
+    text += `)${this.getWSRegion(3)}`;
+    return text;
+  }
 
-        if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+  setExpressionFromString(expressionString, callback) {
+    const fragment = FragmentUtils.createExpressionFragment(expressionString);
+    const parsedJson = FragmentUtils.parseFragment(fragment);
+
+    if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
             && _.isEqual(parsedJson.type, 'function_invocation_expression')) {
-
-            this.initFromJson(parsedJson);
+      this.initFromJson(parsedJson);
 
             // Manually firing the tree-modified event here.
             // TODO: need a proper fix to avoid breaking the undo-redo
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: 'Function Invocation Expression Custom Tree modified',
-                context: this,
-            });
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title: 'Function Invocation Expression Custom Tree modified',
+        context: this,
+      });
 
-            if (_.isFunction(callback)) {
-                callback({isValid: true});
-            }
-        } else {
-            if (_.isFunction(callback)) {
-                callback({isValid: false, response: parsedJson});
-            }
-        }
+      if (_.isFunction(callback)) {
+        callback({ isValid: true });
+      }
+    } else if (_.isFunction(callback)) {
+      callback({ isValid: false, response: parsedJson });
     }
+  }
 
     /**
      * Creating the function invocation statement which invoked by the parsed code.
@@ -133,22 +130,22 @@ class FunctionInvocationExpression extends Expression {
      * @param {string} jsonNode.function_name - The body of the function information. Example : "println".
      * @param {Object[]} jsonNode.children - The arguments of the function invocation.
      */
-    initFromJson(jsonNode) {
-        this.children = [];
-        var self = this;
-        this.setPackageName(jsonNode.package_name, {doSilently: true});
-        if (_.isEqual(jsonNode.package_path, '.')){
-            this.setFullPackageName('Current Package', {doSilently: true});
-        } else {
-            this.setFullPackageName(jsonNode.package_path, {doSilently: true});
-        }
-        this.setFunctionName(jsonNode.function_name, {doSilently: true});
-        _.each(jsonNode.children, function (childNode) {
-            var child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
+  initFromJson(jsonNode) {
+    this.children = [];
+    const self = this;
+    this.setPackageName(jsonNode.package_name, { doSilently: true });
+    if (_.isEqual(jsonNode.package_path, '.')) {
+      this.setFullPackageName('Current Package', { doSilently: true });
+    } else {
+      this.setFullPackageName(jsonNode.package_path, { doSilently: true });
     }
+    this.setFunctionName(jsonNode.function_name, { doSilently: true });
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 
 }
 

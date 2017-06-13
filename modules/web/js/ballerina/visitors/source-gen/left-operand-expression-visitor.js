@@ -22,23 +22,23 @@ import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen
 import ExpressionVisitorFactory from './expression-visitor-factory';
 
 class LeftOperandExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitLeftOperandExpression(leftOperandExpression) {
-        return true;
-    }
+  canVisitLeftOperandExpression(leftOperandExpression) {
+    return true;
+  }
 
-    beginVisitLeftOperandExpression(leftOperandExpression) {
-        if (!_.isUndefined(leftOperandExpression.getExpressionString())) {
-            this.appendSource(leftOperandExpression.getExpressionString());
-        }
+  beginVisitLeftOperandExpression(leftOperandExpression) {
+    if (!_.isUndefined(leftOperandExpression.getExpressionString())) {
+      this.appendSource(leftOperandExpression.getExpressionString());
     }
+  }
 
-    endVisitLeftOperandExpression(leftOperandExpression) {
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitLeftOperandExpression(leftOperandExpression) {
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default LeftOperandExpressionVisitor;

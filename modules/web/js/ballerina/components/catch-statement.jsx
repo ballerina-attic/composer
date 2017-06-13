@@ -15,43 +15,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import BlockStatementDecorator from "./block-statement-decorator";
+import React from 'react';
+import BlockStatementDecorator from './block-statement-decorator';
 import PropTypes from 'prop-types';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 
 class CatchStatement extends React.Component {
 
-    constructor(props){
-        super(props);
-        this.editorOptions = {
-            propertyType: 'text',
-            key: 'Catch parameter',
-            model: props.model,
-            getterMethod: props.model.getParameterDefString,
-            setterMethod: props.model.setParameterDefString
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.editorOptions = {
+      propertyType: 'text',
+      key: 'Catch parameter',
+      model: props.model,
+      getterMethod: props.model.getParameterDefString,
+      setterMethod: props.model.setParameterDefString,
+    };
+  }
 
-    render() {
-        let model = this.props.model,
-            bBox = model.viewState.bBox;
-        let expression = model.viewState.components['expression'];
-        const children = getComponentForNodeArray(this.props.model.getChildren());
-        return (<BlockStatementDecorator dropTarget={model} bBox={bBox} title={"Catch"} expression={expression} 
-                    editorOptions={this.editorOptions} >
-            {children}
-        </BlockStatementDecorator>);
-    }
+  render() {
+    let model = this.props.model,
+      bBox = model.viewState.bBox;
+    const expression = model.viewState.components.expression;
+    const children = getComponentForNodeArray(this.props.model.getChildren());
+    return (<BlockStatementDecorator
+      dropTarget={model} bBox={bBox} title={'Catch'} expression={expression}
+      editorOptions={this.editorOptions}
+    >
+      {children}
+    </BlockStatementDecorator>);
+  }
 }
 
 CatchStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired,
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
 };
 
 

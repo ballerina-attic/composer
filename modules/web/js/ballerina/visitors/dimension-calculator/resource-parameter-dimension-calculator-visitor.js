@@ -16,32 +16,32 @@
  * under the License.
  */
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ResourceParameterDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        let viewState = node.getViewState();
+  endVisit(node) {
+    const viewState = node.getViewState();
 
         // Creating component for text.
-        viewState.w = util.getTextWidth(node.getParameterAsString(), 0).w;
-        viewState.h = DesignerDefaults.panelHeading.heading.height - 7;
+    viewState.w = util.getTextWidth(node.getParameterAsString(), 0).w;
+    viewState.h = DesignerDefaults.panelHeading.heading.height - 7;
 
         // Creating component for delete icon.
-        viewState.components.deleteIcon = {};
-        viewState.components.deleteIcon.w = DesignerDefaults.panelHeading.heading.height - 7;
-        viewState.components.deleteIcon.h = DesignerDefaults.panelHeading.heading.height - 7;
-    }
+    viewState.components.deleteIcon = {};
+    viewState.components.deleteIcon.w = DesignerDefaults.panelHeading.heading.height - 7;
+    viewState.components.deleteIcon.h = DesignerDefaults.panelHeading.heading.height - 7;
+  }
 
 }
 
