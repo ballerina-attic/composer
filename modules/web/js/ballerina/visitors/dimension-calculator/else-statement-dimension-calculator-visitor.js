@@ -16,23 +16,23 @@
  * under the License.
  */
 import log from 'log';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ElseStatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateCompoundStatementChild(node);
-    }
+  endVisit(node) {
+    util.populateCompoundStatementChild(node);
+  }
 }
 
 export default ElseStatementDimensionCalculatorVisitor;

@@ -15,23 +15,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class BreakStatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateSimpleStatementBBox( node.getStatementString() , node.getViewState());
-    }
+  endVisit(node) {
+    util.populateSimpleStatementBBox(node.getStatementString(), node.getViewState());
+  }
 }
 
 export default BreakStatementDimensionCalculatorVisitor;

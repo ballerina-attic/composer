@@ -18,29 +18,29 @@
 
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from '../sizing-utils';
+import { util } from '../sizing-utils';
 
 class AnnotationAttributeDimensionCalculatorVisitor {
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        let viewState = node.getViewState();
-        let components = {};
+  endVisit(node) {
+    const viewState = node.getViewState();
+    const components = {};
 
-        viewState.bBox.h = DesignerDefaults.annotationAttributeDefinition.body.height;
-        viewState.bBox.w = DesignerDefaults.annotationAttributeDefinition.body.width;
-        viewState.textLength = util.getTextWidth(node.getAttributeStatementString(), viewState.bBox.w, 500);
+    viewState.bBox.h = DesignerDefaults.annotationAttributeDefinition.body.height;
+    viewState.bBox.w = DesignerDefaults.annotationAttributeDefinition.body.width;
+    viewState.textLength = util.getTextWidth(node.getAttributeStatementString(), viewState.bBox.w, 500);
 
-        viewState.components = components;
-    }
+    viewState.components = components;
+  }
 }
 
 export default AnnotationAttributeDimensionCalculatorVisitor;

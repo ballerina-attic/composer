@@ -28,108 +28,101 @@ import BallerinaASTFactory from './../ballerina-ast-factory';
  */
 
 class IfElseStatement extends Statement {
-    constructor(args) {
-        super('IfElseStatement');
+  constructor(args) {
+    super('IfElseStatement');
 
-        this._elseIfStatements = [];
-        this.createIfStatement(args);
-    }
+    this._elseIfStatements = [];
+    this.createIfStatement(args);
+  }
 
-    getIfStatement() {
-        return this._ifStatement;
-    }
+  getIfStatement() {
+    return this._ifStatement;
+  }
 
-    getElseStatement() {
-        return this._elseStatement;
-    }
+  getElseStatement() {
+    return this._elseStatement;
+  }
 
-    getElseIfStatements() {
-        return this._elseIfStatements;
-    }
+  getElseIfStatements() {
+    return this._elseIfStatements;
+  }
 
-    setIfStatement(ifStatement, options) {
-        if (!_.isNil(this._ifStatement)) {
-            this._ifStatement.remove();
-        }
-        this.setAttribute('_ifStatement', ifStatement, options);
+  setIfStatement(ifStatement, options) {
+    if (!_.isNil(this._ifStatement)) {
+      this._ifStatement.remove();
     }
-
-    /**
-     * creates Else Statement
-     * @param args
-     */
-    createIfStatement(args) {
-        var newIfStmt = new IfStatement(args);
-        this._ifStatement = newIfStmt;
-        this.addChild(newIfStmt);
-        return newIfStmt;
-    }
+    this.setAttribute('_ifStatement', ifStatement, options);
+  }
 
     /**
      * creates Else Statement
      * @param args
      */
-    createElseStatement(args) {
-        let newElseStatement = new ElseStatement(args);
-        this._elseStatement = newElseStatement;
-        this.addChild(newElseStatement);
-        return newElseStatement;
-    }
+  createIfStatement(args) {
+    const newIfStmt = new IfStatement(args);
+    this._ifStatement = newIfStmt;
+    this.addChild(newIfStmt);
+    return newIfStmt;
+  }
+
+    /**
+     * creates Else Statement
+     * @param args
+     */
+  createElseStatement(args) {
+    const newElseStatement = new ElseStatement(args);
+    this._elseStatement = newElseStatement;
+    this.addChild(newElseStatement);
+    return newElseStatement;
+  }
 
     /**
      * creates Else If Statement
      * @param args
      */
-    createElseIfStatement(args) {
-        let condition = this.getFactory().createBasicLiteralExpression({
-            basicLiteralType: 'boolean',
-            basicLiteralValue: true
-        })
-        _.set(args, 'condition', condition);
-        var newElseIfStatement = new ElseIfStatement(args);
-        this._elseIfStatements.push(newElseIfStatement);
-        this.addChild(newElseIfStatement);
-        return newElseIfStatement;
-    }
+  createElseIfStatement(args) {
+    const condition = this.getFactory().createBasicLiteralExpression({
+      basicLiteralType: 'boolean',
+      basicLiteralValue: true,
+    });
+    _.set(args, 'condition', condition);
+    const newElseIfStatement = new ElseIfStatement(args);
+    this._elseIfStatements.push(newElseIfStatement);
+    this.addChild(newElseIfStatement);
+    return newElseIfStatement;
+  }
 
-    addElseStatement(elseStatement) {
-        this._elseStatement = elseStatement;
-        Object.getPrototypeOf(this.constructor.prototype).addChild.call(this, elseStatement);
-    }
+  addElseStatement(elseStatement) {
+    this._elseStatement = elseStatement;
+    Object.getPrototypeOf(this.constructor.prototype).addChild.call(this, elseStatement);
+  }
 
-    addElseIfStatement(elseIfStatement, index) {
-        const elseStatementIndex = _.findIndex(this.getChildren(), function (node) {
-            return BallerinaASTFactory.isElseStatement(node);
-        });
+  addElseIfStatement(elseIfStatement, index) {
+    const elseStatementIndex = _.findIndex(this.getChildren(), node => BallerinaASTFactory.isElseStatement(node));
 
-        this._elseIfStatements.push(elseIfStatement);
+    this._elseIfStatements.push(elseIfStatement);
 
-        Object.getPrototypeOf(this.constructor.prototype).addChild.call(
+    Object.getPrototypeOf(this.constructor.prototype).addChild.call(
             this, elseIfStatement, index || elseStatementIndex);
-    }
+  }
 
     /**
      * Override the addChild method for ordering the child elements
      * @param {ASTNode} child
      * @param {number|undefined} index
      */
-    addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId)  {
+  addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) {
+    const lastElseIfIndex = _.findLastIndex(this.getChildren(), node => BallerinaASTFactory.isElseIfStatement(node));
 
-        const lastElseIfIndex = _.findLastIndex(this.getChildren(), function (node) {
-            return BallerinaASTFactory.isElseIfStatement(node);
-        });
+    const elseStatementIndex = _.findIndex(this.getChildren(), node => BallerinaASTFactory.isElseStatement(node));
 
-        const elseStatementIndex = _.findIndex(this.getChildren(), function (node) {
-            return BallerinaASTFactory.isElseStatement(node);
-        });
-
-        if (BallerinaASTFactory.isElseIfStatement(child) && elseStatementIndex > -1) {
-            index = elseStatementIndex;
-        }
-
-        Object.getPrototypeOf(this.constructor.prototype)
-          .addChild.call(this, child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) ;
+    if (BallerinaASTFactory.isElseIfStatement(child) && elseStatementIndex > -1) {
+      index = elseStatementIndex;
     }
+
+    Object.getPrototypeOf(this.constructor.prototype)
+          .addChild.call(this, child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
+  }
 
     /**
      * initialize IfElseStatement from json object
@@ -138,37 +131,36 @@ class IfElseStatement extends Statement {
      * @param {Object} [jsonNode.else_statement] - Else statement
      * @param {Object} [jsonNode.else_if_statements] - Else If statements
      */
-    initFromJson(jsonNode) {
-
+  initFromJson(jsonNode) {
         // create if statement
-        let ifStmtNode = jsonNode.if_statement;
-        if (!_.isNil(ifStmtNode)) {
-            let ifStatement = this.getFactory().createFromJson(ifStmtNode);
-            this.addChild(ifStatement);
-            ifStatement.initFromJson(ifStmtNode);
-            this.setIfStatement(ifStatement);
-                    }
+    const ifStmtNode = jsonNode.if_statement;
+    if (!_.isNil(ifStmtNode)) {
+      const ifStatement = this.getFactory().createFromJson(ifStmtNode);
+      this.addChild(ifStatement);
+      ifStatement.initFromJson(ifStmtNode);
+      this.setIfStatement(ifStatement);
+    }
         // create else statement
-        let elseStmtNode = jsonNode.else_statement;
-        if (!_.isNil(elseStmtNode)) {
-            let elseStatement = this.getFactory().createFromJson(elseStmtNode);
-            this.addChild(elseStatement);
-            elseStatement.initFromJson(elseStmtNode);
-            this._elseStatement = elseStatement;
-        }
+    const elseStmtNode = jsonNode.else_statement;
+    if (!_.isNil(elseStmtNode)) {
+      const elseStatement = this.getFactory().createFromJson(elseStmtNode);
+      this.addChild(elseStatement);
+      elseStatement.initFromJson(elseStmtNode);
+      this._elseStatement = elseStatement;
+    }
 
         // create else if statements
-        if (!_.isNil(jsonNode.else_if_statements) && _.isArray(jsonNode.else_if_statements)) {
-            _.each(jsonNode.else_if_statements, (elseIfStmtNode) => {
-                if (!_.isNil(elseIfStmtNode)) {
-                    let elseIfStatement = this.getFactory().createFromJson(elseIfStmtNode);
-                    this.addChild(elseIfStatement);
-                    elseIfStatement.initFromJson(elseIfStmtNode);
-                    this._elseIfStatements.push(elseIfStatement);
+    if (!_.isNil(jsonNode.else_if_statements) && _.isArray(jsonNode.else_if_statements)) {
+      _.each(jsonNode.else_if_statements, (elseIfStmtNode) => {
+        if (!_.isNil(elseIfStmtNode)) {
+          const elseIfStatement = this.getFactory().createFromJson(elseIfStmtNode);
+          this.addChild(elseIfStatement);
+          elseIfStatement.initFromJson(elseIfStmtNode);
+          this._elseIfStatements.push(elseIfStatement);
             	}
         	});
-        }
     }
+  }
 }
 
 export default IfElseStatement;

@@ -26,14 +26,14 @@ import ASTVisitor from '../ast-visitor';
  * @constructor
  */
 class AbstractSymbolTableGenVisitor extends ASTVisitor {
-    constructor(pckg) {
-        super();
-        this._package = pckg;
-    }
+  constructor(pckg) {
+    super();
+    this._package = pckg;
+  }
 
-    getPackage() {
-        return this._package;
-    }
+  getPackage() {
+    return this._package;
+  }
 }
 
 export default AbstractSymbolTableGenVisitor;

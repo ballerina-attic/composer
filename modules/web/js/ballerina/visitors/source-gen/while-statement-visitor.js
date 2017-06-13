@@ -21,40 +21,39 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class WhileStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitWhileStatement(whileStatement) {
-        if (_.isNil(this.node)) {
-            return true;
-        } else {
-            return false;
-        }
+  canVisitWhileStatement(whileStatement) {
+    if (_.isNil(this.node)) {
+      return true;
     }
+    return false;
+  }
 
-    beginVisitWhileStatement(whileStatement) {
-        this.node = whileStatement;
-        this.appendSource('\n' + this.getIndentation() + 'while (' + whileStatement.getConditionString() + ') {\n');
-        this.indent();
-    }
+  beginVisitWhileStatement(whileStatement) {
+    this.node = whileStatement;
+    this.appendSource(`\n${this.getIndentation()}while (${whileStatement.getConditionString()}) {\n`);
+    this.indent();
+  }
 
-    visitWhileStatement(whileStatement) {
-    }
+  visitWhileStatement(whileStatement) {
+  }
 
-    visitStatement(statement) {
-        if(!_.isEqual(this.node, statement)) {
-            var statementVisitorFactory = new StatementVisitorFactory();
-            var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitWhileStatement(whileStatement) {
-        this.outdent();
-        this.appendSource(this.getIndentation() + "}\n");
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitWhileStatement(whileStatement) {
+    this.outdent();
+    this.appendSource(`${this.getIndentation()}}\n`);
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default WhileStatementVisitor;

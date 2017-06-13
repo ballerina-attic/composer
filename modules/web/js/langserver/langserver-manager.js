@@ -22,24 +22,24 @@ import LangserverChannel from './langserver-channel';
 import Console from 'console';
 
 class LangServerManager extends EventChannel {
-    constructor() {
-        super();
-        this.enable = false;
-        this.channel = undefined;
-        this.active = false;
-    }
+  constructor() {
+    super();
+    this.enable = false;
+    this.channel = undefined;
+    this.active = false;
+  }
 
-    runApplication(file) {
-        this.channel = new LangserverChannel({endpoint: this.endpoint, launcher: this});
-        this.openConsole();
-        this.channel.on('connected', _.bindKey(this, 'sendRunApplicationMessage', file));
-    }
+  runApplication(file) {
+    this.channel = new LangserverChannel({ endpoint: this.endpoint, launcher: this });
+    this.openConsole();
+    this.channel.on('connected', _.bindKey(this, 'sendRunApplicationMessage', file));
+  }
 
-    init(options) {
-        this.endpoint = _.get(options, 'application.config.services.langserver.endpoint');
-        this.enable = true;
-        this.application = options.application;
-    }
+  init(options) {
+    this.endpoint = _.get(options, 'application.config.services.langserver.endpoint');
+    this.enable = true;
+    this.application = options.application;
+  }
 }
 
 export default new LangServerManager();

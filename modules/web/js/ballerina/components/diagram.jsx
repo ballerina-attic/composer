@@ -23,7 +23,7 @@ import FunctionDefinition from './function-definition';
 import PositionCalcVisitor from '../visitors/position-calculator-visitor';
 import DimensionCalcVisitor from '../visitors/dimension-calculator-visitor';
 import AnnotationRenderingVisitor from '../visitors/annotation-rendering-visitor';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 import DragDropManager from '../tool-palette/drag-drop-manager';
 import MessageManager from './../visitors/message-manager';
 import ASTRoot from '../ast/ballerina-ast-root';
@@ -33,122 +33,122 @@ import StructOperationsRenderer from './struct-operations-renderer';
 
 class Diagram extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.editor = props.editor;
-        this.container = props.container;
+  constructor(props) {
+    super(props);
+    this.editor = props.editor;
+    this.container = props.container;
 
-        this.setModel(this.editor.getModel());
+    this.setModel(this.editor.getModel());
 
-        this.dimentionCalc = new DimensionCalcVisitor();
-        this.positionCalc = new PositionCalcVisitor();
+    this.dimentionCalc = new DimensionCalcVisitor();
+    this.positionCalc = new PositionCalcVisitor();
 
-        this.editor.on("update-diagram", () => {
+    this.editor.on('update-diagram', () => {
             // only update model if it's new
-            if (this.getModel().id !== this.editor.getModel().id) {
-                this.setModel(this.editor.getModel());
-            }
-            this.forceUpdate();
-        });
-    }
+      if (this.getModel().id !== this.editor.getModel().id) {
+        this.setModel(this.editor.getModel());
+      }
+      this.forceUpdate();
+    });
+  }
 
-    setModel(model) {
-        this.model = model;
+  setModel(model) {
+    this.model = model;
 
-        this.model.on('tree-modified', () => {
-            this.forceUpdate();
-        });
+    this.model.on('tree-modified', () => {
+      this.forceUpdate();
+    });
 
         // following code is a debounce to throttle redundant tree-modified events
         // we need to fix our tree modified and remove the debounce.
-        //this.model.on('tree-modified', _.debounce(_.bind(() => { this.forceUpdate(); }, this), 150));
-    }
+        // this.model.on('tree-modified', _.debounce(_.bind(() => { this.forceUpdate(); }, this), 150));
+  }
 
-    getModel() {
-        return this.model;
-    }
+  getModel() {
+    return this.model;
+  }
 
-    render() {
+  render() {
         // Following is how we render the diagram.
         // 1. We will visit the model tree and calculate width and height of all
         //    the elements. We will use DimensionCalcVisitor.
-        this.model.accept(this.dimentionCalc);
+    this.model.accept(this.dimentionCalc);
         // 1.5 We need to adjest the width of the panel to accomodate width of the screen.
-        // - This is done by passing the container width to position calculater to readjest. 
-        let viewState = this.model.getViewState();
-        viewState.container = {
-            width: this.container.width(),
-            height: this.container.height()
-        }; 
+        // - This is done by passing the container width to position calculater to readjest.
+    const viewState = this.model.getViewState();
+    viewState.container = {
+      width: this.container.width(),
+      height: this.container.height(),
+    };
         // 2. Now we will visit the model again and calculate position of each node
         //    in the tree. We will use PositionCalcVisitor for this.
-        this.model.accept(this.positionCalc);
+    this.model.accept(this.positionCalc);
         // 3. Now we need to create component for each child of root node.
-        let [pkgDef, imports, constants, others] = [undefined, [], [], []];
-        let otherNodes = [];
-        this.model.children.forEach((child) => {
-            switch (child.constructor.name) {
-                case 'ImportDeclaration':
-                    break;
-                case 'ConstantDefinition':
-                    break;
-                default:
-                    otherNodes.push(child);
-            }
-        });
-        others = getComponentForNodeArray(otherNodes);
+    let [pkgDef, imports, constants, others] = [undefined, [], [], []];
+    const otherNodes = [];
+    this.model.children.forEach((child) => {
+      switch (child.constructor.name) {
+        case 'ImportDeclaration':
+          break;
+        case 'ConstantDefinition':
+          break;
+        default:
+          otherNodes.push(child);
+      }
+    });
+    others = getComponentForNodeArray(otherNodes);
         // 3.1 lets filter out annotations so we can overlay html on top of svg.
-        let annotationRenderer = new AnnotationRenderingVisitor();
-        this.model.accept(annotationRenderer);
-        let annotations = [];
-        if(annotationRenderer.getAnnotations()){
-            annotations = getComponentForNodeArray(annotationRenderer.getAnnotations());
-        }
+    const annotationRenderer = new AnnotationRenderingVisitor();
+    this.model.accept(annotationRenderer);
+    let annotations = [];
+    if (annotationRenderer.getAnnotations()) {
+      annotations = getComponentForNodeArray(annotationRenderer.getAnnotations());
+    }
 
         // 4. Ok we are all set, now lets render the diagram with React. We will create
         //    s CsnvasDecorator and pass child components for that.
 
-        return <CanvasDecorator dropTarget={this.model} title="StatementContainer" bBox={viewState.bBox} annotations={annotations}>
-                   {others}
-               </CanvasDecorator>
-    }
+    return (<CanvasDecorator dropTarget={this.model} title="StatementContainer" bBox={viewState.bBox} annotations={annotations}>
+      {others}
+    </CanvasDecorator>);
+  }
 
-    getChildContext() {
-        return {
-            dragDropManager: this.props.dragDropManager,
-            messageManager: this.props.messageManager,
-            container: this.props.container,
-            renderer: this.props.renderer,
-            overlay: this.props.overlay,
-            renderingContext: this.props.renderingContext,
-            structOperationsRenderer: this.props.structOperationsRenderer,
-            activeArbiter: new ActiveArbiter()
-        };
-    }
+  getChildContext() {
+    return {
+      dragDropManager: this.props.dragDropManager,
+      messageManager: this.props.messageManager,
+      container: this.props.container,
+      renderer: this.props.renderer,
+      overlay: this.props.overlay,
+      renderingContext: this.props.renderingContext,
+      structOperationsRenderer: this.props.structOperationsRenderer,
+      activeArbiter: new ActiveArbiter(),
+    };
+  }
 }
 
 Diagram.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired,
-    }),
-    editor: PropTypes.instanceOf(Object).isRequired,
-    dragDropManager: PropTypes.instanceOf(DragDropManager).isRequired,
-    messageManager: PropTypes.instanceOf(MessageManager).isRequired,
-    renderer: PropTypes.instanceOf(Renderer).isRequired
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+  editor: PropTypes.instanceOf(Object).isRequired,
+  dragDropManager: PropTypes.instanceOf(DragDropManager).isRequired,
+  messageManager: PropTypes.instanceOf(MessageManager).isRequired,
+  renderer: PropTypes.instanceOf(Renderer).isRequired,
 };
 
 Diagram.childContextTypes = {
-    dragDropManager: PropTypes.instanceOf(DragDropManager).isRequired,
-    activeArbiter: PropTypes.instanceOf(ActiveArbiter).isRequired,
-    messageManager: PropTypes.instanceOf(MessageManager).isRequired,
-    container: PropTypes.instanceOf(Object).isRequired,
-    renderer: PropTypes.instanceOf(Renderer).isRequired,
-    overlay: PropTypes.instanceOf(Object).isRequired,
-    renderingContext: PropTypes.instanceOf(Object).isRequired,
-    structOperationsRenderer: PropTypes.instanceOf(StructOperationsRenderer).isRequired,
+  dragDropManager: PropTypes.instanceOf(DragDropManager).isRequired,
+  activeArbiter: PropTypes.instanceOf(ActiveArbiter).isRequired,
+  messageManager: PropTypes.instanceOf(MessageManager).isRequired,
+  container: PropTypes.instanceOf(Object).isRequired,
+  renderer: PropTypes.instanceOf(Renderer).isRequired,
+  overlay: PropTypes.instanceOf(Object).isRequired,
+  renderingContext: PropTypes.instanceOf(Object).isRequired,
+  structOperationsRenderer: PropTypes.instanceOf(StructOperationsRenderer).isRequired,
 };
 
 export default Diagram;

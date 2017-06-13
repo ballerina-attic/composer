@@ -25,32 +25,32 @@ import Statement from './statement';
  * @augments Statement
  */
 class CommentStatement extends Statement {
-    constructor(args) {
-        super();
-        this.type = "CommentStatement";
-        this._commentString = _.get(args, 'commentString', "");
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: '\n'
-        };
-    }
+  constructor(args) {
+    super();
+    this.type = 'CommentStatement';
+    this._commentString = _.get(args, 'commentString', '');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '\n',
+    };
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        this._commentString = jsonNode.comment_string;
-    }
+  initFromJson(jsonNode) {
+    this._commentString = jsonNode.comment_string;
+  }
 
     /**
      * returns comment string
      * @returns {string} statement string
      * @override
      */
-    getStatementString() {
-        return this._commentString;
-    }
+  getStatementString() {
+    return this._commentString;
+  }
 }
 
 export default CommentStatement;

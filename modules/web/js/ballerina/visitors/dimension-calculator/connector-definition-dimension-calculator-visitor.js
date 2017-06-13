@@ -17,23 +17,23 @@
  */
 
 import log from 'log';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ConnectorDefinitionDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateOuterPanelDecoratorBBox(node, node.getConnectorName());
-    }
+  endVisit(node) {
+    util.populateOuterPanelDecoratorBBox(node, node.getConnectorName());
+  }
 }
 
 export default ConnectorDefinitionDimensionCalculatorVisitor;

@@ -25,22 +25,22 @@ import LeftOperandExpressionVisitor from './left-operand-expression-visitor';
 import RightOperandExpressionVisitor from './right-operand-expression-visitor';
 
 class ExpressionViewFactory {
-    getExpressionView(args) {
-        var expression  = _.get(args, "model");
-        if (ASTFactory.isFunctionInvocation(expression)) {
-            return new FunctionInvocationVisitor(_.get(args, "parent"));
-        } else if (ASTFactory.isVariableReferenceExpression(expression)) {
-            return new VariableReferenceExpressionVisitor(_.get(args, "parent"));
-        } else if (ASTFactory.isReferenceTypeInitExpression(expression)) {
-            return new ReferenceTypeInitExpressionVisitor(_.get(args, "parent"));
-        } else if (ASTFactory.isTypeCastExpression(expression)) {
-            return new TypeCastExpressionVisitor(_.get(args, "parent"));
-        } else if (ASTFactory.isLeftOperandExpression(expression)) {
-            return new LeftOperandExpressionVisitor(expression);
-        } else if (ASTFactory.isRightOperandExpression(expression)) {
-            return new RightOperandExpressionVisitor(expression);
-        }
+  getExpressionView(args) {
+    const expression = _.get(args, 'model');
+    if (ASTFactory.isFunctionInvocation(expression)) {
+      return new FunctionInvocationVisitor(_.get(args, 'parent'));
+    } else if (ASTFactory.isVariableReferenceExpression(expression)) {
+      return new VariableReferenceExpressionVisitor(_.get(args, 'parent'));
+    } else if (ASTFactory.isReferenceTypeInitExpression(expression)) {
+      return new ReferenceTypeInitExpressionVisitor(_.get(args, 'parent'));
+    } else if (ASTFactory.isTypeCastExpression(expression)) {
+      return new TypeCastExpressionVisitor(_.get(args, 'parent'));
+    } else if (ASTFactory.isLeftOperandExpression(expression)) {
+      return new LeftOperandExpressionVisitor(expression);
+    } else if (ASTFactory.isRightOperandExpression(expression)) {
+      return new RightOperandExpressionVisitor(expression);
     }
+  }
 }
 
 export default ExpressionViewFactory;

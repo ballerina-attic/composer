@@ -20,39 +20,39 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class FinallyStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitFinallyStatement(finallyStatement) {
-        return true;
-    }
+  canVisitFinallyStatement(finallyStatement) {
+    return true;
+  }
 
-    beginVisitFinallyStatement(finallyStatement) {
-        this.node = finallyStatement;
+  beginVisitFinallyStatement(finallyStatement) {
+    this.node = finallyStatement;
         /**
          * set the configuration start for the finally statement
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        this.appendSource('finally' + finallyStatement.getWSRegion(1) + '{' + finallyStatement.getWSRegion(2));
-        this.appendSource((finallyStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
-        this.indent();
-    }
+    this.appendSource(`finally${finallyStatement.getWSRegion(1)}{${finallyStatement.getWSRegion(2)}`);
+    this.appendSource((finallyStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
+    this.indent();
+  }
 
-    visitStatement(statement) {
-        if(!_.isEqual(this.node, statement)) {
-            let statementVisitorFactory = new StatementVisitorFactory();
-            let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitFinallyStatement(finallyStatement) {
-        this.outdent();
-        this.appendSource('}' + finallyStatement.getWSRegion(3));
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitFinallyStatement(finallyStatement) {
+    this.outdent();
+    this.appendSource(`}${finallyStatement.getWSRegion(3)}`);
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default FinallyStatementVisitor;

@@ -17,23 +17,23 @@
  */
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ReplyStatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateSimpleStatementBBox( node.getReplyExpression() , node.getViewState());
-    }
+  endVisit(node) {
+    util.populateSimpleStatementBBox(node.getReplyExpression(), node.getViewState());
+  }
 }
 
 export default ReplyStatementDimensionCalculatorVisitor;

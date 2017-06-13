@@ -16,45 +16,45 @@
  * under the License.
  */
 import log from 'log';
-import {panel} from './../../configs/designer-defaults';
+import { panel } from './../../configs/designer-defaults';
 
 class BallerinaASTRootPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
+  beginVisit(node) {
         // here we need to re adjust panel width to match the screen.
-        let children = node.getChildren();
-        let defaultContainerWidth = node.getViewState().container.width - ( panel.wrapper.gutter.h * 2 );
-        let highestWidthOfChildren = node.getViewState().bBox.w - ( panel.wrapper.gutter.h * 2 );
-        let minWidth = highestWidthOfChildren > defaultContainerWidth ?
+    const children = node.getChildren();
+    const defaultContainerWidth = node.getViewState().container.width - (panel.wrapper.gutter.h * 2);
+    const highestWidthOfChildren = node.getViewState().bBox.w - (panel.wrapper.gutter.h * 2);
+    const minWidth = highestWidthOfChildren > defaultContainerWidth ?
             highestWidthOfChildren : defaultContainerWidth;
 
-        children.forEach(function (element) {
-            let viewState = element.getViewState();
-            if (viewState.bBox.w < minWidth) {
-                viewState.bBox.w = minWidth;
-            }
-        }, this);
+    children.forEach((element) => {
+      const viewState = element.getViewState();
+      if (viewState.bBox.w < minWidth) {
+        viewState.bBox.w = minWidth;
+      }
+    }, this);
 
-        //lets adjust the canvas width and height
-        if (node.getViewState().container.width > node.viewState.bBox.w) {
-            node.viewState.bBox.w = node.getViewState().container.width;
-        }
-        if (node.getViewState().container.height > node.viewState.bBox.h) {
-            node.viewState.bBox.h = node.getViewState().container.height;
-        }
+        // lets adjust the canvas width and height
+    if (node.getViewState().container.width > node.viewState.bBox.w) {
+      node.viewState.bBox.w = node.getViewState().container.width;
     }
+    if (node.getViewState().container.height > node.viewState.bBox.h) {
+      node.viewState.bBox.h = node.getViewState().container.height;
+    }
+  }
 
-    visit(node) {
-        log.debug('Visit BallerinaASTRoot');
-    }
+  visit(node) {
+    log.debug('Visit BallerinaASTRoot');
+  }
 
-    endVisit(node) {
-        log.debug('End Visit BallerinaASTRoot');
-    }
+  endVisit(node) {
+    log.debug('End Visit BallerinaASTRoot');
+  }
 }
 
 export default BallerinaASTRootPositionCalcVisitor;

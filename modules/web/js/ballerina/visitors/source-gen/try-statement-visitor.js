@@ -21,39 +21,39 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class TryStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitTryStatement(tryStatement) {
-        return true;
-    }
+  canVisitTryStatement(tryStatement) {
+    return true;
+  }
 
-    beginVisitTryStatement(tryStatement) {
-        this.node = tryStatement;
+  beginVisitTryStatement(tryStatement) {
+    this.node = tryStatement;
         /**
          * set the configuration start for the try statement
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        this.appendSource('try' + tryStatement.getWSRegion(1) + '{' + tryStatement.getWSRegion(2));
-        this.appendSource((tryStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
-        this.indent();
-    }
+    this.appendSource(`try${tryStatement.getWSRegion(1)}{${tryStatement.getWSRegion(2)}`);
+    this.appendSource((tryStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
+    this.indent();
+  }
 
-    visitStatement(statement) {
-        if(!_.isEqual(this.node, statement)) {
-            let statementVisitorFactory = new StatementVisitorFactory();
-            let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitTryStatement(tryStatement) {
-        this.outdent();
-        this.appendSource('}' + tryStatement.getWSRegion(3));
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitTryStatement(tryStatement) {
+    this.outdent();
+    this.appendSource(`}${tryStatement.getWSRegion(3)}`);
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default TryStatementVisitor;

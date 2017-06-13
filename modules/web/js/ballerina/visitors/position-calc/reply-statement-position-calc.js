@@ -21,23 +21,23 @@ import * as PositioningUtils from './utils';
 
 class ReplyStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ReplyStatementPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ReplyStatementPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit ReplyStatementPositionCalc');
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit ReplyStatementPositionCalc');
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit ReplyStatementPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit ReplyStatementPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ReplyStatementPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit ReplyStatementPositionCalc');
+  }
 }
 
 export default ReplyStatementPositionCalcVisitor;

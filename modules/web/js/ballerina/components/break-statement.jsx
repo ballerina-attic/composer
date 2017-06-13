@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import StatementDecorator from "./statement-decorator";
+import React from 'react';
+import StatementDecorator from './statement-decorator';
 import PropTypes from 'prop-types';
 
 /**
@@ -26,23 +26,23 @@ class BreakStatement extends React.Component {
     /**
      * Render function for the break statement.
      * */
-    render() {
-        let model = this.props.model,
-            expression = model.getStatementString();
-        return (<StatementDecorator model={model} viewState={model.viewState} expression={expression}/>);
-    }
+  render() {
+    let model = this.props.model,
+      expression = model.getStatementString();
+    return (<StatementDecorator model={model} viewState={model.viewState} expression={expression} />);
+  }
 }
 
 BreakStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired
-    }),
-    expression: PropTypes.shape({
-        expression: PropTypes.string
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+  expression: PropTypes.shape({
+    expression: PropTypes.string,
+  }),
 };
 
 export default BreakStatement;

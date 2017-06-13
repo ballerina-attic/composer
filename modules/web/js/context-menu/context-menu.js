@@ -28,31 +28,30 @@ import 'jquery-contextmenu';
          * @param args {Object}
          * @constructor
          */
-var ContextMenu = function (args) {
-    _.assign(this, args);
-    this.init();
+const ContextMenu = function (args) {
+  _.assign(this, args);
+  this.init();
 };
 
 ContextMenu.prototype = Object.create(EventChannel.prototype);
 ContextMenu.prototype.constructor = ContextMenu;
 
 ContextMenu.prototype.init = function () {
-    if (_.isFunction(this.provider)) {
-        this.container.contextMenu({
-            selector: this.selector,
-            build: this.provider,
-            zIndex: 4
-        });
-    } else {
-        this.container.contextMenu({
-            selector: this.selector,
-            callback: this.callback,
-            items: this.items,
-            zIndex: 4
-        });
-    }
+  if (_.isFunction(this.provider)) {
+    this.container.contextMenu({
+      selector: this.selector,
+      build: this.provider,
+      zIndex: 4,
+    });
+  } else {
+    this.container.contextMenu({
+      selector: this.selector,
+      callback: this.callback,
+      items: this.items,
+      zIndex: 4,
+    });
+  }
 };
 
 export default ContextMenu;
 
-    

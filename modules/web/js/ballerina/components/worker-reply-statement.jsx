@@ -15,55 +15,59 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import StatementDecorator from "./statement-decorator";
+import React from 'react';
+import StatementDecorator from './statement-decorator';
 import StatementArrowConnection from './statement-arrow-connection';
 import PropTypes from 'prop-types';
 import BallerinaASTFactory from './../ast/ballerina-ast-factory';
 
 class WorkerReplyStatement extends React.Component {
 
-    constructor(props){
-        super(props);
-        this.editorOptions = {
-            propertyType: 'text',
-            key: 'WorkerReplyStatement',
-            model: props.model,
-            getterMethod: props.model.getStatementString,
-            setterMethod: props.model.setStatementFromString
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.editorOptions = {
+      propertyType: 'text',
+      key: 'WorkerReplyStatement',
+      model: props.model,
+      getterMethod: props.model.getStatementString,
+      setterMethod: props.model.setStatementFromString,
+    };
+  }
 
-    render() {
-        let model = this.props.model,
-            expression = model.viewState.expression;
-        if (!_.isUndefined(model.getDestination())) {
-            let workerReplyStatement = model.getDestination().findChild(BallerinaASTFactory.isReplyStatement);
-            if (!_.isUndefined(workerReplyStatement)) {
-                    return (<g>
-                      <StatementDecorator model={model} viewState={model.viewState}
-                                          expression={expression} editorOptions={this.editorOptions} />);
+  render() {
+    let model = this.props.model,
+      expression = model.viewState.expression;
+    if (!_.isUndefined(model.getDestination())) {
+      const workerReplyStatement = model.getDestination().findChild(BallerinaASTFactory.isReplyStatement);
+      if (!_.isUndefined(workerReplyStatement)) {
+        return (<g>
+          <StatementDecorator
+            model={model} viewState={model.viewState}
+            expression={expression} editorOptions={this.editorOptions}
+          />);
                       <StatementArrowConnection start={workerReplyStatement.viewState} end={model.viewState} />
-                    </g>);
-            } else {
-                return (<StatementDecorator model={model} viewState={model.viewState}
-                                            expression={expression} editorOptions={this.editorOptions} />);
-            }
-        } else {
-            return (<StatementDecorator model={model} viewState={model.viewState}
-                                        expression={expression} editorOptions={this.editorOptions} />);
-        }
+        </g>);
+      }
+      return (<StatementDecorator
+        model={model} viewState={model.viewState}
+        expression={expression} editorOptions={this.editorOptions}
+      />);
     }
+    return (<StatementDecorator
+      model={model} viewState={model.viewState}
+      expression={expression} editorOptions={this.editorOptions}
+    />);
+  }
 }
 
 WorkerReplyStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired,
-    })
-}
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+};
 
 
 export default WorkerReplyStatement;

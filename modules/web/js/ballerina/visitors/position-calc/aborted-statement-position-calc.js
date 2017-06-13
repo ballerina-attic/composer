@@ -20,23 +20,23 @@ import log from 'log';
 import * as Utils from './utils';
 
 class AbortedStatementPositionCalcVisitor {
-    canVisit(node) {
-        log.debug('can visit AbortedStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit AbortedStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit AbortedStatementPositionCalcVisitor');
-        Utils.getCompoundStatementChildPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit AbortedStatementPositionCalcVisitor');
+    Utils.getCompoundStatementChildPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit AbortedStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit AbortedStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit AbortedStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit AbortedStatementPositionCalcVisitor');
+  }
 }
 
 export default AbortedStatementPositionCalcVisitor;

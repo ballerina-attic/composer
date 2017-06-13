@@ -25,96 +25,93 @@ import FragmentUtils from './../../utils/fragment-utils';
  * @constructor
  */
 class TryCatchStatement extends Statement {
-    constructor(args) {
-        super();
-        this.type = "TryCatchStatement";
-        this._tryStatement = _.get(args, 'tryStatement');
-        this._catchStatements = _.get(args, 'catchStatements', []);
-        this._finallyStatement = _.get(args, 'finallyStatement');
-    }
+  constructor(args) {
+    super();
+    this.type = 'TryCatchStatement';
+    this._tryStatement = _.get(args, 'tryStatement');
+    this._catchStatements = _.get(args, 'catchStatements', []);
+    this._finallyStatement = _.get(args, 'finallyStatement');
+  }
 
     /**
      * setter for catch block exception
      * @param {string} exception
      * @param {object} options
      */
-    setExceptionType(exception, options) {
-        if (!_.isNil(exception)) {
-            this.setAttribute('_exceptionType', exception, options);
-        } else {
-            log.error("Cannot set undefined to the exception.");
-        }
+  setExceptionType(exception, options) {
+    if (!_.isNil(exception)) {
+      this.setAttribute('_exceptionType', exception, options);
+    } else {
+      log.error('Cannot set undefined to the exception.');
     }
+  }
 
     /**
      * getter for catch block exception type
      * @return {string} _exceptionType
      */
-    getExceptionType() {
-        return this._exceptionType;
+  getExceptionType() {
+    return this._exceptionType;
+  }
+
+  initFromJson(jsonNode) {
+    this._catchStatements.length = 0;
+    this.getChildren().length = 0;
+    const self = this;
+    const tryBlockNode = jsonNode.try_block;
+    const catchBlocks = jsonNode.catch_blocks;
+    const finallyBlockNode = jsonNode.finally_block;
+
+    this._tryStatement = self.getFactory().createFromJson(tryBlockNode);
+    this._tryStatement.initFromJson(tryBlockNode);
+    this.addChild(this._tryStatement);
+
+    _.each(catchBlocks, (catchBlock) => {
+      const catchNode = self.getFactory().createFromJson(catchBlock);
+      this.getCatchStatements().push(catchNode);
+      this.addChild(catchNode);
+      catchNode.initFromJson(catchBlock);
+    });
+
+    if (!_.isNil(finallyBlockNode)) {
+      this._finallyStatement = self.getFactory().createFromJson(finallyBlockNode);
+      this._finallyStatement.initFromJson(finallyBlockNode);
+      this.addChild(this._finallyStatement);
     }
+  }
 
-    initFromJson(jsonNode) {
-        this._catchStatements.length = 0;
-        this.getChildren().length = 0;
-        let self = this;
-        let tryBlockNode = jsonNode.try_block;
-        let catchBlocks = jsonNode.catch_blocks;
-        let finallyBlockNode = jsonNode.finally_block;
+  setStatementFromString(statementString, callback) {
+    const fragment = FragmentUtils.createStatementFragment(statementString);
+    const parsedJson = FragmentUtils.parseFragment(fragment);
 
-        this._tryStatement = self.getFactory().createFromJson(tryBlockNode);
-        this._tryStatement.initFromJson(tryBlockNode);
-        this.addChild(this._tryStatement);
-
-        _.each(catchBlocks, (catchBlock) => {
-            let catchNode = self.getFactory().createFromJson(catchBlock);
-            this.getCatchStatements().push(catchNode);
-            this.addChild(catchNode);
-            catchNode.initFromJson(catchBlock);
-        });
-
-        if (!_.isNil(finallyBlockNode)) {
-            this._finallyStatement = self.getFactory().createFromJson(finallyBlockNode);
-            this._finallyStatement.initFromJson(finallyBlockNode);
-            this.addChild(this._finallyStatement);
-        }
-    }
-
-    setStatementFromString(statementString, callback) {
-        const fragment = FragmentUtils.createStatementFragment(statementString);
-        const parsedJson = FragmentUtils.parseFragment(fragment);
-
-        if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
+    if ((!_.has(parsedJson, 'error') || !_.has(parsedJson, 'syntax_errors'))
             && _.isEqual(parsedJson.type, 'try_catch_statement')) {
-
-            this.initFromJson(parsedJson);
+      this.initFromJson(parsedJson);
 
             // Manually firing the tree-modified event here.
             // TODO: need a proper fix to avoid breaking the undo-redo
-            this.trigger('tree-modified', {
-                origin: this,
-                type: 'custom',
-                title: 'TryCatch Statement Custom Tree modified',
-                context: this,
-            });
+      this.trigger('tree-modified', {
+        origin: this,
+        type: 'custom',
+        title: 'TryCatch Statement Custom Tree modified',
+        context: this,
+      });
 
-            if (_.isFunction(callback)) {
-                callback({isValid: true});
-            }
-        } else {
-            if (_.isFunction(callback)) {
-                callback({isValid: false, response: parsedJson});
-            }
-        }
+      if (_.isFunction(callback)) {
+        callback({ isValid: true });
+      }
+    } else if (_.isFunction(callback)) {
+      callback({ isValid: false, response: parsedJson });
     }
+  }
 
-    getTryStatement() {
-        return this._tryStatement;
-    }
+  getTryStatement() {
+    return this._tryStatement;
+  }
 
-    getCatchStatements() {
-        return this._catchStatements;
-    }
+  getCatchStatements() {
+    return this._catchStatements;
+  }
 }
 
 export default TryCatchStatement;

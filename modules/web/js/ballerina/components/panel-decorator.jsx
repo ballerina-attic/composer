@@ -25,260 +25,276 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import DragDropManager from '../tool-palette/drag-drop-manager';
 import EditableText from './editable-text';
 import './panel-decorator.css';
-import {panel} from '../configs/designer-defaults.js';
+import { panel } from '../configs/designer-defaults.js';
 import BallerinaASTFactory from './../ast/ballerina-ast-factory';
-import {getComponentForNodeArray} from './utils';
-import {util} from '../visitors/sizing-utils';
+import { getComponentForNodeArray } from './utils';
+import { util } from '../visitors/sizing-utils';
 import SimpleBBox from '../ast/simple-bounding-box';
 
 class PanelDecorator extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            dropZoneActivated: false,
-            dropZoneDropNotAllowed: false,
-            titleEditing: false,
-            editingTitle: this.props.title,
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      dropZoneActivated: false,
+      dropZoneDropNotAllowed: false,
+      titleEditing: false,
+      editingTitle: this.props.title,
+    };
+  }
 
-    onCollapseClick() {
-        this.props.model.setAttribute('viewState.collapsed', !this.props.model.viewState.collapsed);
-    }
+  onCollapseClick() {
+    this.props.model.setAttribute('viewState.collapsed', !this.props.model.viewState.collapsed);
+  }
 
-    onDelete() {
-        this.props.model.remove();
-    }
+  onDelete() {
+    this.props.model.remove();
+  }
 
-    onTitleClick() {
-        if(this.props.model.getType() === 'FunctionDefinition' && this.props.model.getFunctionName() === 'main') {
+  onTitleClick() {
+    if (this.props.model.getType() === 'FunctionDefinition' && this.props.model.getFunctionName() === 'main') {
             // should not edit main function name
-            return;
-        }
-        this.setState({titleEditing: true})
+      return;
     }
+    this.setState({ titleEditing: true });
+  }
 
-    onTitleInputBlur() {
-        this.setPropertyName();
+  onTitleInputBlur() {
+    this.setPropertyName();
+  }
+
+  onTitleInputChange(e) {
+    this.setState({ editingTitle: e.target.value });
+  }
+
+  onTitleKeyDown(e) {
+    if (e.keyCode === 13) {
+      this.setPropertyName();
     }
+  }
 
-    onTitleInputChange(e) {
-        this.setState({editingTitle: e.target.value});
-    }
-
-    onTitleKeyDown(e) {
-        if(e.keyCode === 13) {
-            this.setPropertyName();
-        }
-    }
-
-    setPropertyName() {
-        const modelType = this.props.model.type.replace('Definition', '');
+  setPropertyName() {
+    const modelType = this.props.model.type.replace('Definition', '');
 
         // Setter functions take form 'setModelTypeName'. eg: setServiceName
-        this.props.model[`set${modelType}Name`](this.state.editingTitle);
-        this.setState({
-            titleEditing: false,
-        });
-    }
+    this.props.model[`set${modelType}Name`](this.state.editingTitle);
+    this.setState({
+      titleEditing: false,
+    });
+  }
 
-    render() {
-        const bBox = this.props.bBox;
-        const titleHeight = panel.heading.height;
-        const iconSize = 14;
-        const collapsed = this.props.model.viewState.collapsed || false;
-        const annotationViewCollapsed = this.props.model.viewState.annotationViewCollapsed || false;
-        const dropZoneActivated = this.state.dropZoneActivated;
-        const dropZoneDropNotAllowed = this.state.dropZoneDropNotAllowed;
-        const dropZoneClassName = ((!dropZoneActivated) ? "panel-body-rect drop-zone" : "panel-body-rect drop-zone active")
-            + ((dropZoneDropNotAllowed) ? " block" : "");
-        const panelBodyClassName = "panel-body" + ((dropZoneActivated) ? " drop-zone active" : "");
+  render() {
+    const bBox = this.props.bBox;
+    const titleHeight = panel.heading.height;
+    const iconSize = 14;
+    const collapsed = this.props.model.viewState.collapsed || false;
+    const annotationViewCollapsed = this.props.model.viewState.annotationViewCollapsed || false;
+    const dropZoneActivated = this.state.dropZoneActivated;
+    const dropZoneDropNotAllowed = this.state.dropZoneDropNotAllowed;
+    const dropZoneClassName = ((!dropZoneActivated) ? 'panel-body-rect drop-zone' : 'panel-body-rect drop-zone active')
+            + ((dropZoneDropNotAllowed) ? ' block' : '');
+    const panelBodyClassName = `panel-body${(dropZoneActivated) ? ' drop-zone active' : ''}`;
 
-        const annotationBodyClassName = "annotation-body";
-        let annotationBodyHeight = 0;
+    const annotationBodyClassName = 'annotation-body';
+    let annotationBodyHeight = 0;
 
         // TODO: Fix Me
-        if (!_.isNil(this.props.model.viewState.components.annotation)) {
-            annotationBodyHeight = this.props.model.viewState.components.annotation.h;
-        }
-        let titleComponents = this.getTitleComponents(this.props.titleComponentData);
-        let annotations = this.props.model.getChildren().filter(function (child) {
-            return BallerinaASTFactory.isAnnotation(child);
-        });
-        let annotationString = this.getAnnotationsString(annotations);
-        let annotationComponents = this.getAnnotationComponents(annotations, bBox, titleHeight);
+    if (!_.isNil(this.props.model.viewState.components.annotation)) {
+      annotationBodyHeight = this.props.model.viewState.components.annotation.h;
+    }
+    const titleComponents = this.getTitleComponents(this.props.titleComponentData);
+    const annotations = this.props.model.getChildren().filter(child => BallerinaASTFactory.isAnnotation(child));
+    const annotationString = this.getAnnotationsString(annotations);
+    const annotationComponents = this.getAnnotationComponents(annotations, bBox, titleHeight);
 
-        const titleWidth = util.getTextWidth(this.state.editingTitle);
+    const titleWidth = util.getTextWidth(this.state.editingTitle);
 
-        //calculate the panel bBox;
-        let panelBBox = new SimpleBBox();
-        panelBBox.x = bBox.x;
-        panelBBox.y = bBox.y + titleHeight + annotationBodyHeight;
-        panelBBox.w = bBox.w;
-        panelBBox.h = bBox.h - titleHeight - annotationBodyHeight;
+        // calculate the panel bBox;
+    const panelBBox = new SimpleBBox();
+    panelBBox.x = bBox.x;
+    panelBBox.y = bBox.y + titleHeight + annotationBodyHeight;
+    panelBBox.w = bBox.w;
+    panelBBox.h = bBox.h - titleHeight - annotationBodyHeight;
 
         // following config is to style the panel rect, we use it to hide the top stroke line of the panel.
-        let panelRectStyles =  {
-            'strokeDasharray' : `0, ${panelBBox.w}, ${panelBBox.h} , 0 , ${panelBBox.w} , 0 , ${panelBBox.h}`
-        };
+    const panelRectStyles = {
+      strokeDasharray: `0, ${panelBBox.w}, ${panelBBox.h} , 0 , ${panelBBox.w} , 0 , ${panelBBox.h}`,
+    };
 
-        return (<g className="panel">
-            <g className="panel-header">
-                <rect x={bBox.x} y={bBox.y + annotationBodyHeight} width={bBox.w} height={titleHeight} rx="0" ry="0"
-                      className="headingRect" data-original-title="" title=""></rect>
-                <rect x={bBox.x - 1} y={bBox.y + annotationBodyHeight} height={titleHeight} rx="0" ry="0" className="panel-heading-decorator" />
-                <EditableText
-                    x={bBox.x + titleHeight + iconSize + 15} y={bBox.y + titleHeight / 2 + annotationBodyHeight}
-                    width={titleWidth.w}
-                    onBlur={() => { this.onTitleInputBlur() }}
-                    onClick={() => { this.onTitleClick() }}
-                    editing={this.state.titleEditing}
-                    onChange={e => {this.onTitleInputChange(e)}}
-                    displayText={titleWidth.text}
-                    onKeyDown={e => {this.onTitleKeyDown(e)}}>
-                    {this.state.editingTitle}
-                </EditableText>
-                <image x={bBox.x + 8} y={bBox.y + 8 + annotationBodyHeight} width={iconSize} height={iconSize}
-                       xlinkHref={ImageUtil.getSVGIconString(this.props.icon)}/>
-                <rect x={bBox.x + iconSize + 16} y={bBox.y + annotationBodyHeight} width={iconSize + 15} height={titleHeight - 3}
-                      className="annotation-icon-wrapper"/>
-                <image x={bBox.x + iconSize + 24} y={bBox.y + 8 + annotationBodyHeight} width={iconSize} height={iconSize}
-                        xlinkHref={ImageUtil.getSVGIconString('annotation-black')} onClick={this.onAnnotationEditButtonClick.bind(this)}
-                       className="annotation-icon"/>
-                {titleComponents}
-                <g className="panel-header-controls">
-                    <rect x={bBox.x + bBox.w - 54} y={bBox.y + annotationBodyHeight} width={55} height={titleHeight}
-                          className="panel-header-controls-wrapper"/>
-                    <image x={bBox.x + bBox.w - 44} y={bBox.y + 6 + annotationBodyHeight} width={iconSize}
-                           height={iconSize} className="control"
-                           xlinkHref={ImageUtil.getSVGIconString('delete')} onClick={() => this.onDelete()}/>
-                    <image x={bBox.x + bBox.w - 22} y={bBox.y + 6 + annotationBodyHeight} width={iconSize}
-                           height={iconSize} className="control"
-                           xlinkHref={(collapsed) ? ImageUtil.getSVGIconString('down') : ImageUtil.getSVGIconString('up')}
-                           onClick={() => this.onCollapseClick()}/>
-                </g>
-            </g>
-            <g className={panelBodyClassName}>
-                <CSSTransitionGroup
-                    component="g"
-                    transitionName="panel-slide"
-                    transitionEnterTimeout={300}
-                    transitionLeaveTimeout={300}>
-                    {!collapsed &&
-                    <rect x={panelBBox.x}
-                          y={panelBBox.y}
-                          width={panelBBox.w}
-                          height={panelBBox.h}
-                          rx="0" ry="0" fill="#fff"
-                          className={dropZoneClassName}
-                          onMouseOver={(e) => this.onDropZoneActivate(e)}
-                          onMouseOut={(e) => this.onDropZoneDeactivate(e)}
-                          style={panelRectStyles} />
+    return (<g className="panel">
+      <g className="panel-header">
+        <rect
+          x={bBox.x} y={bBox.y + annotationBodyHeight} width={bBox.w} height={titleHeight} rx="0" ry="0"
+          className="headingRect" data-original-title="" title=""
+        />
+        <rect x={bBox.x - 1} y={bBox.y + annotationBodyHeight} height={titleHeight} rx="0" ry="0" className="panel-heading-decorator" />
+        <EditableText
+          x={bBox.x + titleHeight + iconSize + 15} y={bBox.y + titleHeight / 2 + annotationBodyHeight}
+          width={titleWidth.w}
+          onBlur={() => { this.onTitleInputBlur(); }}
+          onClick={() => { this.onTitleClick(); }}
+          editing={this.state.titleEditing}
+          onChange={(e) => { this.onTitleInputChange(e); }}
+          displayText={titleWidth.text}
+          onKeyDown={(e) => { this.onTitleKeyDown(e); }}
+        >
+          {this.state.editingTitle}
+        </EditableText>
+        <image
+          x={bBox.x + 8} y={bBox.y + 8 + annotationBodyHeight} width={iconSize} height={iconSize}
+          xlinkHref={ImageUtil.getSVGIconString(this.props.icon)}
+        />
+        <rect
+          x={bBox.x + iconSize + 16} y={bBox.y + annotationBodyHeight} width={iconSize + 15} height={titleHeight - 3}
+          className="annotation-icon-wrapper"
+        />
+        <image
+          x={bBox.x + iconSize + 24} y={bBox.y + 8 + annotationBodyHeight} width={iconSize} height={iconSize}
+          xlinkHref={ImageUtil.getSVGIconString('annotation-black')} onClick={this.onAnnotationEditButtonClick.bind(this)}
+          className="annotation-icon"
+        />
+        {titleComponents}
+        <g className="panel-header-controls">
+          <rect
+            x={bBox.x + bBox.w - 54} y={bBox.y + annotationBodyHeight} width={55} height={titleHeight}
+            className="panel-header-controls-wrapper"
+          />
+          <image
+            x={bBox.x + bBox.w - 44} y={bBox.y + 6 + annotationBodyHeight} width={iconSize}
+            height={iconSize} className="control"
+            xlinkHref={ImageUtil.getSVGIconString('delete')} onClick={() => this.onDelete()}
+          />
+          <image
+            x={bBox.x + bBox.w - 22} y={bBox.y + 6 + annotationBodyHeight} width={iconSize}
+            height={iconSize} className="control"
+            xlinkHref={(collapsed) ? ImageUtil.getSVGIconString('down') : ImageUtil.getSVGIconString('up')}
+            onClick={() => this.onCollapseClick()}
+          />
+        </g>
+      </g>
+      <g className={panelBodyClassName}>
+        <CSSTransitionGroup
+          component="g"
+          transitionName="panel-slide"
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+        >
+          {!collapsed &&
+            <rect
+              x={panelBBox.x}
+              y={panelBBox.y}
+              width={panelBBox.w}
+              height={panelBBox.h}
+              rx="0" ry="0" fill="#fff"
+              className={dropZoneClassName}
+              onMouseOver={e => this.onDropZoneActivate(e)}
+              onMouseOut={e => this.onDropZoneDeactivate(e)}
+              style={panelRectStyles}
+            />
                     }
-                    {!collapsed && this.props.children}
-                </CSSTransitionGroup>
-            </g>
+          {!collapsed && this.props.children}
+        </CSSTransitionGroup>
+      </g>
+    </g>);
+  }
+
+  onDropZoneActivate(e) {
+    const dragDropManager = this.context.dragDropManager,
+      dropTarget = this.props.dropTarget,
+      dropSourceValidateCB = this.props.dropSourceValidateCB;
+    if (!_.isNil(dropTarget) && dragDropManager.isOnDrag()) {
+      if (_.isEqual(dragDropManager.getActivatedDropTarget(), dropTarget)) {
+        return;
+      }
+      if (_.isNil(dropSourceValidateCB)) {
+        dragDropManager.setActivatedDropTarget(dropTarget);
+      } else if (_.isFunction(dropSourceValidateCB)) {
+        dragDropManager.setActivatedDropTarget(dropTarget, dropSourceValidateCB);
+      }
+      this.setState({
+        dropZoneActivated: true,
+        dropZoneDropNotAllowed: !dragDropManager.isAtValidDropTarget(),
+      });
+      dragDropManager.once('drop-target-changed', () => {
+        this.setState({ dropZoneActivated: false, dropZoneDropNotAllowed: false });
+      });
+    }
+    e.stopPropagation();
+  }
+
+  onDropZoneDeactivate(e) {
+    const dragDropManager = this.context.dragDropManager,
+      dropTarget = this.props.model;
+    if (!_.isNil(dropTarget) && dragDropManager.isOnDrag()) {
+      if (_.isEqual(dragDropManager.getActivatedDropTarget(), dropTarget)) {
+        dragDropManager.clearActivatedDropTarget();
+        this.setState({ dropZoneActivated: false, dropZoneDropNotAllowed: false });
+      }
+    }
+    e.stopPropagation();
+  }
+
+  getTitleComponents(titleComponentData) {
+    const components = [];
+    if (!_.isUndefined(titleComponentData)) {
+      for (const componentData of titleComponentData) {
+        if (componentData.isNode) {
+          components.push(getComponentForNodeArray([componentData.model])[0]);
+        } else {
+          components.push(componentData.model);
+        }
+      }
+    }
+    return components;
+  }
+
+  getAnnotationComponents(annotationComponentData, bBox, titleHeight) {
+    const components = [];
+    let possitionY = bBox.y + titleHeight / 2 + 5;
+    if (!_.isUndefined(annotationComponentData)) {
+      for (const componentData of annotationComponentData) {
+        const modelComponents = [];
+        components.push(<g key={componentData.getID()}>
+          <text className="annotation-text" x={bBox.x + 5} y={possitionY}>{componentData.toString()}</text>
         </g>);
+        possitionY += 25;
+      }
     }
-
-    onDropZoneActivate(e) {
-        const dragDropManager = this.context.dragDropManager,
-            dropTarget = this.props.dropTarget,
-            dropSourceValidateCB = this.props.dropSourceValidateCB;
-        if (!_.isNil(dropTarget) && dragDropManager.isOnDrag()) {
-            if (_.isEqual(dragDropManager.getActivatedDropTarget(), dropTarget)) {
-                return;
-            }
-            if (_.isNil(dropSourceValidateCB)) {
-                dragDropManager.setActivatedDropTarget(dropTarget);
-            } else if (_.isFunction(dropSourceValidateCB)) {
-                dragDropManager.setActivatedDropTarget(dropTarget, dropSourceValidateCB);
-            }
-            this.setState({
-                dropZoneActivated: true,
-                dropZoneDropNotAllowed: !dragDropManager.isAtValidDropTarget()
-            });
-            dragDropManager.once('drop-target-changed', () => {
-                this.setState({dropZoneActivated: false, dropZoneDropNotAllowed: false});
-            });
-        }
-        e.stopPropagation();
-    }
-
-    onDropZoneDeactivate(e) {
-        const dragDropManager = this.context.dragDropManager,
-            dropTarget = this.props.model;
-        if (!_.isNil(dropTarget) && dragDropManager.isOnDrag()) {
-            if (_.isEqual(dragDropManager.getActivatedDropTarget(), dropTarget)) {
-                dragDropManager.clearActivatedDropTarget();
-                this.setState({dropZoneActivated: false, dropZoneDropNotAllowed: false});
-            }
-        }
-        e.stopPropagation();
-    }
-
-    getTitleComponents(titleComponentData) {
-        let components = [];
-        if (!_.isUndefined(titleComponentData)) {
-            for (let componentData of titleComponentData) {
-                if (componentData.isNode) {
-                    components.push(getComponentForNodeArray([componentData.model])[0]);
-                }else{
-                    components.push(componentData.model);
-                }
-            }
-        }
-        return components;
-    }
-
-    getAnnotationComponents(annotationComponentData, bBox, titleHeight) {
-        let components = [];
-        let possitionY = bBox.y + titleHeight / 2 + 5;
-        if (!_.isUndefined(annotationComponentData)) {
-            for (let componentData of annotationComponentData) {
-                let modelComponents = [];
-                components.push(<g key={componentData.getID()}>
-                    <text className="annotation-text" x={bBox.x + 5} y={possitionY}>{componentData.toString()}</text>
-                </g>);
-                possitionY = possitionY + 25;
-            }
-        }
-        return components;
-    }
+    return components;
+  }
 
 
-    getAnnotationsString(annotations) {
-        let annotationString = '';
+  getAnnotationsString(annotations) {
+    let annotationString = '';
         // TODO: Fix Me
-        if (!_.isNil(annotations)) {
-            annotations.forEach(function (annotation) {
-                annotationString = annotationString + annotation.toString() + '  ';
-            });
-        }
-        return annotationString;
+    if (!_.isNil(annotations)) {
+      annotations.forEach((annotation) => {
+        annotationString = `${annotationString + annotation.toString()}  `;
+      });
     }
+    return annotationString;
+  }
 
-    onAnnotationEditButtonClick() {
-        this.props.model.setAttribute('viewState.showAnnotationContainer', !this.props.model.viewState.showAnnotationContainer);
-    }
+  onAnnotationEditButtonClick() {
+    this.props.model.setAttribute('viewState.showAnnotationContainer', !this.props.model.viewState.showAnnotationContainer);
+  }
 }
 
 
 PanelDecorator.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired,
-    }),
-    model: PropTypes.instanceOf(ASTNode).isRequired,
-    dropTarget: PropTypes.instanceOf(ASTNode),
-    dropSourceValidateCB: PropTypes.func
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+  model: PropTypes.instanceOf(ASTNode).isRequired,
+  dropTarget: PropTypes.instanceOf(ASTNode),
+  dropSourceValidateCB: PropTypes.func,
 };
 
 PanelDecorator.contextTypes = {
-    dragDropManager: PropTypes.instanceOf(DragDropManager).isRequired
+  dragDropManager: PropTypes.instanceOf(DragDropManager).isRequired,
 };
 
 export default PanelDecorator;

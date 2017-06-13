@@ -20,29 +20,29 @@ import Statement from './statement';
 import FragmentUtils from './../../utils/fragment-utils';
 
 class CommittedStatement extends Statement {
-    constructor() {
-        super();
-        this.type = 'CommittedStatement';
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: ' ',
-            2: '\n',
-            3: ' '
-        }
-    }
+  constructor() {
+    super();
+    this.type = 'CommittedStatement';
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: ' ',
+      2: '\n',
+      3: ' ',
+    };
+  }
 
     /**
      * Initialize the node from the node json.
      * @param {object} jsonNode - Json model for the node.
      * */
-    initFromJson(jsonNode) {
-        let self = this;
-        _.each(jsonNode.children, function (childNode) {
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default CommittedStatement;

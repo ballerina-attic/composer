@@ -22,26 +22,26 @@ import * as PositioningUtils from './utils';
 
 class ConnectorActionPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ConnectorActionPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ConnectorActionPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit ConnectorActionPositionCalcVisitor');
+  beginVisit(node) {
+    log.debug('begin visit ConnectorActionPositionCalcVisitor');
         // populate inner panel BBox positions
-        PositioningUtils.populateInnerPanelDecoratorBBoxPosition(node);
+    PositioningUtils.populateInnerPanelDecoratorBBoxPosition(node);
         // populate panel heading positions.
-        PositioningUtils.populatePanelHeadingPositioning(node, this.createPositionForTitleNode);
-    }
+    PositioningUtils.populatePanelHeadingPositioning(node, this.createPositionForTitleNode);
+  }
 
-    visit(node) {
-        log.debug('visit ConnectorActionPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit ConnectorActionPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ConnectorActionPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit ConnectorActionPositionCalcVisitor');
+  }
 
     /**
      * Sets positioning for a resource parameter.
@@ -53,18 +53,18 @@ class ConnectorActionPositionCalcVisitor {
      *
      * @memberof ConnectorActionPositionCalcVisitor
      */
-    createPositionForTitleNode(parameter, x, y) {
-        let viewState = parameter.getViewState();
+  createPositionForTitleNode(parameter, x, y) {
+    const viewState = parameter.getViewState();
         // Positioning the parameter
-        viewState.bBox.x = x;
-        viewState.bBox.y = y;
+    viewState.bBox.x = x;
+    viewState.bBox.y = y;
 
         // Positioning the delete icon
-        viewState.components.deleteIcon.x = x + viewState.w;
-        viewState.components.deleteIcon.y = y;
+    viewState.components.deleteIcon.x = x + viewState.w;
+    viewState.components.deleteIcon.y = y;
 
-        return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
-    }
+    return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
+  }
 }
 
 export default ConnectorActionPositionCalcVisitor;

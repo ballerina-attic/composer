@@ -23,78 +23,77 @@ import log from 'log';
 import './dialog.css';
 
 class NewItemDialog extends ModalDialog {
-    constructor(options) {
-        _.set(options, 'class', 'create-new-item-wizard');
-        super(options);
-        this._serviceClient = _.get(options, 'application.workspaceManager').getServiceClient();
-    }
+  constructor(options) {
+    _.set(options, 'class', 'create-new-item-wizard');
+    super(options);
+    this._serviceClient = _.get(options, 'application.workspaceManager').getServiceClient();
+  }
 
-    onSubmit(data, itemName) {
-        var app = this._options.application,
-            path = data.path + app.getPathSeperator() + itemName,
-            existsResponse = this._serviceClient.exists(path);
-        if (existsResponse.exists) {
-            this.showError(itemName + " already exists at " + data.path);
-        } else {
-            this.clearError();
-            var response = this._serviceClient.create(path, data.type);
-            if (response.error) {
-                this.showError(response.message);
-            } else {
-                this.hide();
-                var successCallBack = _.get(data, 'onSuccess');
-                if(_.isFunction(successCallBack)){
-                    successCallBack.call();
-                }
-                log.debug('file' + path + " created successfully");
-                if(!_.isEqual('folder', data.type)){
-                    var file = this._serviceClient.readFile(path);
-                    app.commandManager.dispatch("create-new-tab", {tabOptions: {file: file}});
-                }
-            }
+  onSubmit(data, itemName) {
+    let app = this._options.application,
+      path = data.path + app.getPathSeperator() + itemName,
+      existsResponse = this._serviceClient.exists(path);
+    if (existsResponse.exists) {
+      this.showError(`${itemName} already exists at ${data.path}`);
+    } else {
+      this.clearError();
+      const response = this._serviceClient.create(path, data.type);
+      if (response.error) {
+        this.showError(response.message);
+      } else {
+        this.hide();
+        const successCallBack = _.get(data, 'onSuccess');
+        if (_.isFunction(successCallBack)) {
+          successCallBack.call();
         }
+        log.debug(`file${path} created successfully`);
+        if (!_.isEqual('folder', data.type)) {
+          const file = this._serviceClient.readFile(path);
+          app.commandManager.dispatch('create-new-tab', { tabOptions: { file } });
+        }
+      }
     }
+  }
 
-    displayWizard(data) {
-        this.setTitle("new "+ data.type);
-        this.setSubmitBtnText("create");
-        var body = this.getBody();
-        body.empty();
-        this.getSubmitBtn().unbind('click');
-        this.clearError();
-        var modalBody = $("<hr class='file-dialog-hr'>"+
+  displayWizard(data) {
+    this.setTitle(`new ${data.type}`);
+    this.setSubmitBtnText('create');
+    const body = this.getBody();
+    body.empty();
+    this.getSubmitBtn().unbind('click');
+    this.clearError();
+    const modalBody = $("<hr class='file-dialog-hr'>" +
                             "<div class='container-fluid'>" +
                             "<form class='form-horizontal' onsubmit='return false'>" +
                                 "<div class='form-group'>" +
                                     "<label for='item-name' class='col-sm-2 file-dialog-form-label'>Enter Name</label>" +
                                     "<div class='file-dialog-input-field'>" +
                                           "<input type='text' id='item-name' class='file-dialog-form-control item-name' placeholder='name'>" +
-                                    "</div>" +
-                                "</div>"+
-                            "</form>"+
-                           "</div>" );
-        body.append(modalBody);
-        this.show();
-        var self = this,
-            input = modalBody.find('input');
+                                    '</div>' +
+                                '</div>' +
+                            '</form>' +
+                           '</div>');
+    body.append(modalBody);
+    this.show();
+    let self = this,
+      input = modalBody.find('input');
 
-        this.on('loaded', function(){
-            input.focus();
-        });
+    this.on('loaded', () => {
+      input.focus();
+    });
 
-        this.getSubmitBtn().click(function(e){
-            self.onSubmit(data, input.val());
-        });
-        input.keyup(function(e){
-            if(e.keyCode == 13) {
-                self.onSubmit(data, input.val());
-            } else {
-                self.clearError();
-            }
-        });
-    }
+    this.getSubmitBtn().click((e) => {
+      self.onSubmit(data, input.val());
+    });
+    input.keyup((e) => {
+      if (e.keyCode == 13) {
+        self.onSubmit(data, input.val());
+      } else {
+        self.clearError();
+      }
+    });
+  }
 }
-
 
 
 export default NewItemDialog;

@@ -18,29 +18,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 
 class AnnotationEntry extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const model = this.props.model;
+
+    const rValue = model.getRightValue();
+    let rPrint = '';
+    if (typeof rValue === 'string') {
+      rPrint = rValue;
+    } else if (rValue.constructor.name == 'AnnotationEntryArray') {
+      rPrint = rValue.toString();
     }
 
-    render() {
-        let model = this.props.model;
-
-        let rValue = model.getRightValue();
-        let rPrint = "";
-        if(typeof rValue == "string"){
-            rPrint = rValue;
-        }else if(rValue.constructor.name == "AnnotationEntryArray"){
-            rPrint = rValue.toString();
-        }
-        
-        return <span>
-                <span className="annotation-value-key">{model.getLeftValue() + " :"}</span>
-                <span className="annotation-value">{ rPrint }</span>  
-            </span>;
-    }
+    return (<span>
+      <span className="annotation-value-key">{`${model.getLeftValue()} :`}</span>
+      <span className="annotation-value">{ rPrint }</span>
+    </span>);
+  }
 }
 
 export default AnnotationEntry;

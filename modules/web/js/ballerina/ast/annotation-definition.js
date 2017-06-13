@@ -24,228 +24,224 @@ import CommonUtils from '../utils/common-utils';
  * Annotation Definition for defining an annotation
  * */
 class AnnotationDefinition extends ASTNode {
-    constructor(args) {
-        super('AnnotationDefinition');
-        this._annotationName = _.get(args, 'annotationName');
-        this._attachmentPoints = _.get(args, 'attachmentPoints', []);
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: ' ',
-            1: ' ',
-            2: ' ',
-            3: '\n',
-            4: '\n'
-        }
-        this.whiteSpace.defaultDescriptor.children = {
-            'attachmentPoints': {
-                children: {
-                    'service': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'resource': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'connector': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'action': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'function': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'typemapper': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'struct': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'const': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'parameter': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    },
-                    'annotation': {
-                        regions: {
-                            0: ' ',
-                            1: ''
-                        }
-                    }
-                }
-            }
-        }
-    }
+  constructor(args) {
+    super('AnnotationDefinition');
+    this._annotationName = _.get(args, 'annotationName');
+    this._attachmentPoints = _.get(args, 'attachmentPoints', []);
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: ' ',
+      2: ' ',
+      3: '\n',
+      4: '\n',
+    };
+    this.whiteSpace.defaultDescriptor.children = {
+      attachmentPoints: {
+        children: {
+          service: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          resource: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          connector: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          action: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          function: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          typemapper: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          struct: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          const: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          parameter: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+          annotation: {
+            regions: {
+              0: ' ',
+              1: '',
+            },
+          },
+        },
+      },
+    };
+  }
 
-    setAnnotationName(annotationName, options) {
-        if (!_.isNil(annotationName) && ASTNode.isValidIdentifier(annotationName)) {
-            this.setAttribute('_annotationName', annotationName, options);
-        } else {
-            let error = 'Invalid name for the annotation name: ' + annotationName;
-            log.error(error);
-            throw  error;
-        }
+  setAnnotationName(annotationName, options) {
+    if (!_.isNil(annotationName) && ASTNode.isValidIdentifier(annotationName)) {
+      this.setAttribute('_annotationName', annotationName, options);
+    } else {
+      const error = `Invalid name for the annotation name: ${annotationName}`;
+      log.error(error);
+      throw error;
     }
+  }
 
-    addAttachDefinition(definition) {
-        this._attachedDefinitions.push(definition);
-    }
+  addAttachDefinition(definition) {
+    this._attachedDefinitions.push(definition);
+  }
 
-    getAnnotationName() {
-        return this._annotationName;
-    }
+  getAnnotationName() {
+    return this._annotationName;
+  }
 
-    getAttachmentPoints() {
-        return this._attachmentPoints;
-    }
+  getAttachmentPoints() {
+    return this._attachmentPoints;
+  }
 
-    setAttachmentPoints(attachmentPoints, options) {
-        this.setAttribute('_attachmentPoints', attachmentPoints, options);
-    }
+  setAttachmentPoints(attachmentPoints, options) {
+    this.setAttribute('_attachmentPoints', attachmentPoints, options);
+  }
 
-    getAnnotationAttributeDefinitions() {
-        return this.filterChildren(this.getFactory().isAnnotationAttributeDefinition);
-    }
+  getAnnotationAttributeDefinitions() {
+    return this.filterChildren(this.getFactory().isAnnotationAttributeDefinition);
+  }
 
-    addAnnotationAttributeDefinition(type, identifier, defaultValue) {
+  addAnnotationAttributeDefinition(type, identifier, defaultValue) {
         // if identifier is empty
-        if (_.isEmpty(identifier)) {
-            let errorString = 'Identifier cannot be empty';
-            log.error(errorString);
-            throw errorString;
-        }
+    if (_.isEmpty(identifier)) {
+      const errorString = 'Identifier cannot be empty';
+      log.error(errorString);
+      throw errorString;
+    }
 
         // Check if already variable definition exists with same identifier.
-        let identifierAlreadyExists = _.findIndex(this.getAnnotationAttributeDefinitions(), function (attDef) {
-            return attDef.getAttributeName() === identifier;
-        }) !== -1;
+    const identifierAlreadyExists = _.findIndex(this.getAnnotationAttributeDefinitions(), attDef => attDef.getAttributeName() === identifier) !== -1;
 
         // If annotation attribute definition with the same identifier exists, then throw an error,
         // else create the new annotation attribute definition.
-        if (identifierAlreadyExists) {
-            let errorString = 'An attribute with identifier \'' + identifier + '\' already exists.';
-            log.error(errorString);
-            throw errorString;
-        } else {
+    if (identifierAlreadyExists) {
+      const errorString = `An attribute with identifier '${identifier}' already exists.`;
+      log.error(errorString);
+      throw errorString;
+    } else {
             // Creating new annotation attribute definition.
-            let newAnnotationAttributeDefinition = this.getFactory().createAnnotationAttributeDefinition();
-            newAnnotationAttributeDefinition.setAttributeName(identifier);
-            newAnnotationAttributeDefinition.setAttributeType(type);
-            newAnnotationAttributeDefinition.setAttributeValue(defaultValue);
+      const newAnnotationAttributeDefinition = this.getFactory().createAnnotationAttributeDefinition();
+      newAnnotationAttributeDefinition.setAttributeName(identifier);
+      newAnnotationAttributeDefinition.setAttributeType(type);
+      newAnnotationAttributeDefinition.setAttributeValue(defaultValue);
 
             // Get the index of the last definition.
-            let index = this.findLastIndexOfChild(this.getFactory().isVariableDefinitionStatement);
+      const index = this.findLastIndexOfChild(this.getFactory().isVariableDefinitionStatement);
 
-            this.addChild(newAnnotationAttributeDefinition, index + 1);
-        }
+      this.addChild(newAnnotationAttributeDefinition, index + 1);
     }
+  }
 
     /**
      * Add Annotation attachments to the model.
      * @param {string} identifier - attachment name.
      * */
-    addAnnotationAttachmentPoint(identifier) {
-        if (_.isEmpty(identifier)) {
-            let errorString = 'Identifier cannot be empty';
-            log.error(errorString);
-            throw errorString;
-        }
-
-        let identifierAlreadyExists = _.findIndex(this.getAttachmentPoints(), function (attachmentPoint) {
-            return _.isEqual(identifier, attachmentPoint);
-        }) !== -1;
-
-        if (identifierAlreadyExists) {
-            let errorString = 'An attribute with identifier "' + identifier + '" already exists.';
-            log.error(errorString);
-            throw errorString;
-        } else {
-            this._attachmentPoints.push(identifier);
-            // Trigger model change.
-            this.setAttachmentPoints(this._attachmentPoints);
-        }
+  addAnnotationAttachmentPoint(identifier) {
+    if (_.isEmpty(identifier)) {
+      const errorString = 'Identifier cannot be empty';
+      log.error(errorString);
+      throw errorString;
     }
+
+    const identifierAlreadyExists = _.findIndex(this.getAttachmentPoints(), attachmentPoint => _.isEqual(identifier, attachmentPoint)) !== -1;
+
+    if (identifierAlreadyExists) {
+      const errorString = `An attribute with identifier "${identifier}" already exists.`;
+      log.error(errorString);
+      throw errorString;
+    } else {
+      this._attachmentPoints.push(identifier);
+            // Trigger model change.
+      this.setAttachmentPoints(this._attachmentPoints);
+    }
+  }
 
     /**
      * Remove annotation attachment points.
      * @param {string} identifier - identifier for the attachment point.
      * */
-    removeAnnotationAttachmentPoints(identifier) {
-        _.pull(this._attachmentPoints, identifier);
+  removeAnnotationAttachmentPoints(identifier) {
+    _.pull(this._attachmentPoints, identifier);
         // Trigger model change.
-        this.setAttachmentPoints(this._attachmentPoints);
-    }
+    this.setAttachmentPoints(this._attachmentPoints);
+  }
 
     /**
      * Removes annotation attribute definition.
      * @param {string} modelID - The model ID of the variable.
      */
-    removeAnnotationAttributeDefinition(modelID) {
-        this.removeChildById(modelID);
-    }
+  removeAnnotationAttributeDefinition(modelID) {
+    this.removeChildById(modelID);
+  }
 
     /**
      * @inheritDoc
      * @override
      * */
-    initFromJson(jsonNode) {
-        let self = this;
-        this.setAnnotationName(jsonNode.annotation_name, {doSilently: true});
-        if (!_.isNil(jsonNode.annotation_attachment_points)) {
-            this.setAttachmentPoints(_.split(jsonNode.annotation_attachment_points, ','), {doSilently: true});
-        }
-        _.each(jsonNode.children, function (childNode) {
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
+  initFromJson(jsonNode) {
+    const self = this;
+    this.setAnnotationName(jsonNode.annotation_name, { doSilently: true });
+    if (!_.isNil(jsonNode.annotation_attachment_points)) {
+      this.setAttachmentPoints(_.split(jsonNode.annotation_attachment_points, ','), { doSilently: true });
     }
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 
     /**
      * @inheritDoc
      * @override
      * */
-    generateUniqueIdentifiers() {
-        CommonUtils.generateUniqueIdentifier({
-            node: this,
-            attributes: [{
-                defaultValue: 'Annotation',
-                setter: this.setAnnotationName,
-                getter: this.getAnnotationName,
-                parents: [{
-                    node: this.parent,
-                    getChildrenFunc: this.parent.getAnnotationDefinitions,
-                    getter: this.getAnnotationName
-                }]
-            }]
-        });
-    }
+  generateUniqueIdentifiers() {
+    CommonUtils.generateUniqueIdentifier({
+      node: this,
+      attributes: [{
+        defaultValue: 'Annotation',
+        setter: this.setAnnotationName,
+        getter: this.getAnnotationName,
+        parents: [{
+          node: this.parent,
+          getChildrenFunc: this.parent.getAnnotationDefinitions,
+          getter: this.getAnnotationName,
+        }],
+      }],
+    });
+  }
 }
 
 export default AnnotationDefinition;

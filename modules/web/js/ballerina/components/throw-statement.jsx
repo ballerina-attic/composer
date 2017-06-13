@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import StatementDecorator from "./statement-decorator";
+import React from 'react';
+import StatementDecorator from './statement-decorator';
 import PropTypes from 'prop-types';
 
 /**
@@ -24,37 +24,37 @@ import PropTypes from 'prop-types';
  * */
 class ThrowStatement extends React.Component {
 
-    constructor(props){
-        super(props);
-        this.editorOptions = {
-            propertyType: 'text',
-            key: 'ThrowStatement',
-            model: props.model,
-            getterMethod: props.model.getStatementString,
-            setterMethod: props.model.setStatementFromString
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.editorOptions = {
+      propertyType: 'text',
+      key: 'ThrowStatement',
+      model: props.model,
+      getterMethod: props.model.getStatementString,
+      setterMethod: props.model.setStatementFromString,
+    };
+  }
 
     /**
      * Render function for the throw statement.
      * */
-    render() {
-        let model = this.props.model,
-            expression = model.getStatementString();
-        return (<StatementDecorator model={model} viewState={model.viewState} editorOptions={this.editorOptions}  expression={expression}/>);
-    }
+  render() {
+    let model = this.props.model,
+      expression = model.getStatementString();
+    return (<StatementDecorator model={model} viewState={model.viewState} editorOptions={this.editorOptions} expression={expression} />);
+  }
 }
 
 ThrowStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired
-    }),
-    expression: PropTypes.shape({
-        expression: PropTypes.string
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+  expression: PropTypes.shape({
+    expression: PropTypes.string,
+  }),
 };
 
 export default ThrowStatement;

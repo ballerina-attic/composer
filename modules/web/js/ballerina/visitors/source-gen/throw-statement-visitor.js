@@ -19,25 +19,25 @@ import log from 'log';
 import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-visitor';
 
 class ThrowStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitThrowStatement(throwStatement) {
-        return true;
-    }
+  canVisitThrowStatement(throwStatement) {
+    return true;
+  }
 
-    beginVisitThrowStatement(throwStatement) {
-        this.appendSource('throw ');
-    }
+  beginVisitThrowStatement(throwStatement) {
+    this.appendSource('throw ');
+  }
 
-    visitThrowStatement(throwStatement) {
-    }
+  visitThrowStatement(throwStatement) {
+  }
 
-    endVisitThrowStatement(throwStatement) {
-        this.appendSource(throwStatement.getChildren()[0].getExpressionString() + ";\n");
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
-    }
+  endVisitThrowStatement(throwStatement) {
+    this.appendSource(`${throwStatement.getChildren()[0].getExpressionString()};\n`);
+    this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+  }
 }
 
 export default ThrowStatementVisitor;

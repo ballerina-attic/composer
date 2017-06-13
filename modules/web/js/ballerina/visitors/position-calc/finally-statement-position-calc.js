@@ -20,19 +20,19 @@ import * as Utils from './utils';
 
 class FinallyStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-        Utils.getCompoundStatementChildPosition(node);
-    }
+  beginVisit(node) {
+    Utils.getCompoundStatementChildPosition(node);
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-    }
+  endVisit(node) {
+  }
 }
 
 export default FinallyStatementPositionCalcVisitor;

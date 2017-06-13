@@ -21,23 +21,23 @@ import * as Utils from './utils';
 
 class CatchStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit CatchStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit CatchStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit CatchStatementPositionCalcVisitor');
-        Utils.getCompoundStatementChildPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit CatchStatementPositionCalcVisitor');
+    Utils.getCompoundStatementChildPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit CatchStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit CatchStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit CatchStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit CatchStatementPositionCalcVisitor');
+  }
 }
 
 export default CatchStatementPositionCalcVisitor;

@@ -19,44 +19,48 @@ import React from 'react';
 import BlockStatementDecorator from './block-statement-decorator';
 import CompoundStatementDecorator from './compound-statement-decorator';
 import PropTypes from 'prop-types';
-import {statement, blockStatement} from './../configs/designer-defaults';
-import {getComponentForNodeArray} from './utils';
+import { statement, blockStatement } from './../configs/designer-defaults';
+import { getComponentForNodeArray } from './utils';
 import SimpleBBox from './../ast/simple-bounding-box';
 
 class ForkJoinStatement extends React.Component {
 
-    render() {
-        let model = this.props.model,
-            bBox = model.viewState.bBox,
-            bodyBBox = model.viewState.components.body;
-        const children = getComponentForNodeArray(this.props.model.getChildren());
+  render() {
+    let model = this.props.model,
+      bBox = model.viewState.bBox,
+      bodyBBox = model.viewState.components.body;
+    const children = getComponentForNodeArray(this.props.model.getChildren());
 
-        const forkBBox = new SimpleBBox(bBox.x, bBox.y + statement.gutter.v, bBox.w, bodyBBox.h
+    const forkBBox = new SimpleBBox(bBox.x, bBox.y + statement.gutter.v, bBox.w, bodyBBox.h
             + blockStatement.heading.height);
-        const hiderTop = bBox.y + blockStatement.heading.height + statement.gutter.v + 1;
-        return (<CompoundStatementDecorator model={model} bBox={bBox}>
-            <line x1={bBox.getCenterX()} y1={hiderTop - 1} x2={bBox.getCenterX()}
-                  y2={bBox.getBottom()} className="life-line-hider"/>
-            <BlockStatementDecorator model={model} dropTarget={model} bBox={forkBBox}
-                                     title={'Fork'} draggable={ForkJoinStatement.isWorker}>
-                {children}
-            </BlockStatementDecorator>
-        </CompoundStatementDecorator>);
-    }
+    const hiderTop = bBox.y + blockStatement.heading.height + statement.gutter.v + 1;
+    return (<CompoundStatementDecorator model={model} bBox={bBox}>
+      <line
+        x1={bBox.getCenterX()} y1={hiderTop - 1} x2={bBox.getCenterX()}
+        y2={bBox.getBottom()} className="life-line-hider"
+      />
+      <BlockStatementDecorator
+        model={model} dropTarget={model} bBox={forkBBox}
+        title={'Fork'} draggable={ForkJoinStatement.isWorker}
+      >
+        {children}
+      </BlockStatementDecorator>
+    </CompoundStatementDecorator>);
+  }
 
-    static isWorker(dropTarget, nodeBeingDragged) {
-        const factory = dropTarget.getFactory();
-        return factory.isWorkerDeclaration(nodeBeingDragged);
-    }
+  static isWorker(dropTarget, nodeBeingDragged) {
+    const factory = dropTarget.getFactory();
+    return factory.isWorkerDeclaration(nodeBeingDragged);
+  }
 }
 
 ForkJoinStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired,
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
 };
 
 

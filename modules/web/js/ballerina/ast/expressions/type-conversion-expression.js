@@ -21,69 +21,67 @@ import log from 'log';
 import FragmentUtils from '../../utils/fragment-utils';
 
 class TypeConversionExpression extends Expression {
-    constructor(args) {
-        super('TypeConversionExpression');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: '',
-            2: ' ',
-            3: ' '
-        };
-        this._targetType = _.get(args, 'targetType');
-    }
+  constructor(args) {
+    super('TypeConversionExpression');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: ' ',
+      3: ' ',
+    };
+    this._targetType = _.get(args, 'targetType');
+  }
 
-    setTargetType(targetType, options) {
-        if (!_.isNil(targetType)) {
-            this.setAttribute('_targetType', targetType, options);
-        }
+  setTargetType(targetType, options) {
+    if (!_.isNil(targetType)) {
+      this.setAttribute('_targetType', targetType, options);
     }
+  }
 
-    getTargetType() {
-        return this._targetType;
-    }
+  getTargetType() {
+    return this._targetType;
+  }
 
-    initFromJson(jsonNode) {
-        this.children = [];
-        let targetType = this.getFactory().createFromJson(jsonNode.target_type);
-        targetType.initFromJson(jsonNode.target_type);
-        this.setTargetType(targetType, {doSilently: true});
-        _.each(jsonNode.children, (childNode) => {
-            var child = this.getFactory().createFromJson(childNode);
-            child.initFromJson(childNode);
-            this.addChild(child, undefined, true, true);
-        });
-    }
+  initFromJson(jsonNode) {
+    this.children = [];
+    const targetType = this.getFactory().createFromJson(jsonNode.target_type);
+    targetType.initFromJson(jsonNode.target_type);
+    this.setTargetType(targetType, { doSilently: true });
+    _.each(jsonNode.children, (childNode) => {
+      const child = this.getFactory().createFromJson(childNode);
+      child.initFromJson(childNode);
+      this.addChild(child, undefined, true, true);
+    });
+  }
 
     /**
      * Set the expression from the expression string
      * @param {string} expressionString
      * @override
      */
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)){
-            let fragment = FragmentUtils.createExpressionFragment(expression);
-            let parsedJson = FragmentUtils.parseFragment(fragment);
-            if ((!_.has(parsedJson, 'error')
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
+      if ((!_.has(parsedJson, 'error')
                    || !_.has(parsedJson, 'syntax_errors'))
                    && _.isEqual(parsedJson.type, 'type_conversion_expression')) {
-                this.initFromJson(parsedJson);
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        this.initFromJson(parsedJson);
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
-    getExpressionString() {
-        var expString = '';
-        expString += '<' + this.getWSRegion(1) + this.getTargetType().toString() + '>'
-                + this.getWSRegion(2) + this.children[0].getExpressionString();
-        return expString;
-    }
+  getExpressionString() {
+    let expString = '';
+    expString += `<${this.getWSRegion(1)}${this.getTargetType().toString()}>${
+                 this.getWSRegion(2)}${this.children[0].getExpressionString()}`;
+    return expString;
+  }
 }
 
 export default TypeConversionExpression;

@@ -20,43 +20,43 @@ import EventChannel from 'event_channel';
 import _ from 'lodash';
 
 class Console extends EventChannel {
-    constructor() {
-        super();
-        this.container = $('#console-container');
-        this.console = $('#console');
+  constructor() {
+    super();
+    this.container = $('#console-container');
+    this.console = $('#console');
 
-        this.container.on('click', '.closeConsole', () => { this.hide(); });
-    }
+    this.container.on('click', '.closeConsole', () => { this.hide(); });
+  }
 
-    setApplication(app){
-        this.application = app;
-    }
+  setApplication(app) {
+    this.application = app;
+  }
 
-    show() {
-        this.container.show();
-        $('#service-tabs-wrapper').css('height','70%');
-        this.container.removeClass('hide');
-        this.container.css('height','30%');
-        this.application.reRender();
-    }
+  show() {
+    this.container.show();
+    $('#service-tabs-wrapper').css('height', '70%');
+    this.container.removeClass('hide');
+    this.container.css('height', '30%');
+    this.application.reRender();
+  }
 
-    hide() {
-        this.container.hide();
-        $('#service-tabs-wrapper').css('height','100%');
-        this.application.reRender();
-    }
+  hide() {
+    this.container.hide();
+    $('#service-tabs-wrapper').css('height', '100%');
+    this.application.reRender();
+  }
 
-    clear() {
-        this.console.html('');
-    }
+  clear() {
+    this.console.html('');
+  }
 
-    println(message) {
-        var specialCharsEscapedStr = _.escape(message.message);
-        this.console.append(`<span class="${message.type}">${specialCharsEscapedStr}<span>`);
-        this.console.append('<br />');
-        //todo need a proper fix
-        this.console.scrollTop(100000);
-    }
+  println(message) {
+    const specialCharsEscapedStr = _.escape(message.message);
+    this.console.append(`<span class="${message.type}">${specialCharsEscapedStr}<span>`);
+    this.console.append('<br />');
+        // todo need a proper fix
+    this.console.scrollTop(100000);
+  }
 }
 
 export default new Console();

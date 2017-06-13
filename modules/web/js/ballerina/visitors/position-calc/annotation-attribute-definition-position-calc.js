@@ -22,49 +22,48 @@ import * as DesignerDefaults from './../../configs/designer-defaults';
 import ASTFactory from './../../ast/ballerina-ast-factory';
 
 class AnnotationAttributePositionCalcVisitor {
-    canVisit(node) {
-        log.debug('can visit AnnotationAttributePositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit AnnotationAttributePositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        let parent = node.getParent();
-        let viewState = node.getViewState();
-        let parentViewState = parent.getViewState();
-        let parentBBox = parentViewState.bBox;
-        let bBox = viewState.bBox;
-        let x, y;
+  beginVisit(node) {
+    const parent = node.getParent();
+    const viewState = node.getViewState();
+    const parentViewState = parent.getViewState();
+    const parentBBox = parentViewState.bBox;
+    const bBox = viewState.bBox;
+    let x,
+      y;
 
-        let attributes = _.filter(parent.getChildren(), function (child) {
-            return ASTFactory.isAnnotationAttributeDefinition(child);
-        });
+    const attributes = _.filter(parent.getChildren(), child => ASTFactory.isAnnotationAttributeDefinition(child));
 
-        let currentAttributeIndex = _.findIndex(attributes, node);
-        if (currentAttributeIndex === 0) {
-            x = parentBBox.x + DesignerDefaults.panel.body.padding.left;
-            y = parentBBox.y + DesignerDefaults.panel.heading.height
+    const currentAttributeIndex = _.findIndex(attributes, node);
+    if (currentAttributeIndex === 0) {
+      x = parentBBox.x + DesignerDefaults.panel.body.padding.left;
+      y = parentBBox.y + DesignerDefaults.panel.heading.height
                 + DesignerDefaults.panel.body.padding.top
                 + DesignerDefaults.annotationAttributeDefinition.body.height
                 + DesignerDefaults.annotationAttributeDefinition.body.padding.bottom
                 + parentViewState.components.annotation.h;
-        } else if (currentAttributeIndex > 0) {
-            let previousAttributeBBox = attributes[currentAttributeIndex - 1].getViewState().bBox;
-            x = parentBBox.x + DesignerDefaults.panel.body.padding.left;
-            y = parentBBox.y
+    } else if (currentAttributeIndex > 0) {
+      const previousAttributeBBox = attributes[currentAttributeIndex - 1].getViewState().bBox;
+      x = parentBBox.x + DesignerDefaults.panel.body.padding.left;
+      y = parentBBox.y
                 + DesignerDefaults.annotationAttributeDefinition.body.padding.bottom
                 + previousAttributeBBox.h
                 + (previousAttributeBBox.y - parentBBox.y);
-        }
-
-        bBox.x = x;
-        bBox.y = y;
     }
 
-    visit(node) {
-    }
+    bBox.x = x;
+    bBox.y = y;
+  }
 
-    endVisit(node) {
-    }
+  visit(node) {
+  }
+
+  endVisit(node) {
+  }
 }
 
 export default AnnotationAttributePositionCalcVisitor;

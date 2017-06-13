@@ -25,55 +25,55 @@ import ConditionalStatement from './conditional-statement';
  * @extends ConditionalStatement
  */
 class CatchStatement extends ConditionalStatement {
-    constructor(args) {
-        super();
-        this._parameter = _.get(args, "parameter");
-        this.type = "CatchStatement";
-        this._parameterDefString = _.get(args, 'parameterDefString', 'exception e');
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: ' ',
-            1: ' ',
-            2: '',
-            3: ' ',
-            4: '',
-            5: ' ',
-            6: '\n',
-            7: '\n'
-        }
-    }
+  constructor(args) {
+    super();
+    this._parameter = _.get(args, 'parameter');
+    this.type = 'CatchStatement';
+    this._parameterDefString = _.get(args, 'parameterDefString', 'exception e');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: ' ',
+      2: '',
+      3: ' ',
+      4: '',
+      5: ' ',
+      6: '\n',
+      7: '\n',
+    };
+  }
 
-    setParameter(parameter, options) {
-        if (!_.isNil(parameter)) {
-            this.setAttribute('_parameter', parameter, options);
-        }
+  setParameter(parameter, options) {
+    if (!_.isNil(parameter)) {
+      this.setAttribute('_parameter', parameter, options);
     }
+  }
 
-    getParameter() {
-        return this._parameter;
-    }
+  getParameter() {
+    return this._parameter;
+  }
 
-    getParameterDefString() {
-        return this._parameterDefString;
-    }
+  getParameterDefString() {
+    return this._parameterDefString;
+  }
 
-    setParameterDefString(paramDef, options) {
-        this.setAttribute('_parameterDefString', paramDef, options);
-    }
+  setParameterDefString(paramDef, options) {
+    this.setAttribute('_parameterDefString', paramDef, options);
+  }
 
-    initFromJson(jsonNode) {
-        let self = this;
-        const parameterDef = jsonNode.parameter_definition;
-        const paramDefNode = self.getFactory().createFromJson(parameterDef[0]);
-        paramDefNode.initFromJson(parameterDef[0]);
-        this.setParameter(paramDefNode, {doSilently: true});
-        this.setParameterDefString(paramDefNode.getParameterDefinitionAsString(), {doSilently: true});
+  initFromJson(jsonNode) {
+    const self = this;
+    const parameterDef = jsonNode.parameter_definition;
+    const paramDefNode = self.getFactory().createFromJson(parameterDef[0]);
+    paramDefNode.initFromJson(parameterDef[0]);
+    this.setParameter(paramDefNode, { doSilently: true });
+    this.setParameterDefString(paramDefNode.getParameterDefinitionAsString(), { doSilently: true });
 
-        _.each(jsonNode.children, function (childNode) {
-            let child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default CatchStatement;

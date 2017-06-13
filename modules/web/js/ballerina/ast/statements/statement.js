@@ -23,33 +23,33 @@ import ASTNode from '../node';
  * @constructor
  */
 class Statement extends ASTNode {
-    constructor(type) {
-        super(type);
-    }
+  constructor(type) {
+    super(type);
+  }
 
     /**
      * Get all the connector references in the immediate scope
      * @return {Array} connectorReferences
      */
-    getConnectorsInImmediateScope() {
-        return this.getParent().getConnectorsInImmediateScope();
-    }
+  getConnectorsInImmediateScope() {
+    return this.getParent().getConnectorsInImmediateScope();
+  }
 
     /**
     * get the string from expression editor
     * call fragment parser and get parse tree of the node
     * validate and create children from scratch
     **/
-    setStatementFromString() {
-        throw 'This method should be implemented by sub class';
-    }
+  setStatementFromString() {
+    throw 'This method should be implemented by sub class';
+  }
 
     /**
     * Traverse the children and generate a string to show up in expression editor
     **/
-    getStatementString() {
-        throw 'This method should be implemented by sub class';
-    }
+  getStatementString() {
+    throw 'This method should be implemented by sub class';
+  }
 }
 
 export default Statement;

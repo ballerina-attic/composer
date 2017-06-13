@@ -18,66 +18,68 @@
 
 import React from 'react';
 import LifeLine from './lifeline.jsx';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 import ConnectorActivationContainer from './connector-activation-container';
 import * as DesignerDefaults from './../configs/designer-defaults';
 
 // require possible themes
 function requireAll(requireContext) {
-    let components = {};
-    requireContext.keys().map((item, index) => {
-        var module = requireContext(item);
-        if (module.default) {
-            components[module.default.name] = module.default;
-        }
-    });
-    return components;
+  const components = {};
+  requireContext.keys().map((item, index) => {
+    const module = requireContext(item);
+    if (module.default) {
+      components[module.default.name] = module.default;
+    }
+  });
+  return components;
 }
-var components = requireAll(require.context('./', true, /\.jsx$/));
+const components = requireAll(require.context('./', true, /\.jsx$/));
 
 class ConnectorDeclaration extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.components = components;
+  constructor(props) {
+    super(props);
+    this.components = components;
 
-        this.editorOptions = {
-            propertyType: 'text',
-            key: 'ConnectorDeclaration',
-            model: props.model,
-            getterMethod: props.model.getConnectorExpression,
-            setterMethod: props.model.setConnectorExpression,
-        };
-    }
+    this.editorOptions = {
+      propertyType: 'text',
+      key: 'ConnectorDeclaration',
+      model: props.model,
+      getterMethod: props.model.getConnectorExpression,
+      setterMethod: props.model.setConnectorExpression,
+    };
+  }
 
-    render() {
-        const statementContainerBBox = this.props.model.viewState.components.statementContainer;
-        let connectorBBox = {};
-        let model = this.props.model;
-        const connectorName = model.getViewState().variableTextTrimmed;
-        let children = getComponentForNodeArray(this.props.model.getChildren());
-        connectorBBox.x = statementContainerBBox.x + (statementContainerBBox.w - DesignerDefaults.lifeLine.width) / 2;
-        connectorBBox.y = statementContainerBBox.y - DesignerDefaults.lifeLine.head.height;
-        connectorBBox.w = DesignerDefaults.lifeLine.width;
-        connectorBBox.h = statementContainerBBox.h + DesignerDefaults.lifeLine.head.height * 2;
+  render() {
+    const statementContainerBBox = this.props.model.viewState.components.statementContainer;
+    const connectorBBox = {};
+    const model = this.props.model;
+    const connectorName = model.getViewState().variableTextTrimmed;
+    const children = getComponentForNodeArray(this.props.model.getChildren());
+    connectorBBox.x = statementContainerBBox.x + (statementContainerBBox.w - DesignerDefaults.lifeLine.width) / 2;
+    connectorBBox.y = statementContainerBBox.y - DesignerDefaults.lifeLine.head.height;
+    connectorBBox.w = DesignerDefaults.lifeLine.width;
+    connectorBBox.h = statementContainerBBox.h + DesignerDefaults.lifeLine.head.height * 2;
 
-        let classes = {
-            lineClass: "connector-life-line",
-            polygonClass: "connector-life-line-polygon"
-        };
+    const classes = {
+      lineClass: 'connector-life-line',
+      polygonClass: 'connector-life-line-polygon',
+    };
 
-        return (<g>
-                <ConnectorActivationContainer bBox={statementContainerBBox} activationTarget={model}/>
-                <LifeLine title={connectorName} bBox={connectorBBox} editorOptions={this.editorOptions}
-                          onDelete={this.onDelete.bind(this)} classes={classes}/>
-                {children}
-            </g>
-        );
-    }
+    return (<g>
+      <ConnectorActivationContainer bBox={statementContainerBBox} activationTarget={model} />
+      <LifeLine
+        title={connectorName} bBox={connectorBBox} editorOptions={this.editorOptions}
+        onDelete={this.onDelete.bind(this)} classes={classes}
+      />
+      {children}
+    </g>
+    );
+  }
 
-    onDelete() {
-        this.props.model.remove();
-    }
+  onDelete() {
+    this.props.model.remove();
+  }
 }
 
 export default ConnectorDeclaration;

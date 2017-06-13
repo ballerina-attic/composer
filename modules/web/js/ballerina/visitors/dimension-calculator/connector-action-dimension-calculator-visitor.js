@@ -20,23 +20,23 @@ import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
 import SimpleBBox from './../../ast/simple-bounding-box';
 import BallerinaASTFactory from './../../ast/ballerina-ast-factory';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ConnectorActionDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populatePanelDecoratorBBox(node, node.getActionName());
-    }
+  endVisit(node) {
+    util.populatePanelDecoratorBBox(node, node.getActionName());
+  }
 }
 
 export default ConnectorActionDimensionCalculatorVisitor;

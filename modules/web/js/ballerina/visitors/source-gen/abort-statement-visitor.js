@@ -20,52 +20,52 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import AbortStatement from '../../ast/statements/abort-statement';
 
 class AbortStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
     /**
      * Can visit Abort Statement.
      * @param {AbortStatement} abortStatement
      * @return {boolean} true if instance of AbortStatement, else false.
      * */
-    canVisitAbortStatement(abortStatement) {
-        return abortStatement instanceof AbortStatement;
-    }
+  canVisitAbortStatement(abortStatement) {
+    return abortStatement instanceof AbortStatement;
+  }
 
     /**
      * Begin Visit Abort Statement.
      * @param {AbortStatement} abortStatement
      * */
-    beginVisitAbortStatement(abortStatement) {
-        this.node = abortStatement;
-        if (abortStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        this.appendSource(abortStatement.getStatementString());
-        log.debug('Begin Visit Abort Statement');
+  beginVisitAbortStatement(abortStatement) {
+    this.node = abortStatement;
+    if (abortStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    this.appendSource(abortStatement.getStatementString());
+    log.debug('Begin Visit Abort Statement');
+  }
 
     /**
      * Visit Abort Statement.
      * @param {AbortStatement} abortStatement
      * */
-    visitAbortStatement(abortStatement) {
-        log.debug('visit Abort Statement');
-    }
+  visitAbortStatement(abortStatement) {
+    log.debug('visit Abort Statement');
+  }
 
     /**
      * End visit Abort Statement.
      * @param {AbortStatement} abortStatement
      * */
-    endVisitAbortStatement(abortStatement) {
-        this.appendSource(abortStatement.getWSRegion(1) + ";" + abortStatement.getWSRegion(2));
-        this.appendSource((abortStatement.whiteSpace.useDefault)
+  endVisitAbortStatement(abortStatement) {
+    this.appendSource(`${abortStatement.getWSRegion(1)};${abortStatement.getWSRegion(2)}`);
+    this.appendSource((abortStatement.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Abort Statement');
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Abort Statement');
+  }
 }
 
 export default AbortStatementVisitor;

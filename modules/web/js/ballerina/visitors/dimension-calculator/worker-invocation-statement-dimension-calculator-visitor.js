@@ -17,25 +17,25 @@
  */
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 import _ from 'lodash';
 import BallerinaASTFactory from './../../ast/ballerina-ast-factory';
 
 class WorkerInvocationStatementDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populateSimpleStatementBBox(node.getStatementString() , node.getViewState());
-    }
+  endVisit(node) {
+    util.populateSimpleStatementBBox(node.getStatementString(), node.getViewState());
+  }
 }
 
 export default WorkerInvocationStatementDimensionCalculatorVisitor;

@@ -25,45 +25,45 @@ import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
  * @constructor
  */
 class ImportDeclarationVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitImportDeclaration(importDeclaration) {
-        return true;
-    }
+  canVisitImportDeclaration(importDeclaration) {
+    return true;
+  }
 
-    beginVisitImportDeclaration(importDeclaration) {
+  beginVisitImportDeclaration(importDeclaration) {
         /**
          * set the configuration start for the package definition language construct
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        var constructedSourceSegment =
-          ((importDeclaration.whiteSpace.useDefault) ? this.getIndentation(): '')
-          + 'import'
-          + importDeclaration.getWSRegion(0)
-          + importDeclaration.getPackageName()
-          + ((importDeclaration.whiteSpace.useDefault
-            && _.isNil(importDeclaration.getAsName())) ? '' : importDeclaration.getWSRegion(1));
-        if (!_.isNil(importDeclaration.getAsName())) {
-            constructedSourceSegment += (
-                'as' + importDeclaration.getWSRegion(2)
-                + importDeclaration.getAsName()
-                + importDeclaration.getWSRegion(3)
+    let constructedSourceSegment =
+          `${(importDeclaration.whiteSpace.useDefault) ? this.getIndentation() : ''
+           }import${
+           importDeclaration.getWSRegion(0)
+           }${importDeclaration.getPackageName()
+           }${(importDeclaration.whiteSpace.useDefault
+            && _.isNil(importDeclaration.getAsName())) ? '' : importDeclaration.getWSRegion(1)}`;
+    if (!_.isNil(importDeclaration.getAsName())) {
+      constructedSourceSegment += (
+                `as${importDeclaration.getWSRegion(2)
+                 }${importDeclaration.getAsName()
+                 }${importDeclaration.getWSRegion(3)}`
             );
-        }
-        this.appendSource(constructedSourceSegment);
     }
+    this.appendSource(constructedSourceSegment);
+  }
 
-    visitImportDeclaration(importDeclaration) {
-    }
+  visitImportDeclaration(importDeclaration) {
+  }
 
-    endVisitImportDeclaration(importDeclaration) {
-        this.appendSource(';' + importDeclaration.getWSRegion(4));
+  endVisitImportDeclaration(importDeclaration) {
+    this.appendSource(`;${importDeclaration.getWSRegion(4)}`);
 
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default ImportDeclarationVisitor;

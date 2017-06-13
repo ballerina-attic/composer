@@ -36,45 +36,45 @@ class CommonUtils {
      * @param {function} genArgs.attributes[].parents[].getter - The getter function which returns the identifier of the
      * children returned from getChildrenFunc.
      */
-    static generateUniqueIdentifier(genArgs) {
-        _.forEach(genArgs.attributes, function (attribute) {
-            if (_.isNil(attribute.getter.call(genArgs.node)) || attribute.checkEvenIfDefined) {
+  static generateUniqueIdentifier(genArgs) {
+    _.forEach(genArgs.attributes, (attribute) => {
+      if (_.isNil(attribute.getter.call(genArgs.node)) || attribute.checkEvenIfDefined) {
                 // To store all the identifiers of the parents.
-                var existingIdentifiers = [];
+        const existingIdentifiers = [];
 
-                _.forEach(attribute.parents, function (parent) {
-                    log.debug("Children: " + parent.getChildrenFunc.call(parent.node));
+        _.forEach(attribute.parents, (parent) => {
+          log.debug(`Children: ${parent.getChildrenFunc.call(parent.node)}`);
                     // Get the children of the parent.
-                    _.forEach(parent.getChildrenFunc.call(parent.node), function (child) {
+          _.forEach(parent.getChildrenFunc.call(parent.node), (child) => {
                         // Skipping the current node.
-                        if (!_.isEqual(genArgs.node.getID(), child.getID())) {
-                            var childVal = parent.getter.call(child);
-                            existingIdentifiers.push(childVal);
-                        }
-                    });
-                });
+            if (!_.isEqual(genArgs.node.getID(), child.getID())) {
+              const childVal = parent.getter.call(child);
+              existingIdentifiers.push(childVal);
+            }
+          });
+        });
 
-                log.debug("Existing identifiers: " + existingIdentifiers);
+        log.debug(`Existing identifiers: ${existingIdentifiers}`);
 
                 // Generating the ID.
-                var counter = 1;
-                var currentAttributeValue = attribute.defaultValue;
-                while (true) {
-                    var tempNewValue = currentAttributeValue + counter;
-                    if (!_.includes(existingIdentifiers, tempNewValue)) {
-                        break;
-                    }
-                    counter++;
-                }
-                let opts = {doSilently: true};
-                if (_.isEqual(counter, 0)) {
-                    attribute.setter.call(genArgs.node, currentAttributeValue, opts);
-                } else {
-                    attribute.setter.call(genArgs.node, currentAttributeValue + counter, opts);
-                }
-            }
-        });
-    }
+        let counter = 1;
+        const currentAttributeValue = attribute.defaultValue;
+        while (true) {
+          const tempNewValue = currentAttributeValue + counter;
+          if (!_.includes(existingIdentifiers, tempNewValue)) {
+            break;
+          }
+          counter++;
+        }
+        const opts = { doSilently: true };
+        if (_.isEqual(counter, 0)) {
+          attribute.setter.call(genArgs.node, currentAttributeValue, opts);
+        } else {
+          attribute.setter.call(genArgs.node, currentAttributeValue + counter, opts);
+        }
+      }
+    });
+  }
 }
 
 export default CommonUtils;

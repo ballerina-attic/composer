@@ -25,36 +25,36 @@ import ASTNode from './../../ast/node';
  */
 class EnableDefaultWSVisitor {
 
-    canVisit(node) {
-        return node instanceof ASTNode;
-    }
+  canVisit(node) {
+    return node instanceof ASTNode;
+  }
 
-    beginVisit(node) {
-        return true;
-    }
+  beginVisit(node) {
+    return true;
+  }
 
-    visit(node) {
-        node.whiteSpace.useDefault = true;
-        if (node.getFactory().isBinaryExpression(node)) {
-            node.getRightExpression().accept(this);
-            node.getLeftExpression().accept(this);
-        } else if (node.getFactory().isActionInvocationExpression(node)) {
-            node.getArguments().forEach((arg) => {
-                arg.accept(this);
-            })
-        } else if (node.getFactory().isConnectorInitExpression(node)) {
-            node.getArgs().forEach((arg) => {
-                arg.accept(this);
-            })
-            node.getConnectorName().accept(this);
-        } else if (node.getFactory().isCatchStatement(node)) {
-            node.getParameter().accept(this);
-        }
+  visit(node) {
+    node.whiteSpace.useDefault = true;
+    if (node.getFactory().isBinaryExpression(node)) {
+      node.getRightExpression().accept(this);
+      node.getLeftExpression().accept(this);
+    } else if (node.getFactory().isActionInvocationExpression(node)) {
+      node.getArguments().forEach((arg) => {
+        arg.accept(this);
+      });
+    } else if (node.getFactory().isConnectorInitExpression(node)) {
+      node.getArgs().forEach((arg) => {
+        arg.accept(this);
+      });
+      node.getConnectorName().accept(this);
+    } else if (node.getFactory().isCatchStatement(node)) {
+      node.getParameter().accept(this);
     }
+  }
 
-    endVisit(node) {
-        return true;
-    }
+  endVisit(node) {
+    return true;
+  }
 }
 
 export default EnableDefaultWSVisitor;

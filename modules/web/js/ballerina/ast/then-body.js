@@ -25,23 +25,23 @@ import ASTNode from './node';
  * @augments ASTNode
  */
 class ThenBody extends ASTNode {
-    constructor(args) {
-        super('ThenBody');
-    }
+  constructor(args) {
+    super('ThenBody');
+  }
 
     /**
      * setting parameters from json
      * @param {Object} jsonNode to initialize from
      * @param {Array} [jsonNode.children] - array which contains the statements of 'then block'
      */
-    initFromJson(jsonNode) {
-        var self = this;
-        _.each(jsonNode.children, function (childNode) {
-            var child = self.getFactory().createFromJson(childNode);
-            self.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+  initFromJson(jsonNode) {
+    const self = this;
+    _.each(jsonNode.children, (childNode) => {
+      const child = self.getFactory().createFromJson(childNode);
+      self.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 }
 
 export default ThenBody;

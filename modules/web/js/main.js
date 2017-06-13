@@ -49,184 +49,180 @@ class Application {
      * @class Application wraps all the application logic and it is the main starting point.
      * @param {Object} config configuration options for the application
      */
-    constructor(config) {
-        this.validateConfig(config);
-        this.config = config;
-        this.initComponents();
-    }
+  constructor(config) {
+    this.validateConfig(config);
+    this.config = config;
+    this.initComponents();
+  }
 
-    initComponents() {
-
+  initComponents() {
         // init command manager
-        this.commandManager = new CommandManager(this);
+    this.commandManager = new CommandManager(this);
 
-        this.browserStorage = new BrowserStorage('ballerinaAppTempStorage');
+    this.browserStorage = new BrowserStorage('ballerinaAppTempStorage');
 
-        //init menu bar
-        var menuBarOpts = _.get(this.config, "menu_bar");
-        _.set(menuBarOpts, 'application', this);
-        this.menuBar = new MenuBar(menuBarOpts);
+        // init menu bar
+    const menuBarOpts = _.get(this.config, 'menu_bar');
+    _.set(menuBarOpts, 'application', this);
+    this.menuBar = new MenuBar(menuBarOpts);
 
-        //init workspace manager
-        this.workspaceManager = new WorkspaceManager(this);
+        // init workspace manager
+    this.workspaceManager = new WorkspaceManager(this);
 
-        var breadCrumbsOpts = _.get(this.config, "breadcrumbs");
-        _.set(breadCrumbsOpts, 'application', this);
+    const breadCrumbsOpts = _.get(this.config, 'breadcrumbs');
+    _.set(breadCrumbsOpts, 'application', this);
         // init breadcrumbs controller
-        this.breadcrumbController = new BreadcrumbController(breadCrumbsOpts);
+    this.breadcrumbController = new BreadcrumbController(breadCrumbsOpts);
 
-        //init tab controller
-        var tabControlOpts = _.get(this.config, "tab_controller");
-        _.set(tabControlOpts, 'application', this);
+        // init tab controller
+    const tabControlOpts = _.get(this.config, 'tab_controller');
+    _.set(tabControlOpts, 'application', this);
 
         // tab controller will take care of rendering tool palette
-        this.tabController = new TabController(tabControlOpts);
-        this.workspaceManager.listenToTabController();
+    this.tabController = new TabController(tabControlOpts);
+    this.workspaceManager.listenToTabController();
 
-        //init workspace explorer
-        var workspaceExplorerOpts = _.get(this.config, "workspace_explorer");
-        _.set(workspaceExplorerOpts, 'application', this);
-        this.workspaceExplorer = new WorkspaceExplorer(workspaceExplorerOpts);
+        // init workspace explorer
+    const workspaceExplorerOpts = _.get(this.config, 'workspace_explorer');
+    _.set(workspaceExplorerOpts, 'application', this);
+    this.workspaceExplorer = new WorkspaceExplorer(workspaceExplorerOpts);
 
-        //init launcher
-        var launcherOpts = _.get(this.config, "launcher");
-        _.set(launcherOpts, 'application', this);
-        this.launcher = new Launcher(launcherOpts);
+        // init launcher
+    const launcherOpts = _.get(this.config, 'launcher');
+    _.set(launcherOpts, 'application', this);
+    this.launcher = new Launcher(launcherOpts);
 
-        LaunchManager.init(launcherOpts);
+    LaunchManager.init(launcherOpts);
 
         // Setup the language server client controller
-        var langserverOptions = {};
-        _.set(langserverOptions, 'application', this);
-        _.set(_.get('application'), 'config', this.config);
-        this.langseverClientController = new LangServerClientController(langserverOptions);
+    const langserverOptions = {};
+    _.set(langserverOptions, 'application', this);
+    _.set(_.get('application'), 'config', this.config);
+    this.langseverClientController = new LangServerClientController(langserverOptions);
 
         // init debugger
 
-        var debuggerOpts = _.get(this.config, "debugger");
-        _.set(debuggerOpts, 'application', this);
-        _.set(debuggerOpts, 'launchManager', LaunchManager);
-        this.debugger = new Debugger(debuggerOpts);
+    const debuggerOpts = _.get(this.config, 'debugger');
+    _.set(debuggerOpts, 'application', this);
+    _.set(debuggerOpts, 'launchManager', LaunchManager);
+    this.debugger = new Debugger(debuggerOpts);
 
-        DebugManager.init(debuggerOpts);
+    DebugManager.init(debuggerOpts);
 
         // handle resize events
         // this is to resize the diagrams when the browser window is resized.
-        jQuery(window).on('resize', _.debounce(_.bind(this.reRender, this), 150));
-    }
+    jQuery(window).on('resize', _.debounce(_.bind(this.reRender, this), 150));
+  }
 
-    reRender(){
-        this.tabController.forEach(function(tab){
-            if (typeof tab.reRender === "function") {
-                tab.reRender();
-            }
-        });
-    }
+  reRender() {
+    this.tabController.forEach((tab) => {
+      if (typeof tab.reRender === 'function') {
+        tab.reRender();
+      }
+    });
+  }
 
-    validateConfig(config) {
-        if (!_.has(config, 'services.workspace.endpoint')) {
-            throw 'config services.workspace.endpoint could not be found for remote log initialization.';
-        } else {
+  validateConfig(config) {
+    if (!_.has(config, 'services.workspace.endpoint')) {
+      throw 'config services.workspace.endpoint could not be found for remote log initialization.';
+    } else {
             // disable ajax appender
-            //log.initAjaxAppender(_.get(config, 'services.workspace.endpoint'));
-        }
-        if (!_.has(config, 'breadcrumbs')) {
-            log.error('breadcrumbs configuration is not provided.');
-        }
-        if (!_.has(config, 'workspace_explorer')) {
-            log.error('Workspace explorer configuration is not provided.');
-        }
-        if (!_.has(config, 'tab_controller')) {
-            log.error('tab_controller configuration is not provided.');
-        }
+            // log.initAjaxAppender(_.get(config, 'services.workspace.endpoint'));
     }
+    if (!_.has(config, 'breadcrumbs')) {
+      log.error('breadcrumbs configuration is not provided.');
+    }
+    if (!_.has(config, 'workspace_explorer')) {
+      log.error('Workspace explorer configuration is not provided.');
+    }
+    if (!_.has(config, 'tab_controller')) {
+      log.error('tab_controller configuration is not provided.');
+    }
+  }
 
-    render() {
+  render() {
         // lets initialize the ballerina environment before we render UI.
-        BallerinaEnvironment.initialize({app: this});  
+    BallerinaEnvironment.initialize({ app: this });
 
-        log.debug("start: rendering menu_bar control");
-        this.menuBar.render();
-        log.debug("end: rendering menu_bar control");
+    log.debug('start: rendering menu_bar control');
+    this.menuBar.render();
+    log.debug('end: rendering menu_bar control');
 
-        log.debug("start: rendering breadcrumbs control");
-        this.breadcrumbController.render();
-        log.debug("end: rendering breadcrumbs control");
+    log.debug('start: rendering breadcrumbs control');
+    this.breadcrumbController.render();
+    log.debug('end: rendering breadcrumbs control');
 
-        log.debug("start: rendering workspace explorer control");
-        this.workspaceExplorer.render();
-        log.debug("end: rendering workspace explorer control");
+    log.debug('start: rendering workspace explorer control');
+    this.workspaceExplorer.render();
+    log.debug('end: rendering workspace explorer control');
 
-        log.debug("start: rendering debugger control");
-        this.debugger.render();
-        log.debug("end: rendering debugger control");
+    log.debug('start: rendering debugger control');
+    this.debugger.render();
+    log.debug('end: rendering debugger control');
 
-        log.debug("start: rendering launcher control");
-        this.launcher.render();
-        log.debug("end: rendering launcher control");
+    log.debug('start: rendering launcher control');
+    this.launcher.render();
+    log.debug('end: rendering launcher control');
 
-        log.debug("start: rendering tab controller");
-        this.tabController.render();
-        log.debug("end: rendering tab controller");
+    log.debug('start: rendering tab controller');
+    this.tabController.render();
+    log.debug('end: rendering tab controller');
 
-        if(this.isElectronMode()) {
-            this.menuBar.setVisible(false);
-        }
+    if (this.isElectronMode()) {
+      this.menuBar.setVisible(false);
     }
+  }
 
-    displayInitialView() {
-        this.workspaceManager.displayInitialTab();
-    }
+  displayInitialView() {
+    this.workspaceManager.displayInitialTab();
+  }
 
-    hideWorkspaceArea() {
-        $(this.config.container).hide();
-    }
+  hideWorkspaceArea() {
+    $(this.config.container).hide();
+  }
 
-    showWorkspaceArea() {
-        $(this.config.container).show();
-    }
+  showWorkspaceArea() {
+    $(this.config.container).show();
+  }
 
-    getOperatingSystem() {
-        var operatingSystem = "Unknown OS";
-        if (navigator.appVersion.indexOf("Win") != -1) {
-            operatingSystem = "Windows";
-        }
-        else if (navigator.appVersion.indexOf("Mac") != -1) {
-            operatingSystem = "MacOS";
-        }
-        else if (navigator.appVersion.indexOf("X11") != -1) {
-            operatingSystem = "UNIX";
-        }
-        else if (navigator.appVersion.indexOf("Linux") != -1) {
-            operatingSystem = "Linux";
-        }
-        return operatingSystem;
+  getOperatingSystem() {
+    let operatingSystem = 'Unknown OS';
+    if (navigator.appVersion.indexOf('Win') != -1) {
+      operatingSystem = 'Windows';
+    } else if (navigator.appVersion.indexOf('Mac') != -1) {
+      operatingSystem = 'MacOS';
+    } else if (navigator.appVersion.indexOf('X11') != -1) {
+      operatingSystem = 'UNIX';
+    } else if (navigator.appVersion.indexOf('Linux') != -1) {
+      operatingSystem = 'Linux';
     }
+    return operatingSystem;
+  }
 
-    isRunningOnMacOS() {
-        return _.isEqual(this.getOperatingSystem(), 'MacOS');
-    }
+  isRunningOnMacOS() {
+    return _.isEqual(this.getOperatingSystem(), 'MacOS');
+  }
 
-    getPathSeperator() {
-        return _.isEqual(this.getOperatingSystem(), 'Windows') ? '\\' : '/';
-    }
+  getPathSeperator() {
+    return _.isEqual(this.getOperatingSystem(), 'Windows') ? '\\' : '/';
+  }
 
-    setElectronMode(isElectronMode, renderProcess) {
-        this._isElectronMode = isElectronMode;
-        this._renderProcess = renderProcess;
-    }
+  setElectronMode(isElectronMode, renderProcess) {
+    this._isElectronMode = isElectronMode;
+    this._renderProcess = renderProcess;
+  }
 
-    getNativeRenderProcess () {
-        return this._renderProcess;
-    }
+  getNativeRenderProcess() {
+    return this._renderProcess;
+  }
 
-    isElectronMode() {
-        return this._isElectronMode;
-    }
+  isElectronMode() {
+    return this._isElectronMode;
+  }
 
-    getLangserverClientController() {
-        return this.langseverClientController;
-    }
+  getLangserverClientController() {
+    return this.langseverClientController;
+  }
 
 }
 

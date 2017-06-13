@@ -19,32 +19,32 @@ import _ from 'lodash';
 import ASTNode from './node';
 
 class TypeElement extends ASTNode {
-    constructor(type, identifier) {
-        super();
-        this.type = type;
-        this.identifier = identifier;
-        this.type = "TypeElement";
-    }
+  constructor(type, identifier) {
+    super();
+    this.type = type;
+    this.identifier = identifier;
+    this.type = 'TypeElement';
+  }
 
-    setType(type, options) {
-        if (!_.isNil(type)) {
-            this.setAttribute('type', type, options);
-        }
+  setType(type, options) {
+    if (!_.isNil(type)) {
+      this.setAttribute('type', type, options);
     }
+  }
 
-    setIdentifier(identifier, options) {
-        if (!_.isNil(identifier)) {
-            this.setAttribute('identifier', identifier, options);
-        }
+  setIdentifier(identifier, options) {
+    if (!_.isNil(identifier)) {
+      this.setAttribute('identifier', identifier, options);
     }
+  }
 
-    getType() {
-        return this.type;
-    }
+  getType() {
+    return this.type;
+  }
 
-    getIdentifier() {
-        return this.identifier;
-    }
+  getIdentifier() {
+    return this.identifier;
+  }
 }
 
 export default TypeElement;

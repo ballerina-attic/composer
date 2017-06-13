@@ -25,67 +25,64 @@ import FragmentUtils from '../../utils/fragment-utils';
  * @constructor
  */
 class BasicLiteralExpression extends Expression {
-    constructor(args) {
-        super('BasicLiteralExpression');
-        this._basicLiteralType = _.get(args, 'basicLiteralType', '');
-        this._basicLiteralValue = _.get(args, 'basicLiteralValue', '');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: ''
-        };
-    }
+  constructor(args) {
+    super('BasicLiteralExpression');
+    this._basicLiteralType = _.get(args, 'basicLiteralType', '');
+    this._basicLiteralValue = _.get(args, 'basicLiteralValue', '');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+    };
+  }
 
     /**
      * setting parameters from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        this._basicLiteralType = jsonNode.basic_literal_type;
-        this._basicLiteralValue = jsonNode.basic_literal_value;
-    }
+  initFromJson(jsonNode) {
+    this._basicLiteralType = jsonNode.basic_literal_type;
+    this._basicLiteralValue = jsonNode.basic_literal_value;
+  }
 
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)){
-            let fragment = FragmentUtils.createExpressionFragment(expression);
-            let parsedJson = FragmentUtils.parseFragment(fragment);
-            if ((!_.has(parsedJson, 'error')
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
+      if ((!_.has(parsedJson, 'error')
                     || !_.has(parsedJson, 'syntax_errors'))
                     && _.isEqual(parsedJson.type, 'basic_literal_expression')) {
-                this.initFromJson(parsedJson);
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        this.initFromJson(parsedJson);
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
-    getExpressionString() {
-        if (this._basicLiteralType === 'string') {
+  getExpressionString() {
+    if (this._basicLiteralType === 'string') {
             // Adding double quotes if it is a string.
-            return '\"' + this.escapeEscapeChars(this._basicLiteralValue) + '\"' + this.getWSRegion(1);
-        } else {
-            return this._basicLiteralValue + this.getWSRegion(1);
-        }
+      return `\"${this.escapeEscapeChars(this._basicLiteralValue)}\"${this.getWSRegion(1)}`;
     }
+    return this._basicLiteralValue + this.getWSRegion(1);
+  }
 
-    getBasicLiteralValue(){
-        return this._basicLiteralValue;
-    }
+  getBasicLiteralValue() {
+    return this._basicLiteralValue;
+  }
 
-    getBasicLiteralType(){
-        return this._basicLiteralType;
-    }
+  getBasicLiteralType() {
+    return this._basicLiteralType;
+  }
 
-    escapeEscapeChars(stringVal) {
-        return stringVal.replace(/"/g, "\\\"")
-                        .replace(/\n/g, "\\n")
-                        .replace(/\r/g, "\\r")
-                        .replace(/\t/g, "\\t");
-    }
+  escapeEscapeChars(stringVal) {
+    return stringVal.replace(/"/g, '\\"')
+                        .replace(/\n/g, '\\n')
+                        .replace(/\r/g, '\\r')
+                        .replace(/\t/g, '\\t');
+  }
 }
 
 export default BasicLiteralExpression;

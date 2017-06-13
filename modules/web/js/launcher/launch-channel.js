@@ -25,63 +25,61 @@ const WS_NORMAL_CODE = 1000;
 const WS_SSL_CODE = 1015;
 
 class LaunchChannel extends EventChannel {
-    constructor(args) {
-        super();
-        if(_.isNil(args.endpoint)){
-            throw 'Invalid Endpoint';
-        }
-        _.assign(this, args);
-
-        this.connect();
+  constructor(args) {
+    super();
+    if (_.isNil(args.endpoint)) {
+      throw 'Invalid Endpoint';
     }
+    _.assign(this, args);
 
-    connect() {
-        var websocket = new WebSocket(this.endpoint);
-        //bind functions
-        websocket.onmessage = (strMessage) => { this.parseMessage(strMessage); };
-        websocket.onopen = () => { this.onOpen(); };
-        websocket.onclose = (event) => { this.onClose(event); };
-        websocket.onerror = () => { this.onError(); };
-        this.websocket = websocket;
-    }
+    this.connect();
+  }
 
-    parseMessage(strMessage) {
-        var message = JSON.parse(strMessage.data);
-        this.launcher.processMesssage(message);
-    }
+  connect() {
+    const websocket = new WebSocket(this.endpoint);
+        // bind functions
+    websocket.onmessage = (strMessage) => { this.parseMessage(strMessage); };
+    websocket.onopen = () => { this.onOpen(); };
+    websocket.onclose = (event) => { this.onClose(event); };
+    websocket.onerror = () => { this.onError(); };
+    this.websocket = websocket;
+  }
 
-    sendMessage(message) {
-        this.websocket.send(JSON.stringify(message));
-    }
+  parseMessage(strMessage) {
+    const message = JSON.parse(strMessage.data);
+    this.launcher.processMesssage(message);
+  }
 
-    onClose(event) {
-        this.launcher.active = false;
-        this.launcher.trigger('session-terminated');
-        let reason;
-        if (event.code === WS_NORMAL_CODE){
-            reason = 'Normal closure';
-            this.trigger('session-ended');
-            this.debugger.active = false;
-            return;
-        }
-        else if(event.code === WS_SSL_CODE){
-            reason = 'Certificate Issue';
-        }
-        else{
-            reason = 'Unknown reason :' + event.code;
-        }
-        log.debug(`Web socket closed, reason ${reason}`);
-    }
+  sendMessage(message) {
+    this.websocket.send(JSON.stringify(message));
+  }
 
-    onError() {
-        this.launcher.active = false;
-        this.launcher.trigger('session-error');
+  onClose(event) {
+    this.launcher.active = false;
+    this.launcher.trigger('session-terminated');
+    let reason;
+    if (event.code === WS_NORMAL_CODE) {
+      reason = 'Normal closure';
+      this.trigger('session-ended');
+      this.debugger.active = false;
+      return;
+    } else if (event.code === WS_SSL_CODE) {
+      reason = 'Certificate Issue';
+    } else {
+      reason = `Unknown reason :${event.code}`;
     }
+    log.debug(`Web socket closed, reason ${reason}`);
+  }
 
-    onOpen() {
-        this.launcher.active = true;
-        this.trigger('connected');
-    }
+  onError() {
+    this.launcher.active = false;
+    this.launcher.trigger('session-error');
+  }
+
+  onOpen() {
+    this.launcher.active = true;
+    this.trigger('connected');
+  }
 }
 
 export default LaunchChannel;

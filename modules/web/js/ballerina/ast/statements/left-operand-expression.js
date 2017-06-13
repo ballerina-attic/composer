@@ -25,56 +25,54 @@ import FragmentUtils from '../../utils/fragment-utils';
  * @constructor
  */
 class LeftOperandExpression extends Expression {
-    constructor(args) {
-        super('LeftOperandExpression');
-    }
+  constructor(args) {
+    super('LeftOperandExpression');
+  }
 
-    getExpressionString() {
-        var exps = [];
-        _.forEach(this.getChildren(), child => {
-            exps.push(child.getExpressionString());
-        });
-        let expression = _.join(exps, ',');
-        return expression;
-    }
+  getExpressionString() {
+    const exps = [];
+    _.forEach(this.getChildren(), (child) => {
+      exps.push(child.getExpressionString());
+    });
+    const expression = _.join(exps, ',');
+    return expression;
+  }
 
     /**
      * Set the expression from the expression string
      * @param {string} expressionString
      * @override
      */
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)){
-            let fragment = FragmentUtils.createExpressionFragment(expression);
-            let parsedJson = FragmentUtils.parseFragment(fragment);
-            if ((!_.has(parsedJson, 'error')
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
+      if ((!_.has(parsedJson, 'error')
                    || !_.has(parsedJson, 'syntax_errors'))
                    && _.isEqual(parsedJson.type, 'left_operand_expression')) {
-                this.initFromJson(parsedJson);
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        this.initFromJson(parsedJson);
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
     /**
      * setting parameters from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        if (!_.isEmpty(jsonNode.children)) {
-            jsonNode.children.forEach((childJsonNode) => {
-                let child = this.getFactory().createFromJson(childJsonNode);
-                child.initFromJson(childJsonNode);
-                this.addChild(child, undefined, true, true);
-            });
-        }
+  initFromJson(jsonNode) {
+    if (!_.isEmpty(jsonNode.children)) {
+      jsonNode.children.forEach((childJsonNode) => {
+        const child = this.getFactory().createFromJson(childJsonNode);
+        child.initFromJson(childJsonNode);
+        this.addChild(child, undefined, true, true);
+      });
     }
+  }
 }
 
 export default LeftOperandExpression;

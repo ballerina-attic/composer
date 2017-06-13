@@ -24,33 +24,33 @@ import * as PositioningUtils from './utils';
 
 class FunctionDefinitionPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit FunctionDefinitionPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit FunctionDefinitionPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit FunctionDefinitionPositionCalc');
+  beginVisit(node) {
+    log.debug('begin visit FunctionDefinitionPositionCalc');
 
         // populate panel BBox positions.
-        PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
-        let viewState = node.getViewState();
-        let statementContainer = viewState.components.statementContainer;
-        statementContainer.x = viewState.components.body.x + DesignerDefaults.innerPanel.body.padding.left;
-        statementContainer.y = viewState.components.body.y + DesignerDefaults.innerPanel.body.padding.top
+    PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
+    const viewState = node.getViewState();
+    const statementContainer = viewState.components.statementContainer;
+    statementContainer.x = viewState.components.body.x + DesignerDefaults.innerPanel.body.padding.left;
+    statementContainer.y = viewState.components.body.y + DesignerDefaults.innerPanel.body.padding.top
             + DesignerDefaults.lifeLine.head.height;
 
         // populate panel heading positioning.
-        PositioningUtils.populatePanelHeadingPositioning(node, this.createPositionForTitleNode);
-    }
+    PositioningUtils.populatePanelHeadingPositioning(node, this.createPositionForTitleNode);
+  }
 
-    visit(node) {
-        log.debug('visit FunctionDefinitionPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit FunctionDefinitionPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit FunctionDefinitionPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit FunctionDefinitionPositionCalc');
+  }
 
     /**
      * Sets positioning for a parameter.
@@ -62,18 +62,18 @@ class FunctionDefinitionPositionCalcVisitor {
      *
      * @memberof FunctionDefinitionPositionCalc
      */
-    createPositionForTitleNode(parameter, x, y) {
-        let viewState = parameter.getViewState();
+  createPositionForTitleNode(parameter, x, y) {
+    const viewState = parameter.getViewState();
         // Positioning the parameter
-        viewState.bBox.x = x;
-        viewState.bBox.y = y;
+    viewState.bBox.x = x;
+    viewState.bBox.y = y;
 
         // Positioning the delete icon
-        viewState.components.deleteIcon.x = x + viewState.w;
-        viewState.components.deleteIcon.y = y;
+    viewState.components.deleteIcon.x = x + viewState.w;
+    viewState.components.deleteIcon.y = y;
 
-        return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
-    }
+    return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
+  }
 }
 
 export default FunctionDefinitionPositionCalcVisitor;

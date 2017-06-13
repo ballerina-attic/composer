@@ -33,86 +33,86 @@ class BallerinaView extends ASTVisitor {
      * @param {DiagramRenderContext} args.diagramRenderingContext - Diagram rendering context for the view.
      * @constructor
      */
-    constructor(args) {
-        super(args);
-        this._parent = _.get(args, 'parent');
-        this._parseFailed = _.get(args, 'parseFailed');
-        this.setModel(_.get(args, 'model'));
-        this._container = _.get(args, 'container');
-        this._viewOptions = _.get(args, 'viewOptions', {});
-        this._backendEndpointsOptions = _.get(args, 'backendEndpointsOptions', {});
-        this.toolPalette = _.get(args, 'toolPalette');
-        this.messageManager =  _.get(args, 'messageManager');
-        this.diagramRenderingContext = _.get(args, 'diagramRenderContext');
-        this.id = uuid();
-    }
+  constructor(args) {
+    super(args);
+    this._parent = _.get(args, 'parent');
+    this._parseFailed = _.get(args, 'parseFailed');
+    this.setModel(_.get(args, 'model'));
+    this._container = _.get(args, 'container');
+    this._viewOptions = _.get(args, 'viewOptions', {});
+    this._backendEndpointsOptions = _.get(args, 'backendEndpointsOptions', {});
+    this.toolPalette = _.get(args, 'toolPalette');
+    this.messageManager = _.get(args, 'messageManager');
+    this.diagramRenderingContext = _.get(args, 'diagramRenderContext');
+    this.id = uuid();
+  }
 
-    setParent(parent) {
-        this._parent = parent;
-    }
+  setParent(parent) {
+    this._parent = parent;
+  }
 
-    getParent() {
-        return this._parent;
-    }
+  getParent() {
+    return this._parent;
+  }
 
-    setModel(model) {
-        this._model = model;
-    }
+  setModel(model) {
+    this._model = model;
+  }
 
-    getModel() {
-        return this._model;
-    }
+  getModel() {
+    return this._model;
+  }
 
-    setContainer(container) {
-        this._container = container;
-    }
+  setContainer(container) {
+    this._container = container;
+  }
 
-    getContainer() {
-        return this._container;
-    }
+  getContainer() {
+    return this._container;
+  }
 
-    setToolPalette(toolPalette) {
-        this.toolPalette = toolPalette;
-    }
+  setToolPalette(toolPalette) {
+    this.toolPalette = toolPalette;
+  }
 
-    getToolPalette() {
-        return this.toolPalette;
-    }
+  getToolPalette() {
+    return this.toolPalette;
+  }
 
-    setMessageManager(messageManager) {
-        this.messageManager = messageManager;
-    }
+  setMessageManager(messageManager) {
+    this.messageManager = messageManager;
+  }
 
-    getMessageManager() {
-        return this.messageManager;
-    }
+  getMessageManager() {
+    return this.messageManager;
+  }
 
-    setDiagramRenderingContext(diagramRenderContext) {
-        this.diagramRenderingContext = diagramRenderContext;
-    }
+  setDiagramRenderingContext(diagramRenderContext) {
+    this.diagramRenderingContext = diagramRenderContext;
+  }
 
-    getDiagramRenderingContext() {
-        return this.diagramRenderingContext;
-    }
+  getDiagramRenderingContext() {
+    return this.diagramRenderingContext;
+  }
 
     /**
      * Renders/Draws the view for a specific model(i.e {@link BallerinaView#_model}).
      * @abstract
      */
-    render() {
-        throw 'Method not implemented';
-    }
+  render() {
+    throw 'Method not implemented';
+  }
 }
 
 // Auto generated Id for service definitions (for accordion views)
-var uuid =  function (){
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
+var uuid = function () {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
             .toString(16)
             .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+  }
+  return `${s4() + s4()}-${s4()}-${s4()}-${
+        s4()}-${s4()}${s4()}${s4()}`;
 };
 
 export default BallerinaView;

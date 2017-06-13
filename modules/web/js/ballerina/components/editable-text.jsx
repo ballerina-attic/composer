@@ -20,101 +20,101 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 class EditableText extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            editing: false
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: false,
+    };
 
-        const textBoxPadding = 3;
-        const textBoxBorderSz = 2;
+    const textBoxPadding = 3;
+    const textBoxBorderSz = 2;
 
-        this.inputStyles = {
-            position: 'absolute',
-            paddingLeft: textBoxPadding,
-            borderWidth: textBoxBorderSz
-        }
+    this.inputStyles = {
+      position: 'absolute',
+      paddingLeft: textBoxPadding,
+      borderWidth: textBoxBorderSz,
+    };
 
-        this.renderTextBox = this.renderTextBox.bind(this);
-    }
+    this.renderTextBox = this.renderTextBox.bind(this);
+  }
 
-    renderTextBox() {
-        const {
-            x, y, width, height = 25, onChange, onBlur, onKeyDown, children = "",
-            inputClass='editable-text-input', placeholder
+  renderTextBox() {
+    const {
+            x, y, width, height = 25, onChange, onBlur, onKeyDown, children = '',
+            inputClass = 'editable-text-input', placeholder,
         } = this.props;
 
-        const inputPositionStyles = {
-            top: y - height / 2,
-            left: x,
-            width: width,
-            height: height,
-        };
+    const inputPositionStyles = {
+      top: y - height / 2,
+      left: x,
+      width,
+      height,
+    };
 
-        const styles = {}
+    const styles = {};
 
-        if (!this.props.editing) {
-            styles.display = 'none';
+    if (!this.props.editing) {
+      styles.display = 'none';
+    }
+
+    Object.assign(styles, this.inputStyles, inputPositionStyles);
+
+    const inputProps = {
+      ref: (input) => {
+        if (input !== null) {
+          input.focus();
         }
+      },
+      style: styles,
+      onChange,
+      onKeyDown,
+      onBlur,
+      placeholder,
+      value: children,
+    };
 
-        Object.assign(styles, this.inputStyles, inputPositionStyles)
+    const inputElement = (<input {...inputProps} className={inputClass} />);
 
-        const inputProps = {
-            ref: input => {
-                if (input !== null) {
-                    input.focus();
-                }
-            },
-            style: styles,
-            onChange,
-            onKeyDown,
-            onBlur,
-            placeholder,
-            value: children
-        }
+    ReactDOM.render(inputElement, this.context.overlay);
+  }
 
-        const inputElement = (<input {...inputProps} className={inputClass}/>);
-
-        ReactDOM.render(inputElement, this.context.overlay);
+  componentDidUpdate(prevProps) {
+    const editingJustFinished = prevProps.editing && !this.props.editing;
+    if (this.props.editing || editingJustFinished) {
+      this.renderTextBox();
     }
+  }
 
-    componentDidUpdate(prevProps) {
-        const editingJustFinished = prevProps.editing && !this.props.editing
-        if (this.props.editing || editingJustFinished) {
-            this.renderTextBox();
-        }
-    }
+  componentDidMount() {
+    this.renderTextBox();
+  }
 
-    componentDidMount() {
-        this.renderTextBox();
-    }
+  componentWillUnmount() {
+    ReactDOM.render(<noscript />, this.context.overlay);
+  }
 
-    componentWillUnmount() {
-        ReactDOM.render(<noscript/>, this.context.overlay);
-    }
-
-    render() {
-        let {
-            x, y, onClick, labelClass='editable-text-label', displayText, children
+  render() {
+    let {
+            x, y, onClick, labelClass = 'editable-text-label', displayText, children,
         } = this.props;
 
         // This takes the label to left so that when the textInput is rendered over it
         // it does not make it look like the text just jumped to the right
-        x += this.inputStyles.borderWidth + this.inputStyles.paddingLeft;
+    x += this.inputStyles.borderWidth + this.inputStyles.paddingLeft;
 
-        const textProps = {x, y, onClick};
-        textProps.style = {
-            dominantBaseline: 'central'
-        };
+    const textProps = { x, y, onClick };
+    textProps.style = {
+      dominantBaseline: 'central',
+    };
 
-        return (
-            <text {...textProps} className={labelClass}>{ displayText || children }</text>
-        );
-    }
+    return (
+      <text {...textProps} className={labelClass}>{ displayText || children }</text>
+    );
+  }
 }
 
 EditableText.contextTypes = {
-    overlay: PropTypes.instanceOf(Object).isRequired,
+  overlay: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default EditableText;

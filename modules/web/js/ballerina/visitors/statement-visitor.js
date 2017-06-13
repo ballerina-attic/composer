@@ -19,671 +19,671 @@ import ASTVisitor from './ast-visitor';
 import ASTFactory from './../ast/ballerina-ast-factory';
 
 class StatementVisitor extends ASTVisitor {
-    constructor(args) {
-        super(args);
-    }
+  constructor(args) {
+    super(args);
+  }
 
-    canVisitIfStatement(statement) {
-        return false;
-    }
+  canVisitIfStatement(statement) {
+    return false;
+  }
 
-    beginVisitIfStatement(statement) {
-    }
+  beginVisitIfStatement(statement) {
+  }
 
-    visitIfStatement(statement) {
-    }
+  visitIfStatement(statement) {
+  }
 
-    endVisitIfStatement(statement) {
-    }
+  endVisitIfStatement(statement) {
+  }
 
-    canVisitElseStatement(statement) {
-        return false;
-    }
+  canVisitElseStatement(statement) {
+    return false;
+  }
 
-    beginVisitElseStatement(statement) {
-    }
+  beginVisitElseStatement(statement) {
+  }
 
-    visitElseStatement(statement) {
-    }
+  visitElseStatement(statement) {
+  }
 
-    endVisitElseStatement(statement) {
-    }
+  endVisitElseStatement(statement) {
+  }
 
-    canVisitElseIfStatement(statement) {
-        return false;
-    }
+  canVisitElseIfStatement(statement) {
+    return false;
+  }
 
-    beginVisitElseIfStatement(statement) {
-    }
+  beginVisitElseIfStatement(statement) {
+  }
 
-    visitElseIfStatement(statement) {
-    }
+  visitElseIfStatement(statement) {
+  }
 
-    endVisitElseIfStatement(statement) {
-    }
+  endVisitElseIfStatement(statement) {
+  }
 
-    canVisitTryStatement(statement) {
-        return false;
-    }
+  canVisitTryStatement(statement) {
+    return false;
+  }
 
-    beginVisitTryStatement(statement) {
-    }
+  beginVisitTryStatement(statement) {
+  }
 
-    visitTryStatement(statement) {
-    }
+  visitTryStatement(statement) {
+  }
 
-    endVisitTryStatement(statement) {
-    }
+  endVisitTryStatement(statement) {
+  }
 
-    canVisitCatchStatement(statement) {
-        return false;
-    }
+  canVisitCatchStatement(statement) {
+    return false;
+  }
 
-    canVisitFinallyStatement(statement) {
-        return false;
-    }
+  canVisitFinallyStatement(statement) {
+    return false;
+  }
 
-    beginVisitCatchStatement(statement) {
-    }
+  beginVisitCatchStatement(statement) {
+  }
 
-    beginVisitFinallyStatement(statement) {
-    }
+  beginVisitFinallyStatement(statement) {
+  }
 
-    visitCatchStatement(statement) {
-    }
+  visitCatchStatement(statement) {
+  }
 
-    visitFinallyStatement(statement) {
-    }
+  visitFinallyStatement(statement) {
+  }
 
-    endVisitCatchStatement(statement) {
-    }
+  endVisitCatchStatement(statement) {
+  }
 
-    endVisitFinallyStatement(statement) {
-    }
+  endVisitFinallyStatement(statement) {
+  }
 
-    canVisitTransactionStatement(statement) {
-        return false;
-    }
+  canVisitTransactionStatement(statement) {
+    return false;
+  }
 
-    beginVisitTransactionStatement(statement) {
-    }
+  beginVisitTransactionStatement(statement) {
+  }
 
-    visitTransactionStatement(statement) {
-    }
+  visitTransactionStatement(statement) {
+  }
 
-    endVisitTransactionStatement(statement) {
-    }
+  endVisitTransactionStatement(statement) {
+  }
 
-    canVisitAbortedStatement(statement) {
-        return false;
-    }
+  canVisitAbortedStatement(statement) {
+    return false;
+  }
 
-    beginVisitAbortedStatement(statement) {
-    }
+  beginVisitAbortedStatement(statement) {
+  }
 
-    visitAbortedStatement(statement) {
-    }
+  visitAbortedStatement(statement) {
+  }
 
-    endVisitAbortedStatement(statement) {
-    }
+  endVisitAbortedStatement(statement) {
+  }
 
-    /// begin - abstract methods for committed statement source gen visitor function.
-    canVisitCommittedStatement(statement) {
-        return false;
-    }
+    // / begin - abstract methods for committed statement source gen visitor function.
+  canVisitCommittedStatement(statement) {
+    return false;
+  }
 
-    beginVisitCommittedStatement(statement) {
-    }
+  beginVisitCommittedStatement(statement) {
+  }
 
-    visitCommittedStatement(statement) {
-    }
+  visitCommittedStatement(statement) {
+  }
 
-    endVisitCommittedStatement(statement) {
-    }
+  endVisitCommittedStatement(statement) {
+  }
 
-    /// end - abstract method for committed statement source gen visitor function.
-    
-	canVisitStatement(statement) {
-        return false;
-    }
+    // / end - abstract method for committed statement source gen visitor function.
 
-    beginVisitStatement(statement) {
-    }
+  canVisitStatement(statement) {
+    return false;
+  }
 
-    visitStatement(statement) {
-    }
+  beginVisitStatement(statement) {
+  }
 
-    endVisitStatement(statement) {
-    }
+  visitStatement(statement) {
+  }
 
-    canVisitIfElseStatement(statement) {
-        return false;
-    }
+  endVisitStatement(statement) {
+  }
 
-    beginVisitIfElseStatement(statement) {
-    }
+  canVisitIfElseStatement(statement) {
+    return false;
+  }
 
-    visitIfElseStatement(statement) {
-    }
+  beginVisitIfElseStatement(statement) {
+  }
 
-    endVisitIfElseStatement(statement) {
-    }
+  visitIfElseStatement(statement) {
+  }
 
-    canVisitReplyStatement(statement) {
-        return false;
-    }
+  endVisitIfElseStatement(statement) {
+  }
 
-    beginVisitReplyStatement(statement) {
-    }
+  canVisitReplyStatement(statement) {
+    return false;
+  }
 
-    visitReplyStatement(statement) {
-    }
+  beginVisitReplyStatement(statement) {
+  }
 
-    endVisitReplyStatement(statement) {
-    }
+  visitReplyStatement(statement) {
+  }
 
-    canVisitReturnStatement(statement) {
-        return false;
-    }
+  endVisitReplyStatement(statement) {
+  }
 
-    beginVisitReturnStatement(statement) {
-    }
+  canVisitReturnStatement(statement) {
+    return false;
+  }
 
-    visitReturnStatement(statement) {
-    }
+  beginVisitReturnStatement(statement) {
+  }
 
-    endVisitReturnStatement(statement) {
-    }
+  visitReturnStatement(statement) {
+  }
 
-    canVisitActionInvocationStatement(statement) {
-        return false;
-    }
+  endVisitReturnStatement(statement) {
+  }
 
-    beginVisitActionInvocationStatement(statement) {
-    }
+  canVisitActionInvocationStatement(statement) {
+    return false;
+  }
 
-    visitActionInvocationStatement(statement) {
-    }
+  beginVisitActionInvocationStatement(statement) {
+  }
 
-    endVisitActionInvocationStatement(statement) {
-    }
+  visitActionInvocationStatement(statement) {
+  }
 
-    canVisitExpression(statement) {
-        return false;
-    }
+  endVisitActionInvocationStatement(statement) {
+  }
 
-    beginVisitExpression(statement) {
-    }
+  canVisitExpression(statement) {
+    return false;
+  }
 
-    visitExpression(statement) {
-    }
+  beginVisitExpression(statement) {
+  }
 
-    endVisitExpression(statement) {
-    }
+  visitExpression(statement) {
+  }
 
-    canVisitFuncInvocationStatement(statement) {
-        return false;
-    }
+  endVisitExpression(statement) {
+  }
 
-    beginVisitFuncInvocationStatement(statement) {
-    }
+  canVisitFuncInvocationStatement(statement) {
+    return false;
+  }
 
-    visitFuncInvocationStatement(statement) {
-    }
+  beginVisitFuncInvocationStatement(statement) {
+  }
 
-    endVisitFuncInvocationStatement(statement) {
-    }
+  visitFuncInvocationStatement(statement) {
+  }
 
-    canVisitFuncInvocationExpression(expression) {
-        return false;
-    }
+  endVisitFuncInvocationStatement(statement) {
+  }
 
-    beginVisitFuncInvocationExpression(expression) {
-    }
+  canVisitFuncInvocationExpression(expression) {
+    return false;
+  }
 
-    visitFuncInvocationExpression(expression) {
-    }
+  beginVisitFuncInvocationExpression(expression) {
+  }
 
-    endVisitFuncInvocationExpression(expression) {
-    }
+  visitFuncInvocationExpression(expression) {
+  }
 
-    canVisitTryCatchStatement(statement) {
-        return false;
-    }
+  endVisitFuncInvocationExpression(expression) {
+  }
 
-    beginVisitTryCatchStatement(statement) {
-    }
+  canVisitTryCatchStatement(statement) {
+    return false;
+  }
 
-    visitTryCatchStatement(statement) {
-    }
+  beginVisitTryCatchStatement(statement) {
+  }
 
-    endVisitTryCatchStatement(statement) {
-    }
+  visitTryCatchStatement(statement) {
+  }
 
-    canVisitTransactionAbortedStatement(statement) {
-        return false;
-    }
+  endVisitTryCatchStatement(statement) {
+  }
 
-    beginVisitTransactionAbortedStatement(statement) {
-    }
+  canVisitTransactionAbortedStatement(statement) {
+    return false;
+  }
 
-    visitTransactionAbortedStatement(statement) {
-    }
+  beginVisitTransactionAbortedStatement(statement) {
+  }
 
-    endVisitTransactionAbortedStatement(statement) {
-    }
+  visitTransactionAbortedStatement(statement) {
+  }
 
-    canVisitAssignmentStatement(statement) {
-        return false;
-    }
+  endVisitTransactionAbortedStatement(statement) {
+  }
 
-    beginVisitAssignmentStatement(statement) {
-    }
+  canVisitAssignmentStatement(statement) {
+    return false;
+  }
 
-    visitAssignmentStatement(statement) {
-    }
+  beginVisitAssignmentStatement(statement) {
+  }
 
-    endVisitAssignmentStatement(statement) {
-    }
+  visitAssignmentStatement(statement) {
+  }
 
-    canVisitTransformStatement(statement) {
-        return false;
-    }
+  endVisitAssignmentStatement(statement) {
+  }
 
-    beginVisitTransformStatement(statement) {
-    }
+  canVisitTransformStatement(statement) {
+    return false;
+  }
 
-    visitTransformStatement(statement) {
-    }
+  beginVisitTransformStatement(statement) {
+  }
 
-    endVisitTransformStatement(statement) {
-    }
+  visitTransformStatement(statement) {
+  }
 
-    canVisitWhileStatement(statement) {
-        return false;
-    }
+  endVisitTransformStatement(statement) {
+  }
 
-    beginVisitWhileStatement(statement) {
-    }
+  canVisitWhileStatement(statement) {
+    return false;
+  }
 
-    visitWhileStatement(statement) {
-    }
+  beginVisitWhileStatement(statement) {
+  }
 
-    endVisitWhileStatement(statement) {
-    }
+  visitWhileStatement(statement) {
+  }
 
-    canVisitBreakStatement(statement) {
-        return false;
-    }
+  endVisitWhileStatement(statement) {
+  }
 
-    beginVisitBreakStatement(statement) {
-    }
+  canVisitBreakStatement(statement) {
+    return false;
+  }
 
-    visitBreakStatement(statement) {
-    }
+  beginVisitBreakStatement(statement) {
+  }
 
-    endVisitBreakStatement(statement) {
-    }
+  visitBreakStatement(statement) {
+  }
 
-    canVisitAbortStatement(statement) {
-        return false;
-    }
+  endVisitBreakStatement(statement) {
+  }
 
-    beginVisitAbortStatement(statement) {
-    }
+  canVisitAbortStatement(statement) {
+    return false;
+  }
 
-    visitAbortStatement(statement) {
-    }
+  beginVisitAbortStatement(statement) {
+  }
 
-    endVisitAbortStatement(statement) {
-    }
+  visitAbortStatement(statement) {
+  }
 
-    canVisitVariableDefinitionStatement(statement) {
-        return false;
-    }
+  endVisitAbortStatement(statement) {
+  }
 
-    beginVisitVariableDefinitionStatement(statement) {
-    }
+  canVisitVariableDefinitionStatement(statement) {
+    return false;
+  }
 
-    visitVariableDefinitionStatement(statement) {
-    }
+  beginVisitVariableDefinitionStatement(statement) {
+  }
 
-    endVisitVariableDefinitionStatement(statement) {
-    }
+  visitVariableDefinitionStatement(statement) {
+  }
 
-    canVisitWorkerInvocationStatement() {
-        return false;
-    }
+  endVisitVariableDefinitionStatement(statement) {
+  }
 
-    beginVisitWorkerInvocationStatement(statement) {
-    }
+  canVisitWorkerInvocationStatement() {
+    return false;
+  }
 
-    visitWorkerInvocationStatement(statement) {
-    }
+  beginVisitWorkerInvocationStatement(statement) {
+  }
 
-    endVisitWorkerInvocationStatement(statement) {
-    }
+  visitWorkerInvocationStatement(statement) {
+  }
 
-    canVisitWorkerReplyStatement() {
-        return false;
-    }
+  endVisitWorkerInvocationStatement(statement) {
+  }
 
-    beginVisitWorkerReplyStatement(statement) {
-    }
+  canVisitWorkerReplyStatement() {
+    return false;
+  }
 
-    visitWorkerReplyStatement(statement) {
-    }
+  beginVisitWorkerReplyStatement(statement) {
+  }
 
-    endVisitWorkerReplyStatement(statement) {
-    }
+  visitWorkerReplyStatement(statement) {
+  }
 
-    canVisitThrowStatement(statement) {
-        return false;
-    }
+  endVisitWorkerReplyStatement(statement) {
+  }
 
-    beginVisitThrowStatement(statement) {
-    }
+  canVisitThrowStatement(statement) {
+    return false;
+  }
 
-    visitThrowStatement(statement) {
-    }
+  beginVisitThrowStatement(statement) {
+  }
 
-    endVisitThrowStatement(statement) {
-    }
+  visitThrowStatement(statement) {
+  }
 
-    canVisitCommentStatement(statement) {
-        return false;
-    }
+  endVisitThrowStatement(statement) {
+  }
 
-    canVisitTimeoutStatement(statement) {
-        return false;
-    }
+  canVisitCommentStatement(statement) {
+    return false;
+  }
 
-    canVisitJoinStatement(statement) {
-        return false;
-    }
+  canVisitTimeoutStatement(statement) {
+    return false;
+  }
 
-    canVisitForkJoinStatement(statement) {
-        return false;
-    }
+  canVisitJoinStatement(statement) {
+    return false;
+  }
 
-    beginVisitCommentStatement(statement) {
-    }
+  canVisitForkJoinStatement(statement) {
+    return false;
+  }
 
-    visitCommentStatement(statement) {
-    }
+  beginVisitCommentStatement(statement) {
+  }
 
-    endVisitCommentStatement(statement) {
-    }
+  visitCommentStatement(statement) {
+  }
+
+  endVisitCommentStatement(statement) {
+  }
 
     /**
      * @param node {ASTNode}
      */
-    visitStatement(node) {
-        if (ASTFactory.isWhileStatement(node)) {
-            return this.visitWhileStatement(node);
-        } else if (ASTFactory.isBreakStatement(node)) {
-            return this.visitBreakStatement(node);
-        } else if (ASTFactory.isIfElseStatement(node)) {
-            return this.visitIfElseStatement(node);
-        } else if (ASTFactory.isIfStatement(node)) {
-            return this.visitIfStatement(node);
-        } else if (ASTFactory.isElseStatement(node)) {
-            return this.visitElseStatement(node);
-        }  else if (ASTFactory.isElseIfStatement(node)) {
-            return this.visitElseIfStatement(node);
-        } else if (ASTFactory.isTryCatchStatement(node)) {
-            return this.visitTryCatchStatement(node);
-        } else if (ASTFactory.isTryStatement(node)) {
-            return this.visitTryStatement(node);
-        } else if (ASTFactory.isCatchStatement(node)) {
-            return this.visitCatchStatement(node);
-        } else if (ASTFactory.isFinallyStatement(node)) {
-            return this.visitFinallyStatement(node);
-        } else if (ASTFactory.isAssignmentStatement(node)) {
-            return this.visitAssignmentStatement(node);
-        } else if (ASTFactory.isActionInvocationStatement(node)) {
-            return this.visitActionInvocationStatement(node);
-        } else if (ASTFactory.isExpression(node)) {
-            return this.visitExpression(node);
-        } else if (ASTFactory.isReplyStatement(node)) {
-            return this.visitReplyStatement(node);
-        } else if (ASTFactory.isReturnStatement(node)) {
-            return this.visitReturnStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationStatement(node)) {
-            return this.visitFuncInvocationStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationExpression(node)) {
-            return this.visitFuncInvocationExpression(node);
-        }  else if (ASTFactory.isVariableDefinitionStatement(node)) {
-            return this.visitVariableDefinitionStatement(node);
-        }  else if (ASTFactory.isWorkerInvocationStatement(node)) {
-            return this.visitWorkerInvocationStatement(node);
-        }  else if (ASTFactory.isWorkerReplyStatement(node)) {
-            return this.visitWorkerReplyStatement(node);
-        }  else if (ASTFactory.isThrowStatement(node)) {
-            return this.visitThrowStatement(node);
-        }  else if (ASTFactory.isCommentStatement(node)) {
-            return this.visitCommentStatement(node);
-        } else if (ASTFactory.isTransactionAbortedStatement(node)) {
-            return this.visitTransactionAbortedStatement(node);
-        } else if (ASTFactory.isTransactionStatement(node)) {
-            return this.visitTransactionStatement(node);
-        } else if (ASTFactory.isAbortedStatement(node)) {
-            return this.visitAbortedStatement(node);
-        } else if (ASTFactory.isAbortStatement(node)) {
-            return this.visitAbortStatement(node);
-        } else if (ASTFactory.isJoinStatement(node)) {
-            return this.visitJoinStatement(node);
-        } else if (ASTFactory.isCommittedStatement(node)) {
-            return this.visitCommittedStatement(node);
-        }
-    }
-
-    /**
-     * @param node {ASTNode}
-     */
-    canVisitStatement(node) {
-        if (ASTFactory.isWhileStatement(node)) {
-            return this.canVisitWhileStatement(node);
-        } else if (ASTFactory.isBreakStatement(node)) {
-            return this.canVisitBreakStatement(node);
-        } else if (ASTFactory.isIfElseStatement(node)) {
-            return this.canVisitIfElseStatement(node);
-        } else if (ASTFactory.isIfStatement(node)) {
-            return this.canVisitIfStatement(node);
-        } else if (ASTFactory.isElseStatement(node)) {
-            return this.canVisitElseStatement(node);
-        }  else if (ASTFactory.isElseIfStatement(node)) {
-            return this.canVisitElseIfStatement(node);
-        } else if (ASTFactory.isTryCatchStatement(node)) {
-            return this.canVisitTryCatchStatement(node);
-        } else if (ASTFactory.isTryStatement(node)) {
-            return this.canVisitTryStatement(node);
-        } else if (ASTFactory.isCatchStatement(node)) {
-            return this.canVisitCatchStatement(node);
-        } else if (ASTFactory.isFinallyStatement(node)) {
-            return this.canVisitFinallyStatement(node);
-        } else if (ASTFactory.isAssignmentStatement(node)) {
-            return this.canVisitAssignmentStatement(node);
-        } else if (ASTFactory.isTransformStatement(node)) {
-            return this.canVisitTransformStatement(node);
-        } else if (ASTFactory.isActionInvocationStatement(node)) {
-            return this.canVisitActionInvocationStatement(node);
-        } else if (ASTFactory.isExpression(node)) {
-            return this.canVisitExpression(node);
-        } else if (ASTFactory.isReplyStatement(node)) {
-            return this.canVisitReplyStatement(node);
-        } else if (ASTFactory.isReturnStatement(node)) {
-            return this.canVisitReturnStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationStatement(node)) {
-            return this.canVisitFuncInvocationStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationExpression(node)) {
-            return this.canVisitFuncInvocationExpression(node);
-        }  else if (ASTFactory.isVariableDefinitionStatement(node)) {
-            return this.canVisitVariableDefinitionStatement(node);
-        }  else if (ASTFactory.isWorkerInvocationStatement(node)) {
-            return this.canVisitWorkerInvocationStatement(node);
-        }  else if (ASTFactory.isWorkerReplyStatement(node)) {
-            return this.canVisitWorkerReplyStatement(node);
-        }  else if (ASTFactory.isThrowStatement(node)) {
-            return this.canVisitThrowStatement(node);
-        }  else if (ASTFactory.isCommentStatement(node)) {
-            return this.canVisitCommentStatement(node);
-        } else if (ASTFactory.isTimeoutStatement(node)) {
-            return this.canVisitTimeoutStatement(node);
-        } else if (ASTFactory.isForkJoinStatement(node)) {
-            return this.canVisitForkJoinStatement(node);
-        } else if (ASTFactory.isJoinStatement(node)) {
-            return this.canVisitJoinStatement(node);
-        } else if (ASTFactory.isTransactionAbortedStatement(node)) {
-            return this.canVisitTransactionAbortedStatement(node);
-        } else if (ASTFactory.isTransactionStatement(node)) {
-            return this.canVisitTransactionStatement(node);
-        } else if (ASTFactory.isAbortedStatement(node)) {
-            return this.canVisitAbortedStatement(node);
-        } else if (ASTFactory.isAbortStatement(node)) {
-            return this.canVisitAbortStatement(node);
-        } else if (ASTFactory.isCommittedStatement(node)) {
-            return this.canVisitCommittedStatement(node);
-        }
-    }
-
-    /**
-     * @param node {ASTNode}
-     */
-    beginVisitStatement(node) {
-        if (ASTFactory.isWhileStatement(node)) {
-            this.beginVisitWhileStatement(node);
-        } else if (ASTFactory.isBreakStatement(node)) {
-            return this.beginVisitBreakStatement(node);
-        } else if (ASTFactory.isIfElseStatement(node)) {
-            return this.beginVisitIfElseStatement(node);
-        } else if (ASTFactory.isIfStatement(node)) {
-            return this.beginVisitIfStatement(node);
-        } else if (ASTFactory.isElseStatement(node)) {
-            return this.beginVisitElseStatement(node);
-        }  else if (ASTFactory.isElseIfStatement(node)) {
-            return this.beginVisitElseIfStatement(node);
-        } else if (ASTFactory.isTryCatchStatement(node)) {
-            return this.beginVisitTryCatchStatement(node);
-        } else if (ASTFactory.isTryStatement(node)) {
-            return this.beginVisitTryStatement(node);
-        } else if (ASTFactory.isCatchStatement(node)) {
-            return this.beginVisitCatchStatement(node);
-        } else if (ASTFactory.isFinallyStatement(node)) {
-            return this.beginVisitFinallyStatement(node);
-        } else if (ASTFactory.isAssignmentStatement(node)) {
-            return this.beginVisitAssignmentStatement(node);
-        } else if (ASTFactory.isActionInvocationStatement(node)) {
-            return this.beginVisitActionInvocationStatement(node);
-        } else if (ASTFactory.isExpression(node)) {
-            return this.beginVisitExpression(node);
-        } else if (ASTFactory.isReplyStatement(node)) {
-            return this.beginVisitReplyStatement(node);
-        } else if (ASTFactory.isReturnStatement(node)) {
-            return this.beginVisitReturnStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationStatement(node)) {
-            return this.beginVisitFuncInvocationStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationExpression(node)) {
-            return this.beginVisitFuncInvocationExpression(node);
-        }  else if (ASTFactory.isVariableDefinitionStatement(node)) {
-            return this.beginVisitVariableDefinitionStatement(node);
-        }  else if (ASTFactory.isWorkerInvocationStatement(node)) {
-            return this.beginVisitWorkerInvocationStatement(node);
-        }  else if (ASTFactory.isWorkerReplyStatement(node)) {
-            return this.beginVisitWorkerReplyStatement(node);
-        }  else if (ASTFactory.isThrowStatement(node)) {
-            return this.beginVisitThrowStatement(node);
-        }  else if (ASTFactory.isCommentStatement(node)) {
-            return this.beginVisitCommentStatement(node);
-        }  else if (ASTFactory.isTransformStatement(node)) {
-            return this.beginVisitTransformStatement(node);
-        } else if (ASTFactory.isTransactionAbortedStatement(node)) {
-            return this.beginVisitTransactionAbortedStatement(node);
-        } else if (ASTFactory.isTransactionStatement(node)) {
-            return this.beginVisitTransactionStatement(node);
-        } else if (ASTFactory.isAbortedStatement(node)) {
-            return this.beginVisitAbortedStatement(node);
-        } else if (ASTFactory.isAbortStatement(node)) {
-            return this.beginVisitAbortStatement(node);
-        } else if (ASTFactory.isTimeoutStatement(node)) {
-            return this.beginVisitTimeoutStatement(node);
-        } else if (ASTFactory.isForkJoinStatement(node)) {
-            return this.beginVisitForkJoinStatement(node);
-        } else if (ASTFactory.isJoinStatement(node)) {
-            return this.beginVisitJoinStatement(node);
-        } else if (ASTFactory.isCommittedStatement(node)) {
-            return this.beginVisitCommittedStatement(node);
-        }
-    }
-
-    /**
-     * @param node {ASTNode}
-     */
-    endVisitStatement(node) {
-        if (ASTFactory.isWhileStatement(node)) {
-            return this.endVisitWhileStatement(node);
-        } else if (ASTFactory.isBreakStatement(node)) {
-            return this.endVisitBreakStatement(node);
-        } else if (ASTFactory.isIfElseStatement(node)) {
-            return this.endVisitIfElseStatement(node);
-        } else if (ASTFactory.isIfStatement(node)) {
-            return this.endVisitIfStatement(node);
-        } else if (ASTFactory.isElseStatement(node)) {
-            return this.endVisitElseStatement(node);
-        }  else if (ASTFactory.isElseIfStatement(node)) {
-            return this.endVisitElseIfStatement(node);
-        } else if (ASTFactory.isTryCatchStatement(node)) {
-            return this.endVisitTryCatchStatement(node);
-        } else if (ASTFactory.isTryStatement(node)) {
-            return this.endVisitTryStatement(node);
-        } else if (ASTFactory.isCatchStatement(node)) {
-            return this.endVisitCatchStatement(node);
-        } else if (ASTFactory.isFinallyStatement(node)) {
-            return this.endVisitFinallyStatement(node);
-        } else if (ASTFactory.isAssignmentStatement(node)) {
-            return this.endVisitAssignmentStatement(node);
-        }  else if (ASTFactory.isTransformStatement(node)) {
-            return this.endVisitTransformStatement(node);
-        } else if (ASTFactory.isActionInvocationStatement(node)) {
-            return this.endVisitActionInvocationStatement(node);
-        } else if (ASTFactory.isExpression(node)) {
-            return this.endVisitExpression(node);
-        } else if (ASTFactory.isReplyStatement(node)) {
-            return this.endVisitReplyStatement(node);
-        }  else if (ASTFactory.isReturnStatement(node)) {
-            return this.endVisitReturnStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationStatement(node)) {
-            return this.endVisitFuncInvocationStatement(node);
-        }  else if (ASTFactory.isFunctionInvocationExpression(node)) {
-            return this.endVisitFuncInvocationExpression(node);
-        }  else if (ASTFactory.isVariableDefinitionStatement(node)) {
-            return this.endVisitVariableDefinitionStatement(node);
-        }  else if (ASTFactory.isWorkerInvocationStatement(node)) {
-            return this.endVisitWorkerInvocationStatement(node);
-        }  else if (ASTFactory.isWorkerReplyStatement(node)) {
-            return this.endVisitWorkerReplyStatement(node);
-        }  else if (ASTFactory.isThrowStatement(node)) {
-            return this.endVisitThrowStatement(node);
+  visitStatement(node) {
+    if (ASTFactory.isWhileStatement(node)) {
+      return this.visitWhileStatement(node);
+    } else if (ASTFactory.isBreakStatement(node)) {
+      return this.visitBreakStatement(node);
+    } else if (ASTFactory.isIfElseStatement(node)) {
+      return this.visitIfElseStatement(node);
+    } else if (ASTFactory.isIfStatement(node)) {
+      return this.visitIfStatement(node);
+    } else if (ASTFactory.isElseStatement(node)) {
+      return this.visitElseStatement(node);
+    } else if (ASTFactory.isElseIfStatement(node)) {
+      return this.visitElseIfStatement(node);
+    } else if (ASTFactory.isTryCatchStatement(node)) {
+      return this.visitTryCatchStatement(node);
+    } else if (ASTFactory.isTryStatement(node)) {
+      return this.visitTryStatement(node);
+    } else if (ASTFactory.isCatchStatement(node)) {
+      return this.visitCatchStatement(node);
+    } else if (ASTFactory.isFinallyStatement(node)) {
+      return this.visitFinallyStatement(node);
+    } else if (ASTFactory.isAssignmentStatement(node)) {
+      return this.visitAssignmentStatement(node);
+    } else if (ASTFactory.isActionInvocationStatement(node)) {
+      return this.visitActionInvocationStatement(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.visitExpression(node);
+    } else if (ASTFactory.isReplyStatement(node)) {
+      return this.visitReplyStatement(node);
+    } else if (ASTFactory.isReturnStatement(node)) {
+      return this.visitReturnStatement(node);
+    } else if (ASTFactory.isFunctionInvocationStatement(node)) {
+      return this.visitFuncInvocationStatement(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.visitFuncInvocationExpression(node);
+    } else if (ASTFactory.isVariableDefinitionStatement(node)) {
+      return this.visitVariableDefinitionStatement(node);
+    } else if (ASTFactory.isWorkerInvocationStatement(node)) {
+        return this.visitWorkerInvocationStatement(node);
+      } else if (ASTFactory.isWorkerReplyStatement(node)) {
+          return this.visitWorkerReplyStatement(node);
+        } else if (ASTFactory.isThrowStatement(node)) {
+          return this.visitThrowStatement(node);
         } else if (ASTFactory.isCommentStatement(node)) {
-            return this.endVisitCommentStatement(node);
+          return this.visitCommentStatement(node);
         } else if (ASTFactory.isTransactionAbortedStatement(node)) {
-            return this.endVisitTransactionAbortedStatement(node);
+          return this.visitTransactionAbortedStatement(node);
         } else if (ASTFactory.isTransactionStatement(node)) {
-            return this.endVisitTransactionStatement(node);
+          return this.visitTransactionStatement(node);
         } else if (ASTFactory.isAbortedStatement(node)) {
-            return this.endVisitAbortedStatement(node);
+          return this.visitAbortedStatement(node);
         } else if (ASTFactory.isAbortStatement(node)) {
-            return this.endVisitAbortStatement(node);
-        } else if (ASTFactory.isTimeoutStatement(node)) {
-            return this.endVisitTimeoutStatement(node);
-        } else if (ASTFactory.isForkJoinStatement(node)) {
-            return this.endVisitForkJoinStatement(node);
+          return this.visitAbortStatement(node);
         } else if (ASTFactory.isJoinStatement(node)) {
-            return this.endVisitJoinStatement(node);
+          return this.visitJoinStatement(node);
         } else if (ASTFactory.isCommittedStatement(node)) {
-            return this.endVisitCommittedStatement(node);
+          return this.visitCommittedStatement(node);
         }
-    }
+  }
+
+    /**
+     * @param node {ASTNode}
+     */
+  canVisitStatement(node) {
+    if (ASTFactory.isWhileStatement(node)) {
+      return this.canVisitWhileStatement(node);
+    } else if (ASTFactory.isBreakStatement(node)) {
+      return this.canVisitBreakStatement(node);
+    } else if (ASTFactory.isIfElseStatement(node)) {
+      return this.canVisitIfElseStatement(node);
+    } else if (ASTFactory.isIfStatement(node)) {
+      return this.canVisitIfStatement(node);
+    } else if (ASTFactory.isElseStatement(node)) {
+      return this.canVisitElseStatement(node);
+    } else if (ASTFactory.isElseIfStatement(node)) {
+      return this.canVisitElseIfStatement(node);
+    } else if (ASTFactory.isTryCatchStatement(node)) {
+      return this.canVisitTryCatchStatement(node);
+    } else if (ASTFactory.isTryStatement(node)) {
+      return this.canVisitTryStatement(node);
+    } else if (ASTFactory.isCatchStatement(node)) {
+      return this.canVisitCatchStatement(node);
+    } else if (ASTFactory.isFinallyStatement(node)) {
+      return this.canVisitFinallyStatement(node);
+    } else if (ASTFactory.isAssignmentStatement(node)) {
+      return this.canVisitAssignmentStatement(node);
+    } else if (ASTFactory.isTransformStatement(node)) {
+      return this.canVisitTransformStatement(node);
+    } else if (ASTFactory.isActionInvocationStatement(node)) {
+      return this.canVisitActionInvocationStatement(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.canVisitExpression(node);
+    } else if (ASTFactory.isReplyStatement(node)) {
+      return this.canVisitReplyStatement(node);
+    } else if (ASTFactory.isReturnStatement(node)) {
+      return this.canVisitReturnStatement(node);
+    } else if (ASTFactory.isFunctionInvocationStatement(node)) {
+      return this.canVisitFuncInvocationStatement(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.canVisitFuncInvocationExpression(node);
+    } else if (ASTFactory.isVariableDefinitionStatement(node)) {
+        return this.canVisitVariableDefinitionStatement(node);
+      } else if (ASTFactory.isWorkerInvocationStatement(node)) {
+          return this.canVisitWorkerInvocationStatement(node);
+        } else if (ASTFactory.isWorkerReplyStatement(node)) {
+          return this.canVisitWorkerReplyStatement(node);
+        } else if (ASTFactory.isThrowStatement(node)) {
+          return this.canVisitThrowStatement(node);
+        } else if (ASTFactory.isCommentStatement(node)) {
+          return this.canVisitCommentStatement(node);
+        } else if (ASTFactory.isTimeoutStatement(node)) {
+          return this.canVisitTimeoutStatement(node);
+        } else if (ASTFactory.isForkJoinStatement(node)) {
+          return this.canVisitForkJoinStatement(node);
+        } else if (ASTFactory.isJoinStatement(node)) {
+          return this.canVisitJoinStatement(node);
+        } else if (ASTFactory.isTransactionAbortedStatement(node)) {
+          return this.canVisitTransactionAbortedStatement(node);
+        } else if (ASTFactory.isTransactionStatement(node)) {
+          return this.canVisitTransactionStatement(node);
+        } else if (ASTFactory.isAbortedStatement(node)) {
+          return this.canVisitAbortedStatement(node);
+        } else if (ASTFactory.isAbortStatement(node)) {
+          return this.canVisitAbortStatement(node);
+        } else if (ASTFactory.isCommittedStatement(node)) {
+          return this.canVisitCommittedStatement(node);
+        }
+  }
+
+    /**
+     * @param node {ASTNode}
+     */
+  beginVisitStatement(node) {
+    if (ASTFactory.isWhileStatement(node)) {
+      this.beginVisitWhileStatement(node);
+    } else if (ASTFactory.isBreakStatement(node)) {
+      return this.beginVisitBreakStatement(node);
+    } else if (ASTFactory.isIfElseStatement(node)) {
+      return this.beginVisitIfElseStatement(node);
+    } else if (ASTFactory.isIfStatement(node)) {
+      return this.beginVisitIfStatement(node);
+    } else if (ASTFactory.isElseStatement(node)) {
+      return this.beginVisitElseStatement(node);
+    } else if (ASTFactory.isElseIfStatement(node)) {
+      return this.beginVisitElseIfStatement(node);
+    } else if (ASTFactory.isTryCatchStatement(node)) {
+      return this.beginVisitTryCatchStatement(node);
+    } else if (ASTFactory.isTryStatement(node)) {
+      return this.beginVisitTryStatement(node);
+    } else if (ASTFactory.isCatchStatement(node)) {
+      return this.beginVisitCatchStatement(node);
+    } else if (ASTFactory.isFinallyStatement(node)) {
+      return this.beginVisitFinallyStatement(node);
+    } else if (ASTFactory.isAssignmentStatement(node)) {
+      return this.beginVisitAssignmentStatement(node);
+    } else if (ASTFactory.isActionInvocationStatement(node)) {
+      return this.beginVisitActionInvocationStatement(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.beginVisitExpression(node);
+    } else if (ASTFactory.isReplyStatement(node)) {
+      return this.beginVisitReplyStatement(node);
+    } else if (ASTFactory.isReturnStatement(node)) {
+      return this.beginVisitReturnStatement(node);
+    } else if (ASTFactory.isFunctionInvocationStatement(node)) {
+      return this.beginVisitFuncInvocationStatement(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.beginVisitFuncInvocationExpression(node);
+    } else if (ASTFactory.isVariableDefinitionStatement(node)) {
+      return this.beginVisitVariableDefinitionStatement(node);
+    } else if (ASTFactory.isWorkerInvocationStatement(node)) {
+        return this.beginVisitWorkerInvocationStatement(node);
+      } else if (ASTFactory.isWorkerReplyStatement(node)) {
+          return this.beginVisitWorkerReplyStatement(node);
+        } else if (ASTFactory.isThrowStatement(node)) {
+          return this.beginVisitThrowStatement(node);
+        } else if (ASTFactory.isCommentStatement(node)) {
+          return this.beginVisitCommentStatement(node);
+        } else if (ASTFactory.isTransformStatement(node)) {
+          return this.beginVisitTransformStatement(node);
+        } else if (ASTFactory.isTransactionAbortedStatement(node)) {
+          return this.beginVisitTransactionAbortedStatement(node);
+        } else if (ASTFactory.isTransactionStatement(node)) {
+          return this.beginVisitTransactionStatement(node);
+        } else if (ASTFactory.isAbortedStatement(node)) {
+          return this.beginVisitAbortedStatement(node);
+        } else if (ASTFactory.isAbortStatement(node)) {
+          return this.beginVisitAbortStatement(node);
+        } else if (ASTFactory.isTimeoutStatement(node)) {
+          return this.beginVisitTimeoutStatement(node);
+        } else if (ASTFactory.isForkJoinStatement(node)) {
+          return this.beginVisitForkJoinStatement(node);
+        } else if (ASTFactory.isJoinStatement(node)) {
+          return this.beginVisitJoinStatement(node);
+        } else if (ASTFactory.isCommittedStatement(node)) {
+          return this.beginVisitCommittedStatement(node);
+        }
+  }
+
+    /**
+     * @param node {ASTNode}
+     */
+  endVisitStatement(node) {
+    if (ASTFactory.isWhileStatement(node)) {
+      return this.endVisitWhileStatement(node);
+    } else if (ASTFactory.isBreakStatement(node)) {
+      return this.endVisitBreakStatement(node);
+    } else if (ASTFactory.isIfElseStatement(node)) {
+      return this.endVisitIfElseStatement(node);
+    } else if (ASTFactory.isIfStatement(node)) {
+      return this.endVisitIfStatement(node);
+    } else if (ASTFactory.isElseStatement(node)) {
+      return this.endVisitElseStatement(node);
+    } else if (ASTFactory.isElseIfStatement(node)) {
+      return this.endVisitElseIfStatement(node);
+    } else if (ASTFactory.isTryCatchStatement(node)) {
+      return this.endVisitTryCatchStatement(node);
+    } else if (ASTFactory.isTryStatement(node)) {
+      return this.endVisitTryStatement(node);
+    } else if (ASTFactory.isCatchStatement(node)) {
+      return this.endVisitCatchStatement(node);
+    } else if (ASTFactory.isFinallyStatement(node)) {
+      return this.endVisitFinallyStatement(node);
+    } else if (ASTFactory.isAssignmentStatement(node)) {
+      return this.endVisitAssignmentStatement(node);
+    } else if (ASTFactory.isTransformStatement(node)) {
+      return this.endVisitTransformStatement(node);
+    } else if (ASTFactory.isActionInvocationStatement(node)) {
+      return this.endVisitActionInvocationStatement(node);
+    } else if (ASTFactory.isExpression(node)) {
+      return this.endVisitExpression(node);
+    } else if (ASTFactory.isReplyStatement(node)) {
+      return this.endVisitReplyStatement(node);
+    } else if (ASTFactory.isReturnStatement(node)) {
+      return this.endVisitReturnStatement(node);
+    } else if (ASTFactory.isFunctionInvocationStatement(node)) {
+      return this.endVisitFuncInvocationStatement(node);
+    } else if (ASTFactory.isFunctionInvocationExpression(node)) {
+      return this.endVisitFuncInvocationExpression(node);
+    } else if (ASTFactory.isVariableDefinitionStatement(node)) {
+        return this.endVisitVariableDefinitionStatement(node);
+      } else if (ASTFactory.isWorkerInvocationStatement(node)) {
+          return this.endVisitWorkerInvocationStatement(node);
+        } else if (ASTFactory.isWorkerReplyStatement(node)) {
+          return this.endVisitWorkerReplyStatement(node);
+        } else if (ASTFactory.isThrowStatement(node)) {
+          return this.endVisitThrowStatement(node);
+        } else if (ASTFactory.isCommentStatement(node)) {
+          return this.endVisitCommentStatement(node);
+        } else if (ASTFactory.isTransactionAbortedStatement(node)) {
+          return this.endVisitTransactionAbortedStatement(node);
+        } else if (ASTFactory.isTransactionStatement(node)) {
+          return this.endVisitTransactionStatement(node);
+        } else if (ASTFactory.isAbortedStatement(node)) {
+          return this.endVisitAbortedStatement(node);
+        } else if (ASTFactory.isAbortStatement(node)) {
+          return this.endVisitAbortStatement(node);
+        } else if (ASTFactory.isTimeoutStatement(node)) {
+          return this.endVisitTimeoutStatement(node);
+        } else if (ASTFactory.isForkJoinStatement(node)) {
+          return this.endVisitForkJoinStatement(node);
+        } else if (ASTFactory.isJoinStatement(node)) {
+          return this.endVisitJoinStatement(node);
+        } else if (ASTFactory.isCommittedStatement(node)) {
+          return this.endVisitCommittedStatement(node);
+        }
+  }
 }
 
 export default StatementVisitor;

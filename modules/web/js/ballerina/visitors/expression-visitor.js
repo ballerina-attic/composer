@@ -19,142 +19,142 @@ import ASTVisitor from './ast-visitor';
 import ASTFactory from './../ast/ballerina-ast-factory';
 
 class ExpressionVisitor extends ASTVisitor {
-    constructor(args) {
-        super(args);
-    }
+  constructor(args) {
+    super(args);
+  }
 
-    canVisitLeftOperandExpression(expression) {
-        return false;
-    }
+  canVisitLeftOperandExpression(expression) {
+    return false;
+  }
 
-    beginVisitLeftOperandExpression(expression) {
-    }
+  beginVisitLeftOperandExpression(expression) {
+  }
 
-    visitLeftOperandExpression(expression) {
-    }
+  visitLeftOperandExpression(expression) {
+  }
 
-    endVisitLeftOperandExpression(expression) {
-    }
+  endVisitLeftOperandExpression(expression) {
+  }
 
-    canVisitRightOperandExpression(expression) {
-        return false;
-    }
+  canVisitRightOperandExpression(expression) {
+    return false;
+  }
 
-    beginVisitRightOperandExpression(expression) {
-    }
+  beginVisitRightOperandExpression(expression) {
+  }
 
-    visitRightOperandExpression(expression) {
-    }
+  visitRightOperandExpression(expression) {
+  }
 
-    endVisitRightOperandExpression(expression) {
-    }
+  endVisitRightOperandExpression(expression) {
+  }
 
-    canVisitVariableReferenceExpression(expression) {
-        return false;
-    }
+  canVisitVariableReferenceExpression(expression) {
+    return false;
+  }
 
-    beginVisitVariableReferenceExpression(expression) {
-    }
+  beginVisitVariableReferenceExpression(expression) {
+  }
 
-    visitVariableReferenceExpression(expression) {
-    }
+  visitVariableReferenceExpression(expression) {
+  }
 
-    endVisitVariableReferenceExpression(expression) {
-    }
-    
-    canVisitTypeCastExpression(expression) {
-        return false;
-    }
+  endVisitVariableReferenceExpression(expression) {
+  }
 
-    beginVisitTypeCastExpression(expression) {
-    }
+  canVisitTypeCastExpression(expression) {
+    return false;
+  }
 
-    visitTypeCastExpression(expression) {
-    }
+  beginVisitTypeCastExpression(expression) {
+  }
 
-    endVisitTypeCastExpression(expression) {
-    }
+  visitTypeCastExpression(expression) {
+  }
 
-    canVisitTypeConversionExpression(expression) {
-        return false;
-    }
+  endVisitTypeCastExpression(expression) {
+  }
 
-    beginVisitTypeConversionExpression(expression) {
-    }
+  canVisitTypeConversionExpression(expression) {
+    return false;
+  }
 
-    visitTypeConversionExpression(expression) {
-    }
+  beginVisitTypeConversionExpression(expression) {
+  }
 
-    endVisitTypeConversionExpression(expression) {
-    }
+  visitTypeConversionExpression(expression) {
+  }
 
-    /**
-     * @param node {ASTNode}
-     */
-    visitExpression(node) {
-        if (ASTFactory.isVariableReferenceExpression(node)) {
-            return this.visitVariableReferenceExpression(node);
-        } else if (ASTFactory.isTypeCastExpression(node)) {
-            return this.visitTypeCastExpression(node);
-        } else if (ASTFactory.isTypeConversionExpression(node)) {
-            return this.visitTypeConversionExpression(node);
-        } else if (ASTFactory.isLeftOperandExpression(node)) {
-            return this.visitLeftOperandExpression(node);
-        }  else if (ASTFactory.isRightOperandExpression(node)) {
-            return this.visitRightOperandExpression(node);
-        }
-    }
+  endVisitTypeConversionExpression(expression) {
+  }
 
     /**
      * @param node {ASTNode}
      */
-    canVisitExpression(node) {
-        if (ASTFactory.isVariableReferenceExpression(node)) {
-            return this.canVisitVariableReferenceExpression(node);
-        } else if (ASTFactory.isTypeCastExpression(node)) {
-            return this.canVisitTypeCastExpression(node);
-        } else if (ASTFactory.isTypeConversionExpression(node)) {
-            return this.canVisitTypeConversionExpression(node);
-        } else if (ASTFactory.isLeftOperandExpression(node)) {
-            return this.canVisitLeftOperandExpression(node);
-        }  else if (ASTFactory.isRightOperandExpression(node)) {
-            return this.canVisitRightOperandExpression(node);
-        }
+  visitExpression(node) {
+    if (ASTFactory.isVariableReferenceExpression(node)) {
+      return this.visitVariableReferenceExpression(node);
+    } else if (ASTFactory.isTypeCastExpression(node)) {
+      return this.visitTypeCastExpression(node);
+    } else if (ASTFactory.isTypeConversionExpression(node)) {
+      return this.visitTypeConversionExpression(node);
+    } else if (ASTFactory.isLeftOperandExpression(node)) {
+      return this.visitLeftOperandExpression(node);
+    } else if (ASTFactory.isRightOperandExpression(node)) {
+      return this.visitRightOperandExpression(node);
     }
+  }
 
     /**
      * @param node {ASTNode}
      */
-    beginVisitExpression(node) {
-        if (ASTFactory.isVariableReferenceExpression(node)) {
-            this.beginVisitVariableReferenceExpression(node);
-        } else if (ASTFactory.isTypeCastExpression(node)) {
-            this.beginVisitTypeCastExpression(node);
-        } else if (ASTFactory.isTypeConversionExpression(node)) {
-            this.beginVisitTypeConversionExpression(node);
-        } else if (ASTFactory.isLeftOperandExpression(node)) {
-            return this.beginVisitLeftOperandExpression(node);
-        }  else if (ASTFactory.isRightOperandExpression(node)) {
-            return this.beginVisitRightOperandExpression(node);
-        }
+  canVisitExpression(node) {
+    if (ASTFactory.isVariableReferenceExpression(node)) {
+      return this.canVisitVariableReferenceExpression(node);
+    } else if (ASTFactory.isTypeCastExpression(node)) {
+      return this.canVisitTypeCastExpression(node);
+    } else if (ASTFactory.isTypeConversionExpression(node)) {
+      return this.canVisitTypeConversionExpression(node);
+    } else if (ASTFactory.isLeftOperandExpression(node)) {
+      return this.canVisitLeftOperandExpression(node);
+    } else if (ASTFactory.isRightOperandExpression(node)) {
+      return this.canVisitRightOperandExpression(node);
     }
+  }
 
     /**
      * @param node {ASTNode}
      */
-    endVisitExpression(node) {
-        if (ASTFactory.isVariableReferenceExpression(node)) {
-            return this.endVisitVariableReferenceExpression(node);
-        } else if (ASTFactory.isTypeCastExpression(node)) {
-            return this.endVisitTypeCastExpression(node);
-        } else if (ASTFactory.isTypeConversionExpression(node)) {
-            return this.endVisitTypeConversionExpression(node);
-        } else if (ASTFactory.isLeftOperandExpression(node)) {
-            return this.endVisitLeftOperandExpression(node);
-        }  else if (ASTFactory.isRightOperandExpression(node)) {
-            return this.endVisitRightOperandExpression(node);
-        }
+  beginVisitExpression(node) {
+    if (ASTFactory.isVariableReferenceExpression(node)) {
+      this.beginVisitVariableReferenceExpression(node);
+    } else if (ASTFactory.isTypeCastExpression(node)) {
+      this.beginVisitTypeCastExpression(node);
+    } else if (ASTFactory.isTypeConversionExpression(node)) {
+      this.beginVisitTypeConversionExpression(node);
+    } else if (ASTFactory.isLeftOperandExpression(node)) {
+      return this.beginVisitLeftOperandExpression(node);
+    } else if (ASTFactory.isRightOperandExpression(node)) {
+      return this.beginVisitRightOperandExpression(node);
     }
+  }
+
+    /**
+     * @param node {ASTNode}
+     */
+  endVisitExpression(node) {
+    if (ASTFactory.isVariableReferenceExpression(node)) {
+      return this.endVisitVariableReferenceExpression(node);
+    } else if (ASTFactory.isTypeCastExpression(node)) {
+      return this.endVisitTypeCastExpression(node);
+    } else if (ASTFactory.isTypeConversionExpression(node)) {
+      return this.endVisitTypeConversionExpression(node);
+    } else if (ASTFactory.isLeftOperandExpression(node)) {
+      return this.endVisitLeftOperandExpression(node);
+    } else if (ASTFactory.isRightOperandExpression(node)) {
+      return this.endVisitRightOperandExpression(node);
+    }
+  }
 }
 
 export default ExpressionVisitor;

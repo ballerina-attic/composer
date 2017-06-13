@@ -18,31 +18,31 @@
 import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-visitor';
 
 class ReplyStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitReplyStatement(replyStatement) {
-        return true;
-    }
+  canVisitReplyStatement(replyStatement) {
+    return true;
+  }
 
-    beginVisitReplyStatement(replyStatement) {
-        if (replyStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        this.appendSource('reply' + replyStatement.getWSRegion(1) + replyStatement.getReplyMessage());
+  beginVisitReplyStatement(replyStatement) {
+    if (replyStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    this.appendSource(`reply${replyStatement.getWSRegion(1)}${replyStatement.getReplyMessage()}`);
+  }
 
-    visitReplyStatement(replyStatement) {
-    }
+  visitReplyStatement(replyStatement) {
+  }
 
-    endVisitReplyStatement(replyStatement) {
-        this.appendSource(';' + replyStatement.getWSRegion(2));
-        this.appendSource((replyStatement.whiteSpace.useDefault)
+  endVisitReplyStatement(replyStatement) {
+    this.appendSource(`;${replyStatement.getWSRegion(2)}`);
+    this.appendSource((replyStatement.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default ReplyStatementVisitor;

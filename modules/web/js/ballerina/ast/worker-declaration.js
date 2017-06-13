@@ -20,165 +20,165 @@ import ASTNode from './node';
 import CommonUtils from '../utils/common-utils';
 
 class WorkerDeclaration extends ASTNode {
-    constructor(args) {
-        super("WorkerDeclaration");
-        this._isDefaultWorker = _.get(args, "isDefaultWorker", false);
-        this._reply = _.get(args, "replyStatement", null);
-        this._workerDeclarationStatement = _.get(args, 'declarationStatement', '');
-        this._invoker = undefined;
-        this._replyReceiver = undefined;
-        this._workerName = undefined;
-        this._argumentsList = [];
-    }
+  constructor(args) {
+    super('WorkerDeclaration');
+    this._isDefaultWorker = _.get(args, 'isDefaultWorker', false);
+    this._reply = _.get(args, 'replyStatement', null);
+    this._workerDeclarationStatement = _.get(args, 'declarationStatement', '');
+    this._invoker = undefined;
+    this._replyReceiver = undefined;
+    this._workerName = undefined;
+    this._argumentsList = [];
+  }
 
-    setIsDefaultWorker(isDefaultWorker, options) {
-        if (!_.isNil(isDefaultWorker)) {
-            this.setAttribute('_isDefaultWorker', isDefaultWorker, options);
-        }
+  setIsDefaultWorker(isDefaultWorker, options) {
+    if (!_.isNil(isDefaultWorker)) {
+      this.setAttribute('_isDefaultWorker', isDefaultWorker, options);
     }
+  }
 
-    getReply() {
-        return this._reply;
-    }
+  getReply() {
+    return this._reply;
+  }
 
-    isDefaultWorker() {
-        return this._isDefaultWorker;
-    }
+  isDefaultWorker() {
+    return this._isDefaultWorker;
+  }
 
     /**
      * Set the worker declaration statement [workerName(message m)]
      * @param {string} declarationStatement
      */
-    setWorkerDeclarationStatement(declarationStatement, options) {
-        this.setWorkerName(declarationStatement);
-    }
+  setWorkerDeclarationStatement(declarationStatement, options) {
+    this.setWorkerName(declarationStatement);
+  }
 
     /**
      * Get the worker declaration statement
      * @return {string} _workerDeclarationStatement
      */
-    getWorkerDeclarationStatement() {
-        return this.getWorkerName();
-    }
+  getWorkerDeclarationStatement() {
+    return this.getWorkerName();
+  }
 
-    getWorkerName() {
-        return this._workerName;
-    }
+  getWorkerName() {
+    return this._workerName;
+  }
 
-    setWorkerName(workerName, options) {
-        this.setAttribute('_workerName', workerName, options);
-    }
+  setWorkerName(workerName, options) {
+    this.setAttribute('_workerName', workerName, options);
+  }
 
     /**
      * Get the invoker statement
      * @return {ASTNode} invoker statement
      */
-    getInvoker() {
-        return this._invoker;
-    }
+  getInvoker() {
+    return this._invoker;
+  }
 
     /**
      * Set the invoker statement
      * @param {ASTNode} invoker
      * @param {object} options
      */
-    setInvoker(invoker, options) {
-        this.setAttribute('_invoker', invoker, options);
-    }
+  setInvoker(invoker, options) {
+    this.setAttribute('_invoker', invoker, options);
+  }
 
     /**
      * Get the invoker statement
      * @return {ASTNode} reply receiver statement
      */
-    getReplyReceiver() {
-        return this._replyReceiver;
-    }
+  getReplyReceiver() {
+    return this._replyReceiver;
+  }
 
     /**
      * Set the reply receiver statement
      * @param {ASTNode} replyReceiver
      * @param {object} options
      */
-    setReplyReceiver(replyReceiver, options) {
-        this.setAttribute('_replyReceiver', replyReceiver, options);
-    }
+  setReplyReceiver(replyReceiver, options) {
+    this.setAttribute('_replyReceiver', replyReceiver, options);
+  }
 
-    addArgument(paramType, paramName) {
-        this.getArgumentsList().push({
-            parameter_type: paramType,
-            parameter_name: paramName
-        });
-    }
+  addArgument(paramType, paramName) {
+    this.getArgumentsList().push({
+      parameter_type: paramType,
+      parameter_name: paramName,
+    });
+  }
 
-    getArgumentsList() {
-        return this._argumentsList;
-    }
+  getArgumentsList() {
+    return this._argumentsList;
+  }
 
-    initFromJson(jsonNode) {
-        var self = this;
-        var BallerinaASTFactory = this.getFactory();
-        this.setWorkerName(jsonNode.worker_name);
-        var args = jsonNode.argument_declaration;
+  initFromJson(jsonNode) {
+    const self = this;
+    const BallerinaASTFactory = this.getFactory();
+    this.setWorkerName(jsonNode.worker_name);
+    const args = jsonNode.argument_declaration;
 
-        _.forEach(args, function(argument) {
-            self.addArgument(argument.parameter_type, argument.parameter_name);
-        });
+    _.forEach(args, (argument) => {
+      self.addArgument(argument.parameter_type, argument.parameter_name);
+    });
 
-        this.setWorkerDeclarationStatement(this.getWorkerName());
+    this.setWorkerDeclarationStatement(this.getWorkerName());
 
         // TODO: check whether return types are allowed
-        _.each(jsonNode.children, function (childNode) {
-            var child = undefined;
-            var childNodeTemp = undefined;
-            if (childNode.type === "variable_definition_statement" && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
-                child = BallerinaASTFactory.createConnectorDeclaration();
-                childNodeTemp = childNode;
-            } else {
-                child = BallerinaASTFactory.createFromJson(childNode);
-                childNodeTemp = childNode;
-            }
-            self.addChild(child);
-            child.initFromJson(childNodeTemp);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      let child;
+      let childNodeTemp;
+      if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+        child = BallerinaASTFactory.createConnectorDeclaration();
+        childNodeTemp = childNode;
+      } else {
+        child = BallerinaASTFactory.createFromJson(childNode);
+        childNodeTemp = childNode;
+      }
+      self.addChild(child);
+      child.initFromJson(childNodeTemp);
+    });
+  }
 
     /**
      * @inheritDoc
      * @override
      */
-    generateUniqueIdentifiers() {
-        CommonUtils.generateUniqueIdentifier({
-            node: this,
-            attributes: [{
-                defaultValue: "newWorker",
-                setter: this.setWorkerName,
-                getter: this.getWorkerName,
-                parents: [{
+  generateUniqueIdentifiers() {
+    CommonUtils.generateUniqueIdentifier({
+      node: this,
+      attributes: [{
+        defaultValue: 'newWorker',
+        setter: this.setWorkerName,
+        getter: this.getWorkerName,
+        parents: [{
                     // function-def/connector-action/resource
-                    node: this.parent,
-                    getChildrenFunc: this.parent.getWorkerDeclarations,
-                    getter: this.getWorkerName
-                }]
-            }]
-        });
-    }
+          node: this.parent,
+          getChildrenFunc: this.parent.getWorkerDeclarations,
+          getter: this.getWorkerName,
+        }],
+      }],
+    });
+  }
 
     /**
      * Returns the list of arguments as a string separated by commas.
      * @return {string} - Arguments as string.
      */
-    getArgumentsAsString() {
-        var argsAsString = "";
-        var args = this.getArgumentsList();
-        _.forEach(args, function(argument, index){
-            argsAsString += argument.parameter_type + " ";
-            argsAsString += argument.parameter_name;
-            if (args.length - 1 != index) {
-                argsAsString += " , ";
-            }
-        });
-        return argsAsString;
-    }
+  getArgumentsAsString() {
+    let argsAsString = '';
+    const args = this.getArgumentsList();
+    _.forEach(args, (argument, index) => {
+      argsAsString += `${argument.parameter_type} `;
+      argsAsString += argument.parameter_name;
+      if (args.length - 1 != index) {
+        argsAsString += ' , ';
+      }
+    });
+    return argsAsString;
+  }
 }
 
 export default WorkerDeclaration;

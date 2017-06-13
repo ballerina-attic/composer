@@ -20,41 +20,39 @@ import { util } from './../sizing-utils';
 
 class StructDefinitionDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
+  canVisit(node) {
+    return true;
+  }
+
+  beginVisit(node) {
+  }
+
+  visit(node) {
+  }
+
+  _calculateChildrenDimensions(children = [], components, bBox, collapsed) {
+    const dimensions = children.map(() => {
+      if (!collapsed) {
+        bBox.h += DesignerDefaults.structDefinitionStatement.height;
+      }
+    });
+    return dimensions;
+  }
+
+  endVisit(node) {
+    util.populateOuterPanelDecoratorBBox(node);
+    const viewState = node.getViewState();
+
+    const textWidth = util.getTextWidth(node.getStructName());
+    viewState.titleWidth = textWidth.w;
+    viewState.trimmedTitle = textWidth.text;
+
+    const { components } = viewState;
+    if (!node.viewState.collapsed) {
+      viewState.bBox.h += DesignerDefaults.panel.body.padding.top;
     }
-
-    beginVisit(node) {
-    }
-
-    visit(node) {
-    }
-
-    _calculateChildrenDimensions(children = [], components, bBox, collapsed) {
-
-        const dimensions = children.map( () => {
-            if(!collapsed){
-                bBox.h += DesignerDefaults.structDefinitionStatement.height;
-            }
-        });
-        return dimensions;
-    }
-
-    endVisit(node) {
-        util.populateOuterPanelDecoratorBBox(node);
-        const viewState = node.getViewState();
-
-        const textWidth = util.getTextWidth(node.getStructName());
-        viewState.titleWidth = textWidth.w;
-        viewState.trimmedTitle = textWidth.text;
-
-        const {components} = viewState;
-        if(!node.viewState.collapsed){
-            viewState.bBox.h += DesignerDefaults.panel.body.padding.top;
-        }
-        this._calculateChildrenDimensions(node.getChildren(), components, viewState.bBox, node.viewState.collapsed);
-
-    }
+    this._calculateChildrenDimensions(node.getChildren(), components, viewState.bBox, node.viewState.collapsed);
+  }
 }
 
 export default StructDefinitionDimensionCalculatorVisitor;

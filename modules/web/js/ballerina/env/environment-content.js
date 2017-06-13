@@ -15,52 +15,52 @@
  */
 
 import $ from 'jquery';
-var environment_content = {};
+const environment_content = {};
 
 /**
  * Get the packages from the package list api.
  * */
 environment_content.getPackages = function (app) {
-    let packageServiceURL = app.config.services.packages.endpoint;
-    var data = [];
+  const packageServiceURL = app.config.services.packages.endpoint;
+  let data = [];
 
     // TODO: remove the following hard coded url and use a value from application config
-    $.ajax({
-        type: 'GET',
-        url: packageServiceURL,
-        contentType: 'application/json; charset=utf-8',
-        async: false,
-        dataType: 'json',
-        success: function (response) {
-            data = response;
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            data = { 'error': true, 'message': 'Unable to retrieve packages.' };
-        }
-    });
-    return data;
+  $.ajax({
+    type: 'GET',
+    url: packageServiceURL,
+    contentType: 'application/json; charset=utf-8',
+    async: false,
+    dataType: 'json',
+    success(response) {
+      data = response;
+    },
+    error(xhr, textStatus, errorThrown) {
+      data = { error: true, message: 'Unable to retrieve packages.' };
+    },
+  });
+  return data;
 };
 
 /**
  *  Get native types from the Ballerina program service
  */
 environment_content.getNativeTypes = function (app) {
-    let programNativeTypesServiceURL = app.config.services.programNativeTypes.endpoint;
-    var data = [];
+  const programNativeTypesServiceURL = app.config.services.programNativeTypes.endpoint;
+  let data = [];
     // TODO: remove the following hard coded url and use a value from application config
-    $.ajax({
-        type: 'GET',
-        url: programNativeTypesServiceURL,
-        contentType: 'application/json; charset=utf-8',
-        async: false,
-        dataType: 'json',
-        success: function (response) {
-            data = response;
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            data = { 'error': true, 'message': 'Unable to retrieve native types.' };
-        }
-    });
-    return data;
+  $.ajax({
+    type: 'GET',
+    url: programNativeTypesServiceURL,
+    contentType: 'application/json; charset=utf-8',
+    async: false,
+    dataType: 'json',
+    success(response) {
+      data = response;
+    },
+    error(xhr, textStatus, errorThrown) {
+      data = { error: true, message: 'Unable to retrieve native types.' };
+    },
+  });
+  return data;
 };
 export default environment_content;

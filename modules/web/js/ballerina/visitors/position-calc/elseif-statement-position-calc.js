@@ -21,23 +21,23 @@ import * as Utils from './utils';
 
 class ElseIfStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit ElseIfStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit ElseIfStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit ElseIfStatementPositionCalcVisitor');
-        Utils.getCompoundStatementChildPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit ElseIfStatementPositionCalcVisitor');
+    Utils.getCompoundStatementChildPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit ElseIfStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit ElseIfStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ElseIfStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit ElseIfStatementPositionCalcVisitor');
+  }
 }
 
 export default ElseIfStatementPositionCalcVisitor;

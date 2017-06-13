@@ -16,11 +16,11 @@
  * under the License.
  */
 
-import React from 'react'
-import ConnectorActionDefinition from './connector-action-definition.jsx'
-import StatementView from './statement-decorator.jsx'
+import React from 'react';
+import ConnectorActionDefinition from './connector-action-definition.jsx';
+import StatementView from './statement-decorator.jsx';
 import PanelDecorator from './panel-decorator';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 import GlobalExpanded from './globals-expanded';
 import GlobalDefinitions from './global-definitions';
 import * as DesignerDefaults from './../configs/designer-defaults';
@@ -28,89 +28,90 @@ import BallerinaASTFactory from './../ast/ballerina-ast-factory';
 
 class ConnectorDefinition extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.variableDefRegex = /\s*(int|string|boolean)\s+([a-zA-Z0-9_]+)\s*=\s*(.*)/g; // This is not 100% accurate
-        this.handleAddVariable = this.handleAddVariable.bind(this);
-        this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
-        this.handleVarialblesBadgeClick = this.handleVarialblesBadgeClick.bind(this);
-    }
+  constructor(props) {
+    super(props);
+    this.variableDefRegex = /\s*(int|string|boolean)\s+([a-zA-Z0-9_]+)\s*=\s*(.*)/g; // This is not 100% accurate
+    this.handleAddVariable = this.handleAddVariable.bind(this);
+    this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
+    this.handleVarialblesBadgeClick = this.handleVarialblesBadgeClick.bind(this);
+  }
 
-    render() {
-        let model = this.props.model;
-        let bBox = model.viewState.bBox;
-        const viewState = model.getViewState();
-        const components = viewState.components;
-        this.variableDefRegex = /const\s+(int|string|boolean)\s+([a-zA-Z0-9_]+)\s*=\s*(.*)/g; // This is not 100% accurate
-        const variables = model.filterChildren(function (child) {
-            return BallerinaASTFactory.isVariableDefinitionStatement(child);
-        });
+  render() {
+    const model = this.props.model;
+    const bBox = model.viewState.bBox;
+    const viewState = model.getViewState();
+    const components = viewState.components;
+    this.variableDefRegex = /const\s+(int|string|boolean)\s+([a-zA-Z0-9_]+)\s*=\s*(.*)/g; // This is not 100% accurate
+    const variables = model.filterChildren(child => BallerinaASTFactory.isVariableDefinitionStatement(child));
 
-        //get the connector name
-        let title = model.getConnectorName();
+        // get the connector name
+    const title = model.getConnectorName();
 
-        const childrenWithNoVariables = model.filterChildren(function (child) {
-            return !BallerinaASTFactory.isVariableDefinitionStatement(child);
-        });
+    const childrenWithNoVariables = model.filterChildren(child => !BallerinaASTFactory.isVariableDefinitionStatement(child));
 
         /**
          * Here we skip rendering the variables
          */
-        var children = getComponentForNodeArray(childrenWithNoVariables);
+    const children = getComponentForNodeArray(childrenWithNoVariables);
 
-        const expandedVariablesBBox = {
-            x: bBox.x + DesignerDefaults.panel.body.padding.left,
-            y: components.body.y + DesignerDefaults.panel.body.padding.top
-        };
+    const expandedVariablesBBox = {
+      x: bBox.x + DesignerDefaults.panel.body.padding.left,
+      y: components.body.y + DesignerDefaults.panel.body.padding.top,
+    };
 
-        let titleComponentData = [{
-            isNode: true,
-            model: this.props.model.getArgumentParameterDefinitionHolder()
-        }];
+    const titleComponentData = [{
+      isNode: true,
+      model: this.props.model.getArgumentParameterDefinitionHolder(),
+    }];
 
-        return (<PanelDecorator icon="tool-icons/connector" title={title} bBox={bBox}
-                                model={model}
-                                dropTarget={this.props.model}
-                                dropSourceValidateCB={(node) => this.canDropToPanelBody(node)}
-                                titleComponentData={titleComponentData}>
-                {
+    return (<PanelDecorator
+      icon="tool-icons/connector" title={title} bBox={bBox}
+      model={model}
+      dropTarget={this.props.model}
+      dropSourceValidateCB={node => this.canDropToPanelBody(node)}
+      titleComponentData={titleComponentData}
+    >
+      {
                     this.props.model.viewState.variablesExpanded ?
-                        <GlobalExpanded
-                            bBox={expandedVariablesBBox} globals={variables} onCollapse={this.handleVarialblesBadgeClick}
-                            title="Variables" onAddNewValue={this.handleAddVariable} onDeleteClick={this.handleDeleteVariable}
-                            addText={'+ Add Variable'} getValue={ g => (g.getStatementString())}/> :
-                        <GlobalDefinitions bBox={expandedVariablesBBox} numberOfItems={variables.length}
-                                title={'Variables'} onExpand={this.handleVarialblesBadgeClick} />
+                      <GlobalExpanded
+                        bBox={expandedVariablesBBox} globals={variables} onCollapse={this.handleVarialblesBadgeClick}
+                        title="Variables" onAddNewValue={this.handleAddVariable} onDeleteClick={this.handleDeleteVariable}
+                        addText={'+ Add Variable'} getValue={g => (g.getStatementString())}
+                      /> :
+                      <GlobalDefinitions
+                        bBox={expandedVariablesBBox} numberOfItems={variables.length}
+                        title={'Variables'} onExpand={this.handleVarialblesBadgeClick}
+                      />
                 }
-            {children}
-        </PanelDecorator>);
-    }
+      {children}
+    </PanelDecorator>);
+  }
 
-    handleVarialblesBadgeClick() {
-        this.props.model.setAttribute('viewState.variablesExpanded', !this.props.model.viewState.variablesExpanded);
-    }
+  handleVarialblesBadgeClick() {
+    this.props.model.setAttribute('viewState.variablesExpanded', !this.props.model.viewState.variablesExpanded);
+  }
 
-    canDropToPanelBody(nodeBeingDragged) {
-        let nodeFactory = this.props.model.getFactory();
+  canDropToPanelBody(nodeBeingDragged) {
+    const nodeFactory = this.props.model.getFactory();
         // IMPORTANT: override default validation logic
         // Panel's drop zone is for resource defs and connector declarations only.
-        return nodeFactory.isConnectorDeclaration(nodeBeingDragged)
+    return nodeFactory.isConnectorDeclaration(nodeBeingDragged)
             || nodeFactory.isConnectorAction(nodeBeingDragged);
+  }
+
+
+  handleAddVariable(value) {
+    const variableDefRegex = /\s*(int|string|boolean)\s+([a-zA-Z0-9_]+)\s*=\s*(.*)/g; // This is not 100% accurate
+    const match = variableDefRegex.exec(value);
+
+    if (match && match[1] && match[2] && match[3]) {
+      this.props.model.addVariableDefinitionStatement(match[1], match[2], match[3]);
     }
+  }
 
-
-    handleAddVariable(value) {
-        const variableDefRegex = /\s*(int|string|boolean)\s+([a-zA-Z0-9_]+)\s*=\s*(.*)/g; // This is not 100% accurate
-        const match = variableDefRegex.exec(value);
-
-        if(match && match[1] && match[2] && match[3]){
-            this.props.model.addVariableDefinitionStatement(match[1], match[2], match[3])
-        }
-    }
-
-    handleDeleteVariable(deletedGlobal) {
-        this.props.model.removeVariableDefinitionStatement(deletedGlobal.getID());
-    }
+  handleDeleteVariable(deletedGlobal) {
+    this.props.model.removeVariableDefinitionStatement(deletedGlobal.getID());
+  }
 }
 
 export default ConnectorDefinition;

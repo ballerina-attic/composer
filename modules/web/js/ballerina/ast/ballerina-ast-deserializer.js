@@ -24,25 +24,25 @@ class BallerinaASTDeserializer {
      * deserialize to the AST model from source
      * @returns {{}|*}
      */
-    static getASTModel(data) {
-        var astRoot = deserializeNode(data.root);
-        if (!_.isNil(data.whitespace_descriptor)) {
-            astRoot.setWhiteSpaceDescriptor(data.whitespace_descriptor);
-            astRoot.whiteSpace.useDefault = false;
-        }
-        return astRoot;
+  static getASTModel(data) {
+    const astRoot = deserializeNode(data.root);
+    if (!_.isNil(data.whitespace_descriptor)) {
+      astRoot.setWhiteSpaceDescriptor(data.whitespace_descriptor);
+      astRoot.whiteSpace.useDefault = false;
     }
+    return astRoot;
+  }
 }
 
 function deserializeNode(node) {
-    var astRoot = BallerinaASTFactory.createBallerinaAstRoot();
+  const astRoot = BallerinaASTFactory.createBallerinaAstRoot();
 
-    _.each(node, function (childNode) {
-        var child = BallerinaASTFactory.createFromJson(childNode);
-        astRoot.addChild(child);
-        child.initFromJson(childNode);
-    });
-    return astRoot;
+  _.each(node, (childNode) => {
+    const child = BallerinaASTFactory.createFromJson(childNode);
+    astRoot.addChild(child);
+    child.initFromJson(childNode);
+  });
+  return astRoot;
 }
 
 

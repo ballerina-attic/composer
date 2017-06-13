@@ -15,44 +15,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import TransformStatementDecorator from "./transform-statement-decorator";
-import PropTypes from "prop-types"
+import React from 'react';
+import TransformStatementDecorator from './transform-statement-decorator';
+import PropTypes from 'prop-types';
 
 /**
  * Assignment statement decorator.
  * */
 class TransformStatement extends React.Component {
 
-	constructor(props){
-		super(props);
-	}
+  constructor(props) {
+    super(props);
+  }
 
     /**
      * Render Function for the assignment statement.
      * */
-    render() {
-        let model = this.props.model,
-         expression = this.props.model.getStatementString();
-         const xPos =   model.viewState.bBox.x;
-         const yPos =   model.viewState.bBox.y;
-         const hPos =   model.viewState.bBox.h;
-         const wPos =   model.viewState.bBox.w;
+  render() {
+    let model = this.props.model,
+      expression = this.props.model.getStatementString();
+    const xPos = model.viewState.bBox.x;
+    const yPos = model.viewState.bBox.y;
+    const hPos = model.viewState.bBox.h;
+    const wPos = model.viewState.bBox.w;
 
-        return ( <TransformStatementDecorator viewState={model.viewState} expression={expression} model={model} />);
-    }
+    return (<TransformStatementDecorator viewState={model.viewState} expression={expression} model={model} />);
+  }
 }
 
 TransformStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired
-    }),
-    expression: PropTypes.shape({
-        expression: PropTypes.string
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+  expression: PropTypes.shape({
+    expression: PropTypes.string,
+  }),
 };
 
 export default TransformStatement;

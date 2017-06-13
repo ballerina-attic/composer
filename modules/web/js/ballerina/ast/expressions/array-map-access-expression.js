@@ -25,17 +25,17 @@ import Expression from './expression';
  * @augments Expression
  */
 class ArrayMapAccessExpression extends Expression {
-    constructor(args) {
-        super('ArrayMapAccessExpression');
-    }
+  constructor(args) {
+    super('ArrayMapAccessExpression');
+  }
 
     /**
      * setting parameters from json
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        this.setExpression(this.generateArrayMapAccessExpressionString(jsonNode), {doSilently: true});
-    }
+  initFromJson(jsonNode) {
+    this.setExpression(this.generateArrayMapAccessExpressionString(jsonNode), { doSilently: true });
+  }
 
     /**
      * Generates the array map access expression as a string.
@@ -43,21 +43,19 @@ class ArrayMapAccessExpression extends Expression {
      * @return {string} - Arguments as a string.
      * @private
      */
-    generateArrayMapAccessExpressionString(jsonNode) {
-        var self = this;
-        var indexString = "";
+  generateArrayMapAccessExpressionString(jsonNode) {
+    const self = this;
+    let indexString = '';
 
-        for (var itr = jsonNode.children.length - 1; itr >= 0; itr--) {
-            var childJsonNode = jsonNode.children[itr];
-            var child = self.getFactory().createFromJson(childJsonNode);
-            child.initFromJson(childJsonNode);
-            indexString = indexString + "[" +child.getExpression() + "]";
-
-        }
-        return jsonNode.array_map_access_expression_name + indexString;
+    for (let itr = jsonNode.children.length - 1; itr >= 0; itr--) {
+      const childJsonNode = jsonNode.children[itr];
+      const child = self.getFactory().createFromJson(childJsonNode);
+      child.initFromJson(childJsonNode);
+      indexString = `${indexString}[${child.getExpression()}]`;
     }
+    return jsonNode.array_map_access_expression_name + indexString;
+  }
 }
 
 export default ArrayMapAccessExpression;
-
 

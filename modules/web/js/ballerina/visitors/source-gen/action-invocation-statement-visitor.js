@@ -21,35 +21,35 @@ import EventChannel from 'event_channel';
 import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-visitor';
 
 class ActionInvocationStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitActionInvocationExpression(actionInvocationExpr) {
-        return true;
-    }
+  canVisitActionInvocationExpression(actionInvocationExpr) {
+    return true;
+  }
 
-    canVisitActionInvocationStatement(actionInvocationStatement) {
-        return true;
-    }
+  canVisitActionInvocationStatement(actionInvocationStatement) {
+    return true;
+  }
 
-    beginVisitActionInvocationStatement(actionInvocationStatement) {
-        if (actionInvocationStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
+  beginVisitActionInvocationStatement(actionInvocationStatement) {
+    if (actionInvocationStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+  }
 
-    beginVisitActionInvocationExpression(actionInvocationExpr) {
-        this.appendSource(actionInvocationExpr.getExpressionString());
-    }
+  beginVisitActionInvocationExpression(actionInvocationExpr) {
+    this.appendSource(actionInvocationExpr.getExpressionString());
+  }
 
-    endVisitActionInvocationStatement(actionInvocationStatement) {
-        this.appendSource(';' + actionInvocationStatement.getWSRegion(1));
-        this.appendSource((actionInvocationStatement.whiteSpace.useDefault) ?
+  endVisitActionInvocationStatement(actionInvocationStatement) {
+    this.appendSource(`;${actionInvocationStatement.getWSRegion(1)}`);
+    this.appendSource((actionInvocationStatement.whiteSpace.useDefault) ?
                       this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default ActionInvocationStatementVisitor;

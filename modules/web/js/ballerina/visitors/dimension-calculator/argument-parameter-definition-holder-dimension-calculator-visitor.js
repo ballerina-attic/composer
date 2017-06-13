@@ -19,35 +19,35 @@
 import log from 'log';
 import _ from 'lodash';
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class ArgumentParameterDefinitionHolderDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
+  endVisit(node) {
         // Creating component for text.
-        for (let i = 0; i < node.getChildren().length; i++) {
-            let parameterDefinition = node.getChildren()[i];
-            let viewState = parameterDefinition.getViewState();
+    for (let i = 0; i < node.getChildren().length; i++) {
+      const parameterDefinition = node.getChildren()[i];
+      const viewState = parameterDefinition.getViewState();
 
-            viewState.w = util.getTextWidth(parameterDefinition.getParameterDefinitionAsString(), 0).w;
-            viewState.h = DesignerDefaults.panelHeading.heading.height - 7;
+      viewState.w = util.getTextWidth(parameterDefinition.getParameterDefinitionAsString(), 0).w;
+      viewState.h = DesignerDefaults.panelHeading.heading.height - 7;
 
             // Creating component for delete icon.
-            viewState.components.deleteIcon = {};
-            viewState.components.deleteIcon.w = DesignerDefaults.panelHeading.heading.height - 7;
-            viewState.components.deleteIcon.h = DesignerDefaults.panelHeading.heading.height - 7;
-        }
+      viewState.components.deleteIcon = {};
+      viewState.components.deleteIcon.w = DesignerDefaults.panelHeading.heading.height - 7;
+      viewState.components.deleteIcon.h = DesignerDefaults.panelHeading.heading.height - 7;
     }
+  }
 
 }
 

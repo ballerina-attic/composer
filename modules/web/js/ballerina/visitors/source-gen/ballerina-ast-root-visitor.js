@@ -27,57 +27,57 @@ import StructDefinitionVisitor from './struct-definition-visitor';
 import ConstantDefinitionVisitor from './constant-definition-visitor';
 
 class BallerinaASTRootVisitor extends AbstractSourceGenVisitor {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
-    canVisitBallerinaASTRoot(astRoot) {
-        return true;
-    }
+  canVisitBallerinaASTRoot(astRoot) {
+    return true;
+  }
 
-    beginVisitBallerinaASTRoot(astRoot) {
-        this.appendSource(astRoot.getWSRegion(0));
-    }
+  beginVisitBallerinaASTRoot(astRoot) {
+    this.appendSource(astRoot.getWSRegion(0));
+  }
 
-    visitServiceDefinition(serviceDefinition) {
-        var serviceDefinitionVisitor = new ServiceDefinitionVisitor(this);
-        serviceDefinition.accept(serviceDefinitionVisitor);
-    }
+  visitServiceDefinition(serviceDefinition) {
+    const serviceDefinitionVisitor = new ServiceDefinitionVisitor(this);
+    serviceDefinition.accept(serviceDefinitionVisitor);
+  }
 
-    visitAnnotationDefinition(annotationDefinition) {
-        var annotationDefinitionVisitor = new AnnotationDefinitionVisitor(this);
-        annotationDefinition.accept(annotationDefinitionVisitor);
-    }
+  visitAnnotationDefinition(annotationDefinition) {
+    const annotationDefinitionVisitor = new AnnotationDefinitionVisitor(this);
+    annotationDefinition.accept(annotationDefinitionVisitor);
+  }
 
-    visitConnectorDefinition(connectorDefinition) {
-        var connectorDefinitionVisitor = new ConnectorDefinitionVisitor(this);
-        connectorDefinition.accept(connectorDefinitionVisitor);
-    }
+  visitConnectorDefinition(connectorDefinition) {
+    const connectorDefinitionVisitor = new ConnectorDefinitionVisitor(this);
+    connectorDefinition.accept(connectorDefinitionVisitor);
+  }
 
-    visitFunctionDefinition(functionDefinition) {
-        var functionDefinitionVisitor = new FunctionDefinitionVisitor(this);
-        functionDefinition.accept(functionDefinitionVisitor);
-    }
+  visitFunctionDefinition(functionDefinition) {
+    const functionDefinitionVisitor = new FunctionDefinitionVisitor(this);
+    functionDefinition.accept(functionDefinitionVisitor);
+  }
 
-    visitStructDefinition(structDefinition) {
-        var structDefinitionVisitor = new StructDefinitionVisitor(this);
-        structDefinition.accept(structDefinitionVisitor);
-    }
+  visitStructDefinition(structDefinition) {
+    const structDefinitionVisitor = new StructDefinitionVisitor(this);
+    structDefinition.accept(structDefinitionVisitor);
+  }
 
-    visitPackageDefinition(packageDefinition) {
-        var packageDefinitionVisitor = new PackageDefinitionVisitor(this);
-        packageDefinition.accept(packageDefinitionVisitor);
-    }
+  visitPackageDefinition(packageDefinition) {
+    const packageDefinitionVisitor = new PackageDefinitionVisitor(this);
+    packageDefinition.accept(packageDefinitionVisitor);
+  }
 
-    visitImportDeclaration(importDeclaration) {
-        var importDeclarationVisitor = new ImportDeclarationVisitor(this);
-        importDeclaration.accept(importDeclarationVisitor);
-    }
+  visitImportDeclaration(importDeclaration) {
+    const importDeclarationVisitor = new ImportDeclarationVisitor(this);
+    importDeclaration.accept(importDeclarationVisitor);
+  }
 
-    visitConstantDefinition(constantDefinition) {
-        var constantDefinitionVisitor = new ConstantDefinitionVisitor(this);
-        constantDefinition.accept(constantDefinitionVisitor);
-    }
+  visitConstantDefinition(constantDefinition) {
+    const constantDefinitionVisitor = new ConstantDefinitionVisitor(this);
+    constantDefinition.accept(constantDefinitionVisitor);
+  }
 }
 
 export default BallerinaASTRootVisitor;

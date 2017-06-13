@@ -29,15 +29,15 @@ import AnnotationAttributeDefinition from './annotation-attribute-definition';
 /**
  * @class BallerinaEnvFactory
  */
-var BallerinaEnvFactory = {};
+const BallerinaEnvFactory = {};
 
 /**
  * creates Package
  * @param args
  */
 BallerinaEnvFactory.createPackage = function (args) {
-    var pckg = new Package(args);
-    return pckg;
+  const pckg = new Package(args);
+  return pckg;
 };
 
 /**
@@ -45,8 +45,8 @@ BallerinaEnvFactory.createPackage = function (args) {
  * @param args
  */
 BallerinaEnvFactory.createConnector = function (args) {
-    var connector = new Connector(args);
-    return connector;
+  const connector = new Connector(args);
+  return connector;
 };
 
 /**
@@ -54,8 +54,8 @@ BallerinaEnvFactory.createConnector = function (args) {
  * @param args
  */
 BallerinaEnvFactory.createConnectorAction = function (args) {
-    var action = new ConnectorAction(args);
-    return action;
+  const action = new ConnectorAction(args);
+  return action;
 };
 
 /**
@@ -63,8 +63,8 @@ BallerinaEnvFactory.createConnectorAction = function (args) {
  * @param jsonNode
  */
 BallerinaEnvFactory.createFunction = function (args) {
-    var functionDef = new Function(args);
-    return functionDef;
+  const functionDef = new Function(args);
+  return functionDef;
 };
 
 /**
@@ -72,8 +72,8 @@ BallerinaEnvFactory.createFunction = function (args) {
  * @param jsonNode
  */
 BallerinaEnvFactory.createAnnotationDefinition = function (args) {
-    var annotationDef = new AnnotationDefinition(args);
-    return annotationDef;
+  const annotationDef = new AnnotationDefinition(args);
+  return annotationDef;
 };
 
 /**
@@ -81,20 +81,20 @@ BallerinaEnvFactory.createAnnotationDefinition = function (args) {
  * @param args
  */
 BallerinaEnvFactory.createAnnotationAttributeDefinition = function (args) {
-    let annotationAttributeDefinition = new AnnotationAttributeDefinition(args);
-    return annotationAttributeDefinition;
+  const annotationAttributeDefinition = new AnnotationAttributeDefinition(args);
+  return annotationAttributeDefinition;
 };
 
 BallerinaEnvFactory.isConnector = function (connector) {
-    return (connector instanceof Connector);
+  return (connector instanceof Connector);
 };
 
 BallerinaEnvFactory.isFunction = function (functionDef) {
-    return (functionDef instanceof Function);
+  return (functionDef instanceof Function);
 };
 
 BallerinaEnvFactory.isConnectorAction = function (connectorAction) {
-    return (connectorAction instanceof ConnectorAction);
+  return (connectorAction instanceof ConnectorAction);
 };
 
 /**
@@ -103,7 +103,7 @@ BallerinaEnvFactory.isConnectorAction = function (connectorAction) {
  * @returns {boolean} - true if same type, else false
  */
 BallerinaEnvFactory.isAnnotationDefinition = function (annotationDef) {
-    return (annotationDef instanceof AnnotationDefinition);
+  return (annotationDef instanceof AnnotationDefinition);
 };
 
 /**
@@ -112,7 +112,7 @@ BallerinaEnvFactory.isAnnotationDefinition = function (annotationDef) {
  * @returns {boolean} - true if same type, else false.
  */
 BallerinaEnvFactory.isAnnotationAttributeDefinition = function (annotationAttributeDefinition) {
-    return (annotationAttributeDefinition instanceof AnnotationAttributeDefinition);
+  return (annotationAttributeDefinition instanceof AnnotationAttributeDefinition);
 };
 
 export default BallerinaEnvFactory;

@@ -21,27 +21,27 @@ import EventChannel from 'event_channel';
 import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen-visitor';
 
 class RefTypeInitExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitReferenceTypeInitExpression(expression) {
-        return true;
-    }
+  canVisitReferenceTypeInitExpression(expression) {
+    return true;
+  }
 
-    beginVisitReferenceTypeInitExpression(expression) {
-        this.appendSource("{}");
-        log.debug('Begin Visit Ref Type Init Expression');
-    }
+  beginVisitReferenceTypeInitExpression(expression) {
+    this.appendSource('{}');
+    log.debug('Begin Visit Ref Type Init Expression');
+  }
 
-    visitReferenceTypeInitExpression(expression) {
-        log.debug('Visit Ref Type Init  Expression');
-    }
+  visitReferenceTypeInitExpression(expression) {
+    log.debug('Visit Ref Type Init  Expression');
+  }
 
-    endVisitReferenceTypeInitExpression(expression) {
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
-        log.debug('End Visit Ref Type Init  Expression');
-    }
+  endVisitReferenceTypeInitExpression(expression) {
+    this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+    log.debug('End Visit Ref Type Init  Expression');
+  }
 }
 
 export default RefTypeInitExpressionVisitor;

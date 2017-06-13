@@ -20,92 +20,85 @@ import Package from './package';
 import Environment from './environment';
 
 class PackageScopedEnvironment {
-    constructor(args) {
-        this._packages = _.get(args, 'packages', []);
-        this._types = _.get(args, 'types', []);
-        this.init();
-    }
+  constructor(args) {
+    this._packages = _.get(args, 'packages', []);
+    this._types = _.get(args, 'types', []);
+    this.init();
+  }
 
-    init() {
-        this._packages = _.union(this._packages, Environment.getPackages());
-        this._types = _.union(this._types, Environment.getTypes());
-        this._currentPackage = new Package({ name: 'Current Package' });
-        this._packages.push(this._currentPackage);
-    }
+  init() {
+    this._packages = _.union(this._packages, Environment.getPackages());
+    this._types = _.union(this._types, Environment.getTypes());
+    this._currentPackage = new Package({ name: 'Current Package' });
+    this._packages.push(this._currentPackage);
+  }
 
     /**
      * Add given package array to the existing package array
-     * @param {Package[]} packages - package array to be added 
+     * @param {Package[]} packages - package array to be added
      */
-    addPackages(packages) {
-        this._packages = _.union(this._packages, packages);
-    }
+  addPackages(packages) {
+    this._packages = _.union(this._packages, packages);
+  }
 
-    getCurrentPackage() {
-        return this._currentPackage;
-    }  
+  getCurrentPackage() {
+    return this._currentPackage;
+  }
 
-    resetCurrentPackage() {
-        this._currentPackage = new Package({ name: 'Current Package' });
-    }
+  resetCurrentPackage() {
+    this._currentPackage = new Package({ name: 'Current Package' });
+  }
 
-    setCurrentPackage(pkg) {
-        this._currentPackage = pkg;
-    }    
+  setCurrentPackage(pkg) {
+    this._currentPackage = pkg;
+  }
 
     /**
      * @return {[Package]}
      */
-    getPackages() {
-        return this._packages;
-    }
+  getPackages() {
+    return this._packages;
+  }
 
     /**
      * @return {[Package]}
      */
-    getFilteredPackages(excludes) {
-        return this._packages.filter((item)=>{
-            for(let i = 0; i < excludes.length; i++){
-                if(excludes[i] == item.getName()){
-                    return false;
-                }
-            }
-            return true;
-        });
-    }    
-
-    getPackageByName(packageName) {
-        if (_.isEqual(packageName, 'Current Package')) {
-            return this._currentPackage;
-        } else {
-            return _.find(this._packages, function (pckg) {
-                return pckg.getName() === packageName;
-            });
+  getFilteredPackages(excludes) {
+    return this._packages.filter((item) => {
+      for (let i = 0; i < excludes.length; i++) {
+        if (excludes[i] == item.getName()) {
+          return false;
         }
-    }
+      }
+      return true;
+    });
+  }
 
-    searchPackage(query, exclude) {
-        var search_text = query;
-        var exclude_packages = exclude;
-        var result = _.filter(this._packages, function (pckg) {
-            var existing = _.filter(exclude_packages, function (ex) {
-                return pckg.getName() == ex;
-            });
-            return (existing.length == 0) && new RegExp(search_text.toUpperCase()).exec(pckg.getName().toUpperCase());
-        });
-        return result;
+  getPackageByName(packageName) {
+    if (_.isEqual(packageName, 'Current Package')) {
+      return this._currentPackage;
     }
+    return _.find(this._packages, pckg => pckg.getName() === packageName);
+  }
+
+  searchPackage(query, exclude) {
+    const search_text = query;
+    const exclude_packages = exclude;
+    const result = _.filter(this._packages, (pckg) => {
+      const existing = _.filter(exclude_packages, ex => pckg.getName() == ex);
+      return (existing.length == 0) && new RegExp(search_text.toUpperCase()).exec(pckg.getName().toUpperCase());
+    });
+    return result;
+  }
 
     /**
      * get available types for this environment including struct types
      * @returns {String[]}
      */
-    getTypes() {
-        let structs = this.getCurrentPackage().getStructDefinitions().map(function(struct){
-            return struct.getStructName();
-        });
-        return _.union(this._types, structs);
-    }
+  getTypes() {
+    const structs = this.getCurrentPackage().getStructDefinitions().map(struct => struct.getStructName());
+    return _.union(this._types, structs);
+  }
 }
 
 export default PackageScopedEnvironment;

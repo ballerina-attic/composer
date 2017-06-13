@@ -22,23 +22,23 @@ import ASTNodeModifyOperation from './ast-node-modify-operation';
 import CustomUndoableOperation from './custom-undoable-operation';
 import SourceModifyOperation from './source-modify-operation';
 
-var UndoableOperationFactory = {};
+const UndoableOperationFactory = {};
         /**
          * A Factory method to create undoable operations
          * @param args
          */
-UndoableOperationFactory.getOperation = function(args){
-    switch (args.type){
+UndoableOperationFactory.getOperation = function (args) {
+  switch (args.type) {
     case 'child-added': return new ASTNodeAddOperation(args);
     case 'child-removed': return new ASTNodeRemoveOperation(args);
     case 'node-modified': return new ASTNodeModifyOperation(args);
     case 'source-modified': return new SourceModifyOperation(args);
     case 'custom': return new CustomUndoableOperation(args);
-    }
+  }
 };
 
-UndoableOperationFactory.isSourceModifiedOperation = function(undoableOperation){
-    return undoableOperation instanceof SourceModifyOperation;
+UndoableOperationFactory.isSourceModifiedOperation = function (undoableOperation) {
+  return undoableOperation instanceof SourceModifyOperation;
 };
 
 export default UndoableOperationFactory;

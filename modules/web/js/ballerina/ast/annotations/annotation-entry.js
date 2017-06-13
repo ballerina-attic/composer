@@ -31,98 +31,95 @@ class AnnotationEntry extends ASTNode {
      * @param {string} args.leftValue The value of the key.
      * @param {string|Annotation|AnnotationEntryArray} args.rightValue The value of the right hand element.
      */
-    constructor(args) {
-        super('Annotation-Entry');
+  constructor(args) {
+    super('Annotation-Entry');
         /**
          * Assigned key of an entry. Nullable.
          * @type {string}
          */
-        this._leftValue = _.get(args, 'leftValue', 'value');
+    this._leftValue = _.get(args, 'leftValue', 'value');
 
         /**
          * The value of the entry
          * @type {string|Annotation|AnnotationEntryArray}
          */
-        this._rightValue = _.get(args, 'rightValue');
-        if (!_.isUndefined(this._rightValue) && _.isObject(this._rightValue)) {
-            this._rightValue.on('tree-modified', (event) => {
-                this.trigger('tree-modified', event);
-            });
-        }
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: ' ',
-            1: '',
-            2: ' ',
-            3: ' ',
-            4: ''
-        };
+    this._rightValue = _.get(args, 'rightValue');
+    if (!_.isUndefined(this._rightValue) && _.isObject(this._rightValue)) {
+      this._rightValue.on('tree-modified', (event) => {
+        this.trigger('tree-modified', event);
+      });
     }
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: '',
+      2: ' ',
+      3: ' ',
+      4: '',
+    };
+  }
 
-    setLeftValue(leftValue, options) {
-        this.setAttribute('_leftValue', leftValue, options);
-    }
+  setLeftValue(leftValue, options) {
+    this.setAttribute('_leftValue', leftValue, options);
+  }
 
-    getLeftValue() {
-        return this._leftValue;
-    }
+  getLeftValue() {
+    return this._leftValue;
+  }
 
-    setRightValue(rightValue, options) {
-        this.setAttribute('_rightValue', rightValue, options);
-        if (_.isObject(rightValue)) {
-            rightValue.on('tree-modified', (event) => {
-                this.trigger('tree-modified', event);
-            });
-        }
+  setRightValue(rightValue, options) {
+    this.setAttribute('_rightValue', rightValue, options);
+    if (_.isObject(rightValue)) {
+      rightValue.on('tree-modified', (event) => {
+        this.trigger('tree-modified', event);
+      });
     }
+  }
 
-    getRightValue() {
-        return this._rightValue;
-    }
+  getRightValue() {
+    return this._rightValue;
+  }
 
     /**
      * Generates ballerina code for the entry.
      * @return {string}
      */
-    toString() {
-        let annotationEntryAsString;
-        if (_.isString(this._rightValue)) {
-            annotationEntryAsString = this.getWSRegion(3) + this._rightValue
+  toString() {
+    let annotationEntryAsString;
+    if (_.isString(this._rightValue)) {
+      annotationEntryAsString = this.getWSRegion(3) + this._rightValue
                     + this.getWSRegion(4);
-        } else {
-            if (this.getFactory().isAnnotationEntryArray(this._rightValue)) {
-                annotationEntryAsString = this.getWSRegion(3) + this._rightValue.toString()
+    } else if (this.getFactory().isAnnotationEntryArray(this._rightValue)) {
+      annotationEntryAsString = this.getWSRegion(3) + this._rightValue.toString()
                   + this.getWSRegion(4);
-            } else {
-                annotationEntryAsString = this.getWSRegion(3) + this._rightValue.toString();
-            }
-        }
-
-        if (!_.isUndefined(this._leftValue) && !_.isEmpty(this._leftValue)) {
-            return this.getWSRegion(0) + this._leftValue +  this.getWSRegion(1)
-                    +  ':' + annotationEntryAsString;
-        } else {
-            return annotationEntryAsString;
-        }
+    } else {
+      annotationEntryAsString = this.getWSRegion(3) + this._rightValue.toString();
     }
+
+    if (!_.isUndefined(this._leftValue) && !_.isEmpty(this._leftValue)) {
+      return `${this.getWSRegion(0) + this._leftValue + this.getWSRegion(1)
+                      }:${annotationEntryAsString}`;
+    }
+    return annotationEntryAsString;
+  }
 
     /**
      * Setting parameters from json
      * @param {object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        this.setLeftValue(jsonNode.annotation_entry_key, {doSilently: true});
-        if (!_.isString(jsonNode.annotation_entry_value)) {
-            let child = this.getFactory().createFromJson(jsonNode.annotation_entry_value);
-            if (this.getFactory().isAnnotation(child) || this.getFactory().isAnnotationEntryArray(child)) {
-                child.initFromJson(jsonNode.annotation_entry_value);
-                this.setRightValue(child, {doSilently: true});
-            } else {
-                log.error('Unknown object found when parsing an annotation');
-            }
-        } else {
-            this.setRightValue(jsonNode.annotation_entry_value, {doSilently: true});
-        }
+  initFromJson(jsonNode) {
+    this.setLeftValue(jsonNode.annotation_entry_key, { doSilently: true });
+    if (!_.isString(jsonNode.annotation_entry_value)) {
+      const child = this.getFactory().createFromJson(jsonNode.annotation_entry_value);
+      if (this.getFactory().isAnnotation(child) || this.getFactory().isAnnotationEntryArray(child)) {
+        child.initFromJson(jsonNode.annotation_entry_value);
+        this.setRightValue(child, { doSilently: true });
+      } else {
+        log.error('Unknown object found when parsing an annotation');
+      }
+    } else {
+      this.setRightValue(jsonNode.annotation_entry_value, { doSilently: true });
     }
+  }
 }
 
 export default AnnotationEntry;

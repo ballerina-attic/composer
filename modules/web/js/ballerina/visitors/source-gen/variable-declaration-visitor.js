@@ -18,25 +18,25 @@
 import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
 
 class VariableDeclarationVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitVariableDeclaration(variableDeclaration) {
-        return true;
-    }
+  canVisitVariableDeclaration(variableDeclaration) {
+    return true;
+  }
 
-    beginVisitVariableDeclaration(variableDeclaration) {
-        this.appendSource(variableDeclaration.getType() + " " +variableDeclaration.getIdentifier());
-    }
+  beginVisitVariableDeclaration(variableDeclaration) {
+    this.appendSource(`${variableDeclaration.getType()} ${variableDeclaration.getIdentifier()}`);
+  }
 
-    visitVariableDeclaration(variableDeclaration) {
-    }
+  visitVariableDeclaration(variableDeclaration) {
+  }
 
-    endVisitVariableDeclaration(variableDeclaration) {
-        this.appendSource(";\n");
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
-    }
+  endVisitVariableDeclaration(variableDeclaration) {
+    this.appendSource(';\n');
+    this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+  }
 }
 
 export default VariableDeclarationVisitor;

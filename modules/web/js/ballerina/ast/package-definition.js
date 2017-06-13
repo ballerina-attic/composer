@@ -24,51 +24,49 @@ import ASTNode from './node';
  * @constructor
  */
 class PackageDefinition extends ASTNode {
-    constructor(args) {
-        super("PackageDefinition");
-        this._packageName = _.get(args, 'packageName');
-    }
+  constructor(args) {
+    super('PackageDefinition');
+    this._packageName = _.get(args, 'packageName');
+  }
 
     /**
      * setter for package name
      * @param name
      */
-    setPackageName(packageName, options) {
-        if(!_.isNil(packageName)){
-            var self = this,
-                changeCallBack = function() {
-                    self.trigger('package-name-changed');
-                };
+  setPackageName(packageName, options) {
+    if (!_.isNil(packageName)) {
+      let self = this,
+        changeCallBack = function () {
+          self.trigger('package-name-changed');
+        };
 
-            options = options || {};
-            options.undoCallBack = changeCallBack;
-            options.redoCallBack = changeCallBack;
+      options = options || {};
+      options.undoCallBack = changeCallBack;
+      options.redoCallBack = changeCallBack;
 
-            this.setAttribute('_packageName', packageName, options);
-        }
+      this.setAttribute('_packageName', packageName, options);
     }
+  }
 
     /**
      * getter for package name
      * @returns {String}
      */
-    getPackageName() {
-        return this._packageName;
-    }
+  getPackageName() {
+    return this._packageName;
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        //TODO : avoid check for . (current package)
-        if (!_.isEqual(jsonNode.package_name, '.')) {
-            this.setPackageName(jsonNode.package_name, {doSilently: true});
-        }
-
+  initFromJson(jsonNode) {
+        // TODO : avoid check for . (current package)
+    if (!_.isEqual(jsonNode.package_name, '.')) {
+      this.setPackageName(jsonNode.package_name, { doSilently: true });
     }
+  }
 }
 
 export default PackageDefinition;
-
 

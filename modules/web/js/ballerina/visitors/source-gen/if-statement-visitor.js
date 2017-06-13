@@ -21,44 +21,44 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import StatementVisitorFactory from './statement-visitor-factory';
 
 class IfStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitIfStatement(ifStatement) {
-        return true;
-    }
+  canVisitIfStatement(ifStatement) {
+    return true;
+  }
 
-    beginVisitIfStatement(ifStatement) {
-        this.node = ifStatement;
-        this.appendSource('if' + ifStatement.getWSRegion(1) + '(' + ifStatement.getWSRegion(2));
-        this.appendSource((!_.isNil(ifStatement.getCondition())) ? ifStatement.getConditionString() : '');
-        this.appendSource(')' + ifStatement.getWSRegion(3) + '{' + ifStatement.getWSRegion(4));
-        this.appendSource((ifStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
-        this.indent();
-        log.debug('Begin Visit If Statement Definition');
-    }
+  beginVisitIfStatement(ifStatement) {
+    this.node = ifStatement;
+    this.appendSource(`if${ifStatement.getWSRegion(1)}(${ifStatement.getWSRegion(2)}`);
+    this.appendSource((!_.isNil(ifStatement.getCondition())) ? ifStatement.getConditionString() : '');
+    this.appendSource(`)${ifStatement.getWSRegion(3)}{${ifStatement.getWSRegion(4)}`);
+    this.appendSource((ifStatement.whiteSpace.useDefault) ? this.getIndentation() : '');
+    this.indent();
+    log.debug('Begin Visit If Statement Definition');
+  }
 
-    visitStatement(statement) {
-        if(!_.isEqual(this.node, statement)) {
-            var statementVisitorFactory = new StatementVisitorFactory();
-            var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-            statement.accept(statementVisitor);
-        }
+  visitStatement(statement) {
+    if (!_.isEqual(this.node, statement)) {
+      const statementVisitorFactory = new StatementVisitorFactory();
+      const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+      statement.accept(statementVisitor);
     }
+  }
 
-    endVisitIfStatement(ifStatement) {
-        this.outdent();
+  endVisitIfStatement(ifStatement) {
+    this.outdent();
         // if using default ws, add a new line to end unless there are any elseif stmts available
         // or an else statement is available
-        let tailingWS = (ifStatement.whiteSpace.useDefault
+    const tailingWS = (ifStatement.whiteSpace.useDefault
                             && (_.isEmpty(ifStatement.getParent().getElseIfStatements())
                                       && _.isNil(ifStatement.getParent().getElseStatement())))
                         ? '\n' : ifStatement.getWSRegion(5);
-        this.appendSource('}' + tailingWS);
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit If Statement Definition');
-    }
+    this.appendSource(`}${tailingWS}`);
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit If Statement Definition');
+  }
 }
 
 export default IfStatementVisitor;

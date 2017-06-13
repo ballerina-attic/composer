@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import StatementDecorator from "./statement-decorator";
+import React from 'react';
+import StatementDecorator from './statement-decorator';
 import PropTypes from 'prop-types';
 
 /**
@@ -24,37 +24,37 @@ import PropTypes from 'prop-types';
  * */
 class ReturnStatement extends React.Component {
 
-	constructor(props){
-		super(props);
-		this.editorOptions = {
-            propertyType: "text",
-            key: "Expression",
-            model: this.props.model,
-            getterMethod: this.props.model.getExpression,
-            setterMethod: this.props.model.setExpression
-        };
-	}    
+  constructor(props) {
+    super(props);
+    this.editorOptions = {
+      propertyType: 'text',
+      key: 'Expression',
+      model: this.props.model,
+      getterMethod: this.props.model.getExpression,
+      setterMethod: this.props.model.setExpression,
+    };
+  }
 
     /**
      * Render function for the return statement.
      * */
-    render() {
-        let model = this.props.model,
-            expression = model.viewState.expression;
-        return (<StatementDecorator model={model} viewState={model.viewState} expression={expression} editorOptions={this.editorOptions} />);
-    }
+  render() {
+    let model = this.props.model,
+      expression = model.viewState.expression;
+    return (<StatementDecorator model={model} viewState={model.viewState} expression={expression} editorOptions={this.editorOptions} />);
+  }
 }
 
 ReturnStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired
-    }),
-    expression: PropTypes.shape({
-        expression: PropTypes.string
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
+  expression: PropTypes.shape({
+    expression: PropTypes.string,
+  }),
 };
 
 export default ReturnStatement;

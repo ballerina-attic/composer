@@ -21,30 +21,30 @@ import AbstractExpressionSourceGenVisitor from './abstract-expression-source-gen
 import ExpressionVisitorFactory from './expression-visitor-factory';
 
 class TypeCastExpressionVisitor extends AbstractExpressionSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitTypeConversionExpression(expression) {
-        return true;
-    }
+  canVisitTypeConversionExpression(expression) {
+    return true;
+  }
 
-    beginVisitTypeConversionExpression(expression) {
-        this.appendSource('<' + expression.getName() + '>');
-    }
+  beginVisitTypeConversionExpression(expression) {
+    this.appendSource(`<${expression.getName()}>`);
+  }
 
-    visitTypeConversionExpression(expression) {
-    }
+  visitTypeConversionExpression(expression) {
+  }
 
-    endVisitTypeConversionExpression(expression) {
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitTypeConversionExpression(expression) {
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 
-    visitExpression(expression) {
-        var expressionVisitorFactory = new ExpressionVisitorFactory();
-        var expressionVisitor = expressionVisitorFactory.getExpressionView({model:expression, parent:this});
-        expression.accept(expressionVisitor);
-    }
+  visitExpression(expression) {
+    const expressionVisitorFactory = new ExpressionVisitorFactory();
+    const expressionVisitor = expressionVisitorFactory.getExpressionView({ model: expression, parent: this });
+    expression.accept(expressionVisitor);
+  }
 }
 
 export default TypeCastExpressionVisitor;

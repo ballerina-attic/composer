@@ -20,48 +20,47 @@ import _ from 'lodash';
 import ASTFactory from './../../ast/ballerina-ast-factory';
 
 class TransactionAbortedStatementPositionCalcVisitor {
-    canVisit(node) {
-        log.debug('can visit TransactionAbortedStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit TransactionAbortedStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit TransactionAbortedStatementPositionCalcVisitor');
-        let viewState = node.getViewState();
-        let bBox = viewState.bBox;
-        let parent = node.getParent();
-        let parentViewState = parent.getViewState();
-        let parentStatementContainer = parentViewState.components.statementContainer;
-        let parentStatements = parent.filterChildren(function (child) {
-            return ASTFactory.isStatement(child) || ASTFactory.isExpression(child);
-        });
-        let currentIndex = _.findIndex(parentStatements, node);
-        let x, y;
+  beginVisit(node) {
+    log.debug('begin visit TransactionAbortedStatementPositionCalcVisitor');
+    const viewState = node.getViewState();
+    const bBox = viewState.bBox;
+    const parent = node.getParent();
+    const parentViewState = parent.getViewState();
+    const parentStatementContainer = parentViewState.components.statementContainer;
+    const parentStatements = parent.filterChildren(child => ASTFactory.isStatement(child) || ASTFactory.isExpression(child));
+    const currentIndex = _.findIndex(parentStatements, node);
+    let x,
+      y;
 
-        if (parentStatementContainer.w < bBox.w) {
-            throw 'Invalid statement container width found, statement width should be greater than or equal to ' +
+    if (parentStatementContainer.w < bBox.w) {
+      throw 'Invalid statement container width found, statement width should be greater than or equal to ' +
             'statement/ statement width ';
-        }
-        x = parentStatementContainer.x + (parentStatementContainer.w - bBox.w) / 2;
-        if (currentIndex === 0) {
-            y = parentStatementContainer.y;
-        } else if (currentIndex > 0) {
-            y = parentStatements[currentIndex - 1].getViewState().bBox.getBottom();
-        } else {
-            throw 'Invalid Index found for ' + node.getType();
-        }
-
-        bBox.x = x;
-        bBox.y = y;
+    }
+    x = parentStatementContainer.x + (parentStatementContainer.w - bBox.w) / 2;
+    if (currentIndex === 0) {
+      y = parentStatementContainer.y;
+    } else if (currentIndex > 0) {
+      y = parentStatements[currentIndex - 1].getViewState().bBox.getBottom();
+    } else {
+      throw `Invalid Index found for ${node.getType()}`;
     }
 
-    visit(node) {
-        log.debug('visit TransactionAbortedStatementPositionCalcVisitor');
-    }
+    bBox.x = x;
+    bBox.y = y;
+  }
 
-    endVisit(node) {
-        log.debug('end visit TransactionAbortedStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit TransactionAbortedStatementPositionCalcVisitor');
+  }
+
+  endVisit(node) {
+    log.debug('end visit TransactionAbortedStatementPositionCalcVisitor');
+  }
 }
 
 export default TransactionAbortedStatementPositionCalcVisitor;

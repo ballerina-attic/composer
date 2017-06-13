@@ -21,19 +21,19 @@ import * as PositioningUtils from './utils';
 
 class StructDefinitionPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-        PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
-    }
+  beginVisit(node) {
+    PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-    }
+  endVisit(node) {
+  }
 }
 
 export default StructDefinitionPositionCalcVisitor;

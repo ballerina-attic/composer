@@ -26,89 +26,87 @@ import FragmentUtils from '../../utils/fragment-utils';
  * @augments Expression
  */
 class BinaryExpression extends Expression {
-    constructor(args) {
-        super('BinaryExpression');
-        this._operator = _.get(args, 'operator');
-        this._leftExpression = _.get(args, 'leftExpression');
-        this._rightExpression = _.get(args, 'rightExpression');
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: ' ',
-            2: ' ',
-            3: ' '
-        };
-    }
+  constructor(args) {
+    super('BinaryExpression');
+    this._operator = _.get(args, 'operator');
+    this._leftExpression = _.get(args, 'leftExpression');
+    this._rightExpression = _.get(args, 'rightExpression');
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: ' ',
+      2: ' ',
+      3: ' ',
+    };
+  }
 
     /**
      * setting parameters from json
      * @param {Object} jsonNode to initialize from
      */
-    initFromJson(jsonNode) {
-        if(!_.isNil(jsonNode.children[0])){
-            var leftExpression = this.getFactory().createFromJson(jsonNode.children[0]);
-            leftExpression.setParent(this);
-            leftExpression.initFromJson(jsonNode.children[0]);
-            this._leftExpression = leftExpression;
-        }
-        if(!_.isNil(jsonNode.children[1])){
-            var rightExpression = this.getFactory().createFromJson(jsonNode.children[1]);
-            rightExpression.setParent(this);
-            rightExpression.initFromJson(jsonNode.children[1]);
-            this._rightExpression = rightExpression;
-        }
+  initFromJson(jsonNode) {
+    if (!_.isNil(jsonNode.children[0])) {
+      const leftExpression = this.getFactory().createFromJson(jsonNode.children[0]);
+      leftExpression.setParent(this);
+      leftExpression.initFromJson(jsonNode.children[0]);
+      this._leftExpression = leftExpression;
     }
+    if (!_.isNil(jsonNode.children[1])) {
+      const rightExpression = this.getFactory().createFromJson(jsonNode.children[1]);
+      rightExpression.setParent(this);
+      rightExpression.initFromJson(jsonNode.children[1]);
+      this._rightExpression = rightExpression;
+    }
+  }
 
-    setExpressionFromString(expression, callback) {
-        if(!_.isNil(expression)){
-            let fragment = FragmentUtils.createExpressionFragment(expression);
-            let parsedJson = FragmentUtils.parseFragment(fragment);
-            if ((!_.has(parsedJson, 'error')
+  setExpressionFromString(expression, callback) {
+    if (!_.isNil(expression)) {
+      const fragment = FragmentUtils.createExpressionFragment(expression);
+      const parsedJson = FragmentUtils.parseFragment(fragment);
+      if ((!_.has(parsedJson, 'error')
                     || !_.has(parsedJson, 'syntax_errors'))) {
-                this.initFromJson(parsedJson);
-                if (_.isFunction(callback)) {
-                    callback({isValid: true});
-                }
-            } else {
-                if (_.isFunction(callback)) {
-                    callback({isValid: false, response: parsedJson});
-                }
-            }
+        this.initFromJson(parsedJson);
+        if (_.isFunction(callback)) {
+          callback({ isValid: true });
         }
+      } else if (_.isFunction(callback)) {
+        callback({ isValid: false, response: parsedJson });
+      }
     }
+  }
 
-    getExpressionString() {
-        let expressionString = '';
-        expressionString += (!_.isNil(this.getLeftExpression()))
+  getExpressionString() {
+    let expressionString = '';
+    expressionString += (!_.isNil(this.getLeftExpression()))
                 ? this.getLeftExpression().getExpressionString() : '';
-        expressionString += this._operator + this.getWSRegion(2);
-        expressionString += (!_.isNil(this.getRightExpression()))
+    expressionString += this._operator + this.getWSRegion(2);
+    expressionString += (!_.isNil(this.getRightExpression()))
                 ? this.getRightExpression().getExpressionString() : '';
-        return expressionString;
-    }
+    return expressionString;
+  }
 
-    setOperator(operator) {
-        this._operator = operator;
-    }
+  setOperator(operator) {
+    this._operator = operator;
+  }
 
-    getOperator() {
-        return this._operator;
-    }
+  getOperator() {
+    return this._operator;
+  }
 
-    setLeftExpression(leftExpression) {
-        this._leftExpression = leftExpression;
-    }
+  setLeftExpression(leftExpression) {
+    this._leftExpression = leftExpression;
+  }
 
-    getLeftExpression() {
-        return this._leftExpression;
-    }
+  getLeftExpression() {
+    return this._leftExpression;
+  }
 
-    setRightExpression(rightExpression) {
-        this._rightExpression = rightExpression;
-    }
+  setRightExpression(rightExpression) {
+    this._rightExpression = rightExpression;
+  }
 
-    getRightExpression() {
-        return this._rightExpression;
-    }
+  getRightExpression() {
+    return this._rightExpression;
+  }
 }
 
 export default BinaryExpression;

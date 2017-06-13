@@ -21,19 +21,19 @@ import * as PositioningUtils from './utils';
 
 class CommentStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-    }
+  endVisit(node) {
+  }
 }
 
 export default CommentStatementPositionCalcVisitor;

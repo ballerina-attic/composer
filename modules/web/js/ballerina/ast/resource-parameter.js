@@ -29,67 +29,67 @@ import Argument from './argument';
  * @augments Argument
  */
 class ResourceParameter extends Argument {
-    constructor(args) {
-        super(args);
-        this.annotationType = _.get(args, "annotationType");
-        this.annotationText = _.get(args, "annotationText");
-        this.type = "ResourceParameter";
-    }
+  constructor(args) {
+    super(args);
+    this.annotationType = _.get(args, 'annotationType');
+    this.annotationText = _.get(args, 'annotationText');
+    this.type = 'ResourceParameter';
+  }
 
-    setAnnotationType(annotationType, options) {
-        this.setAttribute('annotationType', annotationType, options);
-    }
+  setAnnotationType(annotationType, options) {
+    this.setAttribute('annotationType', annotationType, options);
+  }
 
-    getAnnotationType() {
-        return this.annotationType;
-    }
+  getAnnotationType() {
+    return this.annotationType;
+  }
 
-    setAnnotationText(annotationText, options) {
-        this.setAttribute('annotationText', annotationText, options);
-    }
+  setAnnotationText(annotationText, options) {
+    this.setAttribute('annotationText', annotationText, options);
+  }
 
-    getAnnotationText() {
-        return this.annotationText;
-    }
+  getAnnotationText() {
+    return this.annotationText;
+  }
 
     /**
      * Gets a string representation of the current parameter.
      * @return {string} - String representation.
      */
-    getParameterAsString() {
-        var paramAsString = !_.isUndefined(this.getAnnotationType()) ? this.getAnnotationType() : "";
-        paramAsString += !_.isUndefined(this.getAnnotationText()) && !_.isEmpty(this.getAnnotationText()) ?
-        "{value:\"" + this.getAnnotationText() + "\"} " : "";
-        paramAsString += "" + this.getBType() + " ";
-        paramAsString += this.getIdentifier();
+  getParameterAsString() {
+    let paramAsString = !_.isUndefined(this.getAnnotationType()) ? this.getAnnotationType() : '';
+    paramAsString += !_.isUndefined(this.getAnnotationText()) && !_.isEmpty(this.getAnnotationText()) ?
+        `{value:"${this.getAnnotationText()}"} ` : '';
+    paramAsString += `${this.getBType()} `;
+    paramAsString += this.getIdentifier();
 
-        return paramAsString.trim();
-    }
+    return paramAsString.trim();
+  }
 
     /**
      * Gets the supported annotations for a path param.
      * @return {string[]} - The supported annotations for a resource param.
      * @static
      */
-    static getSupportedAnnotations() {
-        return ["@http:PathParam", "@http:QueryParam"/*, "@HeaderParam", "@FormParam", "@Body"*/];
-    }
+  static getSupportedAnnotations() {
+    return ['@http:PathParam', '@http:QueryParam'/* , "@HeaderParam", "@FormParam", "@Body"*/];
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        this.setBType(jsonNode.parameter_type, {doSilently: true});
-        this.setIdentifier(jsonNode.parameter_name, {doSilently: true});
+  initFromJson(jsonNode) {
+    this.setBType(jsonNode.parameter_type, { doSilently: true });
+    this.setIdentifier(jsonNode.parameter_name, { doSilently: true });
 
         // As of now we only support one annotation.
-        if (_.isEqual(_.size(jsonNode.children), 1) && _.isEqual(jsonNode.children[0].type, 'annotation_attachment')) {
-            var annotationJson = jsonNode.children[0];
-            this.setAnnotationType('@' + annotationJson.annotation_package_name + ':' + annotationJson.annotation_name, {doSilently: true});
-            this.setAnnotationText(annotationJson.children[0].value, {doSilently: true});
-        }
+    if (_.isEqual(_.size(jsonNode.children), 1) && _.isEqual(jsonNode.children[0].type, 'annotation_attachment')) {
+      const annotationJson = jsonNode.children[0];
+      this.setAnnotationType(`@${annotationJson.annotation_package_name}:${annotationJson.annotation_name}`, { doSilently: true });
+      this.setAnnotationText(annotationJson.children[0].value, { doSilently: true });
     }
+  }
 }
 
 export default ResourceParameter;

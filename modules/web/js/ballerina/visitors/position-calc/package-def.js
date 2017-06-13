@@ -21,27 +21,27 @@ import * as Utils from './utils';
 
 class PackageDefinitionPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit FunctionInvocationStatementPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit FunctionInvocationStatementPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit FunctionInvocationStatementPositionCalc');
-        let viewSate = node.getViewState();
-        let bBox = viewSate.bBox;
+  beginVisit(node) {
+    log.debug('begin visit FunctionInvocationStatementPositionCalc');
+    const viewSate = node.getViewState();
+    const bBox = viewSate.bBox;
 
-        bBox.x = 50;
-        bBox.y = 20;
-    }
+    bBox.x = 50;
+    bBox.y = 20;
+  }
 
-    visit(node) {
-        log.debug('visit FunctionInvocationStatementPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit FunctionInvocationStatementPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit FunctionInvocationStatementPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit FunctionInvocationStatementPositionCalc');
+  }
 }
 
 export default PackageDefinitionPositionCalcVisitor;

@@ -25,17 +25,17 @@ import EnableDefaultWSVisitor from './../visitors/source-gen/enable-default-ws-v
 import 'brace';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
-var ace = global.ace;
-var Range = ace.acequire('ace/range').Range;
+let ace = global.ace;
+let Range = ace.acequire('ace/range').Range;
 
 // require possible themes
 function requireAll(requireContext) {
-    return requireContext.keys().map(requireContext);
+  return requireContext.keys().map(requireContext);
 }
 requireAll(require.context('ace', false, /theme-/));
 
 // require ballerina mode
-var mode = ace.acequire('ace/mode/ballerina');
+let mode = ace.acequire('ace/mode/ballerina');
 
 /**
  * @class SourceView
@@ -47,67 +47,67 @@ var mode = ace.acequire('ace/mode/ballerina');
  * @param {String} [args.content] - initial content for the editor
  */
 class SourceView extends EventChannel {
-    constructor(args) {
-        super();
-        this._options = args;
-        if(!_.has(args, 'container')){
-            log.error('container is not specified for rendering source view.');
+  constructor(args) {
+      super();
+      this._options = args;
+      if (!_.has(args, 'container')) {
+          log.error('container is not specified for rendering source view.');
         }
-        this._container = _.get(args, 'container');
-        this._content = _.get(args, 'content');
-        this._fileEditor = _.get(args, 'fileEditor');
-        this._debugger = _.get(args, 'debugger', undefined);
-        this._markers = {};
-        this._gutter = 25;
-        this._storage = _.get(args, 'storage');
+      this._container = _.get(args, 'container');
+      this._content = _.get(args, 'content');
+      this._fileEditor = _.get(args, 'fileEditor');
+      this._debugger = _.get(args, 'debugger', undefined);
+      this._markers = {};
+      this._gutter = 25;
+      this._storage = _.get(args, 'storage');
     }
 
-    render() {
-        var self = this;
-        this._editor = ace.edit(this._container);
-        var mode = ace.acequire(_.get(this._options, 'mode')).Mode;
-        this._editor.getSession().setMode(_.get(this._options, 'mode'));
-        //Avoiding ace warning
-        this._editor.$blockScrolling = Infinity;
-        var editorThemeName = (this._storage.get('pref:sourceViewTheme') !== null) ? this._storage.get('pref:sourceViewTheme')
+  render() {
+      var self = this;
+      this._editor = ace.edit(this._container);
+      var mode = ace.acequire(_.get(this._options, 'mode')).Mode;
+      this._editor.getSession().setMode(_.get(this._options, 'mode'));
+        // Avoiding ace warning
+      this._editor.$blockScrolling = Infinity;
+      var editorThemeName = (this._storage.get('pref:sourceViewTheme') !== null) ? this._storage.get('pref:sourceViewTheme')
             : _.get(this._options, 'theme');
-        var editorFontSize = (this._storage.get('pref:sourceViewFontSize') !== null) ? this._storage.get('pref:sourceViewFontSize')
+      var editorFontSize = (this._storage.get('pref:sourceViewFontSize') !== null) ? this._storage.get('pref:sourceViewFontSize')
             : _.get(this._options, 'font_size');
 
-        var editorTheme = ace.acequire(editorThemeName);
+      var editorTheme = ace.acequire(editorThemeName);
 
-        this._editor.setTheme(editorTheme);
-        this._editor.setFontSize(editorFontSize);
-        this._editor.setOptions({
-            enableBasicAutocompletion:true
+      this._editor.setTheme(editorTheme);
+      this._editor.setFontSize(editorFontSize);
+      this._editor.setOptions({
+          enableBasicAutocompletion: true,
         });
-        this._editor.setBehavioursEnabled(true);
-        //bind auto complete to key press
-        this._editor.commands.on('afterExec', function(e){
-            if (e.command.name === 'insertstring'&&/^[\w.]$/.test(e.args)) {
-                self._editor.execCommand('startAutocomplete');
+      this._editor.setBehavioursEnabled(true);
+        // bind auto complete to key press
+      this._editor.commands.on('afterExec', (e) => {
+          if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
+              self._editor.execCommand('startAutocomplete');
             }
         });
 
-        this._editor.getSession().setValue(this._content);
-        this._editor.renderer.setScrollMargin(_.get(this._options, 'scroll_margin'), _.get(this._options, 'scroll_margin'));
-        this._editor.on('change', function(event) {
-            if(!self._inSilentMode){
-                var changeEvent = {
-                    type: 'source-modified',
-                    title: 'Modify source',
-                    data: {
-                        type: event.action,
-                        lines: event.lines
-                    }
+      this._editor.getSession().setValue(this._content);
+      this._editor.renderer.setScrollMargin(_.get(this._options, 'scroll_margin'), _.get(this._options, 'scroll_margin'));
+      this._editor.on('change', (event) => {
+          if (!self._inSilentMode) {
+              var changeEvent = {
+                  type: 'source-modified',
+                  title: 'Modify source',
+                  data: {
+                      type: event.action,
+                      lines: event.lines,
+                    },
                 };
-                self.trigger('modified', changeEvent);
+              self.trigger('modified', changeEvent);
             }
         });
 
-        //register actions
-        if(this._debugger !== undefined && this._debugger.isEnabled()){
-            this._editor.on('guttermousedown', _.bind(this.toggleDebugPoints, this));
+        // register actions
+      if (this._debugger !== undefined && this._debugger.isEnabled()) {
+          this._editor.on('guttermousedown', _.bind(this.toggleDebugPoints, this));
         }
     }
 
@@ -116,20 +116,20 @@ class SourceView extends EventChannel {
      * @param {String} content - content for the editor.
      *
      */
-    setContent(content) {
+  setContent(content) {
         // avoid triggering change event on format
-        this._inSilentMode = true;
-        this._editor.session.setValue(content);
-        this._inSilentMode = false;
-        this.markClean();
+      this._inSilentMode = true;
+      this._editor.session.setValue(content);
+      this._inSilentMode = false;
+      this.markClean();
     }
 
-    getContent() {
-        return this._editor.session.getValue();
+  getContent() {
+      return this._editor.session.getValue();
     }
 
-    getEditor() {
-        return this._editor;
+  getEditor() {
+      return this._editor;
     }
 
     /**
@@ -144,136 +144,132 @@ class SourceView extends EventChannel {
      * @param command.shortcuts.other {Object}
      * @param command.shortcuts.other.key {String} key combination for other platforms eg. 'Ctrl+N'
      */
-    bindCommand(command) {
-        var id = command.id,
-            hasShortcut = _.has(command, 'shortcuts'),
-            self = this;
-        if(hasShortcut){
-            var macShortcut = _.replace(command.shortcuts.mac.key, '+', '-'),
-                winShortcut = _.replace(command.shortcuts.other.key, '+', '-');
-            this.getEditor().commands.addCommand({
-                name: id,
-                bindKey: {win: winShortcut, mac: macShortcut},
-                exec: function() {
-                    self.trigger('dispatch-command', id);
-                }
+  bindCommand(command) {
+      var id = command.id,
+          hasShortcut = _.has(command, 'shortcuts'),
+          self = this;
+      if (hasShortcut) {
+          var macShortcut = _.replace(command.shortcuts.mac.key, '+', '-'),
+              winShortcut = _.replace(command.shortcuts.other.key, '+', '-');
+          this.getEditor().commands.addCommand({
+              name: id,
+              bindKey: { win: winShortcut, mac: macShortcut },
+              exec: function () {
+                  self.trigger('dispatch-command', id);
+                },
             });
         }
     }
 
-    show() {
-        $(this._container).show();
+  show() {
+      $(this._container).show();
     }
 
-    hide() {
-        $(this._container).hide();
+  hide() {
+      $(this._container).hide();
     }
 
-    isVisible() {
-        return  $(this._container).is(':visible');
+  isVisible() {
+      return $(this._container).is(':visible');
     }
 
-    format(doSilently) {
-        let  parserRes = this._fileEditor.parserBackend.parse(
-            {
-                name: this._fileEditor.getFile().getName(),
-                path: this._fileEditor.getFile().getPath(),
-                content: this._editor.getSession().getValue(),
-                package: 'Current Package'
-            }
+  format(doSilently) {
+      let parserRes = this._fileEditor.parserBackend.parse(
+          {
+            name: this._fileEditor.getFile().getName(),
+            path: this._fileEditor.getFile().getPath(),
+            content: this._editor.getSession().getValue(),
+            package: 'Current Package',
+          },
         );
-        if (parserRes.error && !_.isEmpty(parserRes.message)) {
-            alerts.error('Cannot format due to syntax errors : ' + parserRes.message);
-            return;
+      if (parserRes.error && !_.isEmpty(parserRes.message)) {
+          alerts.error(`Cannot format due to syntax errors : ${  parserRes.message}`);
+          return;
         }
-        let ast = this._fileEditor.deserializer.getASTModel(parserRes);
-        let enableDefaultWSVisitor = new EnableDefaultWSVisitor();
-        ast.accept(enableDefaultWSVisitor);
-        let sourceGenVisitor = new SourceGenVisitor();
-        ast.accept(sourceGenVisitor);
-        let formattedContent =  sourceGenVisitor.getGeneratedSource();
-        let session = this._editor.getSession();
-        let contentRange = new Range(0, 0, session.getLength(), session.getRowLength(session.getLength()));
-        session.replace(contentRange, formattedContent);
+      let ast = this._fileEditor.deserializer.getASTModel(parserRes);
+      let enableDefaultWSVisitor = new EnableDefaultWSVisitor();
+      ast.accept(enableDefaultWSVisitor);
+      let sourceGenVisitor = new SourceGenVisitor();
+      ast.accept(sourceGenVisitor);
+      let formattedContent = sourceGenVisitor.getGeneratedSource();
+      let session = this._editor.getSession();
+      let contentRange = new Range(0, 0, session.getLength(), session.getRowLength(session.getLength()));
+      session.replace(contentRange, formattedContent);
     }
 
-    //dbeugger related functions.
+    // dbeugger related functions.
 
-    toggleDebugPoints(e) {
-        var target = e.domEvent.target;
-        if (target.className.indexOf('ace_gutter-cell') === -1)
-            return;
-        if (!this._editor.isFocused())
-            return;
-        if (e.clientX > this._gutter + target.getBoundingClientRect().left)
-            return;
+  toggleDebugPoints(e) {
+      var target = e.domEvent.target;
+      if (target.className.indexOf('ace_gutter-cell') === -1)
+          return;
+      if (!this._editor.isFocused())
+          return;
+      if (e.clientX > this._gutter + target.getBoundingClientRect().left)
+          return;
 
 
-        var breakpoints = e.editor.session.getBreakpoints(row, 0);
-        var row = e.getDocumentPosition().row;
-        if(_.isUndefined(breakpoints[row])){
-            e.editor.session.setBreakpoint(row);
+      var breakpoints = e.editor.session.getBreakpoints(row, 0);
+      var row = e.getDocumentPosition().row;
+      if (_.isUndefined(breakpoints[row])) {
+          e.editor.session.setBreakpoint(row);
         } else {
-            this._editor.getSession().removeMarker(this._markers[row]);
-            e.editor.session.clearBreakpoint(row);
+          this._editor.getSession().removeMarker(this._markers[row]);
+          e.editor.session.clearBreakpoint(row);
         }
-        e.stop();
-        this.trigger('breakpoints-updated');
+      e.stop();
+      this.trigger('breakpoints-updated');
     }
 
-    debugHit(position) {
-        this.debugPointMarker = this._editor.getSession().addMarker(new Range(position.lineNumber - 1, 0, position.lineNumber - 1, 2000), 'debug-point-hit', 'line', true);
+  debugHit(position) {
+      this.debugPointMarker = this._editor.getSession().addMarker(new Range(position.lineNumber - 1, 0, position.lineNumber - 1, 2000), 'debug-point-hit', 'line', true);
     }
 
-    clearExistingDebugHit() {
-        if(this.debugPointMarker !== undefined){
-            this._editor.getSession().removeMarker(this.debugPointMarker);
+  clearExistingDebugHit() {
+      if (this.debugPointMarker !== undefined) {
+          this._editor.getSession().removeMarker(this.debugPointMarker);
         }
     }
 
-    isClean() {
-        return this._editor.getSession().getUndoManager().isClean();
+  isClean() {
+      return this._editor.getSession().getUndoManager().isClean();
     }
 
-    undo() {
-        return this._editor.getSession().getUndoManager().undo();
+  undo() {
+      return this._editor.getSession().getUndoManager().undo();
     }
 
-    redo() {
-        return this._editor.getSession().getUndoManager().redo();
+  redo() {
+      return this._editor.getSession().getUndoManager().redo();
     }
 
-    markClean() {
-        this._editor.getSession().getUndoManager().markClean();
+  markClean() {
+      this._editor.getSession().getUndoManager().markClean();
     }
 
-    jumpToLine({expression=''}) {
+  jumpToLine({expression=''}) {
         var range = this._editor.find(expression.trim() , {
             regExp:false,
         });
         if(!range) {
-            return;
+            
         }
     }
 
-    setBreakpoints(breakpoints = []) {
+  setBreakpoints(breakpoints = []) {
         // ace editor breakpoints counts from 0;
-        var sourceViewBreakPoints = breakpoints.map( breakpoint => {
-            return breakpoint - 1;
-        });
-        this._editor.getSession().setBreakpoints(sourceViewBreakPoints);
+      var sourceViewBreakPoints = breakpoints.map(breakpoint => breakpoint - 1);
+      this._editor.getSession().setBreakpoints(sourceViewBreakPoints);
     }
 
-    getBreakpoints() {
-        const sourceViewBreakPointRows = this._editor.getSession().getBreakpoints() || [];
-        const sourceViewBreakPoints = sourceViewBreakPointRows.map( (value, row) => {
-            return row + 1;
-        });
-        return sourceViewBreakPoints;
+  getBreakpoints() {
+      const sourceViewBreakPointRows = this._editor.getSession().getBreakpoints() || [];
+      const sourceViewBreakPoints = sourceViewBreakPointRows.map((value, row) => row + 1);
+      return sourceViewBreakPoints;
     }
 
-    resize(){
-        this._editor.resize();
+  resize() {
+      this._editor.resize();
     }
 }
 

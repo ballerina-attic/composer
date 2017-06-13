@@ -28,53 +28,53 @@ import ASTNode from './node';
  * @constructor
  */
 class CallableDefinition extends ASTNode {
-    constructor(args) {
-        super(args);
-        this.connectionDeclarations = [];
-        this.variableDeclarations = [];
-        this.workerDeclarations = [];
-        this.statements = [];
-    }
+  constructor(args) {
+    super(args);
+    this.connectionDeclarations = [];
+    this.variableDeclarations = [];
+    this.workerDeclarations = [];
+    this.statements = [];
+  }
 
-    setConnectionDeclarations(connectionDeclarations, options) {
-        if (!_.isNil(connectionDeclarations)) {
-            this.setAttribute('connectionDeclarations', connectionDeclarations, options);
-        }
+  setConnectionDeclarations(connectionDeclarations, options) {
+    if (!_.isNil(connectionDeclarations)) {
+      this.setAttribute('connectionDeclarations', connectionDeclarations, options);
     }
+  }
 
-    setVariableDeclarations(variableDeclarations, options) {
-        if (!_.isNil(variableDeclarations)) {
-            this.setAttribute('variableDeclarations', variableDeclarations, options);
-        }
+  setVariableDeclarations(variableDeclarations, options) {
+    if (!_.isNil(variableDeclarations)) {
+      this.setAttribute('variableDeclarations', variableDeclarations, options);
     }
+  }
 
-    setWorkerDeclarations(workerDeclarations, options) {
-        if (!_.isNil(workerDeclarations)) {
-            this.setAttribute('workerDeclarations', workerDeclarations, options);
-        }
+  setWorkerDeclarations(workerDeclarations, options) {
+    if (!_.isNil(workerDeclarations)) {
+      this.setAttribute('workerDeclarations', workerDeclarations, options);
     }
+  }
 
-    setStatements(statements, options) {
-        if (!_.isNil(statements)) {
-            this.setAttribute('statements', statements, options);
-        }
+  setStatements(statements, options) {
+    if (!_.isNil(statements)) {
+      this.setAttribute('statements', statements, options);
     }
+  }
 
-    getConnectionDeclarations() {
-        return this.connectionDeclarations;
-    }
+  getConnectionDeclarations() {
+    return this.connectionDeclarations;
+  }
 
-    getVariableDeclarations() {
-        return this.variableDeclarations;
-    }
+  getVariableDeclarations() {
+    return this.variableDeclarations;
+  }
 
-    getWorkerDeclarations() {
-        return this.workerDeclarations;
-    }
+  getWorkerDeclarations() {
+    return this.workerDeclarations;
+  }
 
-    getStatements() {
-        return this.statements;
-    }
+  getStatements() {
+    return this.statements;
+  }
 }
 
 export default CallableDefinition;

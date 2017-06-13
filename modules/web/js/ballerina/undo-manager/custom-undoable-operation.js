@@ -26,28 +26,28 @@ import UndoableOperation from './undoable-operation';
  * @constructor
  */
 class CustomUndoableOperation extends UndoableOperation {
-    constructor(args) {
-        super(args);
-        this._callBackContext = _.get(args, 'context');
-        this._undoCallBack = _.get(args, 'undo');
-        this._redoCallBack = _.get(args, 'redo');
-    }
+  constructor(args) {
+    super(args);
+    this._callBackContext = _.get(args, 'context');
+    this._undoCallBack = _.get(args, 'undo');
+    this._redoCallBack = _.get(args, 'redo');
+  }
 
-    undo() {
-        if(this.canUndo()){
-            this._undoCallBack.call(this._callBackContext);
-            this.getEditor().trigger('content-modified');
-            this.getEditor().trigger('update-diagram');
-        }
+  undo() {
+    if (this.canUndo()) {
+      this._undoCallBack.call(this._callBackContext);
+      this.getEditor().trigger('content-modified');
+      this.getEditor().trigger('update-diagram');
     }
+  }
 
-    redo() {
-        if(this.canRedo()) {
-            this._redoCallBack.call(this._callBackContext);
-            this.getEditor().trigger('content-modified');
-            this.getEditor().trigger('update-diagram');
-        }
+  redo() {
+    if (this.canRedo()) {
+      this._redoCallBack.call(this._callBackContext);
+      this.getEditor().trigger('content-modified');
+      this.getEditor().trigger('update-diagram');
     }
+  }
 }
 
 export default CustomUndoableOperation;

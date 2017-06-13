@@ -25,60 +25,60 @@ import Statement from './statement';
  * @constructor
  */
 class ReturnStatement extends Statement {
-    constructor(args) {
-        super();
-        this._expression = _.get(args, 'expression', '');
-        this.type = "ReturnStatement";
-        this.whiteSpace.defaultDescriptor.regions = {
-            0: '',
-            1: ' ',
-            2: '',
-            3: '\n'
-        };
-    }
+  constructor(args) {
+    super();
+    this._expression = _.get(args, 'expression', '');
+    this.type = 'ReturnStatement';
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: ' ',
+      2: '',
+      3: '\n',
+    };
+  }
 
-    setExpression(expression, options) {
-        if (!_.isNil(expression)) {
-            this.setAttribute('_expression', expression, options);
-        } else {
-            log.error("Cannot set undefined to the return statement.");
-        }
+  setExpression(expression, options) {
+    if (!_.isNil(expression)) {
+      this.setAttribute('_expression', expression, options);
+    } else {
+      log.error('Cannot set undefined to the return statement.');
     }
+  }
 
-    canBeAChildOf(node) {
-        return this.getFactory().isFunctionDefinition(node) ||
+  canBeAChildOf(node) {
+    return this.getFactory().isFunctionDefinition(node) ||
                this.getFactory().isConnectorAction(node) ||
             this.getFactory().isStatement(node);
-    }
+  }
 
-    getReturnExpression() {
-        return 'return' + this.getWSRegion(1) + this.getExpression();
-    }
+  getReturnExpression() {
+    return `return${this.getWSRegion(1)}${this.getExpression()}`;
+  }
 
-    getExpression() {
-        return this._expression;
-    }
+  getExpression() {
+    return this._expression;
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
-        var self = this;
-        var expression = "";
+  initFromJson(jsonNode) {
+    const self = this;
+    let expression = '';
 
-        for (var itr = 0; itr < jsonNode.children.length; itr++) {
-            var childJsonNode = jsonNode.children[itr];
-            var child = self.getFactory().createFromJson(childJsonNode);
-            child.initFromJson(childJsonNode);
-            expression += child.getExpressionString();
+    for (let itr = 0; itr < jsonNode.children.length; itr++) {
+      const childJsonNode = jsonNode.children[itr];
+      const child = self.getFactory().createFromJson(childJsonNode);
+      child.initFromJson(childJsonNode);
+      expression += child.getExpressionString();
 
-            if (itr !== jsonNode.children.length - 1) {
-                expression += ",";
-            }
-        }
-        this.setExpression(expression, {doSilently: true});
+      if (itr !== jsonNode.children.length - 1) {
+        expression += ',';
+      }
     }
+    this.setExpression(expression, { doSilently: true });
+  }
 }
 
 export default ReturnStatement;

@@ -35,21 +35,21 @@
  */
 class ImportDeclarationDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        let viewState = node.getViewState();
-        viewState.bBox.h = 0;
-        viewState.bBox.w = 0;
-    }
+  endVisit(node) {
+    const viewState = node.getViewState();
+    viewState.bBox.h = 0;
+    viewState.bBox.w = 0;
+  }
 }
 
 export default ImportDeclarationDimensionCalculatorVisitor;

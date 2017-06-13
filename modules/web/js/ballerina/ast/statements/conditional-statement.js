@@ -27,39 +27,38 @@ import Expression from './../expressions/expression';
  * @constructor
  */
 class ConditionalStatement extends Statement {
-    constructor(condition, statements) {
-        super();
-        this._condition = condition || "true";
-        this._statments = statements || [];
-        this.type = "ConditionalStatement";
-    }
+  constructor(condition, statements) {
+    super();
+    this._condition = condition || 'true';
+    this._statments = statements || [];
+    this.type = 'ConditionalStatement';
+  }
 
-    setCondition(condition, options) {
-        if (!_.isNil(condition) && condition instanceof Expression) {
-            this.setAttribute('_condition', condition, options);
-        } else {
-            log.error("Invalid value for condition received: " + condition);
-        }
+  setCondition(condition, options) {
+    if (!_.isNil(condition) && condition instanceof Expression) {
+      this.setAttribute('_condition', condition, options);
+    } else {
+      log.error(`Invalid value for condition received: ${condition}`);
     }
+  }
 
-    getCondition() {
-        return this._condition;
-    }
+  getCondition() {
+    return this._condition;
+  }
 
-    setStatements(statements, options) {
+  setStatements(statements, options) {
         // There should be atleast one statement.
-        if (!_.isNil(statements)) {
-            this.setAttribute('_statments', statements, options);
-        } else {
-            log.error("Cannot set undefined array of statements.");
-        }
+    if (!_.isNil(statements)) {
+      this.setAttribute('_statments', statements, options);
+    } else {
+      log.error('Cannot set undefined array of statements.');
     }
+  }
 
-    getStatements() {
-        return this._statments;
-    }
+  getStatements() {
+    return this._statments;
+  }
 }
 
 export default ConditionalStatement;
-
 

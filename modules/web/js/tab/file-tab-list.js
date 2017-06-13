@@ -22,206 +22,201 @@ import TabList from './tab-list';
 import FileTab from './file-tab';
 import File from '../workspace/file';
 
-var FileTabList = TabList.extend(
+const FileTabList = TabList.extend(
     /** @lends FileTabList.prototype */
-    {
+  {
         /**
          * @augments FileTabList
          * @constructs
          * @class FileTabList represents service tab list.
          */
-        initialize: function (options) {
-            _.set(options, 'tabModel', FileTab);
-            TabList.prototype.initialize.call(this, options);
-            var lastWorkedFiles = this.getBrowserStorage().get('workingFileSet');
-            this._workingFileSet = [];
-            var self = this;
-            if(!_.isNil(lastWorkedFiles)){
-                lastWorkedFiles.forEach(function(fileID){
-                    self._workingFileSet.push(fileID);
-                });
-            }
-            var commandManager = _.get(this, 'options.application.commandManager');
-            var optionsNextTab = {
-                shortcuts: {
-                    mac: {
-                        key: "command+right",
-                        label: "\u2318\u2192"
-                    },
-                    other: {
-                        key: "ctrl+right",
-                        label: "Ctrl+Right"
-                    }
-                }
-            };
-            commandManager.registerCommand("next-tab", optionsNextTab);
-            commandManager.registerHandler("next-tab", this.goToNextTab, this);
-            var optionsPrevTab = {
-                shortcuts: {
-                    mac: {
-                        key: "command+left",
-                        label: "\u2318\u2190"
-                    },
-                    other: {
-                        key: "ctrl+left",
-                        label: "Ctrl+Left"
-                    }
-                }
-            };
-            commandManager.registerCommand("previous-tab", optionsPrevTab);
-            commandManager.registerHandler("previous-tab", this.goToPreviousTab, this);
+    initialize(options) {
+      _.set(options, 'tabModel', FileTab);
+      TabList.prototype.initialize.call(this, options);
+      const lastWorkedFiles = this.getBrowserStorage().get('workingFileSet');
+      this._workingFileSet = [];
+      const self = this;
+      if (!_.isNil(lastWorkedFiles)) {
+        lastWorkedFiles.forEach((fileID) => {
+          self._workingFileSet.push(fileID);
+        });
+      }
+      const commandManager = _.get(this, 'options.application.commandManager');
+      const optionsNextTab = {
+        shortcuts: {
+          mac: {
+            key: 'command+right',
+            label: '\u2318\u2192',
+          },
+          other: {
+            key: 'ctrl+right',
+            label: 'Ctrl+Right',
+          },
         },
-        render: function() {
-            TabList.prototype.render.call(this);
-            if(!_.isEmpty(this._workingFileSet)){
-                var self = this;
-                var activeTabId = this.getBrowserStorage().get('activeTab');
-                this._workingFileSet.forEach(function(fileID){
-                    var fileData = self.getBrowserStorage().get(fileID);
-                    var file = new File(fileData, {storage:self.getBrowserStorage()});
-                    var tab = self.newTab(_.set({}, 'tabOptions.file', file));
-                    tab.updateHeader();
-                });
-
-                if(!_.isUndefined(activeTabId)){
-                    var activeTab = _.find(this.getTabList(), function(t){
-                        return t.cid === activeTabId;
-                    });
-                    if(!_.isUndefined(activeTab)){
-                        this.setActiveTab(activeTab);
-                    }
-                }
-            }
+      };
+      commandManager.registerCommand('next-tab', optionsNextTab);
+      commandManager.registerHandler('next-tab', this.goToNextTab, this);
+      const optionsPrevTab = {
+        shortcuts: {
+          mac: {
+            key: 'command+left',
+            label: '\u2318\u2190',
+          },
+          other: {
+            key: 'ctrl+left',
+            label: 'Ctrl+Left',
+          },
         },
-        setActiveTab: function(tab) {
-            $('#transformOverlay').remove();
-            TabList.prototype.setActiveTab.call(this, tab);
-        },
-        addTab: function(tab) {
-            TabList.prototype.addTab.call(this, tab);
-            // avoid re-addition of init time files
-            if(tab instanceof FileTab && !_.includes(this._workingFileSet, tab.getFile().id)){
-                tab.getFile().save();
-                this._workingFileSet.push(tab.getFile().id);
-                this.getBrowserStorage().put('workingFileSet', this._workingFileSet);
-            }
-            $('[data-toggle="tooltip"]').tooltip();
-        },
+      };
+      commandManager.registerCommand('previous-tab', optionsPrevTab);
+      commandManager.registerHandler('previous-tab', this.goToPreviousTab, this);
+    },
+    render() {
+      TabList.prototype.render.call(this);
+      if (!_.isEmpty(this._workingFileSet)) {
+        const self = this;
+        const activeTabId = this.getBrowserStorage().get('activeTab');
+        this._workingFileSet.forEach((fileID) => {
+          const fileData = self.getBrowserStorage().get(fileID);
+          const file = new File(fileData, { storage: self.getBrowserStorage() });
+          const tab = self.newTab(_.set({}, 'tabOptions.file', file));
+          tab.updateHeader();
+        });
 
-        removeTab: function (tab) {
-            var commandManager = _.get(this, 'options.application.commandManager');
-            var self = this;
-            var remove = function() {
-                TabList.prototype.removeTab.call(self, tab);
-                if(tab instanceof FileTab) {
-                    _.remove(self._workingFileSet, function(fileID){
-                        return _.isEqual(fileID, tab.getFile().id);
-                    });
-                    tab.trigger('tab-removed');
-                    self.getBrowserStorage().destroy(tab.getFile());
-                    self.getBrowserStorage().put('workingFileSet', self._workingFileSet);
-                  // open welcome page upon last tab close
-                    if(_.isEmpty(self.getTabList())){
-                        var commandManager = _.get(self, 'options.application.commandManager');
-                        commandManager.dispatch("go-to-welcome-page");
-                    }
-                }
-
-            };
-
-            if(!_.isFunction(tab.getFile)){
-                remove();
-                return;
-            }
-
-            var file = tab.getFile();
-            if(file.isPersisted() && !file.isDirty()){
-                // if file is not dirty no need to ask for confirmation
-                remove();
-                return;
-            }
-
-            if(!file.isPersisted() && _.isEmpty(file.getContent())){
-                // if file is not dirty no need to ask for confirmation
-                remove();
-                return;
-            }
-
-            var handleConfirm = function(shouldSave) {
-                if(shouldSave) {
-                    var done = function(saved) {
-                        if(saved) {
-                            remove();
-                        }
-                        // saved is false if cancelled. Then don't close the tab
-                    };
-                    commandManager.dispatch('save', {callback: done});
-                } else {
-                    remove();
-                }
-            };
-
-            commandManager.dispatch('open-close-file-confirm-dialog', {
-                file: file,
-                handleConfirm: handleConfirm
-            });
-        },
-
-        newTab: function(opts) {
-            var options = opts || {};
-            if(_.has(options, 'tabOptions.file')){
-                var file = _.get(options, 'tabOptions.file');
-                file.setStorage(this.getBrowserStorage());
-            }
-            var tab = TabList.prototype.newTab.call(this, options);
-            if(tab instanceof FileTab){
-                tab.updateHeader();
-            }
-            $('[data-toggle="tooltip"]').tooltip();
-            return tab;
-        },
-        getBrowserStorage: function(){
-            return _.get(this, 'options.application.browserStorage');
-        },
-        hasFilesInWorkingSet: function(){
-            return !_.isEmpty(this._workingFileSet);
-        },
-        goToNextTab: function(){
-            if(!_.isEmpty(this._tabs)){
-                var nextTabIndex = 0,
-                    currentActiveIndex = _.findIndex(this._tabs, this.activeTab);
-                if(currentActiveIndex >= 0){
-                    if(currentActiveIndex < (this._tabs.length - 1)){
-                        nextTabIndex = currentActiveIndex + 1;
-                    }
-                }
-                var nextTab = _.nth(this._tabs, nextTabIndex);
-                this.setActiveTab(nextTab);
-            }
-        },
-
-        goToPreviousTab: function(){
-            if(!_.isEmpty(this._tabs)){
-                var currentActiveIndex = _.findIndex(this._tabs, this.activeTab),
-                    prevTabIndex = 0;
-                if(currentActiveIndex == 0){
-                    prevTabIndex = this._tabs.length - 1;
-                } else{
-                    prevTabIndex = currentActiveIndex - 1;
-                }
-                var previousTab = _.nth(this._tabs, prevTabIndex);
-                this.setActiveTab(previousTab);
-            }
-        },
-
-        getTabForFile: function(file){
-            return _.find(this._tabs, function(tab){
-                if(tab instanceof FileTab){
-                    var tabFile = tab.getFile();
-                    return _.isEqual(tabFile.getPath(), file.getPath()) &&  _.isEqual(tabFile.getName(), file.getName());
-                }
-            });
+        if (!_.isUndefined(activeTabId)) {
+          const activeTab = _.find(this.getTabList(), t => t.cid === activeTabId);
+          if (!_.isUndefined(activeTab)) {
+            this.setActiveTab(activeTab);
+          }
         }
-    });
+      }
+    },
+    setActiveTab(tab) {
+      $('#transformOverlay').remove();
+      TabList.prototype.setActiveTab.call(this, tab);
+    },
+    addTab(tab) {
+      TabList.prototype.addTab.call(this, tab);
+            // avoid re-addition of init time files
+      if (tab instanceof FileTab && !_.includes(this._workingFileSet, tab.getFile().id)) {
+        tab.getFile().save();
+        this._workingFileSet.push(tab.getFile().id);
+        this.getBrowserStorage().put('workingFileSet', this._workingFileSet);
+      }
+      $('[data-toggle="tooltip"]').tooltip();
+    },
+
+    removeTab(tab) {
+      const commandManager = _.get(this, 'options.application.commandManager');
+      const self = this;
+      const remove = function () {
+        TabList.prototype.removeTab.call(self, tab);
+        if (tab instanceof FileTab) {
+          _.remove(self._workingFileSet, fileID => _.isEqual(fileID, tab.getFile().id));
+          tab.trigger('tab-removed');
+          self.getBrowserStorage().destroy(tab.getFile());
+          self.getBrowserStorage().put('workingFileSet', self._workingFileSet);
+                  // open welcome page upon last tab close
+          if (_.isEmpty(self.getTabList())) {
+            const commandManager = _.get(self, 'options.application.commandManager');
+            commandManager.dispatch('go-to-welcome-page');
+          }
+        }
+      };
+
+      if (!_.isFunction(tab.getFile)) {
+        remove();
+        return;
+      }
+
+      const file = tab.getFile();
+      if (file.isPersisted() && !file.isDirty()) {
+                // if file is not dirty no need to ask for confirmation
+        remove();
+        return;
+      }
+
+      if (!file.isPersisted() && _.isEmpty(file.getContent())) {
+                // if file is not dirty no need to ask for confirmation
+        remove();
+        return;
+      }
+
+      const handleConfirm = function (shouldSave) {
+        if (shouldSave) {
+          const done = function (saved) {
+            if (saved) {
+              remove();
+            }
+                        // saved is false if cancelled. Then don't close the tab
+          };
+          commandManager.dispatch('save', { callback: done });
+        } else {
+          remove();
+        }
+      };
+
+      commandManager.dispatch('open-close-file-confirm-dialog', {
+        file,
+        handleConfirm,
+      });
+    },
+
+    newTab(opts) {
+      const options = opts || {};
+      if (_.has(options, 'tabOptions.file')) {
+        const file = _.get(options, 'tabOptions.file');
+        file.setStorage(this.getBrowserStorage());
+      }
+      const tab = TabList.prototype.newTab.call(this, options);
+      if (tab instanceof FileTab) {
+        tab.updateHeader();
+      }
+      $('[data-toggle="tooltip"]').tooltip();
+      return tab;
+    },
+    getBrowserStorage() {
+      return _.get(this, 'options.application.browserStorage');
+    },
+    hasFilesInWorkingSet() {
+      return !_.isEmpty(this._workingFileSet);
+    },
+    goToNextTab() {
+      if (!_.isEmpty(this._tabs)) {
+        let nextTabIndex = 0,
+          currentActiveIndex = _.findIndex(this._tabs, this.activeTab);
+        if (currentActiveIndex >= 0) {
+          if (currentActiveIndex < (this._tabs.length - 1)) {
+            nextTabIndex = currentActiveIndex + 1;
+          }
+        }
+        const nextTab = _.nth(this._tabs, nextTabIndex);
+        this.setActiveTab(nextTab);
+      }
+    },
+
+    goToPreviousTab() {
+      if (!_.isEmpty(this._tabs)) {
+        let currentActiveIndex = _.findIndex(this._tabs, this.activeTab),
+          prevTabIndex = 0;
+        if (currentActiveIndex == 0) {
+          prevTabIndex = this._tabs.length - 1;
+        } else {
+          prevTabIndex = currentActiveIndex - 1;
+        }
+        const previousTab = _.nth(this._tabs, prevTabIndex);
+        this.setActiveTab(previousTab);
+      }
+    },
+
+    getTabForFile(file) {
+      return _.find(this._tabs, (tab) => {
+        if (tab instanceof FileTab) {
+          const tabFile = tab.getFile();
+          return _.isEqual(tabFile.getPath(), file.getPath()) && _.isEqual(tabFile.getName(), file.getName());
+        }
+      });
+    },
+  });
 
 export default FileTabList;

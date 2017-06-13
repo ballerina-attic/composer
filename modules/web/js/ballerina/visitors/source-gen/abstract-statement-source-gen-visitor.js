@@ -29,54 +29,54 @@ class AbstractStatementSourceGenVisitor extends StatementVisitor {
      * @param parent
      * @constructor
      */
-    constructor(parent) {
-        super();
-        this._generatedSource = '';
-        this.parent = parent;
-        this.indentCount = (parent) ? parent.indentCount : 0;
-    }
+  constructor(parent) {
+    super();
+    this._generatedSource = '';
+    this.parent = parent;
+    this.indentCount = (parent) ? parent.indentCount : 0;
+  }
 
-    indent() {
-        this.indentCount++;
-    }
+  indent() {
+    this.indentCount++;
+  }
 
-    outdent() {
-        this.indentCount--;
-    }
+  outdent() {
+    this.indentCount--;
+  }
 
-    getIndentation() {
-        let indentation = '';
-        for(let i=0; i < this.indentCount; i++) {
-            indentation += '    ';
-        }
-        return indentation;
+  getIndentation() {
+    let indentation = '';
+    for (let i = 0; i < this.indentCount; i++) {
+      indentation += '    ';
     }
+    return indentation;
+  }
 
-    getGeneratedSource() {
-        return this._generatedSource;
-    }
+  getGeneratedSource() {
+    return this._generatedSource;
+  }
 
-    setGeneratedSource(generatedSource) {
-        this._generatedSource = generatedSource;
-    }
+  setGeneratedSource(generatedSource) {
+    this._generatedSource = generatedSource;
+  }
 
-    appendSource(source) {
-        this._generatedSource += source;
-    }
+  appendSource(source) {
+    this._generatedSource += source;
+  }
 
-    getParent() {
-        return this.parent;
-    }
+  getParent() {
+    return this.parent;
+  }
 
-    getCurrentPrecedingIndentation() {
-        return SourceGenUtil.getTailingIndentation(this.getParent().getGeneratedSource());
-    }
+  getCurrentPrecedingIndentation() {
+    return SourceGenUtil.getTailingIndentation(this.getParent().getGeneratedSource());
+  }
 
-    replaceCurrentPrecedingIndentation(newIndentation) {
-        let newContent = SourceGenUtil
+  replaceCurrentPrecedingIndentation(newIndentation) {
+    const newContent = SourceGenUtil
             .replaceTailingIndentation(this.getParent().getGeneratedSource(), newIndentation);
-        this.getParent().setGeneratedSource(newContent);
-    }
+    this.getParent().setGeneratedSource(newContent);
+  }
 }
 
 export default AbstractStatementSourceGenVisitor;

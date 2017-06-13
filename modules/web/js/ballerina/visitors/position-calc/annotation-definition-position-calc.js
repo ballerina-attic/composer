@@ -18,7 +18,7 @@
 
 import log from 'log';
 import * as DesignerDefaults from './../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 import * as PositioningUtils from './utils';
 
 class AnnotationDefinitionPositionCalcVisitor {
@@ -27,28 +27,28 @@ class AnnotationDefinitionPositionCalcVisitor {
      * @param {object} node.
      * @return {boolean}
      * */
-    canVisit(node) {
-        log.debug("can visit AnnotationPositionCalc");
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit AnnotationPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug("begin visit AnnotationPositionCalc");
+  beginVisit(node) {
+    log.debug('begin visit AnnotationPositionCalc');
 
         // populate outer panel BBox position.
-        PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
+    PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
 
         // populate panel heading positioning.
-        PositioningUtils.populatePanelHeadingPositioning(node, this.createPositionForTitleNode);
-    }
+    PositioningUtils.populatePanelHeadingPositioning(node, this.createPositionForTitleNode);
+  }
 
-    visit(node) {
-        log.debug('visit AnnotationPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit AnnotationPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit AnnotationPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit AnnotationPositionCalc');
+  }
 
     /**
      * Sets positioning for a annotation attachment.
@@ -60,34 +60,34 @@ class AnnotationDefinitionPositionCalcVisitor {
      *
      * @memberof AnnotationDefinitionPositionCalc
      */
-    createPositionForTitleNode(attachment, x, y) {
-        let viewState = attachment.model.getViewState();
+  createPositionForTitleNode(attachment, x, y) {
+    const viewState = attachment.model.getViewState();
 
-        let childViewState = {
-            viewState: {
-                bBox: {
-                    x: x,
-                    y: y,
-                    w: util.getTextWidth(attachment.attachment, 0).w,
-                    h: DesignerDefaults.panelHeading.heading.height - 7
-                },
-                components: {
-                    deleteIcon: {
-                        x: x + util.getTextWidth(attachment.attachment, 0).w,
-                        y: y,
-                        w: DesignerDefaults.panelHeading.heading.height - 7,
-                        h: DesignerDefaults.panelHeading.heading.height - 7
-                    }
-                },
-                w: util.getTextWidth(attachment.attachment, 0).w,
-                h: DesignerDefaults.panelHeading.heading.height - 7
-            }
-        };
-        viewState.attachments[attachment.attachment] = childViewState;
+    const childViewState = {
+      viewState: {
+        bBox: {
+          x,
+          y,
+          w: util.getTextWidth(attachment.attachment, 0).w,
+          h: DesignerDefaults.panelHeading.heading.height - 7,
+        },
+        components: {
+          deleteIcon: {
+            x: x + util.getTextWidth(attachment.attachment, 0).w,
+            y,
+            w: DesignerDefaults.panelHeading.heading.height - 7,
+            h: DesignerDefaults.panelHeading.heading.height - 7,
+          },
+        },
+        w: util.getTextWidth(attachment.attachment, 0).w,
+        h: DesignerDefaults.panelHeading.heading.height - 7,
+      },
+    };
+    viewState.attachments[attachment.attachment] = childViewState;
 
-        return (x + util.getTextWidth(attachment.attachment, 0).w)
+    return (x + util.getTextWidth(attachment.attachment, 0).w)
             + childViewState.viewState.components.deleteIcon.w;
-    }
+  }
 }
 
 export default AnnotationDefinitionPositionCalcVisitor;

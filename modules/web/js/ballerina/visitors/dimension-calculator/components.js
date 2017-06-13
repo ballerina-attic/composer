@@ -18,14 +18,14 @@
 
 // require all dimension calculator visitors
 function requireAll(requireContext) {
-    let components = {};
-    requireContext.keys().map((item) => {
-        var module = requireContext(item);
-        if (module.default) {
-            components[module.default.name] = module.default;
-        }
-    });
-    return components;
+  const components = {};
+  requireContext.keys().map((item) => {
+    const module = requireContext(item);
+    if (module.default) {
+      components[module.default.name] = module.default;
+    }
+  });
+  return components;
 }
 
 export default requireAll(require.context('./', true, /\.js$/));

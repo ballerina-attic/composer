@@ -21,37 +21,40 @@ import * as DesignerDefaults from './../../configs/designer-defaults';
 
 class IfStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit IfStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit IfStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit IfStatementPositionCalcVisitor');
-        const parentViewState = node.getParent().getViewState();
-        const parentBBox = parentViewState.bBox;
-        let viewState = node.getViewState();
-        let bBox = viewState.bBox;
-        let x, y, statementContainerX, statementContainerY;
+  beginVisit(node) {
+    log.debug('visit IfStatementPositionCalcVisitor');
+    const parentViewState = node.getParent().getViewState();
+    const parentBBox = parentViewState.bBox;
+    const viewState = node.getViewState();
+    const bBox = viewState.bBox;
+    let x,
+      y,
+      statementContainerX,
+      statementContainerY;
 
-        x = parentBBox.x;
-        y = parentBBox.y + parentViewState.components['drop-zone'].h;
-        statementContainerX = x;
-        statementContainerY = y + DesignerDefaults.blockStatement.heading.height;
+    x = parentBBox.x;
+    y = parentBBox.y + parentViewState.components['drop-zone'].h;
+    statementContainerX = x;
+    statementContainerY = y + DesignerDefaults.blockStatement.heading.height;
 
-        bBox.x = x;
-        bBox.y = y;
-        viewState.components.statementContainer.x = statementContainerX;
-        viewState.components.statementContainer.y = statementContainerY;
-    }
+    bBox.x = x;
+    bBox.y = y;
+    viewState.components.statementContainer.x = statementContainerX;
+    viewState.components.statementContainer.y = statementContainerY;
+  }
 
-    visit(node) {
-        log.debug('visit IfStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit IfStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit IfStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit IfStatementPositionCalcVisitor');
+  }
 }
 
 export default IfStatementPositionCalcVisitor;

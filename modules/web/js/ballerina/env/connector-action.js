@@ -26,95 +26,94 @@ import EventChannel from 'event_channel';
  * @constructor
  */
 class ConnectorAction extends EventChannel {
-    constructor(args) {
-        super();
-        this._name = _.get(args, 'name', '');
-        this._id = _.get(args, 'id', '');
-        this.action = _.get(args, 'action', '');
-        this._parameters = _.get(args, 'parameters', []);
-        this._returnParams = _.get(args, 'returnParams', []);
-    }
+  constructor(args) {
+    super();
+    this._name = _.get(args, 'name', '');
+    this._id = _.get(args, 'id', '');
+    this.action = _.get(args, 'action', '');
+    this._parameters = _.get(args, 'parameters', []);
+    this._returnParams = _.get(args, 'returnParams', []);
+  }
 
-    setName(name) {
-        var oldName = this._name;
-        this._name = name;
-        this.trigger("name-modified", name, oldName);
-    }
+  setName(name) {
+    const oldName = this._name;
+    this._name = name;
+    this.trigger('name-modified', name, oldName);
+  }
 
-    getName() {
-        return this._name;
-    }
+  getName() {
+    return this._name;
+  }
 
     /**
      * sets the id
      * @param {string} id
      */
-    setId(id) {
-        this._id = id;
-    }
+  setId(id) {
+    this._id = id;
+  }
 
     /**
      * returns the id
      * @returns {string}
      */
-    getId() {
-        return this._id;
-    }
+  getId() {
+    return this._id;
+  }
 
-    setAction(action) {
-        this.action = action;
-    }
+  setAction(action) {
+    this.action = action;
+  }
 
-    getAction() {
-        return this.action;
-    }
+  getAction() {
+    return this.action;
+  }
 
     /**
      * sets the parameters
      * @param [object] parameters
      */
-    setParameters(parameters) {
-        this._parameters = parameters;
-    }
+  setParameters(parameters) {
+    this._parameters = parameters;
+  }
 
     /**
      * returns the parameters
      * @returns [object]
      */
-    getParameters() {
-        return this._parameters;
-    }
+  getParameters() {
+    return this._parameters;
+  }
 
     /**
      * sets the returnParams
      * @param [object] returnParams
      */
-    setReturnParams(returnParams) {
-        this._returnParams = returnParams;
-    }
+  setReturnParams(returnParams) {
+    this._returnParams = returnParams;
+  }
 
     /**
      * returns the returnParams
      * @returns [object]
      */
-    getReturnParams() {
-        return this._returnParams;
-    }
+  getReturnParams() {
+    return this._returnParams;
+  }
 
-    initFromJson(jsonNode) {
-        this.setName(jsonNode.name);
-        this.setAction(jsonNode.name);
-        this.setReturnParams(jsonNode.returnParams);
-        this.setParameters(jsonNode.parameters);
-    }
+  initFromJson(jsonNode) {
+    this.setName(jsonNode.name);
+    this.setAction(jsonNode.name);
+    this.setReturnParams(jsonNode.returnParams);
+    this.setParameters(jsonNode.parameters);
+  }
 
-    initFromASTModel(connectorActionModel) {
-        this.setName(connectorActionModel.getActionName());
-        this.setId(connectorActionModel.getParent().getConnectorName() + '-' + connectorActionModel.getActionName());
-        this.setParameters(connectorActionModel.getArguments());
-        this.setReturnParams(connectorActionModel.getReturnTypes());
-    }
+  initFromASTModel(connectorActionModel) {
+    this.setName(connectorActionModel.getActionName());
+    this.setId(`${connectorActionModel.getParent().getConnectorName()}-${connectorActionModel.getActionName()}`);
+    this.setParameters(connectorActionModel.getArguments());
+    this.setReturnParams(connectorActionModel.getReturnTypes());
+  }
 }
 
 export default ConnectorAction;
-    

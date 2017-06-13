@@ -24,41 +24,41 @@ import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
  * @constructor
  */
 class PackageDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitPackageDefinition(packageDefinition) {
-        return true;
-    }
+  canVisitPackageDefinition(packageDefinition) {
+    return true;
+  }
 
-    beginVisitPackageDefinition(packageDefinition) {
+  beginVisitPackageDefinition(packageDefinition) {
         /**
          * set the configuration start for the package definition language construct
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        if (!_.isNil(packageDefinition.getPackageName()) && packageDefinition.getPackageName() !== "") {
-            var constructedSourceSegment = 'package'
-                + packageDefinition.getParent().getWSRegion(1)
-                + packageDefinition.getPackageName();
-            this.appendSource(constructedSourceSegment);
-        }
-    }
+    if (!_.isNil(packageDefinition.getPackageName()) && packageDefinition.getPackageName() !== '') {
+        var constructedSourceSegment = `package${
+                 packageDefinition.getParent().getWSRegion(1)
+                 }${packageDefinition.getPackageName()}`;
+        this.appendSource(constructedSourceSegment);
+      }
+  }
 
-    visitPackageDefinition(packageDefinition) {
-    }
+  visitPackageDefinition(packageDefinition) {
+  }
 
-    endVisitPackageDefinition(packageDefinition) {
-        if (!_.isNil(packageDefinition.getPackageName()) && packageDefinition.getPackageName() !== "") {
-            this.appendSource(
-              packageDefinition.getParent().getWSRegion(2)
-              + ';'
-              + packageDefinition.getParent().getWSRegion(3)
+  endVisitPackageDefinition(packageDefinition) {
+    if (!_.isNil(packageDefinition.getPackageName()) && packageDefinition.getPackageName() !== '') {
+        this.appendSource(
+              `${packageDefinition.getParent().getWSRegion(2)
+               };${
+               packageDefinition.getParent().getWSRegion(3)}`,
             );
-            this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
-        }
-    }
+        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+      }
+  }
 }
 
 export default PackageDefinitionVisitor;

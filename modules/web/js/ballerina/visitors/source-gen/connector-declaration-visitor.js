@@ -22,32 +22,32 @@ import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
  * @constructor
  */
 class ConnectorDeclarationVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitConnectorDeclaration(connectorDeclaration) {
-        return true;
-    }
+  canVisitConnectorDeclaration(connectorDeclaration) {
+    return true;
+  }
 
-    beginVisitConnectorDeclaration(connectorDeclaration) {
-        if (connectorDeclaration.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        this.appendSource(connectorDeclaration.generateExpression());
+  beginVisitConnectorDeclaration(connectorDeclaration) {
+    if (connectorDeclaration.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    this.appendSource(connectorDeclaration.generateExpression());
+  }
 
-    visitConnectorDeclaration(connectorDeclaration) {
-    }
+  visitConnectorDeclaration(connectorDeclaration) {
+  }
 
-    endVisitConnectorDeclaration(connectorDeclaration) {
-        this.appendSource(connectorDeclaration.getWSRegion(3) + ';'
-                + connectorDeclaration.getWSRegion(4));
-        this.appendSource((connectorDeclaration.whiteSpace.useDefault)
+  endVisitConnectorDeclaration(connectorDeclaration) {
+    this.appendSource(`${connectorDeclaration.getWSRegion(3)};${
+                 connectorDeclaration.getWSRegion(4)}`);
+    this.appendSource((connectorDeclaration.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default ConnectorDeclarationVisitor;

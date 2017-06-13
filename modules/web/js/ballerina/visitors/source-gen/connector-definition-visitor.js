@@ -28,111 +28,111 @@ import StatementVisitorFactory from './statement-visitor-factory';
  * @constructor
  */
 class ConnectorDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitConnectorDefinition(connectorDefinition) {
-        return true;
-    }
+  canVisitConnectorDefinition(connectorDefinition) {
+    return true;
+  }
 
     /**
      * Begin the visit and generate the source
      * @param {ConnectorDefinition} connectorDefinition - Connector Definition
      */
-    beginVisitConnectorDefinition(connectorDefinition) {
+  beginVisitConnectorDefinition(connectorDefinition) {
         /**
          * set the configuration start for the connector definition language construct
          * If we need to add additional parameters which are dynamically added to the configuration start
          * that particular source generation has to be constructed here
          */
-        let useDefaultWS = connectorDefinition.whiteSpace.useDefault;
-        if (useDefaultWS) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation('\n' + this.getIndentation());
-        }
-        let constructedSourceSegment = '';
-        _.forEach(connectorDefinition.getChildrenOfType(connectorDefinition.getFactory().isAnnotation), annotationNode => {
-            if (annotationNode.isSupported()) {
-                constructedSourceSegment += annotationNode.toString()
+    const useDefaultWS = connectorDefinition.whiteSpace.useDefault;
+    if (useDefaultWS) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(`\n${this.getIndentation()}`);
+    }
+    let constructedSourceSegment = '';
+    _.forEach(connectorDefinition.getChildrenOfType(connectorDefinition.getFactory().isAnnotation), (annotationNode) => {
+      if (annotationNode.isSupported()) {
+        constructedSourceSegment += annotationNode.toString()
                   + ((annotationNode.whiteSpace.useDefault) ? this.getIndentation() : '');
-            }
-        });
+      }
+    });
 
-        let argumentsSrc = '';
-        _.forEach(connectorDefinition.getArguments(), function (argument, index) {
-            argumentsSrc += (index !== 0 && argument.whiteSpace.useDefault) ? ' ' : '';
-            argumentsSrc += argument.getWSRegion(0) + argument.getTypeName();
-            argumentsSrc += argument.getWSRegion(1) + argument.getName();
-            argumentsSrc += argument.getWSRegion(2);
-            if (connectorDefinition.getArguments().length - 1 !== index) {
-                argumentsSrc += ',';
-            }
-        });
+    let argumentsSrc = '';
+    _.forEach(connectorDefinition.getArguments(), (argument, index) => {
+      argumentsSrc += (index !== 0 && argument.whiteSpace.useDefault) ? ' ' : '';
+      argumentsSrc += argument.getWSRegion(0) + argument.getTypeName();
+      argumentsSrc += argument.getWSRegion(1) + argument.getName();
+      argumentsSrc += argument.getWSRegion(2);
+      if (connectorDefinition.getArguments().length - 1 !== index) {
+        argumentsSrc += ',';
+      }
+    });
 
-        constructedSourceSegment += 'connector'
-          + connectorDefinition.getWSRegion(0) + connectorDefinition.getConnectorName()
-          + connectorDefinition.getWSRegion(1) + '(' + argumentsSrc + ')'
-          + connectorDefinition.getWSRegion(2) + '{' + connectorDefinition.getWSRegion(3);
-        constructedSourceSegment += (useDefaultWS) ? this.getIndentation() : '';
-        this.appendSource(constructedSourceSegment);
-        this.indent();
-        log.debug('Begin Visit Connector Definition');
-    }
+    constructedSourceSegment += `connector${
+           connectorDefinition.getWSRegion(0)}${connectorDefinition.getConnectorName()
+           }${connectorDefinition.getWSRegion(1)}(${argumentsSrc})${
+           connectorDefinition.getWSRegion(2)}{${connectorDefinition.getWSRegion(3)}`;
+    constructedSourceSegment += (useDefaultWS) ? this.getIndentation() : '';
+    this.appendSource(constructedSourceSegment);
+    this.indent();
+    log.debug('Begin Visit Connector Definition');
+  }
 
-    visitConnectorDefinition(connectorDefinition) {
-        log.debug('Visit Connector Definition');
-    }
+  visitConnectorDefinition(connectorDefinition) {
+    log.debug('Visit Connector Definition');
+  }
 
     /**
      * End visiting the connector definition
      * @param {ConnectorDefinition} connectorDefinition - Connector Definition
      */
-    endVisitConnectorDefinition(connectorDefinition) {
-        this.outdent();
-        this.appendSource('}' + connectorDefinition.getWSRegion(4));
-        this.appendSource((connectorDefinition.whiteSpace.useDefault) ?
+  endVisitConnectorDefinition(connectorDefinition) {
+    this.outdent();
+    this.appendSource(`}${connectorDefinition.getWSRegion(4)}`);
+    this.appendSource((connectorDefinition.whiteSpace.useDefault) ?
                       this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-        log.debug('End Visit Connector Definition');
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+    log.debug('End Visit Connector Definition');
+  }
 
     /**
      * Visit Connector Action
      * @param {ConnectorAction} connectorAction
      */
-    visitConnectorAction(connectorAction) {
-        let connectorActionVisitor = new ConnectorActionVisitor(this);
-        connectorAction.accept(connectorActionVisitor);
-    }
+  visitConnectorAction(connectorAction) {
+    const connectorActionVisitor = new ConnectorActionVisitor(this);
+    connectorAction.accept(connectorActionVisitor);
+  }
 
     /**
      * Visit Connector Declaration
      * @param {ConnectorDeclaration} connectorDeclaration
      */
-    visitConnectorDeclaration(connectorDeclaration) {
-        let connectorDeclarationVisitor = new ConnectorDeclarationVisitor(this);
-        connectorDeclaration.accept(connectorDeclarationVisitor);
-    }
+  visitConnectorDeclaration(connectorDeclaration) {
+    const connectorDeclarationVisitor = new ConnectorDeclarationVisitor(this);
+    connectorDeclaration.accept(connectorDeclarationVisitor);
+  }
 
     /**
      * Visit Variable Declaration
      * @param {VariableDeclaration} variableDeclaration
      */
-    visitVariableDeclaration(variableDeclaration) {
-        let variableDeclarationVisitor = new VariableDeclarationVisitor(this);
-        variableDeclaration.accept(variableDeclarationVisitor);
-    }
+  visitVariableDeclaration(variableDeclaration) {
+    const variableDeclarationVisitor = new VariableDeclarationVisitor(this);
+    variableDeclaration.accept(variableDeclarationVisitor);
+  }
 
     /**
      * Visit Statements
      * @param {Statement} statement
      */
-    visitStatement(statement) {
-        let statementVisitorFactory = new StatementVisitorFactory();
-        let statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 }
 
 export default ConnectorDefinitionVisitor;

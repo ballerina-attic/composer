@@ -25,40 +25,40 @@ import WorkerDeclaration from '../../ast/worker-declaration';
  * @constructor
  */
 class WorkerDeclarationVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitWorkerDeclaration(workerDeclaration) {
-        return workerDeclaration instanceof WorkerDeclaration && !workerDeclaration.isDefaultWorker();
-    }
+  canVisitWorkerDeclaration(workerDeclaration) {
+    return workerDeclaration instanceof WorkerDeclaration && !workerDeclaration.isDefaultWorker();
+  }
 
-    beginVisitWorkerDeclaration(workerDeclaration) {
-        var constructedSourceSegment =  this.getIndentation() + 'worker '
-                  + workerDeclaration.getWorkerDeclarationStatement() + ' {\n';
-        this.appendSource(constructedSourceSegment);
-        this.indent();
-    }
+  beginVisitWorkerDeclaration(workerDeclaration) {
+    const constructedSourceSegment = `${this.getIndentation()}worker ${
+                   workerDeclaration.getWorkerDeclarationStatement()} {\n`;
+    this.appendSource(constructedSourceSegment);
+    this.indent();
+  }
 
-    visitWorkerDeclaration(workerDeclaration) {
-    }
+  visitWorkerDeclaration(workerDeclaration) {
+  }
 
-    endVisitWorkerDeclaration(workerDeclaration) {
-        this.outdent();
-        this.appendSource(this.getIndentation() + "}\n");
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+  endVisitWorkerDeclaration(workerDeclaration) {
+    this.outdent();
+    this.appendSource(`${this.getIndentation()}}\n`);
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 
-    visitStatement(statement) {
-        var statementVisitorFactory = new StatementVisitorFactory();
-        var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
-        statement.accept(statementVisitor);
-    }
+  visitStatement(statement) {
+    const statementVisitorFactory = new StatementVisitorFactory();
+    const statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+    statement.accept(statementVisitor);
+  }
 
-    visitVariableDeclaration(variableDeclaration) {
-        var variableDeclarationVisitor = new VariableDeclarationVisitor(this);
-        variableDeclaration.accept(variableDeclarationVisitor);
-    }
+  visitVariableDeclaration(variableDeclaration) {
+    const variableDeclarationVisitor = new VariableDeclarationVisitor(this);
+    variableDeclaration.accept(variableDeclarationVisitor);
+  }
 }
 
 export default WorkerDeclarationVisitor;

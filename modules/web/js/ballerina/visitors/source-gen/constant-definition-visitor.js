@@ -24,46 +24,46 @@ import AbstractSourceGenVisitor from './abstract-source-gen-visitor';
  * @constructor
  */
 class ConstantDefinitionVisitor extends AbstractSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitConstantDefinition(constantDefinition) {
-        return true;
-    }
+  canVisitConstantDefinition(constantDefinition) {
+    return true;
+  }
 
     /**
      * @param {ConstantDefinition} constantDefinition - The constant definition to start visiting.
      */
-    beginVisitConstantDefinition(constantDefinition) {
-        const useDefaultWS = constantDefinition.whiteSpace.useDefault;
-        if (useDefaultWS) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation('\n' + this.getIndentation());
-        }
+  beginVisitConstantDefinition(constantDefinition) {
+    const useDefaultWS = constantDefinition.whiteSpace.useDefault;
+    if (useDefaultWS) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(`\n${this.getIndentation()}`);
+    }
 
         // Adding annotations
-        let constructedSourceSegment = '';
-        for(const annotationNode of constantDefinition.getChildrenOfType(constantDefinition.getFactory().isAnnotation)) {
-            if (annotationNode.isSupported()) {
-                constructedSourceSegment += annotationNode.toString()
+    let constructedSourceSegment = '';
+    for (const annotationNode of constantDefinition.getChildrenOfType(constantDefinition.getFactory().isAnnotation)) {
+      if (annotationNode.isSupported()) {
+        constructedSourceSegment += annotationNode.toString()
                     + ((annotationNode.whiteSpace.useDefault) ? this.getIndentation() : '');
-            }
-        }
-
-        constructedSourceSegment += constantDefinition.getConstantDefinitionAsString();
-        this.appendSource(constructedSourceSegment);
+      }
     }
 
-    visitConstantDefinition(constantDefinition) {
-    }
+    constructedSourceSegment += constantDefinition.getConstantDefinitionAsString();
+    this.appendSource(constructedSourceSegment);
+  }
 
-    endVisitConstantDefinition(constantDefinition) {
-        this.appendSource(';' + constantDefinition.getWSRegion(5));
-        this.appendSource((constantDefinition.whiteSpace.useDefault)
+  visitConstantDefinition(constantDefinition) {
+  }
+
+  endVisitConstantDefinition(constantDefinition) {
+    this.appendSource(`;${constantDefinition.getWSRegion(5)}`);
+    this.appendSource((constantDefinition.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default ConstantDefinitionVisitor;

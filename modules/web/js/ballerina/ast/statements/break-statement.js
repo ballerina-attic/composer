@@ -23,36 +23,36 @@ import Statement from './statement';
  * @augments Statement
  */
 class BreakStatement extends Statement {
-    constructor() {
-        super();
-        this.type = "BreakStatement";
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: '',
-            1: '',
-            2: '\n'
-        }
-    }
+  constructor() {
+    super();
+    this.type = 'BreakStatement';
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: '',
+      1: '',
+      2: '\n',
+    };
+  }
 
-    canBeAChildOf(node) {
-        return this.getFactory().isStatement(node);
-    }
+  canBeAChildOf(node) {
+    return this.getFactory().isStatement(node);
+  }
 
     /**
      * initialize from json
      * @param jsonNode
      */
-    initFromJson(jsonNode) {
+  initFromJson(jsonNode) {
 
-    }
+  }
 
     /**
      * Get the statement string
      * @returns {string}
      * @override
      */
-    getStatementString() {
-        return 'break';
-    }
+  getStatementString() {
+    return 'break';
+  }
 }
 
 export default BreakStatement;

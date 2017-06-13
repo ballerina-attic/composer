@@ -19,33 +19,33 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import BreakStatement from '../../ast/statements/break-statement';
 
 class BreakStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitBreakStatement(breakStatement) {
-        return breakStatement instanceof BreakStatement;
-    }
+  canVisitBreakStatement(breakStatement) {
+    return breakStatement instanceof BreakStatement;
+  }
 
-    beginVisitBreakStatement(breakStatement) {
-        this.node = breakStatement;
-        if (breakStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        this.appendSource(breakStatement.getStatementString());
+  beginVisitBreakStatement(breakStatement) {
+    this.node = breakStatement;
+    if (breakStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    this.appendSource(breakStatement.getStatementString());
+  }
 
-    visitBreakStatement(breakStatement) {
-    }
+  visitBreakStatement(breakStatement) {
+  }
 
-    endVisitBreakStatement(breakStatement) {
-        this.appendSource(breakStatement.getWSRegion(1) + ';'
-                            + breakStatement.getWSRegion(2));
-        this.appendSource((breakStatement.whiteSpace.useDefault)
+  endVisitBreakStatement(breakStatement) {
+    this.appendSource(`${breakStatement.getWSRegion(1)};${
+                             breakStatement.getWSRegion(2)}`);
+    this.appendSource((breakStatement.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default BreakStatementVisitor;

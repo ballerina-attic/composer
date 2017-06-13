@@ -21,23 +21,23 @@ import * as PositioningUtils from './utils';
 
 class AssignmentStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit AssignmentStatementPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit AssignmentStatementPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit AssignmentStatementPositionCalc');
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit AssignmentStatementPositionCalc');
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit AssignmentStatementPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit AssignmentStatementPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit AssignmentStatementPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit AssignmentStatementPositionCalc');
+  }
 }
 
 export default AssignmentStatementPositionCalcVisitor;

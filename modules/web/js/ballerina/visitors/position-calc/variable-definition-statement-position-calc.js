@@ -21,23 +21,23 @@ import * as PositioningUtils from './utils';
 
 class VariableDefinitionStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit VariableDefinitionStatementPositionCalc');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit VariableDefinitionStatementPositionCalc');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit VariableDefinitionStatementPositionCalc');
-        PositioningUtils.getSimpleStatementPosition(node);
-    }
+  beginVisit(node) {
+    log.debug('visit VariableDefinitionStatementPositionCalc');
+    PositioningUtils.getSimpleStatementPosition(node);
+  }
 
-    visit(node) {
-        log.debug('visit VariableDefinitionStatementPositionCalc');
-    }
+  visit(node) {
+    log.debug('visit VariableDefinitionStatementPositionCalc');
+  }
 
-    endVisit(node) {
-        log.debug('end visit VariableDefinitionStatementPositionCalc');
-    }
+  endVisit(node) {
+    log.debug('end visit VariableDefinitionStatementPositionCalc');
+  }
 }
 
 export default VariableDefinitionStatementPositionCalcVisitor;

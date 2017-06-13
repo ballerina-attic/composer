@@ -17,42 +17,42 @@
  */
 
 import log from 'log';
-import {blockStatement} from '../../configs/designer-defaults';
-import {util} from './../sizing-utils';
+import { blockStatement } from '../../configs/designer-defaults';
+import { util } from './../sizing-utils';
 
 class JoinStatementPositionCalcVisitor {
 
-    canVisit(node) {
-        log.debug('can visit JoinStatementPositionCalcVisitor');
-        return true;
-    }
+  canVisit(node) {
+    log.debug('can visit JoinStatementPositionCalcVisitor');
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('visit JoinStatementPositionCalcVisitor');
-        let viewState = node.getViewState();
-        let bBox = viewState.bBox;
-        const parent = node.getParent();
-        const parentViewState = parent.getViewState();
-        const forkBBox = parentViewState.components.body;
-        bBox.x = forkBBox.x;
-        bBox.y = forkBBox.getBottom();
-        const components = viewState.components;
-        components.statementContainer.x = bBox.x;
-        components.statementContainer.y = bBox.y + blockStatement.heading.height;
+  beginVisit(node) {
+    log.debug('visit JoinStatementPositionCalcVisitor');
+    const viewState = node.getViewState();
+    const bBox = viewState.bBox;
+    const parent = node.getParent();
+    const parentViewState = parent.getViewState();
+    const forkBBox = parentViewState.components.body;
+    bBox.x = forkBBox.x;
+    bBox.y = forkBBox.getBottom();
+    const components = viewState.components;
+    components.statementContainer.x = bBox.x;
+    components.statementContainer.y = bBox.y + blockStatement.heading.height;
 
-        let title_w = blockStatement.heading.width;
-        const typeWidth = util.getTextWidth(node.getJoinConditionString(), 3);
-        components.param.x = bBox.x + title_w + blockStatement.heading.paramSeparatorOffsetX + typeWidth.w;
-        components.param.y = bBox.y;
-    }
+    const title_w = blockStatement.heading.width;
+    const typeWidth = util.getTextWidth(node.getJoinConditionString(), 3);
+    components.param.x = bBox.x + title_w + blockStatement.heading.paramSeparatorOffsetX + typeWidth.w;
+    components.param.y = bBox.y;
+  }
 
-    visit(node) {
-        log.debug('visit JoinStatementPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit JoinStatementPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit JoinStatementPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit JoinStatementPositionCalcVisitor');
+  }
 }
 
 export default JoinStatementPositionCalcVisitor;

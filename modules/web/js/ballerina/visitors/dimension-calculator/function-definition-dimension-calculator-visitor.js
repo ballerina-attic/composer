@@ -15,23 +15,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {util} from './../sizing-utils';
+import { util } from './../sizing-utils';
 
 class FunctionDefinitionDimensionCalculatorVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-    }
+  beginVisit(node) {
+  }
 
-    visit(node) {
-    }
+  visit(node) {
+  }
 
-    endVisit(node) {
-        util.populatePanelDecoratorBBox(node, node.getFunctionName());
-    }
+  endVisit(node) {
+    util.populatePanelDecoratorBBox(node, node.getFunctionName());
+  }
 }
 
 export default FunctionDefinitionDimensionCalculatorVisitor;

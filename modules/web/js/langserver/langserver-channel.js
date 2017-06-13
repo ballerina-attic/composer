@@ -25,63 +25,61 @@ const WS_NORMAL_CODE = 1000;
 const WS_SSL_CODE = 1015;
 
 class LangserverChannel extends EventChannel {
-    constructor(args) {
-        super();
-        if(_.isNil(args.endpoint)){
-            throw 'Invalid Endpoint';
-        }
-        _.assign(this, args);
-
-        this.connect();
+  constructor(args) {
+    super();
+    if (_.isNil(args.endpoint)) {
+      throw 'Invalid Endpoint';
     }
+    _.assign(this, args);
 
-    connect() {
-        var websocket = new WebSocket(this.endpoint);
-        //bind functions
-        websocket.onmessage = (strMessage) => { this.parseMessage(strMessage); };
-        websocket.onopen = () => { this.onOpen(); };
-        websocket.onclose = (event) => { this.onClose(event); };
-        websocket.onerror = () => { this.onError(); };
-        this.websocket = websocket;
-    }
+    this.connect();
+  }
 
-    parseMessage(strMessage) {
-        var message = JSON.parse(strMessage.data);
-        this.clientController.processMessage(message);
-    }
+  connect() {
+    const websocket = new WebSocket(this.endpoint);
+        // bind functions
+    websocket.onmessage = (strMessage) => { this.parseMessage(strMessage); };
+    websocket.onopen = () => { this.onOpen(); };
+    websocket.onclose = (event) => { this.onClose(event); };
+    websocket.onerror = () => { this.onError(); };
+    this.websocket = websocket;
+  }
 
-    sendMessage(msg) {
-        this.websocket.send(JSON.stringify(msg));
-    }
+  parseMessage(strMessage) {
+    const message = JSON.parse(strMessage.data);
+    this.clientController.processMessage(message);
+  }
 
-    onClose(event) {
+  sendMessage(msg) {
+    this.websocket.send(JSON.stringify(msg));
+  }
+
+  onClose(event) {
         // this.clientController.active = false;
         // this.clientController.trigger('session-terminated');
-        let reason;
-        if (event.code === WS_NORMAL_CODE){
-            reason = 'Normal closure';
-            this.trigger('session-ended');
-            this.debugger.active = false;
-            return;
-        }
-        else if(event.code === WS_SSL_CODE){
-            reason = 'Certificate Issue';
-        }
-        else{
-            reason = 'Unknown reason :' + event.code;
-        }
-        log.debug(`Web socket closed, reason ${reason}`);
+    let reason;
+    if (event.code === WS_NORMAL_CODE) {
+      reason = 'Normal closure';
+      this.trigger('session-ended');
+      this.debugger.active = false;
+      return;
+    } else if (event.code === WS_SSL_CODE) {
+      reason = 'Certificate Issue';
+    } else {
+      reason = `Unknown reason :${event.code}`;
     }
+    log.debug(`Web socket closed, reason ${reason}`);
+  }
 
-    onError() {
-        this.clientController.active = false;
-        this.clientController.trigger('session-error');
-    }
+  onError() {
+    this.clientController.active = false;
+    this.clientController.trigger('session-error');
+  }
 
-    onOpen() {
-        this.clientController.active = true;
-        this.trigger('connected');
-    }
+  onOpen() {
+    this.clientController.active = true;
+    this.trigger('connected');
+  }
 }
 
 export default LangserverChannel;

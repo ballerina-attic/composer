@@ -18,32 +18,34 @@
 import React from 'react';
 import BlockStatementDecorator from './block-statement-decorator';
 import PropTypes from 'prop-types';
-import {getComponentForNodeArray} from './utils';
+import { getComponentForNodeArray } from './utils';
 
 class CommittedStatement extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-        let model = this.props.model;
-        let bBox = model.viewState.bBox;
-        let titleWidth = model.viewState.titleWidth;
-        let children = getComponentForNodeArray(model.getChildren());
-        return (<BlockStatementDecorator dropTarget={model} bBox={bBox} titleWidth={titleWidth}
-                                         title={"Committed"}>
-            {children}
-        </BlockStatementDecorator>)
-    }
+  render() {
+    const model = this.props.model;
+    const bBox = model.viewState.bBox;
+    const titleWidth = model.viewState.titleWidth;
+    const children = getComponentForNodeArray(model.getChildren());
+    return (<BlockStatementDecorator
+      dropTarget={model} bBox={bBox} titleWidth={titleWidth}
+      title={'Committed'}
+    >
+      {children}
+    </BlockStatementDecorator>);
+  }
 }
 
 CommittedStatement.propTypes = {
-    bBox: PropTypes.shape({
-        x: PropTypes.number.isRequired,
-        y: PropTypes.number.isRequired,
-        w: PropTypes.number.isRequired,
-        h: PropTypes.number.isRequired
-    })
+  bBox: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+  }),
 };
 
 export default CommittedStatement;

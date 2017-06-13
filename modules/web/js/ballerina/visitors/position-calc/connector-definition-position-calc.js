@@ -22,25 +22,25 @@ import * as PositioningUtils from './utils';
 
 class ConnectorDefinitionPositionCalcVisitor {
 
-    canVisit(node) {
-        return true;
-    }
+  canVisit(node) {
+    return true;
+  }
 
-    beginVisit(node) {
-        log.debug('begin visit ConnectorDefinitionPositionCalcVisitor');
+  beginVisit(node) {
+    log.debug('begin visit ConnectorDefinitionPositionCalcVisitor');
         // populate outer panel BBox positions.
-        PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
+    PositioningUtils.populateOuterPanelDecoratorBBoxPosition(node);
         // populate panel heading positions.
-        PositioningUtils.populatePanelHeadingPositioning(node, this.createPositioningForParameter);
-    }
+    PositioningUtils.populatePanelHeadingPositioning(node, this.createPositioningForParameter);
+  }
 
-    visit(node) {
-        log.debug('visit ConnectorDefinitionPositionCalcVisitor');
-    }
+  visit(node) {
+    log.debug('visit ConnectorDefinitionPositionCalcVisitor');
+  }
 
-    endVisit(node) {
-        log.debug('end visit ConnectorDefinitionPositionCalcVisitor');
-    }
+  endVisit(node) {
+    log.debug('end visit ConnectorDefinitionPositionCalcVisitor');
+  }
 
     /**
      * Sets positioning for a parameter.
@@ -52,18 +52,18 @@ class ConnectorDefinitionPositionCalcVisitor {
      *
      * @memberof ConnectorDefinitionPositionCalcVisitor
      */
-    createPositioningForParameter(parameter, x, y) {
-        let viewState = parameter.getViewState();
+  createPositioningForParameter(parameter, x, y) {
+    const viewState = parameter.getViewState();
         // Positioning the parameter
-        viewState.bBox.x = x;
-        viewState.bBox.y = y;
+    viewState.bBox.x = x;
+    viewState.bBox.y = y;
 
         // Positioning the delete icon
-        viewState.components.deleteIcon.x = x + viewState.w;
-        viewState.components.deleteIcon.y = y;
+    viewState.components.deleteIcon.x = x + viewState.w;
+    viewState.components.deleteIcon.y = y;
 
-        return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
-    }
+    return viewState.components.deleteIcon.x + viewState.components.deleteIcon.w;
+  }
 }
 
 export default ConnectorDefinitionPositionCalcVisitor;

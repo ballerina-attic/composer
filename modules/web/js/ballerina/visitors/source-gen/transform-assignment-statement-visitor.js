@@ -18,24 +18,24 @@
 import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-visitor';
 
 class TransformAssignmentStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitAssignmentStatement(assignmentStatement) {
-        return true;
-    }
+  canVisitAssignmentStatement(assignmentStatement) {
+    return true;
+  }
 
-    beginVisitAssignmentStatement(assignmentStatement) {
-    }
+  beginVisitAssignmentStatement(assignmentStatement) {
+  }
 
-    visitAssignmentStatement(assignmentStatement) {
-        this.appendSource(assignmentStatement.getStatementString() + ';\n');
-    }
+  visitAssignmentStatement(assignmentStatement) {
+    this.appendSource(`${assignmentStatement.getStatementString()};\n`);
+  }
 
-    endVisitAssignmentStatement(assignmentStatement) {
-        this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
-    }
+  endVisitAssignmentStatement(assignmentStatement) {
+    this.getParent().appendSource(this.getIndentation() + this.getGeneratedSource());
+  }
 }
 
 export default TransformAssignmentStatementVisitor;

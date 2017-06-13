@@ -20,23 +20,22 @@ import ASTVisitor from './ast-visitor';
 import _ from 'lodash';
 
 class FindBreakpointLinesVisitor extends ASTVisitor {
-    constructor() {
-        super();
-        this._breakpoints = [];
+  constructor() {
+    super();
+    this._breakpoints = [];
+  }
+  getBreakpoints() {
+    return _.sortedUniq(this._breakpoints);
+  }
+  beginVisit(node) {
+    if (node.isBreakpoint) {
+      const lineNumber = node.getLineNumber();
+      this._breakpoints.push(lineNumber);
     }
-    getBreakpoints(){
-        return _.sortedUniq(this._breakpoints);
-    }
-    beginVisit(node) {
-
-        if(node.isBreakpoint) {
-            const lineNumber = node.getLineNumber();
-            this._breakpoints.push(lineNumber);
-        }
-    }
-    canVisit() {
-        return true;
-    }
+  }
+  canVisit() {
+    return true;
+  }
 }
 
 export default FindBreakpointLinesVisitor;

@@ -27,64 +27,64 @@ import CommonUtils from '../utils/common-utils';
  * @constructor
  */
 class ServiceDefinition extends ASTNode {
-    constructor(args) {
-        super('ServiceDefinition');
-        this._serviceName = _.get(args, 'serviceName');
+  constructor(args) {
+    super('ServiceDefinition');
+    this._serviceName = _.get(args, 'serviceName');
 
         // TODO: All the types should be referred from the global constants
-        this.BallerinaASTFactory = this.getFactory();
-        this.whiteSpace.defaultDescriptor.regions =  {
-            0: ' ',
-            1: ' ',
-            2: '\n',
-            3: '\n'
-        }
+    this.BallerinaASTFactory = this.getFactory();
+    this.whiteSpace.defaultDescriptor.regions = {
+      0: ' ',
+      1: ' ',
+      2: '\n',
+      3: '\n',
+    };
+  }
+
+  setServiceName(serviceName, options) {
+    if (!_.isNil(serviceName) && ASTNode.isValidIdentifier(serviceName)) {
+      this.setAttribute('_serviceName', serviceName, options);
+    } else {
+      const errorString = `Invalid name for the service name: ${serviceName}`;
+      log.error(errorString);
+      throw errorString;
     }
+  }
 
-    setServiceName(serviceName, options) {
-        if (!_.isNil(serviceName) && ASTNode.isValidIdentifier(serviceName)) {
-            this.setAttribute('_serviceName', serviceName, options);
-        } else {
-            var errorString = "Invalid name for the service name: " + serviceName;
-            log.error(errorString);
-            throw errorString;
-        }
-    }
+  getServiceName() {
+    return this._serviceName;
+  }
 
-    getServiceName() {
-        return this._serviceName;
-    }
+  getConnectionDeclarations() {
+    const connectorDeclaration = [];
+    const self = this;
 
-    getConnectionDeclarations() {
-        var connectorDeclaration = [];
-        var self = this;
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isConnectorDeclaration(child)) {
+        connectorDeclaration.push(child);
+      }
+    });
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isConnectorDeclaration(child)) {
-                connectorDeclaration.push(child);
-            }
-        });
-
-        return _.sortBy(connectorDeclaration, [function (connectorDeclaration) {
-            return connectorDeclaration.getConnectorVariable();
-        }]);
-    }
+    return _.sortBy(connectorDeclaration, [function (connectorDeclaration) {
+      return connectorDeclaration.getConnectorVariable();
+    }]);
+  }
 
     /**
      * Gets the variable definition statements of the service.
      * @return {VariableDefinitionStatement[]}
      */
-    getVariableDefinitionStatements() {
-        var variableDefinitionStatements = [];
-        var self = this;
+  getVariableDefinitionStatements() {
+    const variableDefinitionStatements = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isVariableDefinitionStatement(child)) {
-                variableDefinitionStatements.push(child);
-            }
-        });
-        return variableDefinitionStatements;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isVariableDefinitionStatement(child)) {
+        variableDefinitionStatements.push(child);
+      }
+    });
+    return variableDefinitionStatements;
+  }
 
     /**
      * Adds new variable definition statement.
@@ -92,60 +92,53 @@ class ServiceDefinition extends ASTNode {
      * @param {string} identifier - The identifier of the variable definition statement.
      * @param {string} assignedValue - The right hand expression.
      */
-    addVariableDefinitionStatement(bType, identifier, assignedValue) {
-
+  addVariableDefinitionStatement(bType, identifier, assignedValue) {
         // Check is identifier is not null or empty.
-        if (_.isNil(identifier) || _.isEmpty(identifier)) {
-            var errorStringOfEmptyIdentifier = "A variable definition requires an identifier.";
-            log.error(errorStringOfEmptyIdentifier);
-            throw errorStringOfEmptyIdentifier;
-        }
+    if (_.isNil(identifier) || _.isEmpty(identifier)) {
+      const errorStringOfEmptyIdentifier = 'A variable definition requires an identifier.';
+      log.error(errorStringOfEmptyIdentifier);
+      throw errorStringOfEmptyIdentifier;
+    }
 
         // Check if already variable definition statement exists with same identifier.
-        var identifierAlreadyExists = _.findIndex(this.getVariableDefinitionStatements(),
-                                                                                function (variableDefinitionStatement) {
-                                                                                    return _.isEqual(variableDefinitionStatement.getIdentifier(), identifier);
-                                                                                }) !== -1;
+    const identifierAlreadyExists = _.findIndex(this.getVariableDefinitionStatements(),
+                                                                                variableDefinitionStatement => _.isEqual(variableDefinitionStatement.getIdentifier(), identifier)) !== -1;
 
         // If variable definition statement with the same identifier exists, then throw an error. Else create the new
         // variable definition statement.
-        if (identifierAlreadyExists) {
-            var errorString = "A variable definition with identifier '" + identifier + "' already exists.";
-            log.error(errorString);
-            throw errorString;
-        } else {
+    if (identifierAlreadyExists) {
+      const errorString = `A variable definition with identifier '${identifier}' already exists.`;
+      log.error(errorString);
+      throw errorString;
+    } else {
             // Creating new constant definition.
-            var newVariableDefinitionStatement = this.getFactory().createVariableDefinitionStatement();
-            let stmtString = bType + ' ' + identifier;
-            if (!_.isNil(assignedValue) && !_.isEmpty(assignedValue)) {
-                stmtString +=  ' = ' + assignedValue;
-            }
-            newVariableDefinitionStatement.setStatementFromString(stmtString);
+      const newVariableDefinitionStatement = this.getFactory().createVariableDefinitionStatement();
+      let stmtString = `${bType} ${identifier}`;
+      if (!_.isNil(assignedValue) && !_.isEmpty(assignedValue)) {
+        stmtString += ` = ${assignedValue}`;
+      }
+      newVariableDefinitionStatement.setStatementFromString(stmtString);
 
-            var self = this;
+      const self = this;
 
             // Get the index of the last variable definition statement.
-            var index = _.findLastIndex(this.getChildren(), function (child) {
-                return self.getFactory().isVariableDefinitionStatement(child);
-            });
+      const index = _.findLastIndex(this.getChildren(), child => self.getFactory().isVariableDefinitionStatement(child));
 
-            this.addChild(newVariableDefinitionStatement, index + 1);
-        }
+      this.addChild(newVariableDefinitionStatement, index + 1);
     }
+  }
 
     /**
      * Removes an existing variable definition statement.
      * @param {string} modelID - The model ID of variable definition statement.
      */
-    removeVariableDefinitionStatement(modelID) {
-        var self = this;
+  removeVariableDefinitionStatement(modelID) {
+    const self = this;
         // Deleting the variable definition statement from the children.
-        var variableDefinitionStatementToRemove = _.find(this.getChildren(), function (child) {
-            return self.getFactory().isVariableDefinitionStatement(child) && _.isEqual(child.id, modelID);
-        });
+    const variableDefinitionStatementToRemove = _.find(this.getChildren(), child => self.getFactory().isVariableDefinitionStatement(child) && _.isEqual(child.id, modelID));
 
-        this.removeChild(variableDefinitionStatementToRemove);
-    }
+    this.removeChild(variableDefinitionStatementToRemove);
+  }
 
     /**
      * Validates possible immediate child types.
@@ -153,11 +146,11 @@ class ServiceDefinition extends ASTNode {
      * @param node
      * @return {boolean}
      */
-    canBeParentOf(node) {
-        return this.BallerinaASTFactory.isResourceDefinition(node)
+  canBeParentOf(node) {
+    return this.BallerinaASTFactory.isResourceDefinition(node)
             || this.BallerinaASTFactory.isVariableDeclaration(node)
             || this.BallerinaASTFactory.isConnectorDeclaration(node);
-    }
+  }
 
     /**
      * initialize ServiceDefinition from json object
@@ -165,24 +158,24 @@ class ServiceDefinition extends ASTNode {
      * @param {string} jsonNode.service_name - Name of the service definition
      * @param {string} [jsonNode.annotations] - Annotations of the function definition
      */
-    initFromJson(jsonNode) {
-        var self = this;
-        this.setServiceName(jsonNode.service_name, {doSilently: true});
+  initFromJson(jsonNode) {
+    const self = this;
+    this.setServiceName(jsonNode.service_name, { doSilently: true });
 
-        _.each(jsonNode.children, function (childNode) {
-            var child = undefined;
-            var childNodeTemp = undefined;
-            if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
-                child = self.BallerinaASTFactory.createConnectorDeclaration();
-                childNodeTemp = childNode;
-            } else {
-                child = self.BallerinaASTFactory.createFromJson(childNode);
-                childNodeTemp = childNode;
-            }
-            self.addChild(child);
-            child.initFromJson(childNodeTemp);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      let child;
+      let childNodeTemp;
+      if (childNode.type === 'variable_definition_statement' && !_.isNil(childNode.children[1]) && childNode.children[1].type === 'connector_init_expr') {
+        child = self.BallerinaASTFactory.createConnectorDeclaration();
+        childNodeTemp = childNode;
+      } else {
+        child = self.BallerinaASTFactory.createFromJson(childNode);
+        childNodeTemp = childNode;
+      }
+      self.addChild(child);
+      child.initFromJson(childNodeTemp);
+    });
+  }
 
     /**
      * Override the super call to addChild
@@ -191,94 +184,86 @@ class ServiceDefinition extends ASTNode {
      * @param ignoreTreeModifiedEvent {boolean}
      * @param ignoreChildAddedEvent {boolean}
      */
-    addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) {
-        var self = this;
-        var newIndex = index;
+  addChild(child, index, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) {
+    const self = this;
+    let newIndex = index;
         // Always the connector declarations should be the first children
-        if (this.BallerinaASTFactory.isConnectorDeclaration(child)) {
-            newIndex = _.findLastIndex(this.getChildren(), function (node) {
-                return self.BallerinaASTFactory.isConnectorDeclaration(node);
-            });
+    if (this.BallerinaASTFactory.isConnectorDeclaration(child)) {
+      newIndex = _.findLastIndex(this.getChildren(), node => self.BallerinaASTFactory.isConnectorDeclaration(node));
 
-            if (newIndex === -1) {
-                newIndex = _.findLastIndex(this.getChildren(), function (child) {
-                    return self.getFactory().isVariableDefinitionStatement(child);
-                });
-            }
-            newIndex = newIndex + 1;
-        }
-        if (newIndex === -1) {
-            Object.getPrototypeOf(this.constructor.prototype)
+      if (newIndex === -1) {
+        newIndex = _.findLastIndex(this.getChildren(), child => self.getFactory().isVariableDefinitionStatement(child));
+      }
+      newIndex += 1;
+    }
+    if (newIndex === -1) {
+      Object.getPrototypeOf(this.constructor.prototype)
               .addChild.call(this, child, 0, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
-        } else {
-            Object.getPrototypeOf(this.constructor.prototype)
-              .addChild.call(this, child, newIndex, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId) ;
-        }
+    } else {
+      Object.getPrototypeOf(this.constructor.prototype)
+              .addChild.call(this, child, newIndex, ignoreTreeModifiedEvent, ignoreChildAddedEvent, generateId);
     }
+  }
 
-    //// Start of resource definitions functions
+    // // Start of resource definitions functions
 
-    getResourceDefinitions() {
-        var resourceDefinitions = [];
-        var self = this;
+  getResourceDefinitions() {
+    const resourceDefinitions = [];
+    const self = this;
 
-        _.forEach(this.getChildren(), function (child) {
-            if (self.getFactory().isResourceDefinition(child)) {
-                resourceDefinitions.push(child);
-            }
-        });
-        return resourceDefinitions;
-    }
+    _.forEach(this.getChildren(), (child) => {
+      if (self.getFactory().isResourceDefinition(child)) {
+        resourceDefinitions.push(child);
+      }
+    });
+    return resourceDefinitions;
+  }
 
-    //// End of resource definitions functions
+    // // End of resource definitions functions
 
     /**
      * @inheritDoc
      * @override
      */
-    generateUniqueIdentifiers() {
-        CommonUtils.generateUniqueIdentifier({
-            node: this,
-            attributes: [{
-                defaultValue: 'Service',
-                setter: this.setServiceName,
-                getter: this.getServiceName,
-                parents: [{
+  generateUniqueIdentifiers() {
+    CommonUtils.generateUniqueIdentifier({
+      node: this,
+      attributes: [{
+        defaultValue: 'Service',
+        setter: this.setServiceName,
+        getter: this.getServiceName,
+        parents: [{
                     // ballerina-ast-root
-                    node: this.parent,
-                    getChildrenFunc: this.parent.getServiceDefinitions,
-                    getter: this.getServiceName
-                }]
-            }]
-        });
-    }
+          node: this.parent,
+          getChildrenFunc: this.parent.getServiceDefinitions,
+          getter: this.getServiceName,
+        }],
+      }],
+    });
+  }
 
     /**
      * Get the connector by name
      * @param {string} connectorName
      * @return {ConnectorDeclaration}
      */
-    getConnectorByName(connectorName) {
-        var factory = this.getFactory();
-        var connectorReference = _.find(this.getChildren(), function (child) {
-            return (factory.isConnectorDeclaration(child) && (child.getConnectorVariable() === connectorName));
-        });
+  getConnectorByName(connectorName) {
+    const factory = this.getFactory();
+    const connectorReference = _.find(this.getChildren(), child => (factory.isConnectorDeclaration(child) && (child.getConnectorVariable() === connectorName)));
 
-        return connectorReference;
-    }
+    return connectorReference;
+  }
 
     /**
      * Get all the connector references in the immediate scope
      * @return {ConnectorDeclaration[]} connectorReferences
      */
-    getConnectorsInImmediateScope() {
-        var factory = this.getFactory();
-        var connectorReferences = _.filter(this.getChildren(), function (child) {
-            return factory.isConnectorDeclaration(child);
-        });
+  getConnectorsInImmediateScope() {
+    const factory = this.getFactory();
+    const connectorReferences = _.filter(this.getChildren(), child => factory.isConnectorDeclaration(child));
 
-        return connectorReferences;
-    }
+    return connectorReferences;
+  }
 }
 
 export default ServiceDefinition;

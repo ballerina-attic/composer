@@ -23,28 +23,28 @@ import Statement from './statement';
  * @constructor
  */
 class TransformStatement extends Statement {
-    constructor(args) {
-        super(args);
-        this.input =  _.get(args, 'input', []);
-        this.output =  _.get(args, 'output', []);
-        this.type = 'TransformStatement';
-    }
+  constructor(args) {
+    super(args);
+    this.input = _.get(args, 'input', []);
+    this.output = _.get(args, 'output', []);
+    this.type = 'TransformStatement';
+  }
 
-    setInput(input) {
-        this.input = input;
-    }
+  setInput(input) {
+    this.input = input;
+  }
 
-    setOutput(output) {
-        this.output = output;
-    }
+  setOutput(output) {
+    this.output = output;
+  }
 
-    getInput() {
-        return this.input;
-    }
+  getInput() {
+    return this.input;
+  }
 
-    getOutput() {
-        return this.output;
-    }
+  getOutput() {
+    return this.output;
+  }
 
     /**
      * initialize Transform Statement from json object
@@ -52,51 +52,51 @@ class TransformStatement extends Statement {
      * @param {Object} jsonNode.transform_input input variable refs for transform statement
      * @param {Object} jsonNode.transform_output output variable refs for transform statement
      */
-    initFromJson(jsonNode) {
-        _.each(jsonNode.transform_input, childNode => {
-            var inputVar = this.getFactory().createFromJson(childNode);
-            inputVar.initFromJson(childNode);
-            this.input.push(inputVar);
-        });
+  initFromJson(jsonNode) {
+    _.each(jsonNode.transform_input, (childNode) => {
+      const inputVar = this.getFactory().createFromJson(childNode);
+      inputVar.initFromJson(childNode);
+      this.input.push(inputVar);
+    });
 
-        _.each(jsonNode.transform_output, childNode => {
-            var outputVar = this.getFactory().createFromJson(childNode);
-            outputVar.initFromJson(childNode);
-            this.output.push(outputVar);
-        });
+    _.each(jsonNode.transform_output, (childNode) => {
+      const outputVar = this.getFactory().createFromJson(childNode);
+      outputVar.initFromJson(childNode);
+      this.output.push(outputVar);
+    });
 
-        _.each(jsonNode.children, childNode => {
-            var child = this.getFactory().createFromJson(childNode);
-            this.addChild(child);
-            child.initFromJson(childNode);
-        });
-    }
+    _.each(jsonNode.children, (childNode) => {
+      const child = this.getFactory().createFromJson(childNode);
+      this.addChild(child);
+      child.initFromJson(childNode);
+    });
+  }
 
     /**
      * Override the removeChild function
      * @param {ASTNode} child - child node
      */
-    removeChild(child, ignoreModifiedTreeEvent, willVisit) {
-        if (!_.isUndefined(willVisit) && willVisit !== true) {
-            var parentModelChildren = this.children;
-            for (var itr = 0; itr < parentModelChildren.length; itr++) {
-                if (parentModelChildren[itr].id === child.id) {
-                    parentModelChildren.splice(itr, 1);
-                    break;
-                }
-            }
-        } else {
-            Object.getPrototypeOf(this.constructor.prototype).removeChild.call(this, child, ignoreModifiedTreeEvent);
+  removeChild(child, ignoreModifiedTreeEvent, willVisit) {
+    if (!_.isUndefined(willVisit) && willVisit !== true) {
+      const parentModelChildren = this.children;
+      for (let itr = 0; itr < parentModelChildren.length; itr++) {
+        if (parentModelChildren[itr].id === child.id) {
+          parentModelChildren.splice(itr, 1);
+          break;
         }
+      }
+    } else {
+      Object.getPrototypeOf(this.constructor.prototype).removeChild.call(this, child, ignoreModifiedTreeEvent);
     }
+  }
 
     /**
      * Get the transform statement string
      * @return {string} transform statement string
      */
-    getStatementString() {
-        return 'transform';
-    }
+  getStatementString() {
+    return 'transform';
+  }
 }
 
 export default TransformStatement;

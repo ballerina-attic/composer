@@ -19,29 +19,29 @@ import AbstractStatementSourceGenVisitor from './abstract-statement-source-gen-v
 import AssignmentStatement from '../../ast/statements/assignment-statement';
 
 class AssignmentStatementVisitor extends AbstractStatementSourceGenVisitor {
-    constructor(parent) {
-        super(parent);
-    }
+  constructor(parent) {
+    super(parent);
+  }
 
-    canVisitAssignmentStatement(assignmentStatement) {
-        return assignmentStatement instanceof AssignmentStatement;
-    }
+  canVisitAssignmentStatement(assignmentStatement) {
+    return assignmentStatement instanceof AssignmentStatement;
+  }
 
-    beginVisitAssignmentStatement(assignmentStatement) {
-        this.node = assignmentStatement;
-        if (assignmentStatement.whiteSpace.useDefault) {
-            this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
-            this.replaceCurrentPrecedingIndentation(this.getIndentation());
-        }
-        this.appendSource(assignmentStatement.getStatementString());
+  beginVisitAssignmentStatement(assignmentStatement) {
+    this.node = assignmentStatement;
+    if (assignmentStatement.whiteSpace.useDefault) {
+      this.currentPrecedingIndentation = this.getCurrentPrecedingIndentation();
+      this.replaceCurrentPrecedingIndentation(this.getIndentation());
     }
+    this.appendSource(assignmentStatement.getStatementString());
+  }
 
-    endVisitAssignmentStatement(assignmentStatement) {
-        this.appendSource(';' + assignmentStatement.getWSRegion(3));
-        this.appendSource((assignmentStatement.whiteSpace.useDefault)
+  endVisitAssignmentStatement(assignmentStatement) {
+    this.appendSource(`;${assignmentStatement.getWSRegion(3)}`);
+    this.appendSource((assignmentStatement.whiteSpace.useDefault)
             ? this.currentPrecedingIndentation : '');
-        this.getParent().appendSource(this.getGeneratedSource());
-    }
+    this.getParent().appendSource(this.getGeneratedSource());
+  }
 }
 
 export default AssignmentStatementVisitor;

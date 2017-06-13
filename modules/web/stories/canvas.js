@@ -25,19 +25,19 @@ import '../css/diagram/diagram.css';
 
 const canvasBbox = {
   w: 500,
-  h: 500
+  h: 500,
 };
 
 storiesOf('CanvasDecorator', module)
   .add('default view', () => {
-    const functionInvocation = React.createElement(components['FunctionInvocationStatement'],
-        {model : { viewState: { bBox: { x: 0, y: 0, w: 200, h: 50}},
-         expression: "this is the expression"}}, null);
+    const functionInvocation = React.createElement(components.FunctionInvocationStatement,
+      { model: { viewState: { bBox: { x: 0, y: 0, w: 200, h: 50 } },
+        expression: 'this is the expression' } }, null);
     return (
       <CanvasDecorator bBox={canvasBbox}>
-          <StatementContainer>
-                  {functionInvocation}
-          </StatementContainer>
+        <StatementContainer>
+          {functionInvocation}
+        </StatementContainer>
       </CanvasDecorator>
     );
-});
+  });

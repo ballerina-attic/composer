@@ -19,25 +19,25 @@
 import ASTVisitor from './ast-visitor';
 
 class FindDebugHitVisitor extends ASTVisitor {
-    constructor() {
-        super();
-        this._position = {};
+  constructor() {
+    super();
+    this._position = {};
+  }
+  setPosition(position) {
+    this._position = position;
+  }
+  beginVisit(node) {
+    if (node.getLineNumber() === this._position.lineNumber) {
+      node.addDebugHit();
     }
-    setPosition(position) {
-        this._position = position;
-    }
-    beginVisit(node) {
-        if(node.getLineNumber() === this._position.lineNumber){
-            node.addDebugHit();
-        }
-        if(node.isDebugHit && node.getLineNumber() !== this._position.lineNumber){
+    if (node.isDebugHit && node.getLineNumber() !== this._position.lineNumber) {
             // debughit has removed but model is not updated
-            node.removeDebugHit();
-        }
+      node.removeDebugHit();
     }
-    canVisit() {
-        return true;
-    }
+  }
+  canVisit() {
+    return true;
+  }
 }
 
 export default FindDebugHitVisitor;
