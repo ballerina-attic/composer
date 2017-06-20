@@ -15,7 +15,7 @@
 *  specific language governing permissions and limitations
 *  under the License.
 */
-package org.ballerinalang.composer.service.workspace.suggetions;
+package org.ballerinalang.composer.service.workspace.langserver.suggetions;
 
 import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.InputMismatchException;
@@ -24,7 +24,7 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.IntervalSet;
-import org.ballerinalang.composer.service.workspace.rest.datamodel.SourcePosition;
+import org.ballerinalang.composer.service.workspace.langserver.dto.Position;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,11 +34,13 @@ import java.util.List;
  */
 public class CapturePossibleTokenStrategy extends DefaultErrorStrategy {
 
-    protected final SourcePosition cursorPosition;
+    protected final Position cursorPosition;
 
     protected List<PossibleToken> possibleTokens;
 
-    public CapturePossibleTokenStrategy(SourcePosition cursorPosition) {
+    private SuggestionsFilterDataModel suggestionsFilterDataModel;
+
+    public CapturePossibleTokenStrategy(Position cursorPosition) {
             this.cursorPosition = cursorPosition;
             possibleTokens = new LinkedList<>();
     }
@@ -82,6 +84,10 @@ public class CapturePossibleTokenStrategy extends DefaultErrorStrategy {
                     }
                 }
             });
+
+            SuggestionsFilterDataModel sfdModel =
+                    new SuggestionsFilterDataModel(parser, currentContext, this.possibleTokens);
+            this.setSuggestionsFilterDataModel(sfdModel);
         }
 
     }
@@ -104,14 +110,14 @@ public class CapturePossibleTokenStrategy extends DefaultErrorStrategy {
                     }
                 }
                 if (lastNonHiddenToken != null) {
-                    if (cursorPosition.getLineNumber() >= lastNonHiddenToken.getLine()
-                            && cursorPosition.getLineNumber() <= token.getLine()) {
-                        if (cursorPosition.getLineNumber() == lastNonHiddenToken.getLine()) {
-                            isCursorBetween = cursorPosition.getOffset() >=
+                    if (cursorPosition.getLine() >= lastNonHiddenToken.getLine()
+                            && cursorPosition.getLine() <= token.getLine()) {
+                        if (cursorPosition.getLine() == lastNonHiddenToken.getLine()) {
+                            isCursorBetween = cursorPosition.getCharacter() >=
                                     (lastNonHiddenToken.getCharPositionInLine()
                                             + lastNonHiddenToken.getText().length());
-                        } else if (cursorPosition.getLineNumber() == token.getLine()) {
-                            isCursorBetween = cursorPosition.getOffset() <= token.getCharPositionInLine();
+                        } else if (cursorPosition.getLine() == token.getLine()) {
+                            isCursorBetween = cursorPosition.getCharacter() <= token.getCharPositionInLine();
                         } else {
                             isCursorBetween = true;
                         }
@@ -122,7 +128,26 @@ public class CapturePossibleTokenStrategy extends DefaultErrorStrategy {
             return isCursorBetween;
     }
 
-    protected SourcePosition getSourcePosition(Token token) {
-        return new SourcePosition(token.getLine(), token.getCharPositionInLine());
+    protected Position getSourcePosition(Token token) {
+        Position position = new Position();
+        position.setLine(token.getLine());
+        position.setCharacter(token.getCharPositionInLine());
+        return position;
+    }
+
+    /**
+     * Get the SuggestionsFilterDataModel
+     * @return {@link SuggestionsFilterDataModel}
+     */
+    public SuggestionsFilterDataModel getSuggestionsFilterDataModel() {
+        return suggestionsFilterDataModel;
+    }
+
+    /**
+     * Set the SuggestionsFilterDataModel
+     * @param suggestionsFilterDataModel - suggestions filter data model
+     */
+    public void setSuggestionsFilterDataModel(SuggestionsFilterDataModel suggestionsFilterDataModel) {
+        this.suggestionsFilterDataModel = suggestionsFilterDataModel;
     }
 }

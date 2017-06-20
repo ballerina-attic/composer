@@ -23,4 +23,18 @@ public class Position {
     public void setCharacter(int character) {
         this.character = character;
     }
+
+    @Override
+    public int hashCode() {
+        return ("L:" + line + ",COL:" + character).hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Position) {
+            Position other = (Position) obj;
+            return (other.getLine() == this.getLine()) && (other.getCharacter() == this.getCharacter());
+        } else {
+            return false;
+        }
+    }
 }

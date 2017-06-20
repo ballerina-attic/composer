@@ -15,7 +15,7 @@
 *  specific language governing permissions and limitations
 *  under the License.
 */
-package org.ballerinalang.composer.service.workspace.suggetions;
+package org.ballerinalang.composer.service.workspace.langserver.suggetions;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 

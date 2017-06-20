@@ -38,10 +38,16 @@ import org.ballerinalang.composer.service.workspace.langserver.dto.TextDocumentI
 import org.ballerinalang.composer.service.workspace.langserver.dto.TextDocumentItem;
 import org.ballerinalang.composer.service.workspace.langserver.dto.TextDocumentPositionParams;
 import org.ballerinalang.composer.service.workspace.langserver.dto.capabilities.ServerCapabilitiesDTO;
+import org.ballerinalang.composer.service.workspace.langserver.suggetions.AutoCompleteSuggester;
+import org.ballerinalang.composer.service.workspace.langserver.suggetions.AutoCompleteSuggesterImpl;
+import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilter;
+import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilterDataModel;
 import org.ballerinalang.composer.service.workspace.langserver.util.WorkspaceSymbolProvider;
+import org.ballerinalang.composer.service.workspace.rest.datamodel.BFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +96,6 @@ public class LangServerManager {
         }
         return langServerManagerInstance;
     }
-
 
     public void init(int port) {
         // start the language server if it is not started yet.
@@ -374,17 +379,24 @@ public class LangServerManager {
                     TextDocumentPositionParams.class);
             String textContent = textDocumentPositionParams.getText();
             Position position = textDocumentPositionParams.getPosition();
-
-            logger.info(textContent);
-            logger.info(position.toString());
-
             ArrayList<CompletionItem> completionItems = new ArrayList<>();
-            CompletionItem completionItem1 = new CompletionItem();
-            completionItem1.setLabel("Label1");
-            CompletionItem completionItem2 = new CompletionItem();
-            completionItem2.setLabel("Label2");
-            completionItems.add(completionItem1);
-            completionItems.add(completionItem2);
+
+            BFile bFile = new BFile();
+            bFile.setContent(textContent);
+            bFile.setFilePath("/temp");
+            bFile.setFileName("temp.bal");
+            bFile.setPackageName(".");
+
+            AutoCompleteSuggester autoCompleteSuggester = new AutoCompleteSuggesterImpl();
+            try {
+                SuggestionsFilterDataModel suggestionsFilterDataModel =
+                        autoCompleteSuggester.getSuggestionFilterDataModel(bFile, position);
+                SuggestionsFilter suggestionsFilter = new SuggestionsFilter();
+                completionItems = suggestionsFilter.getCompletionItems(suggestionsFilterDataModel);
+            } catch (IOException e) {
+                this.sendErrorResponse(LangServerConstants.INTERNAL_ERROR_LINE,
+                        LangServerConstants.INTERNAL_ERROR, message, null);
+            }
 
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setId(((RequestMessage) message).getId());
