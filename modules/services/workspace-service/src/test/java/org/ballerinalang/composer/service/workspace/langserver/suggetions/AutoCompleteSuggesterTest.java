@@ -13,7 +13,7 @@ public class AutoCompleteSuggesterTest {
     public static void main(String[] args) throws IOException {
         BFile bFile = new BFile();
         bFile.setContent("function hello () {\n" +
-                "\ttry \n" +
+                "\tint a =  \n" +
                 "}");
         bFile.setFilePath("/temp");
         bFile.setFileName("temp.bal");
@@ -21,10 +21,10 @@ public class AutoCompleteSuggesterTest {
 
         Position position = new Position();
         position.setLine(2);
-        position.setCharacter(6);
+        position.setCharacter(9);
         AutoCompleteSuggester autoCompleteSuggester = new AutoCompleteSuggesterImpl();
         SuggestionsFilterDataModel dm = autoCompleteSuggester.getSuggestionFilterDataModel(bFile, position);
         SuggestionsFilter suggestionsFilter = new SuggestionsFilter();
-        suggestionsFilter.filterSuggestionCriteria(dm);
+        suggestionsFilter.getCompletionItems(dm);
     }
 }

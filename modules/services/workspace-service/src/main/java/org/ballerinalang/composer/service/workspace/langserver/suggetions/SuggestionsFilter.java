@@ -41,8 +41,7 @@ public class SuggestionsFilter {
      * @return {@link ArrayList} - completion items list
      */
     public ArrayList<CompletionItem> getCompletionItems(SuggestionsFilterDataModel dataModel) {
-        int criteria = this.filterSuggestionCriteria(dataModel);
-        return resolveCommandExecutor.resolveCompletionItems(criteria, dataModel);
+        return resolveCommandExecutor.resolveCompletionItems(dataModel.getContext().getClass(), dataModel);
     }
 
     /**
