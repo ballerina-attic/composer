@@ -41,6 +41,7 @@ import org.ballerinalang.composer.service.workspace.langserver.dto.capabilities.
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.AutoCompleteSuggester;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.AutoCompleteSuggesterImpl;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.CapturePossibleTokenStrategy;
+import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilter;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilterDataModel;
 import org.ballerinalang.composer.service.workspace.langserver.util.WorkspaceSymbolProvider;
 import org.ballerinalang.composer.service.workspace.rest.datamodel.BFile;
@@ -48,21 +49,21 @@ import org.ballerinalang.model.BallerinaFile;
 import org.ballerinalang.model.SymbolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Language server Manager which manage langServer requests from the clients.
  */
 public class LangServerManager {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(LangServerManager.class);
-    
+
     private static LangServerManager langServerManagerInstance;
-    
+
     private LangServer langserver;
 
     private LangServerSession langServerSession;
@@ -106,11 +107,11 @@ public class LangServerManager {
             this.langserver.startServer();
         }
     }
-    
+
     void addLaunchSession(Channel channel) {
         this.langServerSession = new LangServerSession(channel);
     }
-    
+
     void processFrame(String json) {
         Gson gson = new Gson();
         RequestMessage message = gson.fromJson(json, RequestMessage.class);
@@ -126,6 +127,7 @@ public class LangServerManager {
 
     /**
      * Process the received Requests
+     *
      * @param message Message
      */
     private void processRequest(RequestMessage message) {
@@ -156,6 +158,7 @@ public class LangServerManager {
 
     /**
      * Process received notifications
+     *
      * @param message Message
      */
     private void processNotification(RequestMessage message) {
@@ -183,10 +186,11 @@ public class LangServerManager {
             logger.warn("Dropped the notification [" + message.getMethod() + "]");
         }
     }
-    
+
     /**
      * Push message to client.
-     * @param session current session
+     *
+     * @param session  current session
      * @param response response message
      */
     private void pushMessageToClient(LangServerSession session, ResponseMessage response) {
@@ -198,6 +202,7 @@ public class LangServerManager {
 
     /**
      * Process Invalid Method found
+     *
      * @param message Message
      */
     private void invalidMethodFound(Message message) {
@@ -207,10 +212,11 @@ public class LangServerManager {
 
     /**
      * Send error response to invalid requests
+     *
      * @param errorMessage Error Message
-     * @param errorCode Error code
-     * @param message Message
-     * @param errorData ErrorData
+     * @param errorCode    Error code
+     * @param message      Message
+     * @param errorData    ErrorData
      */
     private void sendErrorResponse(String errorMessage, int errorCode, Message message, ErrorData errorData) {
         ResponseMessage responseMessageDTO = new ResponseMessage();
@@ -231,8 +237,10 @@ public class LangServerManager {
 
 
     // Start Request Handlers
+
     /**
      * Process initialize request
+     *
      * @param message Request Message
      */
     private void initialize(Message message) {
@@ -252,8 +260,10 @@ public class LangServerManager {
 
 
     // Start Notification handlers
+
     /**
      * Handle Document did open notification
+     *
      * @param message Request Message
      */
     private void documentDidOpen(Message message) {
@@ -275,6 +285,7 @@ public class LangServerManager {
 
     /**
      * Handle Document did close notification
+     *
      * @param message Request Message
      */
     private void documentDidClose(Message message) {
@@ -337,6 +348,7 @@ public class LangServerManager {
 
     /**
      * Handle the get workspace symbol requests
+     *
      * @param message Request Message
      */
     private void getWorkspaceSymbol(Message message) {
@@ -354,6 +366,7 @@ public class LangServerManager {
 
     /**
      * Process Shutdown notification
+     *
      * @param message Request Message
      */
     private void shutdown(Message message) {
@@ -364,6 +377,7 @@ public class LangServerManager {
 
     /**
      * Handle exit notification
+     *
      * @param message Request Message
      */
     private void exit(Message message) {
@@ -372,6 +386,7 @@ public class LangServerManager {
 
     /**
      * Get the completion items
+     *
      * @param message - Request Message
      */
     private void getCompletionItems(Message message) {
@@ -381,7 +396,7 @@ public class LangServerManager {
                     TextDocumentPositionParams.class);
             String textContent = textDocumentPositionParams.getText();
             Position position = textDocumentPositionParams.getPosition();
-            ArrayList<CompletionItem> completionItems = new ArrayList<>();
+//            ArrayList<CompletionItem> completionItems = new ArrayList<>();
 
             BFile bFile = new BFile();
             bFile.setContent(textContent);
@@ -389,8 +404,10 @@ public class LangServerManager {
             bFile.setFileName("temp.bal");
             bFile.setPackageName(".");
 
+
             AutoCompleteSuggester autoCompleteSuggester = new AutoCompleteSuggesterImpl();
             CapturePossibleTokenStrategy capturePossibleTokenStrategy = new CapturePossibleTokenStrategy(position);
+            ArrayList<CompletionItem> cis = new ArrayList<>();
             try {
                 BallerinaFile ballerinaFile =
                         autoCompleteSuggester.getBallerinaFile(bFile, position, capturePossibleTokenStrategy);
@@ -401,22 +418,25 @@ public class LangServerManager {
                 CompletionItemAccumulator jsonModelBuilder = new CompletionItemAccumulator(symbols, position);
                 dm.getBallerinaFile().accept(jsonModelBuilder);
 
-                for (Object symbol : symbols) {
-                    if (symbol instanceof SymbolName) {
-                        CompletionItem completionItem = new CompletionItem();
-                        completionItem.setLabel(((SymbolName) symbol).getName());
-                        completionItems.add(completionItem);
-                    }
-                }
+                SuggestionsFilter suggestionsFilter = new SuggestionsFilter();
+                cis = suggestionsFilter.getCompletionItems(dm, symbols);
+
+//                for (Object symbol : cis) {
+//                    if (symbol instanceof SymbolName) {
+//                        CompletionItem completionItem = new CompletionItem();
+//                        completionItem.setLabel(((SymbolName) symbol).getName());
+//                        completionItems.add(completionItem);
+//                    }
+//                }
             } catch (IOException e) {
                 this.sendErrorResponse(LangServerConstants.INTERNAL_ERROR_LINE,
                         LangServerConstants.INTERNAL_ERROR, message, null);
             }
-
             ResponseMessage responseMessage = new ResponseMessage();
             responseMessage.setId(((RequestMessage) message).getId());
-            responseMessage.setResult(completionItems.toArray(new CompletionItem[0]));
+            responseMessage.setResult(cis.toArray(new CompletionItem[0]));
             pushMessageToClient(langServerSession, responseMessage);
+
         } else {
             logger.warn("Invalid Message type found");
         }

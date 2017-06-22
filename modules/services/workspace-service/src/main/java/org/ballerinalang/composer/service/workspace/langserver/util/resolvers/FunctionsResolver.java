@@ -1,10 +1,12 @@
 package org.ballerinalang.composer.service.workspace.langserver.util.resolvers;
 
+import org.ballerinalang.composer.service.workspace.langserver.SymbolInfo;
 import org.ballerinalang.composer.service.workspace.langserver.consts.SymbolKind;
 import org.ballerinalang.composer.service.workspace.langserver.dto.CompletionItem;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilterDataModel;
 import org.ballerinalang.composer.service.workspace.langserver.util.PackageItemResolver;
 import org.ballerinalang.composer.service.workspace.model.Function;
+import org.ballerinalang.model.SymbolName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  */
 public class FunctionsResolver implements ItemResolver {
     @Override
-    public ArrayList<CompletionItem> resolveItems(SuggestionsFilterDataModel dataModel) {
+    public ArrayList<CompletionItem> resolveItems(SuggestionsFilterDataModel dataModel, ArrayList<SymbolInfo> symbols) {
         String packageName = dataModel.getContext().getStart().getText();
         PackageItemResolver packageItemResolver = PackageItemResolver.getInstance();
         List<Function> functions = packageItemResolver.getFunctionInvocations(packageName);

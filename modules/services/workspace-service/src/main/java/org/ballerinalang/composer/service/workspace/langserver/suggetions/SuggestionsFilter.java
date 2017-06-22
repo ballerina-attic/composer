@@ -19,9 +19,11 @@ package org.ballerinalang.composer.service.workspace.langserver.suggetions;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
+import org.ballerinalang.composer.service.workspace.langserver.SymbolInfo;
 import org.ballerinalang.composer.service.workspace.langserver.consts.LangServerConstants;
 import org.ballerinalang.composer.service.workspace.langserver.dto.CompletionItem;
 import org.ballerinalang.composer.service.workspace.langserver.util.resolvers.ResolveCommandExecutor;
+import org.ballerinalang.model.SymbolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +42,8 @@ public class SuggestionsFilter {
      * @param dataModel - Suggestion filter data model
      * @return {@link ArrayList} - completion items list
      */
-    public ArrayList<CompletionItem> getCompletionItems(SuggestionsFilterDataModel dataModel) {
-        return resolveCommandExecutor.resolveCompletionItems(dataModel.getContext().getClass(), dataModel);
+    public ArrayList<CompletionItem> getCompletionItems(SuggestionsFilterDataModel dataModel, ArrayList<SymbolInfo> symbols) {
+        return resolveCommandExecutor.resolveCompletionItems(dataModel.getContext().getClass(), dataModel, symbols);
     }
 
     /**

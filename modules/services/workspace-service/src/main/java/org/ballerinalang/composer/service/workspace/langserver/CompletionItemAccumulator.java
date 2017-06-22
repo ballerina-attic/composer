@@ -48,7 +48,6 @@ import org.ballerinalang.model.GlobalScope;
 import org.ballerinalang.model.GlobalVariableDef;
 import org.ballerinalang.model.Identifier;
 import org.ballerinalang.model.ImportPackage;
-import org.ballerinalang.model.NativeScope;
 import org.ballerinalang.model.NativeUnit;
 import org.ballerinalang.model.Node;
 import org.ballerinalang.model.NodeLocation;
@@ -144,6 +143,7 @@ import org.ballerinalang.util.exceptions.BLangExceptionHelper;
 import org.ballerinalang.util.exceptions.LinkerException;
 import org.ballerinalang.util.exceptions.SemanticErrors;
 import org.ballerinalang.util.exceptions.SemanticException;
+import org.ballerinalang.util.program.BLangPrograms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,12 +188,12 @@ public class CompletionItemAccumulator implements NodeVisitor {
     private List completionItems;
     private Position position;
 
+    private SymbolScope closestScope;
+
     public CompletionItemAccumulator(List completionItems, Position position) {
-
-
-        currentScope = GlobalScope.getInstance();
-        this.nativeScope = NativeScope.getInstance();
-
+        GlobalScope globalScope = BLangPrograms.populateGlobalScope();
+        currentScope = globalScope;
+        this.nativeScope = BLangPrograms.populateNativeScope();
         this.completionItems = completionItems;
         this.position = position;
     }
@@ -289,6 +289,8 @@ public class CompletionItemAccumulator implements NodeVisitor {
         for (CompilationUnit compilationUnit : bFile.getCompilationUnits()) {
             compilationUnit.accept(this);
         }
+        getSymbolMap(closestScope, completionItems);
+        getSymbolMap(this.nativeScope, completionItems);
     }
 
     @Override
@@ -903,12 +905,18 @@ public class CompletionItemAccumulator implements NodeVisitor {
 
 
     private void getSymbolMap(SymbolScope symbolScope, List symbols) {
-        symbols.addAll(symbolScope.getSymbolMap().keySet());
-        SymbolScope enclosingScope = symbolScope.getEnclosingScope();
-        if (enclosingScope != null) {
-            getSymbolMap(enclosingScope, symbols);
-        } else {
-            return;
+        if (symbolScope != null) {
+            symbolScope.getSymbolMap().forEach((k,v) -> {
+                SymbolInfo symbolInfo = new SymbolInfo(k.getName(), v);
+                symbols.add(symbolInfo);
+            });
+//            symbols.addAll(symbolScope.getSymbolMap());
+            SymbolScope enclosingScope = symbolScope.getEnclosingScope();
+            if (enclosingScope != null) {
+                getSymbolMap(enclosingScope, symbols);
+            } else {
+                return;
+            }
         }
     }
 
@@ -1222,6 +1230,18 @@ public class CompletionItemAccumulator implements NodeVisitor {
     public void visit(BlockStmt blockStmt) {
         openScope(blockStmt);
 
+        org.ballerinalang.model.values.Position start = blockStmt.getNodeLocation().getStartPosition();
+        org.ballerinalang.model.values.Position stop = new org.ballerinalang.model.values.Position();
+        getStopPosition(blockStmt, stop);
+
+        if (position.getLine() >= start.getLineNumber()) {
+            if (stop.getLineNumber() != -1 && stop.getColumn() != -1) {
+                if (position.getLine() <= stop.getLineNumber()) {
+                    closestScope = currentScope;
+                }
+            }
+        }
+
         for (int stmtIndex = 0; stmtIndex < blockStmt.getStatements().length; stmtIndex++) {
             Statement stmt = blockStmt.getStatements()[stmtIndex];
             if (stmt instanceof BreakStmt && whileStmtCount < 1) {
@@ -1258,17 +1278,7 @@ public class CompletionItemAccumulator implements NodeVisitor {
         }
 
 
-        org.ballerinalang.model.values.Position start = blockStmt.getNodeLocation().getStartPosition();
-        org.ballerinalang.model.values.Position stop = new org.ballerinalang.model.values.Position();
-        getStopPosition(blockStmt, stop);
 
-        if (position.getLine() >= start.getLineNumber()) {
-            if (stop.getLineNumber() != -1 && stop.getColumn() != -1) {
-                if (position.getLine() <= stop.getLineNumber()) {
-                    getSymbolMap(currentScope, completionItems);
-                }
-            }
-        }
 
 
 
@@ -2711,8 +2721,7 @@ public class CompletionItemAccumulator implements NodeVisitor {
 
         // When getting the action symbol name, Package name for the action is set to null, since the action is
         // registered under connector, and connecter contains the package
-        SymbolName actionSymbolName = LangModelUtils.getActionSymName(actionIExpr.getName(),
-                actionIExpr.getPackagePath(), actionIExpr.getConnectorName());
+        SymbolName actionSymbolName = new SymbolName("");
 
         // Now check whether there is a matching action
         BLangSymbol actionSymbol = null;
@@ -3176,8 +3185,7 @@ public class CompletionItemAccumulator implements NodeVisitor {
         }
 
         action.setParameterTypes(paramTypes);
-        SymbolName symbolName = LangModelUtils.getActionSymName(action.getName(), action.getPackagePath(),
-                connectorDef.getName());
+        SymbolName symbolName = new SymbolName("");
         action.setSymbolName(symbolName);
 
         BLangSymbol actionSymbol = currentScope.resolve(symbolName);
@@ -3187,8 +3195,7 @@ public class CompletionItemAccumulator implements NodeVisitor {
         currentScope.define(symbolName, action);
 
         if (action.isNative()) {
-            SymbolName nativeActionSymName = LangModelUtils.getNativeActionSymName(action.getName(),
-                    connectorDef.getName(), action.getPackagePath());
+            SymbolName nativeActionSymName = new SymbolName("");
             BLangSymbol nativeAction = nativeScope.resolve(nativeActionSymName);
 
             if (nativeAction == null || !(nativeAction instanceof NativeUnitProxy)) {
@@ -3243,8 +3250,7 @@ public class CompletionItemAccumulator implements NodeVisitor {
         }
 
         resource.setParameterTypes(paramTypes);
-        SymbolName symbolName = LangModelUtils.getActionSymName(resource.getName(),
-                resource.getPackagePath(), service.getName());
+        SymbolName symbolName = new SymbolName("");
         resource.setSymbolName(symbolName);
 
         if (currentScope.resolve(symbolName) != null) {

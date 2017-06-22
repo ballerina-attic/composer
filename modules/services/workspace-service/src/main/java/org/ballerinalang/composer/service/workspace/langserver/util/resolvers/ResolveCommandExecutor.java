@@ -1,7 +1,9 @@
 package org.ballerinalang.composer.service.workspace.langserver.util.resolvers;
 
+import org.ballerinalang.composer.service.workspace.langserver.SymbolInfo;
 import org.ballerinalang.composer.service.workspace.langserver.dto.CompletionItem;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilterDataModel;
+import org.ballerinalang.model.SymbolName;
 import org.ballerinalang.util.parser.BallerinaParser;
 
 import java.util.ArrayList;
@@ -28,8 +30,8 @@ public class ResolveCommandExecutor {
      * @param dataModel - SuggestionsFilterDataModel
      * @return {@link ArrayList}
      */
-    public ArrayList<CompletionItem> resolveCompletionItems (Class resolveCriteria,
-                                                             SuggestionsFilterDataModel dataModel) {
-        return resolvers.get(resolveCriteria).resolveItems(dataModel);
+    public ArrayList<CompletionItem> resolveCompletionItems
+    (Class resolveCriteria, SuggestionsFilterDataModel dataModel, ArrayList<SymbolInfo> symbols) {
+        return resolvers.get(resolveCriteria).resolveItems(dataModel, symbols);
     }
 }

@@ -1,5 +1,6 @@
 package org.ballerinalang.composer.service.workspace.langserver.util.resolvers;
 
+import org.ballerinalang.composer.service.workspace.langserver.SymbolInfo;
 import org.ballerinalang.composer.service.workspace.langserver.dto.CompletionItem;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.PossibleToken;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilterDataModel;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class StatementContextResolver implements ItemResolver {
     @Override
-    public ArrayList<CompletionItem> resolveItems(SuggestionsFilterDataModel dataModel) {
+    public ArrayList<CompletionItem> resolveItems(SuggestionsFilterDataModel dataModel, ArrayList<SymbolInfo> symbols) {
 //        ParserRuleContext currentContext = dataModel.getContext();
         List<PossibleToken> possibleTokens = dataModel.getPossibleTokens();
         ArrayList<CompletionItem> completionItems = new ArrayList<>();

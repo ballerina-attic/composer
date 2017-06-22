@@ -24,7 +24,7 @@ public class AutoCompleteSuggesterTest {
                 "    @http:Path { value: \"/reserve\"}\n" +
                 "    resource Resource1 (message m) {\n" +
                 "    \tint a = 12;\n" +
-                "    \tint b = a\n" +
+                "    \tint b = http:\n" +
                 "    }\n" +
                 "}\n");
         bFile.setFilePath("/temp");
@@ -33,10 +33,11 @@ public class AutoCompleteSuggesterTest {
 
         Position position = new Position();
         position.setLine(8);
-        position.setCharacter(14);
+        position.setCharacter(18);
         AutoCompleteSuggester autoCompleteSuggester = new AutoCompleteSuggesterImpl();
         CapturePossibleTokenStrategy capturePossibleTokenStrategy = new CapturePossibleTokenStrategy(position);
-        BallerinaFile ballerinaFile = autoCompleteSuggester.getBallerinaFile(bFile, position, capturePossibleTokenStrategy);
+        BallerinaFile ballerinaFile = autoCompleteSuggester.getBallerinaFile(bFile, position,
+                capturePossibleTokenStrategy);
         capturePossibleTokenStrategy.getSuggestionsFilterDataModel().setBallerinaFile(ballerinaFile);
         SuggestionsFilterDataModel dm = capturePossibleTokenStrategy.getSuggestionsFilterDataModel();
 
@@ -47,15 +48,15 @@ public class AutoCompleteSuggesterTest {
         CompletionItemAccumulator jsonModelBuilder = new CompletionItemAccumulator(completionItem, position);
         dm.getBallerinaFile().accept(jsonModelBuilder);
 
-        for (Object symbol : completionItem) {
-            if (symbol instanceof SymbolName) {
-                CompletionItem completionItem1 = new CompletionItem();
-                completionItem1.setLabel(((SymbolName) symbol).getName());
-                completionItems.add(completionItem1);
-            }
-        }
+//        for (Object symbol : completionItem) {
+//            if (symbol instanceof SymbolName) {
+//                CompletionItem completionItem1 = new CompletionItem();
+//                completionItem1.setLabel(((SymbolName) symbol).getName());
+//                completionItems.add(completionItem1);
+//            }
+//        }
 
         SuggestionsFilter suggestionsFilter = new SuggestionsFilter();
-        suggestionsFilter.getCompletionItems(dm);
+        suggestionsFilter.getCompletionItems(dm, completionItem);
     }
 }
