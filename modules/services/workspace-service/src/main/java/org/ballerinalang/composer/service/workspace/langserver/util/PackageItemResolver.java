@@ -1,11 +1,13 @@
-package org.ballerinalang.composer.service.workspace.langserver.util.completion;
+package org.ballerinalang.composer.service.workspace.langserver.util;
 
 import org.ballerinalang.composer.service.workspace.model.Connector;
 import org.ballerinalang.composer.service.workspace.model.Function;
 import org.ballerinalang.composer.service.workspace.model.ModelPackage;
 import org.ballerinalang.composer.service.workspace.utils.BallerinaProgramContentProvider;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class for resolving the items in a given package
@@ -37,8 +39,18 @@ public class PackageItemResolver {
      * @return {@link List} functions in the package
      */
     public List<Function> getFunctionInvocations(String packageName) {
-        ModelPackage mPackage = this.ballerinaProgramContentProvider.getAllPackages().get(packageName);
-        return mPackage.getFunctions();
+        Map<String, ModelPackage> packages = this.ballerinaProgramContentProvider.getAllPackages();
+        ModelPackage mPackage = null;
+        for (Map.Entry<String, ModelPackage> entry : packages.entrySet()) {
+            if (entry.getKey().contains(("." + packageName))) {
+                mPackage = entry.getValue();
+            }
+        }
+        if (mPackage != null) {
+            return mPackage.getFunctions();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     /**

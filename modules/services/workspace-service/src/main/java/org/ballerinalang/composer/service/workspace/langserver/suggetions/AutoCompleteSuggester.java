@@ -15,18 +15,20 @@
 *  specific language governing permissions and limitations
 *  under the License.
 */
-package org.ballerinalang.composer.service.workspace.suggetions;
+package org.ballerinalang.composer.service.workspace.langserver.suggetions;
 
+import org.ballerinalang.composer.service.workspace.langserver.dto.Position;
 import org.ballerinalang.composer.service.workspace.rest.datamodel.BFile;
-import org.ballerinalang.composer.service.workspace.rest.datamodel.SourcePosition;
+import org.ballerinalang.model.BallerinaFile;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Completion Suggester
  */
 public interface AutoCompleteSuggester {
 
-    List<PossibleToken> getPossibleTokenTypes(BFile bFile, SourcePosition cursorPosition) throws IOException;
+    BallerinaFile getBallerinaFile(BFile bFile, Position cursorPosition,
+                                               CapturePossibleTokenStrategy capturePossibleTokenStrategy)
+            throws IOException;
 }
