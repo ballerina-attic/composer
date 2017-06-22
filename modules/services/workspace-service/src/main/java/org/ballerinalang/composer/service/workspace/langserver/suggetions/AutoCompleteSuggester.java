@@ -19,6 +19,7 @@ package org.ballerinalang.composer.service.workspace.langserver.suggetions;
 
 import org.ballerinalang.composer.service.workspace.langserver.dto.Position;
 import org.ballerinalang.composer.service.workspace.rest.datamodel.BFile;
+import org.ballerinalang.model.BallerinaFile;
 
 import java.io.IOException;
 
@@ -27,5 +28,7 @@ import java.io.IOException;
  */
 public interface AutoCompleteSuggester {
 
-    SuggestionsFilterDataModel getSuggestionFilterDataModel(BFile bFile, Position cursorPosition) throws IOException;
+    BallerinaFile getBallerinaFile(BFile bFile, Position cursorPosition,
+                                               CapturePossibleTokenStrategy capturePossibleTokenStrategy)
+            throws IOException;
 }

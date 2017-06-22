@@ -80,7 +80,7 @@ public class LangServerConstants {
     public static final String PACKAGES = "packages";
 
     /**
-     * Resolving Cafeterias
+     * Resolving Criteria
      */
     public static final int INVALID_CRITERIA = -1;
     public static final int FUNCTION_INVOCATION_CRITERIA = 1;

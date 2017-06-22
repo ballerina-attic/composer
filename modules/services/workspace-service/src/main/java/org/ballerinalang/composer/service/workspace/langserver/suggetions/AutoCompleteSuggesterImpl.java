@@ -24,6 +24,7 @@ import org.ballerinalang.composer.service.workspace.langserver.dto.Position;
 import org.ballerinalang.composer.service.workspace.rest.datamodel.BFile;
 import org.ballerinalang.composer.service.workspace.rest.datamodel.BallerinaComposerModelBuilder;
 import org.ballerinalang.model.BLangPackage;
+import org.ballerinalang.model.BallerinaFile;
 import org.ballerinalang.model.GlobalScope;
 import org.ballerinalang.model.types.BTypes;
 import org.ballerinalang.util.parser.BallerinaLexer;
@@ -41,7 +42,8 @@ import java.nio.charset.StandardCharsets;
 public class AutoCompleteSuggesterImpl implements AutoCompleteSuggester {
 
     @Override
-    public SuggestionsFilterDataModel getSuggestionFilterDataModel(BFile bFile, Position cursorPosition)
+    public BallerinaFile getBallerinaFile(BFile bFile, Position cursorPosition,
+                                                       CapturePossibleTokenStrategy capturePossibleTokenStrategy)
             throws IOException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bFile.getContent()
                 .getBytes(StandardCharsets.UTF_8));
@@ -50,7 +52,6 @@ public class AutoCompleteSuggesterImpl implements AutoCompleteSuggester {
         CommonTokenStream ballerinaToken = new CommonTokenStream(ballerinaLexer);
 
         BallerinaParser ballerinaParser = new BallerinaParser(ballerinaToken);
-        CapturePossibleTokenStrategy capturePossibleTokenStrategy = new CapturePossibleTokenStrategy(cursorPosition);
         ballerinaParser.setErrorHandler(capturePossibleTokenStrategy);
 
         GlobalScope globalScope = GlobalScope.getInstance();
@@ -63,6 +64,7 @@ public class AutoCompleteSuggesterImpl implements AutoCompleteSuggester {
                 new File(bFile.getFileName()).toPath());
         ballerinaParser.addParseListener(ballerinaBaseListener);
         ballerinaParser.compilationUnit();
-        return capturePossibleTokenStrategy.getSuggestionsFilterDataModel();
+        BallerinaFile ballerinaFile = bLangModelBuilder.build();
+        return ballerinaFile;
     }
 }

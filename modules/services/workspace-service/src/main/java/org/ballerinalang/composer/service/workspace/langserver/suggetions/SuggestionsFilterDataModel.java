@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.Vocabulary;
+import org.ballerinalang.model.BallerinaFile;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class SuggestionsFilterDataModel {
     private TokenStream tokenStream;
     private Vocabulary vocabulary;
     private int tokenIndex;
+    private BallerinaFile ballerinaFile;
 
     /**
      * Constructor for SuggestionsFilterDataModel
@@ -97,5 +99,13 @@ public class SuggestionsFilterDataModel {
      */
     public int getTokenIndex() {
         return tokenIndex;
+    }
+
+    public BallerinaFile getBallerinaFile() {
+        return ballerinaFile;
+    }
+
+    public void setBallerinaFile(BallerinaFile ballerinaFile) {
+        this.ballerinaFile = ballerinaFile;
     }
 }

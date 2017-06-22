@@ -40,10 +40,12 @@ import org.ballerinalang.composer.service.workspace.langserver.dto.TextDocumentP
 import org.ballerinalang.composer.service.workspace.langserver.dto.capabilities.ServerCapabilitiesDTO;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.AutoCompleteSuggester;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.AutoCompleteSuggesterImpl;
-import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilter;
+import org.ballerinalang.composer.service.workspace.langserver.suggetions.CapturePossibleTokenStrategy;
 import org.ballerinalang.composer.service.workspace.langserver.suggetions.SuggestionsFilterDataModel;
 import org.ballerinalang.composer.service.workspace.langserver.util.WorkspaceSymbolProvider;
 import org.ballerinalang.composer.service.workspace.rest.datamodel.BFile;
+import org.ballerinalang.model.BallerinaFile;
+import org.ballerinalang.model.SymbolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -388,11 +390,24 @@ public class LangServerManager {
             bFile.setPackageName(".");
 
             AutoCompleteSuggester autoCompleteSuggester = new AutoCompleteSuggesterImpl();
+            CapturePossibleTokenStrategy capturePossibleTokenStrategy = new CapturePossibleTokenStrategy(position);
             try {
-                SuggestionsFilterDataModel suggestionsFilterDataModel =
-                        autoCompleteSuggester.getSuggestionFilterDataModel(bFile, position);
-                SuggestionsFilter suggestionsFilter = new SuggestionsFilter();
-                completionItems = suggestionsFilter.getCompletionItems(suggestionsFilterDataModel);
+                BallerinaFile ballerinaFile =
+                        autoCompleteSuggester.getBallerinaFile(bFile, position, capturePossibleTokenStrategy);
+                capturePossibleTokenStrategy.getSuggestionsFilterDataModel().setBallerinaFile(ballerinaFile);
+                SuggestionsFilterDataModel dm = capturePossibleTokenStrategy.getSuggestionsFilterDataModel();
+                ArrayList symbols = new ArrayList<>();
+
+                CompletionItemAccumulator jsonModelBuilder = new CompletionItemAccumulator(symbols, position);
+                dm.getBallerinaFile().accept(jsonModelBuilder);
+
+                for (Object symbol : symbols) {
+                    if (symbol instanceof SymbolName) {
+                        CompletionItem completionItem = new CompletionItem();
+                        completionItem.setLabel(((SymbolName) symbol).getName());
+                        completionItems.add(completionItem);
+                    }
+                }
             } catch (IOException e) {
                 this.sendErrorResponse(LangServerConstants.INTERNAL_ERROR_LINE,
                         LangServerConstants.INTERNAL_ERROR, message, null);
