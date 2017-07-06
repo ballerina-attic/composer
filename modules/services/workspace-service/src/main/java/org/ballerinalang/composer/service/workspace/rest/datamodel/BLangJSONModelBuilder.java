@@ -87,10 +87,10 @@ import org.ballerinalang.model.statements.AssignStmt;
 import org.ballerinalang.model.statements.BlockStmt;
 import org.ballerinalang.model.statements.BreakStmt;
 import org.ballerinalang.model.statements.CommentStmt;
-import org.ballerinalang.model.statements.ContinueStmt;
 import org.ballerinalang.model.statements.ForkJoinStmt;
 import org.ballerinalang.model.statements.FunctionInvocationStmt;
 import org.ballerinalang.model.statements.IfElseStmt;
+import org.ballerinalang.model.statements.NextStmt;
 import org.ballerinalang.model.statements.ReplyStmt;
 import org.ballerinalang.model.statements.ReturnStmt;
 import org.ballerinalang.model.statements.Statement;
@@ -932,12 +932,12 @@ public class BLangJSONModelBuilder implements NodeVisitor {
     }
 
     @Override
-    public void visit(ContinueStmt continueStmt) {
-        JsonObject continueObject = new JsonObject();
-        continueObject.addProperty(BLangJSONModelConstants.DEFINITION_TYPE, BLangJSONModelConstants.CONTINUE_STATEMENT);
-        this.addPosition(continueObject, continueStmt.getNodeLocation());
-        this.addWhitespaceDescriptor(continueObject, continueStmt.getWhiteSpaceDescriptor());
-        tempJsonArrayRef.peek().add(continueObject);
+    public void visit(NextStmt nextStmt) {
+        JsonObject nextObject = new JsonObject();
+        nextObject.addProperty(BLangJSONModelConstants.DEFINITION_TYPE, BLangJSONModelConstants.NEXT_STATEMENT);
+        this.addPosition(nextObject, nextStmt.getNodeLocation());
+        this.addWhitespaceDescriptor(nextObject, nextStmt.getWhiteSpaceDescriptor());
+        tempJsonArrayRef.peek().add(nextObject);
     }
 
     @Override
