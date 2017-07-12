@@ -81,6 +81,7 @@ const config = [{
     ],
     devServer: {
         publicPath: '/dist/',
+        contentBase: './public',
     },
     node: { module: 'empty', net: 'empty', fs: 'empty' },
     devtool: 'source-map',
