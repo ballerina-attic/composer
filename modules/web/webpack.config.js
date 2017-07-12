@@ -8,7 +8,7 @@ const extractCSSBundle = new ExtractTextPlugin('./bundle.css');
 var exportConfig = {};
 const config = [{
     entry: {
-        bundle: './index.js',
+        bundle: './src/index.js',
         'worker-ballerina': './js/ballerina/utils/ace-worker.js',
     },
     output: {
@@ -72,6 +72,12 @@ const config = [{
                 ignore: 'js/tests/**/*.*',
             },
         }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            React: 'react',
+            ReactDOM: 'react-dom',
+        })
     ],
     devServer: {
         publicPath: '/dist/',
@@ -80,7 +86,7 @@ const config = [{
     devtool: 'source-map',
     resolve: {
         extensions: ['.js', '.json', '.jsx'],
-        modules: [path.resolve('./lib'), path.resolve('./js'), path.resolve('./node_modules'), path.resolve(__dirname)],
+        modules: [path.resolve('./src'), path.resolve('./lib'), path.resolve('./js'), path.resolve('./node_modules'), path.resolve(__dirname)],
         alias: {
             // ///////////////////////
             // third party modules //
