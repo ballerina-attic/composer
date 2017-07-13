@@ -24,6 +24,7 @@ class PackageScopedEnvironment {
     constructor(args) {
         this._packages = _.get(args, 'packages', []);
         this._types = _.get(args, 'types', []);
+        this._annotationAttachmentTypes = [];
     }
 
     init() {
@@ -31,6 +32,7 @@ class PackageScopedEnvironment {
         this._types = _.union(this._types, Environment.getTypes());
         this._currentPackage = new Package({ name: 'Current Package' });
         this._packages.push(this._currentPackage);
+        this.initializeAnnotationAttachmentPoints();
     }
 
     /**
@@ -141,6 +143,24 @@ class PackageScopedEnvironment {
         this.setCurrentPackage(currentPackage);
 
         return currentPackage;
+    }
+
+    /**
+     * Initialize annotation attachment points for Ballerina Program
+     * */
+    initializeAnnotationAttachmentPoints() {
+        this._annotationAttachmentTypes = _.sortBy(['service', 'resource', 'connector', 'action', 'function',
+            'typemapper', 'struct', 'const', 'parameter', 'annotation'], [function (type) {
+                return type;
+            }]);
+    }
+
+    /**
+     * Get annotation attachment types.
+     * @return {[string]} annotationAttachmentTypes
+     * */
+    getAnnotationAttachmentTypes() {
+        return this._annotationAttachmentTypes;
     }
 }
 

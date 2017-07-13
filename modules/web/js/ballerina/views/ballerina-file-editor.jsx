@@ -226,6 +226,7 @@ class BallerinaFileEditor extends React.Component {
                                                 data.packages.forEach((pkgNode) => {
                                                     const pkg = BallerinaEnvFactory.createPackage();
                                                     pkg.initFromJson(pkgNode);
+                                                    pkges.push(pkg);
                                                 });
                                                 this.environment.addPackages(pkges);
                                             }
