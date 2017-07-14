@@ -161,7 +161,7 @@ public class BLangJSONModelConstants {
 
     public static final String BREAK_STATEMENT = "break_statement";
 
-    public static final String CONTINUE_STATEMENT = "continue_statement";
+    public static final String NEXT_STATEMENT = "next_statement";
 
     public static final String ABORT_STATEMENT = "abort_statement";
 

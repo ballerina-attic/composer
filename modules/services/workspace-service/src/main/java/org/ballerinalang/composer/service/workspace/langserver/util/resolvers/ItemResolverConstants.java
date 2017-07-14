@@ -48,13 +48,13 @@ public class ItemResolverConstants {
     public static final String FINALLY = "finally";
     public static final String ITERATE = "iterate";
     public static final String WHILE = "while";
-    public static final String CONTINUE = "continue";
+    public static final String NEXT = "next";
     public static final String BREAK = "break";
     public static final String THROW = "throw";
     public static final String TRIGGER_WORKER = "->";
     public static final String WORKER_REPLY = "<-";
     private static final String[] constructsArr = {REPLY, RETURN, IF, ELSE, CREATE, FORK, JOIN, ALL, SOME, TIMEOUT,
-            WORKER, TRANSFORM, TRANSACTION, ABORT, ABORTED, COMMITTED, TRY, CATCH, FINALLY, ITERATE, WHILE, CONTINUE,
+            WORKER, TRANSFORM, TRANSACTION, ABORT, ABORTED, COMMITTED, TRY, CATCH, FINALLY, ITERATE, WHILE, NEXT,
             BREAK, THROW};
 
     public static final String FUNCTION = "function";
