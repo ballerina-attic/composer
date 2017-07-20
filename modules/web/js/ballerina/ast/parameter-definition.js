@@ -82,6 +82,9 @@ class ParameterDefinition extends VariableDefinition {
                 argAsString += '} ';
             });
         argAsString += this.getTypeName();
+        if (this.getTypeConstraint() !== undefined) {
+            argAsString += '<' + this.getTypeConstraint() + '>';
+        }
         argAsString += !_.isNil(this.getName()) ? /* FIXME*/ (this.getWSRegion(1) || ' ') + this.getName() : '';
         argAsString += this.getWSRegion(2);
         return argAsString;
@@ -142,6 +145,7 @@ class ParameterDefinition extends VariableDefinition {
     initFromJson(jsonNode) {
         this.setTypeName(jsonNode.parameter_type, { doSilently: true });
         this.setName(jsonNode.parameter_name, { doSilently: true });
+        this.setTypeConstraint(jsonNode.type_constraint, { doSilently: true });
 
         // As of now we only support one annotation.
         if (_.isEqual(_.size(jsonNode.children), 1) && _.isEqual(jsonNode.children[0].type, 'annotation_attachment')) {
