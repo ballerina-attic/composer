@@ -54,8 +54,7 @@ function breakpointHOC(WrappedComponent) {
                 });
             }
             this.addListner = DebugManager.on('breakpoint-added', ({ lineNumber, fileName: bpFileName }) => {
-                const { editor } = this.context;
-                const fileName = editor.getFile().getName();
+                const fileName = this.getFileNameWithPackage();
                 if (fileName === bpFileName && this.props.model.getLineNumber() === lineNumber) {
                     this.setState({
                         isBreakpoint: true,
@@ -66,8 +65,7 @@ function breakpointHOC(WrappedComponent) {
                 }
             });
             this.removeListner = DebugManager.on('breakpoint-removed', ({ lineNumber, fileName: bpFileName }) => {
-                const { editor } = this.context;
-                const fileName = editor.getFile().getName();
+                const fileName = this.getFileNameWithPackage();
                 if (fileName === bpFileName && this.props.model.getLineNumber() === lineNumber) {
                     this.setState({
                         isBreakpoint: false,
@@ -95,8 +93,7 @@ function breakpointHOC(WrappedComponent) {
          * indicate a debug hit
          */
         debugHit(message) {
-            const { editor } = this.context;
-            const fileName = editor.getFile().getName();
+            const fileName = this.getFileNameWithPackage();
             const lineNumber = this.props.model._lineNumber;
             if (message.location.lineNumber === lineNumber && fileName === message.location.fileName) {
                 this.setState({
@@ -109,6 +106,21 @@ function breakpointHOC(WrappedComponent) {
             }
         }
 
+        /**
+         * get file name with package path
+         *
+         * @returns string - file name with package path
+          */
+        getFileNameWithPackage() {
+            const { astRoot, editor } = this.context;
+            const fileName = editor.getFile().getName();
+            const packagePath = astRoot.getPackageDefinition().getPackageName() || '.';
+            if (packagePath !== '.') {
+                return `${packagePath.replace(/\./g, '/')}/${fileName}`;
+            }
+            return fileName;
+        }
+
         end() {
             this.setState({
                 isDebugHit: false,
@@ -119,8 +131,8 @@ function breakpointHOC(WrappedComponent) {
          */
         addBreakpoint() {
             const lineNumber = this.props.model.getLineNumber();
-            const { editor, astRoot } = this.context;
-            const fileName = editor.getFile().getName();
+            const { astRoot } = this.context;
+            const fileName = this.getFileNameWithPackage();
             const packagePath = astRoot.getPackageDefinition().getPackageName() || '.';
             DebugManager.addBreakPoint(lineNumber, fileName, packagePath);
         }
@@ -129,8 +141,8 @@ function breakpointHOC(WrappedComponent) {
          */
         removeBreakpoint() {
             const lineNumber = this.props.model.getLineNumber();
-            const { editor, astRoot } = this.context;
-            const fileName = editor.getFile().getName();
+            const { astRoot } = this.context;
+            const fileName = this.getFileNameWithPackage();
             const packagePath = astRoot.getPackageDefinition().getPackageName() || '.';
             DebugManager.removeBreakPoint(lineNumber, fileName, packagePath);
         }
