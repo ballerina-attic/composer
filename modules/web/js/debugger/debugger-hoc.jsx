@@ -57,11 +57,25 @@ function debuggerHOC(WrappedComponent) {
             DebugManager.off('session-completed', this.cmpListner, this);
             DebugManager.off('resume-execution', this.resumeListner, this);
         }
+
+        /**
+         * get file name with package path
+         *
+         * @returns string - file name with package path
+          */
+        getFileNameWithPackage() {
+            const fileName = this.props.file.getName();
+            const packagePath = this.props.file.getPackageName() || '.';
+            if (packagePath !== '.') {
+                return `${packagePath.replace(/\./g, '/')}/${fileName}`;
+            }
+            return fileName;
+        }
         /**
          * update breakpoints
          */
         updateBreakpoints() {
-            const fileName = this.props.file.getName();
+            const fileName = this.getFileNameWithPackage();
             const breakpoints = DebugManager.getDebugPoints(fileName);
             const sourceViewBreakpoints = breakpoints.map(breakpoint => breakpoint - 1);
             this.setState({
@@ -75,7 +89,7 @@ function debuggerHOC(WrappedComponent) {
          * @param {object} message - parsed message from backend
          */
         debugHit(message) {
-            const fileName = this.props.file.getName();
+            const fileName = this.getFileNameWithPackage();
             const position = message.location;
             if (fileName === position.fileName) {
                 this.setState({
@@ -95,14 +109,14 @@ function debuggerHOC(WrappedComponent) {
          * add breakpoint
          */
         addBreakpoint(lineNumber) {
-            const fileName = this.props.file.getName();
+            const fileName = this.getFileNameWithPackage();
             DebugManager.addBreakPoint(lineNumber, fileName);
         }
         /**
          * remove breakpoint
          */
         removeBreakpoint(lineNumber) {
-            const fileName = this.props.file.getName();
+            const fileName = this.getFileNameWithPackage();
             DebugManager.removeBreakPoint(lineNumber, fileName);
         }
 
