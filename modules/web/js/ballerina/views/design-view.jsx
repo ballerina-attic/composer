@@ -106,6 +106,7 @@ class DesignView extends React.Component {
                             <BallerinaDiagram
                                 style={{ display: isTransformActive ? 'none' : 'block' }}
                                 model={this.props.model}
+                                show={this.props.show}
                             />
                             {isTransformActive &&
                             <TransformExpanded
