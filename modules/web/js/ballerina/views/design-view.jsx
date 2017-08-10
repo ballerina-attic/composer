@@ -105,6 +105,7 @@ class DesignView extends React.Component {
                         <div className="diagram root" ref={this.setDiagramContainer} >
                             <BallerinaDiagram
                                 model={this.props.model}
+                                show={this.props.show}
                             />
                         </div>
                     </div>

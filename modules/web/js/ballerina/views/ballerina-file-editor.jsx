@@ -39,6 +39,8 @@ import { CONTENT_MODIFIED, TAB_ACTIVATE, REDO_EVENT, UNDO_EVENT } from './../../
 import { OPEN_SYMBOL_DOCS } from './../../constants/commands';
 import FindBreakpointNodesVisitor from './../visitors/find-breakpoint-nodes-visitor';
 import FindBreakpointLinesVisitor from './../visitors/find-breakpoint-lines-visitor';
+import PositionCalcVisitor from '../visitors/position-calculator-visitor';
+import DimensionCalcVisitor from '../visitors/dimension-calculator-visitor';
 
 const sourceViewTabHeaderClass = 'inverse';
 
@@ -57,6 +59,8 @@ class BallerinaFileEditor extends React.Component {
      */
     constructor(props) {
         super(props);
+        this.dimentionCalc = new DimensionCalcVisitor();
+        this.positionCalc = new PositionCalcVisitor();
         this.state = {
             undoRedoPending: false,
             parsePending: false,
@@ -65,6 +69,7 @@ class BallerinaFileEditor extends React.Component {
             syntaxErrors: [],
             model: new BallerinaASTRoot(),
             activeView: DESIGN_VIEW,
+            jsError: false,
         };
         this.isASTInvalid = false;
         // listen for the changes to file content
@@ -168,6 +173,7 @@ class BallerinaFileEditor extends React.Component {
     onASTModified(evt) {
         const sourceGenVisitor = new SourceGenVisitor();
         this.state.model.accept(sourceGenVisitor);
+        this.visitTree(this.state.model);
         const newContent = sourceGenVisitor.getGeneratedSource();
         // set breakpoints to model
         this.reCalculateBreakpoints(this.state.model);
@@ -234,7 +240,7 @@ class BallerinaFileEditor extends React.Component {
         // and current AST is marked as invalid.
         // Current AST can become invalid due to actions
         // such as modifications from source view, undo/redo
-        if (this.isASTInvalid && this.state.activeView !== SOURCE_VIEW) {
+        if ((this.state.jsError || this.isASTInvalid) && this.state.activeView !== SOURCE_VIEW) {
             this.validateAndParseFile()
                 .then((state) => {
                     this.isASTInvalid = false;
@@ -319,6 +325,8 @@ class BallerinaFileEditor extends React.Component {
                             // update package name of the file
                             file.setPackageName(pkgName || '.');
                             // init bal env in background
+                            this.visitTree(ast);
+
                             BallerinaEnvironment.initialize()
                                 .then(() => {
                                     this.environment.init();
@@ -368,6 +376,37 @@ class BallerinaFileEditor extends React.Component {
         const findBreakpointsVisitor = new FindBreakpointNodesVisitor(ast);
         findBreakpointsVisitor.setBreakpoints(breakpoints);
         ast.accept(findBreakpointsVisitor);
+    }
+
+    visitTree(ast) {
+        try {
+            // Following is how we render the diagram.
+            // 1. We will visit the model tree and calculate width and height of all
+            //    the elements. We will use DimensionCalcVisitor.
+            ast.accept(this.dimentionCalc);
+
+            // 1.5 We need to adjest the width of the panel to accomodate width of the screen.
+            // - This is done by passing the container width to position calculater to readjest.
+            const viewState = ast.getViewState();
+            const $diagram = document.getElementsByClassName('diagram')[0];
+            viewState.container = {
+                width: $diagram.offsetWidth,
+                height: $diagram.offsetHeight,
+            };
+
+            // 2. Now we will visit the model again and calculate position of each node
+            //    in the tree. We will use PositionCalcVisitor for this.
+            ast.accept(this.positionCalc);
+            this.setState({
+                jsError: false,
+            });
+        } catch (e) {
+            this.setState({
+                activeView: SOURCE_VIEW,
+                jsError: true,
+            });
+            log.error('Error in position/Dimension calc, switching to source.', e);
+        }
     }
 
     /**
@@ -426,7 +465,7 @@ class BallerinaFileEditor extends React.Component {
                         </div>
                     }
                 </CSSTransitionGroup>
-                <DesignView model={this.state.model} show={showDesignView} />
+                <DesignView model={this.state.model} show={showDesignView && !this.state.jsError} />
                 <SourceView
                     displayErrorList={popupErrorListInSourceView}
                     parseFailed={this.state.parseFailed}
