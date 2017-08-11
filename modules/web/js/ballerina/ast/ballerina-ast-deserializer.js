@@ -38,9 +38,6 @@ class BallerinaASTDeserializer {
                 packageNodes[0].whiteSpace.useDefault = false;
             }
         }
-
-        const sourceGen = new SourceGenVisitor();
-        astRoot.accept(sourceGen);
         return astRoot;
     }
 }
