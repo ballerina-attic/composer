@@ -65,9 +65,12 @@ class ConnectorDefinitionVisitor extends AbstractSourceGenVisitor {
             + this.getEndLinesInSegment(constructedSourceSegment) + 1;
         connectorDefinition.setLineNumber(lineNumber, { doSilently: true });
         constructedSourceSegment += 'connector'
-          + connectorDefinition.getWSRegion(0) + connectorDefinition.getConnectorName()
-          + connectorDefinition.getWSRegion(1) + '(' + connectorDefinition.getArgumentsAsString() + ')'
-          + connectorDefinition.getWSRegion(2) + '{' + connectorDefinition.getWSRegion(3);
+            + connectorDefinition.getWSRegion(0) + connectorDefinition.getConnectorName()
+            + (!_.isNil(connectorDefinition.getFilterSupportedType()) ?
+                (' <' + connectorDefinition.getFilterSupportedType().parameter_type + ' ' +
+                connectorDefinition.getFilterSupportedType().parameter_name + '>') : '')
+            + connectorDefinition.getWSRegion(1) + '(' + connectorDefinition.getArgumentsAsString() + ')'
+            + connectorDefinition.getWSRegion(2) + '{' + connectorDefinition.getWSRegion(3);
         constructedSourceSegment += (useDefaultWS) ? this.getIndentation() : '';
         const numberOfNewLinesAdded = this.getEndLinesInSegment(constructedSourceSegment);
         this.increaseTotalSourceLineCountBy(numberOfNewLinesAdded);

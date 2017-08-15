@@ -31,6 +31,7 @@ class ConnectorDefinition extends ASTNode {
         this.connector_name = _.get(args, 'connector_name');
         this.annotations = _.get(args, 'annotations', []);
         this.arguments = _.get(args, 'arguments', []);
+        this.filter_supported_type = _.get(args, 'filter_supported_type', []);
         this.whiteSpace.defaultDescriptor.regions = {
             0: ' ',
             1: ' ',
@@ -62,6 +63,22 @@ class ConnectorDefinition extends ASTNode {
      */
     getArguments() {
         return this.getArgumentParameterDefinitionHolder().getChildren();
+    }
+
+    /**
+     * Get the filter supported type
+     * @return {object} filter supported type
+     */
+    getFilterSupportedType() {
+        return this.filter_supported_type;
+    }
+
+    /**
+     * Set the filter supported type
+     * @param type - type
+     */
+    setFilterSupportedType(type) {
+        this.filter_supported_type = type;
     }
 
     /**
@@ -314,6 +331,7 @@ class ConnectorDefinition extends ASTNode {
     initFromJson(jsonNode) {
         const self = this;
         this.setConnectorName(jsonNode.connector_name, { doSilently: true });
+        this.setFilterSupportedType(jsonNode.filter_supported_type);
 
         _.each(jsonNode.children, (childNode) => {
             const child = self.getFactory().createFromJson(childNode);

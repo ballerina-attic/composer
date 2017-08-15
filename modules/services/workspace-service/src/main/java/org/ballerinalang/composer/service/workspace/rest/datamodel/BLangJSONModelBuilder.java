@@ -288,7 +288,15 @@ public class BLangJSONModelBuilder implements NodeVisitor {
         if (connector.getParameterDefs() != null) {
             tempJsonArrayRef.push(new JsonArray());
             for (ParameterDef parameterDef : connector.getParameterDefs()) {
-                parameterDef.accept(this);
+                if (!(connector.getFilterSupportedType() != null &&
+                        parameterDef.getTypeName().equals(connector.getFilterSupportedType()))) {
+                    parameterDef.accept(this);
+                } else {
+                    tempJsonArrayRef.push(new JsonArray());
+                    parameterDef.accept(this);
+                    jsonConnectObj.add(BLangJSONModelConstants.FILTER_SUPPORTED_TYPE, (tempJsonArrayRef.peek()).get(0));
+                    tempJsonArrayRef.pop();
+                }
             }
             JsonObject argsObj = new JsonObject();
             argsObj.addProperty(BLangJSONModelConstants.DEFINITION_TYPE,
