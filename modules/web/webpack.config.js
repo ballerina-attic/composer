@@ -1,11 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
 const UnusedFilesWebpackPlugin = require('unused-files-webpack-plugin').UnusedFilesWebpackPlugin;
 
 const extractThemes = new ExtractTextPlugin('./[name].css');
 const extractCSSBundle = new ExtractTextPlugin('./bundle.css');
-let exportConfig = {};
+var exportConfig = {};
 const config = [{
     entry: {
         bundle: './index.js',
@@ -192,6 +193,29 @@ if (process.env.NODE_ENV === 'production') {
         PRODUCTION: JSON.stringify(false),
     }));
 }
+
+// create test artifacts
+const copy = {};
+const keys = Object.keys(config[0]);
+var i = keys.length;
+while (i--) {
+    copy[keys[i]] = config[0][keys[i]];
+}
+// we run tests on nodejs. So compile for nodejs
+copy.target = 'node';
+copy.entry = './js/tests/js/spec/ballerina-test.js';
+copy.output = {
+    path: path.resolve(__dirname, 'target'),
+    filename: 'ballerina-test.js',
+};
+copy.plugins = [
+    new WriteFilePlugin(),
+    new webpack.DefinePlugin({
+        PRODUCTION: JSON.stringify(false),
+    }),
+];
+exportConfig.push(copy);
+// end - create test artifacts
 
 if (process.env.NODE_ENV === 'test') {
   // we run tests on nodejs. So compile for nodejs
