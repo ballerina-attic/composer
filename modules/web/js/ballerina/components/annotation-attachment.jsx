@@ -25,7 +25,7 @@ import { deleteNode, addAttribute } from './utils/annotation-button-events';
 import AnnotationHelper from '../env/helpers/annotation-helper';
 import AutoSuggestHtml from './utils/autosuggest-html';
 import ASTFactory from '../ast/ast-factory';
-import PopoutButton from './popout-button';
+import ActionMenu from './action-menu';
 
 /**
  * React component for an {@link AnnotationAttachment} AST
@@ -224,49 +224,41 @@ class AnnotationAttachment extends React.Component {
     }
 
     /**
-     * Renders the operation buttons for an annotation attachment.
+     * Renders the action menu.
      *
-     * @returns {PopoutButton} The operations button.
+     * @returns {ActionMenu} Action menu view.
      * @memberof AnnotationAttachment
      */
-    renderDeleteButton() {
-        const buttons = [];
+    renderActionMenu() {
+        const actionMenuItems = [];
+
         // Delete button.
         const deleteButton = {
-            icon: 'fw-cancel',
+            key: this.props.model.getID(),
+            icon: 'fw-delete',
             text: 'Delete',
             onClick: () => {
                 deleteNode(this.props.model);
             },
         };
-        buttons.push(deleteButton);
+        actionMenuItems.push(deleteButton);
 
-        return <PopoutButton buttons={buttons} />;
-    }
-
-    /**
-     * Renders the add annotation button.
-     *
-     * @returns {PopoutButton} The add button view.
-     * @memberof AnnotationAttachment
-     */
-    renderAddButton() {
-        const buttons = [];
         const annotationDefinition = AnnotationHelper.getAnnotationDefinition(
             this.context.environment, this.props.model.getFullPackageName(), this.props.model.getName());
         if (annotationDefinition && annotationDefinition.getAnnotationAttributeDefinitions().length > 0) {
             // Add attribute button
             const addAttributeButton = {
+                key: this.props.model.getID(),
                 icon: 'fw-add',
                 text: 'Add Attribute',
                 onClick: () => {
                     addAttribute(this.props.model);
                 },
             };
-            buttons.push(addAttributeButton);
+            actionMenuItems.push(addAttributeButton);
         }
 
-        return <PopoutButton buttons={buttons} />;
+        return <ActionMenu items={actionMenuItems} />;
     }
 
     /**
@@ -317,12 +309,14 @@ class AnnotationAttachment extends React.Component {
     render() {
         const packageName = this.renderPackageName();
         const name = this.renderName();
-        const addOperationButton = this.renderAddButton();
-        const deleteOperationButton = this.renderDeleteButton();
+        const actionMenu = this.renderActionMenu();
 
         const attributes = this.props.model.getViewState().collapsed ? (null) : <li>{this.renderAttributes()}</li>;
         return (<ul className="annotation-attachment-ul">
-            <li className={cn('annotation-attachment-text-li', { 'annotation-attachment-error': this.state.hasError })}>
+            <li className={cn('annotation-attachment-text-li', 'action-menu-wrapper',
+                                { 'annotation-attachment-error': this.state.hasError })}
+            >
+                {actionMenu}
                 <CSSTransitionGroup
                     component="span"
                     transitionName="annotation-expand"
@@ -338,11 +332,10 @@ class AnnotationAttachment extends React.Component {
                     />
                 </CSSTransitionGroup>
                 {packageName}{name}
-                {addOperationButton}
-                {deleteOperationButton}
                 <span className='annotation-attachment-badge hide'>
                     <i className="fw fw-annotation-badge" />
                 </span>
+                
             </li>
             {attributes}
         </ul>);
