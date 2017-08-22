@@ -75,7 +75,7 @@ class ActionMenu extends React.Component {
                 this.actionMenuRef.style.height = DEFAULT_MENU_ITEM_HEIGHT * this.props.items.length;
             } else if (expand === false) {
                 this.actionMenuWrapperRef.className = this.actionMenuWrapperRef.className.replace(' expanded', '');
-                this.actionMenuWrapperRef.style.height = '';
+                this.actionMenuRef.style.height = '';
             }
         }
     }
@@ -114,7 +114,10 @@ class ActionMenu extends React.Component {
                     onClick={this.actionMenuClick}
                 >
                     <div className='icon action-menu-icon-wrapper' onClick={e => item.onClick(e)}>
-                        <i className={cn('icon fw ', item.icon, { [`${item.className}`]: item.className !== undefined })} />
+                        <i className={cn('icon fw ',
+                                        item.icon,
+                                        { [`${item.className}`]: item.className !== undefined })}
+                        />
                     </div>
                 </div>);
             } else {
@@ -126,7 +129,10 @@ class ActionMenu extends React.Component {
                     <div className='icon action-menu-icon-wrapper'>
                         <i className='fw fw-menu' />
                     </div>
-                    <div className='menu action-menu-items-wrapper'>
+                    <div
+                        className='menu action-menu-items-wrapper'
+                        onMouseLeave={() => { this.toggleActionMenuExpansion(false); }}
+                    >
                         <ul>
                             {menuItems}
                         </ul>
