@@ -211,9 +211,9 @@ class AnnotationAttribute extends React.Component {
             actionMenuItems.push(deleteButton);
             return (<li key={attributeValue.getID()}>
                 <ul>
-                    <li>
-                        <AnnotationAttributeBValue model={attributeValue.getChildren()[0]} />
+                    <li className='action-menu-wrapper'>
                         <ActionMenu items={actionMenuItems} />
+                        <AnnotationAttributeBValue model={attributeValue.getChildren()[0]} />
                     </li>
                 </ul>
             </li>);
@@ -271,11 +271,9 @@ class AnnotationAttribute extends React.Component {
             if (this.state.isBValueEdit) {
                 const width = util.getTextWidth(this.state.bValueText, 150, 1000);
                 return (
-                    <ul
-                        className="attribute-value-bvalue"
-                    >
-                        <li><ActionMenu items={actionMenuItems} /></li>
-                        <li className={cn({ 'annotation-attribute-error': this.state.hasError })}>
+                    <ul className="attribute-value-bvalue">
+                        <li className={cn('action-menu-wrapper', { 'annotation-attribute-error': this.state.hasError })}>
+                            <ActionMenu items={actionMenuItems} />
                             {key}
                             <span className="annotation-attribute-value-wrapper">
                                 <input
@@ -296,14 +294,12 @@ class AnnotationAttribute extends React.Component {
 
             if (bValue.getStringValue() === undefined || bValue.getStringValue() === '') {
                 return (
-                    <ul
-                        className="attribute-value-bvalue"
-                    >
-                        <li><ActionMenu items={actionMenuItems} /></li>
+                    <ul className="attribute-value-bvalue">
                         <li
-                            className={cn({ 'annotation-attribute-error': this.state.hasError })}
+                            className={cn('action-menu-wrapper', { 'annotation-attribute-error': this.state.hasError })}
                             onClick={() => this.onBValueEdit(false)}
                         >
+                            <ActionMenu items={actionMenuItems} />
                             {key}
                             <span className="annotation-attribute-value-wrapper">
                                 {bValue.getStringValue()}
@@ -316,8 +312,8 @@ class AnnotationAttribute extends React.Component {
                 <ul
                     className="attribute-value-bvalue"
                 >
-                    <li><ActionMenu items={actionMenuItems} /></li>
-                    <li className={cn({ 'annotation-attribute-error': this.state.hasError })}>
+                    <li className={cn('action-menu-wrapper', { 'annotation-attribute-error': this.state.hasError })}>
+                        <ActionMenu items={actionMenuItems} />
                         {key}
                         <span className="annotation-attribute-value-wrapper" onClick={() => this.onBValueEdit(true)}>
                             {bValue.getStringValue()}
@@ -348,7 +344,7 @@ class AnnotationAttribute extends React.Component {
             // Delete button.
             const deleteButton = {
                 key: this.props.model.getID(),
-                icon: 'fw-cancel',
+                icon: 'fw-delete',
                 text: 'Delete',
                 onClick: () => {
                     deleteNode(this.props.model);
@@ -361,8 +357,8 @@ class AnnotationAttribute extends React.Component {
                 <ul
                     className="attribute-value-annotation"
                 >
-                    <li><ActionMenu items={actionMenuItems} /></li>
-                    <li className={cn({ 'annotation-attribute-error': this.state.hasError })}>
+                    <li className={cn('action-menu-wrapper', { 'annotation-attribute-error': this.state.hasError })}>
+                        <ActionMenu items={actionMenuItems} />
                         <CSSTransitionGroup
                             component="span"
                             transitionName="annotation-expand"
@@ -393,7 +389,7 @@ class AnnotationAttribute extends React.Component {
             // Delete button.
             const deleteButton = {
                 key: this.props.model.getID(),
-                icon: 'fw-cancel',
+                icon: 'fw-delete',
                 text: 'Delete',
                 onClick: () => {
                     deleteNode(this.props.model);
@@ -418,8 +414,8 @@ class AnnotationAttribute extends React.Component {
                 <ul
                     className="attribute-value-array"
                 >
-                    <li><ActionMenu items={actionMenuItems} /></li>
-                    <li className={cn({ 'annotation-attribute-error': this.state.hasError })}>
+                    <li className={cn('action-menu-wrapper', { 'annotation-attribute-error': this.state.hasError })}>
+                        <ActionMenu items={actionMenuItems} />
                         <CSSTransitionGroup
                             component="span"
                             transitionName="annotation-expand"
