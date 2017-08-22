@@ -106,21 +106,36 @@ class ActionMenu extends React.Component {
      * @memberof ActionMenu
      */
     render() {
-        const menuItems = this.renderMenuItems();
-        return (<div
-            className={`action-menu ${this.props.wrapperClassName}`}
-            onClick={this.actionMenuClick}
-            
-        >
-            <div className='icon action-menu-icon-wrapper'>
-                <i className='fw fw-menu' />
-            </div>
-            <div className='menu action-menu-items-wrapper'>
-                <ul>
-                    {menuItems}
-                </ul>
-            </div>
-        </div>);
+        if (this.props.items.length !== 0) {
+            if (this.props.items.length === 1) {
+                const item = this.props.items[0];
+                return (<div
+                    className={`action-menu ${this.props.wrapperClassName}`}
+                    onClick={this.actionMenuClick}
+                >
+                    <div className='icon action-menu-icon-wrapper' onClick={e => item.onClick(e)}>
+                        <i className={cn('icon fw ', item.icon, { [`${item.className}`]: item.className !== undefined })} />
+                    </div>
+                </div>);
+            } else {
+                const menuItems = this.renderMenuItems();
+                return (<div
+                    className={`action-menu ${this.props.wrapperClassName}`}
+                    onClick={this.actionMenuClick}
+                >
+                    <div className='icon action-menu-icon-wrapper'>
+                        <i className='fw fw-menu' />
+                    </div>
+                    <div className='menu action-menu-items-wrapper'>
+                        <ul>
+                            {menuItems}
+                        </ul>
+                    </div>
+                </div>);
+            }
+        } else {
+            return (null);
+        }
     }
 }
 
