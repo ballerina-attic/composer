@@ -255,6 +255,7 @@ class TransformExpanded extends React.Component {
                         this.drawConnection(statement.getID() + functionInvocationExpression.getID(), source, target);
                     });
                 } else {
+                    expression = this.transformNodeManager.getMappingExpression(expression);
                     let sourceId = `${expression.getExpressionString().trim()}:${viewId}`;
                     let folded = false;
                     if (!this.sourceElements[sourceId]) {
@@ -526,7 +527,8 @@ class TransformExpanded extends React.Component {
     }
 
     removeSourceType(removedType) {
-        _.remove(this.state.vertices, (vertex) => { return vertex.name === removedType.name; });
+        _.remove(this.state.vertices, (vertex) => { return vertex.name === removedType.name
+                                                            && vertex.varDeclarationString; });
         this.props.model.removeInput(removedType);
 
     }
@@ -587,7 +589,10 @@ class TransformExpanded extends React.Component {
             langServerClient.getCompletions(options, (response) => {
                 const completions = response.result.filter((completionItem) => {
                     // all variables have type as 9 as per the declaration in lang server
-                    return (completionItem.kind === 9);
+                    return ((completionItem.kind === 9)
+                        && !completionItem.label.startsWith('__temp')
+                        && !completionItem.label.startsWith('__output')
+                        && completionItem.label !== '_');
                 });
                 const transformVars = completions.map((completionItem) => {
                     const typeData = getResolvedTypeData(completionItem);
@@ -613,7 +618,7 @@ class TransformExpanded extends React.Component {
                         const variableType = {};
                         variableType.name = arg.name;
                         variableType.displayName = arg.name;
-                        variableType.varDeclarationString = false;
+                        variableType.varDeclarationString = '';
                         _.forEach(varDefinations, (varDef) => {
                             if(variableType.name  == varDef.getLeftExpression().getVariableName()) {
                                variableType.varDeclarationString =  varDef.getStatementString();
@@ -629,7 +634,7 @@ class TransformExpanded extends React.Component {
                                 arg.constraint.packageName, arg.constraint.type);
                             if (constraintDef !== undefined) {
                                 const constraintVar = this.transformNodeManager.getStructType(
-                                    arg.name, variableType.type, constraintDef, 'vertex');
+                                    arg.name, variableType.type, constraintDef);
                                 // For constraint types, the field types must be the same type as the variable and
                                 // not the struct field types. E.g. : struct.name type maybe string but if it is a json,
                                 // type has to be json and not string. Hence converting all field types to variable

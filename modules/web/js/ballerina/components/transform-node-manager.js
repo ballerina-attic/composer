@@ -124,7 +124,19 @@ class TransformNodeManager {
                 refType.addChild(keyValEx);
                 funcNode.addChild(refType, index);
             } else {
-                funcNode.addChild(sourceExpression, index);
+                if (compatibility.safe) {
+                    funcNode.addChild(sourceExpression, index);
+                    return;
+                }
+
+                const assignmentStmt = this.findEnclosingAssignmentStatement(funcNode);
+                // unsafe cast/conversion
+                const tempVarName = this.getNextTempVarName();
+                this.insertExplicitAssignmentStatement(tempVarName, sourceExpression, this._transformStmt.getIndexOfChild(assignmentStmt) - 1);
+
+                const tempVarRefExpr = BallerinaASTFactory.createSimpleVariableReferenceExpression();
+                tempVarRefExpr.setExpressionFromString(tempVarName);
+                funcNode.addChild(tempVarRefExpr, index);
             }
             return;
         }
@@ -133,11 +145,19 @@ class TransformNodeManager {
             // Connection source is not a struct and target is a struct.
             // Source is a function node.
             const assignmentStmtSource = this.getParentAssignmentStmt(source.funcInv);
+            const rightExpression = this.getCompatibleSourceExpression(source.funcInv, compatibility.type, target.type);
+            assignmentStmtSource.removeChild(source.funcInv, true);
+            assignmentStmtSource.addChild(rightExpression, 1, true);
             assignmentStmtSource.setIsDeclaredWithVar(false);
 
             const lexpr = assignmentStmtSource.getLeftExpression();
             lexpr.removeChild(lexpr.getChildren()[source.index], true);
             lexpr.addChild(targetExpression, source.index);
+
+            if (!compatibility.safe) {
+                const errorVarRef = DefaultBallerinaASTFactory.createIgnoreErrorVariableReference();
+                lexpr.addChild(errorVarRef);
+            }
             return;
         }
 
@@ -161,16 +181,30 @@ class TransformNodeManager {
         target.funcInv.addChild(source.funcInv, target.index);
     }
 
+    insertExplicitAssignmentStatement(tempVarName, sourceExpression, index) {
+        const tempVarAssignmentStmt = BallerinaASTFactory.createAssignmentStatement();
+        const varRefList = BallerinaASTFactory.createVariableReferenceList();
+        varRefList.setExpressionFromString(tempVarName);
+        tempVarAssignmentStmt.addChild(varRefList, 0);
+        tempVarAssignmentStmt.addChild(sourceExpression, 1);
+        tempVarAssignmentStmt.setIsDeclaredWithVar(true);
+        const errorVarRef = DefaultBallerinaASTFactory.createIgnoreErrorVariableReference();
+        varRefList.addChild(errorVarRef);
+        this._transformStmt.addChild(tempVarAssignmentStmt, index);
+    }
+
     removeStatementEdge(connection) {
         const { source, target } = connection;
         if (source.endpointKind === 'input' && target.endpointKind === 'output') {
             const assignmentStmt = _.find(this._transformStmt.getChildren(), (child) => {
-                return child.getLeftExpression().getChildren().find((leftExpression) => {
-                    const leftExpressionStr = leftExpression.getExpressionString().trim();
-                    const rightExpressionStr = this.getMappingExpression(
-                        child.getRightExpression()).getExpressionString().trim();
-                    return (leftExpressionStr === target.name) && (rightExpressionStr === source.name);
-                });
+              if(!BallerinaASTFactory.isVariableDefinitionStatement(child)) {
+                    return child.getLeftExpression().getChildren().find((leftExpression) => {
+                        const leftExpressionStr = leftExpression.getExpressionString().trim();
+                        const rightExpressionStr = this.getMappingExpression(
+                            child.getRightExpression()).getExpressionString().trim();
+                        return (leftExpressionStr === target.name) && (rightExpressionStr === source.name);
+                    });
+              }
             });
             this._transformStmt.removeChild(assignmentStmt);
             return;
@@ -205,7 +239,7 @@ class TransformNodeManager {
             assignmentStmtSource.getLeftExpression().removeChild(expression, true);
             assignmentStmtSource.setIsDeclaredWithVar(true);
             const simpleVarRefExpression = BallerinaASTFactory.createSimpleVariableReferenceExpression();
-            simpleVarRefExpression.setExpressionFromString('_temp' + (source.index + 1));
+            simpleVarRefExpression.setExpressionFromString('__temp' + (source.index + 1));
             assignmentStmtSource.getLeftExpression().addChild(simpleVarRefExpression, source.index + 1);
             return;
         }
@@ -293,7 +327,7 @@ class TransformNodeManager {
                 paramObj = {
                     name: paramName,
                     type: param.type,
-                }
+                };
             }
 
             paramObj.displayName = param.name;
@@ -311,7 +345,6 @@ class TransformNodeManager {
                 index,
                 funcInv: functionInvocationExpression,
             };
-
             returnParams.push(paramObj);
         });
 
@@ -379,20 +412,40 @@ class TransformNodeManager {
     }
 
     createTypeCastExpression(type, vertexExpression) {
-        const typeConversionExp = BallerinaASTFactory.createTypeCastExpression();
-        typeConversionExp.setExpressionFromString('(' + type + ')' + vertexExpression.getExpressionString());
-        return typeConversionExp;
+        const typeCastExp = BallerinaASTFactory.createTypeCastExpression();
+        typeCastExp.setExpressionFromString('(' + type + ')' + vertexExpression.getExpressionString());
+        return typeCastExp;
     }
 
     getMappingExpression(expression) {
-        if (BallerinaASTFactory.isFieldBasedVarRefExpression(expression) ||
-              BallerinaASTFactory.isSimpleVariableReferenceExpression(expression)) {
+        if (BallerinaASTFactory.isFieldBasedVarRefExpression(expression)) {
             return expression;
-        } else if (BallerinaASTFactory.isTypeConversionExpression(expression) ||
+        }
+        if (BallerinaASTFactory.isSimpleVariableReferenceExpression(expression)) {
+            if (expression.getVariableName().startsWith('__temp')) {
+                const assignmentStmt = this.findAssignedVertexForTemp(expression);
+                if (assignmentStmt) {
+                    return assignmentStmt.getRightExpression();
+                }
+                return expression;
+            }
+            return expression;
+        }
+        if (BallerinaASTFactory.isTypeConversionExpression(expression) ||
                 BallerinaASTFactory.isTypeCastExpression(expression)) {
             return expression.getRightExpression();
         }
         return expression;
+    }
+
+    findAssignedVertexForTemp(expression) {
+        const tempVarName = expression.getVariableName();
+        const assignmentStmts = this._transformStmt.filterChildren(BallerinaASTFactory.isAssignmentStatement);
+        return assignmentStmts.find((assStmt) => {
+            return assStmt.getLeftExpression().getChildren().find((leftExpr) => {
+                return (tempVarName === leftExpr.getExpressionString());
+            });
+        });
     }
 
     addNewVariable() {
@@ -455,16 +508,36 @@ class TransformNodeManager {
                     const variableReferenceExpression = BallerinaASTFactory.createSimpleVariableReferenceExpression();
                     variableReferenceExpression.setExpressionFromString(newVarName);
                     inputs[i] = variableReferenceExpression;
-                  }
-              });
-              node.setInput(inputs);
-              node.trigger('tree-modified', {
-                  origin: this,
-                  type: 'variable-update',
-                  title: `Variable update ${varName}`,
-                  data: {},
-              });
+                }
+            });
+            node.setInput(inputs);
+            node.trigger('tree-modified', {
+                origin: this,
+                type: 'variable-update',
+                title: `Variable update ${varName}`,
+                data: {},
+            });
         }
+    }
+
+    getNextTempVarName() {
+        const varNameRegex = new RegExp('__temp[\\d]*');
+        const assignmentStmts = this._transformStmt.filterChildren(BallerinaASTFactory.isAssignmentStatement);
+        const tempVarIdentifiers = [];
+        assignmentStmts.forEach((assStmt) => {
+            assStmt.getLeftExpression().getChildren().forEach((leftExpr) => {
+                if (varNameRegex.test(leftExpr.getExpressionString())) {
+                    tempVarIdentifiers.push(leftExpr.getExpressionString());
+                }
+            });
+        });
+        tempVarIdentifiers.sort();
+
+        let index = 1;
+        if (tempVarIdentifiers.length > 0) {
+            index = Number.parseInt(tempVarIdentifiers[tempVarIdentifiers.length - 1].substring(6), 10) + 1;
+        }
+        return '__temp' + index;
     }
  }
 
