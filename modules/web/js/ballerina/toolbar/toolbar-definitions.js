@@ -45,7 +45,7 @@ const saveFileTool = {
     name: 'Save',
     cssClass: 'fw fw-save fw-lg',
     title: 'Save File',
-    cssClassOnDiv: 'internal-separator',
+    cssClassOnDiv: 'section-separator',
     children: {},
     command: {
         id: 'save',
@@ -80,7 +80,7 @@ const startTool = {
     id: 'start',
     name: 'Start',
     cssClass: 'fw fw-start fw-lg',
-    title: 'Start',
+    title: 'Run',
     cssClassOnDiv: '',
     getChildrenIcon: 'fw fw-sort-down more',
     children: {
@@ -99,7 +99,7 @@ const debugTool = {
     id: 'debug',
     name: 'Debug',
     cssClass: 'fw fw-bug fw-lg',
-    title: 'Debug',
+    title: 'Debugger',
     cssClassOnDiv: '',
     getChildrenIcon: 'fw fw-sort-down more',
     children: {

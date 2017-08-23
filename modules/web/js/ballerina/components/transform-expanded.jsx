@@ -196,9 +196,15 @@ class TransformExpanded extends React.Component {
                 this.drawInnerFunctionInvocationExpression(
                     functionInvocationExpression, expression, func, i, statement);
             } else {
-                const sourceId = `${expression.getExpressionString().trim()}:${viewId}`;
+                let sourceId = `${expression.getExpressionString().trim()}:${viewId}`;
+                let folded = false;
+                if (!this.sourceElements[sourceId]) {
+                    folded = true;
+                    sourceId = this.getFoldedEndpointId(expression.getExpressionString().trim(), viewId, 'source');
+                }
+
                 const targetId = `${functionInvID}:${i}:${viewId}`;
-                this.drawConnection(sourceId, targetId);
+                this.drawConnection(sourceId, targetId, folded);
             }
         });
 
@@ -520,12 +526,12 @@ class TransformExpanded extends React.Component {
     }
 
     removeSourceType(removedType) {
-        this.mapper.removeType(removedType.name);
+        _.remove(this.state.vertices, (vertex) => { return vertex.name === removedType.name; });
         this.props.model.removeInput(removedType);
+
     }
 
     removeTargetType(removedType) {
-        this.mapper.removeType(removedType.name);
         this.props.model.removeOutput(removedType);
     }
 
@@ -818,6 +824,7 @@ class TransformExpanded extends React.Component {
                             suggestionsPool={vertices}
                             placeholder='Select Source'
                             onSuggestionSelected={this.onSourceSelect}
+                            type='source'
                         />
                     </div>
                     <div className="leftType">
@@ -860,6 +867,7 @@ class TransformExpanded extends React.Component {
                             suggestionsPool={vertices}
                             placeholder='Select Target'
                             onSuggestionSelected={this.onTargetSelect}
+                            type='target'
                         />
                     </div>
                     <div className='rightType'>
