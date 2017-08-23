@@ -271,7 +271,10 @@ DefaultASTFactory.createTransformAssignmentFunctionInvocationStatement = functio
         fullPackageName: _.get(args, 'fullPackageName'),
     };
     const funcInvocationExpression = ASTFactory.createFunctionInvocationExpression(opts);
-    if (!_.isNil(args) && _.has(args, 'functionDef')) {
+    if (_.isNil(args)) {
+        return assignmentStmt;
+    }
+    if (_.has(args, 'functionDef')) {
         let functionInvokeString = '';
         if (!_.isNil(args.packageName)) {
             functionInvokeString += args.packageName + ':';
@@ -307,6 +310,16 @@ DefaultASTFactory.createTransformAssignmentFunctionInvocationStatement = functio
         variableRefList.setExpressionFromString(varRefListString);
         assignmentStmt.addChild(variableRefList, 0);
         assignmentStmt.addChild(funcInvocationExpression, 1);
+        return assignmentStmt;
+    }
+
+    if (_.has(args, 'funcInv')) {
+        assignmentStmt.setIsDeclaredWithVar(true);
+        const variableRefList = ASTFactory.createVariableReferenceList(args);
+        variableRefList.setExpressionFromString('var _temp');
+        assignmentStmt.addChild(variableRefList, 0);
+        assignmentStmt.addChild(args.funcInv, 1);
+        return assignmentStmt;
     }
     return assignmentStmt;
 };
@@ -317,6 +330,7 @@ DefaultASTFactory.createAssignmentFunctionInvocationStatement = function (args) 
         functionName: _.get(args, 'functionDef._name'),
         packageName: _.get(args, 'packageName'),
         fullPackageName: _.get(args, 'fullPackageName'),
+        funcInv: _.get(args, 'funcInv'),
     };
     const funcInvocationExpression = ASTFactory.createFunctionInvocationExpression(opts);
     if (!_.isNil(args) && _.has(args, 'functionDef')) {
@@ -464,6 +478,13 @@ DefaultASTFactory.createNamespaceDeclarationStatement = function (args) {
     namespaceDeclarationStatement.setStatementFromString('xmlns "http://sample.org/test" as ns');
     namespaceDeclarationStatement.accept(new EnableDefaultWSVisitor());
     return namespaceDeclarationStatement;
+};
+
+DefaultASTFactory.createIgnoreErrorVariableReference = function (args) {
+    const variableReferenceExpression = ASTFactory.createSimpleVariableReferenceExpression(args);
+    variableReferenceExpression.setExpressionFromString('_');
+    variableReferenceExpression.accept(new EnableDefaultWSVisitor());
+    return variableReferenceExpression;
 };
 
 export default DefaultASTFactory;
