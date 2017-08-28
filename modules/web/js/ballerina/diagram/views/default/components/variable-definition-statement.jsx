@@ -177,7 +177,7 @@ class VariableDefinitionStatement extends React.Component {
         }
 
         const lambdaFunc = model.getLambdaChildren().map(f =>
-            <FunctionDefinition model={f} key={f.getFunctionName()} />);
+            <FunctionDefinition designer={this.designer} model={f} key={f.getFunctionName()} />);
 
         return (
             <StatementDecorator
@@ -185,8 +185,8 @@ class VariableDefinitionStatement extends React.Component {
                 viewState={model.viewState}
                 expression={expression}
                 editorOptions={this.editorOptions}
-                designer={this.designer}
-                mode={this.mode}
+                designer={this.props.designer}
+                mode={this.props.mode}
             >
                 {!_.isNil(actionInvocation) &&
                 <g>

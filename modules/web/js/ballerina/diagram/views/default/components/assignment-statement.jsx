@@ -231,7 +231,7 @@ class AssignmentStatement extends React.Component {
         }
 
         const lambdaFunc = model.getLambdaChildren().map(f =>
-            <FunctionDefinition model={f} key={f.getFunctionName()} />);
+            <FunctionDefinition designer={this.designer} model={f} key={f.getFunctionName()}/>);
 
         return (
             <g>
@@ -240,8 +240,8 @@ class AssignmentStatement extends React.Component {
                     expression={expression}
                     editorOptions={this.editorOptions}
                     model={model}
-                    designer={this.designer}
-                    mode={this.mode}
+                    designer={this.props.designer}
+                    mode={this.props.mode}
                 >
                     {!_.isNil(actionInvocation) &&
                     <g>
