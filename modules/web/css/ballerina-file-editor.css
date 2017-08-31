@@ -1356,7 +1356,7 @@ table.annotation-table tr:hover > td > .annotation-openning-bracket > .annotatio
 }
 
 .canvas-overlay .action-menu-wrapper {
-    height: 20px;
+    /* height: 20px; */
 }
 
 .canvas-overlay .action-menu-wrapper .action-menu {

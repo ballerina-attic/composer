@@ -53,16 +53,22 @@ class ServiceDefinition extends React.Component {
         this.actionMenuWrapper = undefined;
     }
 
+    /**
+     * @override
+     * @memberof ServiceDefinition
+     */
     componentDidMount() {
         this.createActionMenu();
     }
 
+    /**
+     * @override
+     * @memberof ServiceDefinition
+     */
     componentDidUpdate() {
         ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
         const canvasOverlay = getCanvasOverlay();
-        while (canvasOverlay.firstChild) {
-            canvasOverlay.removeChild(canvasOverlay.firstChild);
-        }
+        canvasOverlay.removeChild(this.actionMenuWrapper);
         this.createActionMenu();
     }
 
@@ -89,6 +95,10 @@ class ServiceDefinition extends React.Component {
               || nodeFactory.isResourceDefinition(nodeBeingDragged);
     }
 
+    /**
+     * Creates the action menu.
+     * @memberof ServiceDefinition
+     */
     createActionMenu() {
         const model = this.props.model;
         const designer = getDesigner(['default']);
@@ -102,16 +112,40 @@ class ServiceDefinition extends React.Component {
 
         const actionMenuItems = [];
 
-        const addAttributeButton = {
+        const addAnnotationButton = {
             key: this.props.model.getID(),
             icon: 'fw-add',
             text: 'Add Annotation',
             onClick: () => {
-                model.getViewState().showAddAnnotations = !model.getViewState().showAddAnnotations;
+                model.getViewState().showAddAnnotations = true;
+                model.getViewState().showAnnotationContainer = true;
                 this.context.editor.update();
             },
         };
-        actionMenuItems.push(addAttributeButton);
+        actionMenuItems.push(addAnnotationButton);
+        if (model.getViewState().showAnnotationContainer) {
+            const hideAnnotations = {
+                key: this.props.model.getID(),
+                icon: 'fw-hide',
+                text: 'Hide Annotations',
+                onClick: () => {
+                    model.getViewState().showAnnotationContainer = false;
+                    this.context.editor.update();
+                },
+            };
+            actionMenuItems.push(hideAnnotations);
+        } else {
+            const showAnnotations = {
+                key: this.props.model.getID(),
+                icon: 'fw-view',
+                text: 'Show Annotations',
+                onClick: () => {
+                    model.getViewState().showAnnotationContainer = true;
+                    this.context.editor.update();
+                },
+            };
+            actionMenuItems.push(showAnnotations);
+        }
 
         const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);
         ReactDOM.render(actionMenu, this.actionMenuWrapper);

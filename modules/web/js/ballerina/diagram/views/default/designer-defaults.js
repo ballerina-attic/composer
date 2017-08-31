@@ -323,5 +323,5 @@ export const variablesPane = {
 
 export const actionMenu = {
     leftOffset: -9,
-    topOffset: 14,
+    topOffset: 50,
 };

@@ -236,7 +236,6 @@ class AnnotationContainer extends React.Component {
                         }}
                         onChange={this.onPackageNameChange}
                         onBlur={this.onPackageNameBlur}
-                        disableAutoFocus
                     />
                 </div>
             </div>);
