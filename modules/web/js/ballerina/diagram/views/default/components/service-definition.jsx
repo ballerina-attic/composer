@@ -17,10 +17,12 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import PanelDecorator from './panel-decorator';
-import { getComponentForNodeArray } from './../../../diagram-util';
+import { getComponentForNodeArray, getDesigner } from './../../../diagram-util';
 import GlobalExpanded from './globals-expanded';
 import GlobalDefinitions from './global-definitions';
 import * as DesignerDefaults from './../../../../configs/designer-defaults';
@@ -28,9 +30,8 @@ import ServiceDefinitionAST from './../../../../ast/service-definition';
 import PanelDecoratorButton from './panel-decorator-button';
 import ServiceTransportLine from './service-transport-line';
 import ImageUtil from './image-util';
-import SimpleBBox from './../../../../ast/simple-bounding-box';
-import EditableText from './editable-text';
 import ASTFactory from '../../../../ast/ast-factory';
+import ActionMenu from './action-menu';
 
 /**
  * React component for a service definition.
@@ -49,6 +50,20 @@ class ServiceDefinition extends React.Component {
         super(props);
         this.handleDeleteVariable = this.handleDeleteVariable.bind(this);
         this.handleVarialblesBadgeClick = this.handleVarialblesBadgeClick.bind(this);
+        this.actionMenuWrapper = undefined;
+    }
+
+    componentDidMount() {
+        this.createActionMenu();
+    }
+
+    componentDidUpdate() {
+        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+        const canvasOverlay = getCanvasOverlay();
+        while (canvasOverlay.firstChild) {
+            canvasOverlay.removeChild(canvasOverlay.firstChild);
+        }
+        this.createActionMenu();
     }
 
     /**
@@ -72,6 +87,34 @@ class ServiceDefinition extends React.Component {
           // Panel's drop zone is for resource defs and connector declarations only.
         return nodeFactory.isConnectorDeclaration(nodeBeingDragged)
               || nodeFactory.isResourceDefinition(nodeBeingDragged);
+    }
+
+    createActionMenu() {
+        const model = this.props.model;
+        const designer = getDesigner(['default']);
+        const canvasOverlay = getCanvasOverlay();
+        // Recreating content
+        this.actionMenuWrapper = document.createElement('div');
+        this.actionMenuWrapper.className = 'action-menu-wrapper';
+        this.actionMenuWrapper.style.top = model.getViewState().components.body.y + designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left = model.getViewState().components.body.x + designer.actionMenu.leftOffset + 'px';
+        canvasOverlay.appendChild(this.actionMenuWrapper);
+
+        const actionMenuItems = [];
+
+        const addAttributeButton = {
+            key: this.props.model.getID(),
+            icon: 'fw-add',
+            text: 'Add Annotation',
+            onClick: () => {
+                model.getViewState().showAddAnnotations = !model.getViewState().showAddAnnotations;
+                this.context.editor.update();
+            },
+        };
+        actionMenuItems.push(addAttributeButton);
+
+        const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);
+        ReactDOM.render(actionMenu, this.actionMenuWrapper);
     }
 
     /**
@@ -126,7 +169,6 @@ class ServiceDefinition extends React.Component {
         const rightComponents = [];
 
         // TODO: Check whether the service is a http/https and then only allow. JMS services does not need swagger defs.
-        // eslint-disable-next-line no-constant-condition
         if (this.props.model.getProtocolPkgName() === 'http') {
             // Pushing swagger edit button.
             rightComponents.push({

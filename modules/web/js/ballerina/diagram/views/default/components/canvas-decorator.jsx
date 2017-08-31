@@ -109,9 +109,10 @@ class CanvasDecorator extends React.Component {
 
         const dropZoneClassName = (dropZoneActivated ? 'drop-zone active' : 'drop-zone ')
                         + (dropZoneDropNotAllowed ? ' blocked' : '');
+
         return (
             <div className="grid-background" style={{ width: this.props.bBox.w }} >
-                <div ref={(x) => { setCanvasOverlay(x); }}>
+                <div ref={(x) => { setCanvasOverlay(x); }} className='canvas-overlay'>
                     {/* This space is used to render html elements over svg*/ }
                 </div>
                 {(this.props.annotations && this.props.annotations.length > 0) ? this.props.annotations : null }

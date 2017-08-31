@@ -221,14 +221,18 @@ class SizingUtil {
 
         components.annotation = new SimpleBBox();
 
-        if (_.isUndefined(node.viewState.showAnnotationContainer)) {
+        if (_.isNil(node.viewState.showAnnotationContainer)) {
             node.viewState.showAnnotationContainer = true;
+        }
+        
+        if (_.isNil(viewState.showAddAnnotations)) {
+            viewState.showAddAnnotations = false;
         }
 
         if (!node.viewState.showAnnotationContainer || (node.isLambda && node.isLambda())) {
             components.annotation.h = 0;
         } else {
-            components.annotation.h = this.getAnnotationHeight(node, 20);
+            components.annotation.h = this.getAnnotationHeight(node, viewState.showAddAnnotations ? 40 : 0);
         }
 
         components.statementContainer = new SimpleBBox();
@@ -447,14 +451,18 @@ class SizingUtil {
             components.body.h = bodyHeight;
         }
 
-        if (_.isUndefined(node.viewState.showAnnotationContainer)) {
+        if (_.isNil(node.viewState.showAnnotationContainer)) {
             node.viewState.showAnnotationContainer = true;
+        }
+
+        if (_.isNil(viewState.showAddAnnotations)) {
+            viewState.showAddAnnotations = false;
         }
 
         if (!node.viewState.showAnnotationContainer) {
             components.annotation.h = 0;
         } else {
-            components.annotation.h = this.getAnnotationHeight(node, 20);
+            components.annotation.h = this.getAnnotationHeight(node, viewState.showAddAnnotations ? 40 : 0);
         }
 
         components.variablesPane.h = variableDefinitionsHeight;

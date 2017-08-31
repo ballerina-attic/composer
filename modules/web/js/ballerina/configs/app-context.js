@@ -19,7 +19,9 @@
 let _wrapper;
 
 export function setCanvasOverlay(wrapper) {
-    _wrapper = wrapper;
+    if (wrapper !== undefined && wrapper !== null) {
+        _wrapper = wrapper;
+    }
 }
 
 export function getCanvasOverlay() {

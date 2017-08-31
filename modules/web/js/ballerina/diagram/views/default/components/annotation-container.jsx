@@ -21,6 +21,7 @@ import _ from 'lodash';
 import ASTFactory from 'ballerina/ast/ast-factory';
 import BallerinaASTRoot from 'ballerina/ast/ballerina-ast-root';
 import AnnotationHelper from 'ballerina/env/helpers/annotation-helper';
+import cn from 'classnames';
 import { getComponentForNodeArray } from './../../../diagram-util';
 import AnnotationContainerUtil from './utils/annotation-container';
 import AutoSuggestHtml from './utils/autosuggest-html';
@@ -134,6 +135,8 @@ class AnnotationContainer extends React.Component {
             hasPackageNameSelected: false,
             selectedIdentifierValue: '',
         });
+
+        this.props.model.parentNode.getViewState().showAddAnnotations = false;
     }
 
     /**
@@ -195,9 +198,13 @@ class AnnotationContainer extends React.Component {
         const annotations = getComponentForNodeArray(this.props.model.getAnnotations(), this.context.mode);
 
         if (this.state.hasPackageNameSelected) {
-            return (<div style={style} className="annotation-container">
+            return (<div
+                style={style}
+                className={cn('annotation-container',
+                    { hide: this.props.model.parentNode.getViewState().showAddAnnotations === false && bBox.h === 0 })}
+            >
                 {annotations}
-                <div className="annotation-add-wrapper">
+                <div className={cn('annotation-add-wrapper', { hide: !this.props.model.parentNode.getViewState().showAddAnnotations })}>
                     <span className="annotation-add-at-sign">@</span>
                     <span className="annotation-package-name">
                         {this.state.selectedPackageNameValue.split('.').pop()}:</span>
@@ -211,25 +218,29 @@ class AnnotationContainer extends React.Component {
                     />
                 </div>
             </div>);
+        } else {
+            return (<div
+                style={style}
+                className={cn('annotation-container',
+                    { hide: this.props.model.parentNode.getViewState().showAddAnnotations === false && bBox.h === 0 })}
+            >
+                {annotations}
+                <div className={cn('annotation-add-wrapper', { hide: !this.props.model.parentNode.getViewState().showAddAnnotations })}>
+                    <span className="annotation-add-at-sign">@</span>
+                    <AutoSuggestHtml
+                        placeholder='Add Annotation'
+                        items={AnnotationHelper.getPackageNames(
+                            this.context.environment, this.props.model.parentNode)}
+                        onSuggestionSelected={(event, { suggestionValue }) => {
+                            this.onPackageNameSelected(suggestionValue);
+                        }}
+                        onChange={this.onPackageNameChange}
+                        onBlur={this.onPackageNameBlur}
+                        disableAutoFocus
+                    />
+                </div>
+            </div>);
         }
-
-        return (<div style={style} className="annotation-container">
-            {annotations}
-            <div className="annotation-add-wrapper">
-                <span className="annotation-add-at-sign">@</span>
-                <AutoSuggestHtml
-                    placeholder='Add Annotation'
-                    items={AnnotationHelper.getPackageNames(
-                        this.context.environment, this.props.model.parentNode)}
-                    onSuggestionSelected={(event, { suggestionValue }) => {
-                        this.onPackageNameSelected(suggestionValue);
-                    }}
-                    onChange={this.onPackageNameChange}
-                    onBlur={this.onPackageNameBlur}
-                    disableAutoFocus
-                />
-            </div>
-        </div>);
     }
 }
 

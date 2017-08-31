@@ -320,3 +320,8 @@ export const variablesPane = {
     globalDeclarationWidth: 310,
     globalDefDecorationWidth: 3,
 };
+
+export const actionMenu = {
+    leftOffset: -9,
+    topOffset: 14,
+};

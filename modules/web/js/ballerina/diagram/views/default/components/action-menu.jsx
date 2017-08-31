@@ -60,7 +60,7 @@ class ActionMenu extends React.Component {
      * @memberof ActionMenu
      */
     toggleActionMenuExpansion(expand) {
-        if (this.actionMenuWrapperRef) {
+        if (this.props.items.length > 1 && this.actionMenuWrapperRef) {
             if (expand === undefined) {
                 if (this.actionMenuWrapperRef.className.includes('expanded')) {
                     this.actionMenuWrapperRef.className.replace(' expanded', '');
