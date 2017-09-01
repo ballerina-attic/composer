@@ -32,14 +32,23 @@ import ImageUtil from './image-util';
 import ASTFactory from '../../../../ast/ast-factory.js';
 import ActionMenu from './action-menu';
 
+/**
+ * React component for resource definition.
+ * @class ResourceDefinition
+ * @extends {React.Component}
+ */
 class ResourceDefinition extends React.Component {
 
+    /**
+     * Creates an instance of ResourceDefinition.
+     * @param {Object} props React properties.
+     * @memberof ResourceDefinition
+     */
     constructor(props) {
         super(props);
     }
     /**
      * @override
-     * @memberof ServiceDefinition
      */
     componentDidMount() {
         this.createActionMenu();
@@ -47,7 +56,6 @@ class ResourceDefinition extends React.Component {
 
     /**
      * @override
-     * @memberof ServiceDefinition
      */
     componentDidUpdate() {
         ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
@@ -56,6 +64,12 @@ class ResourceDefinition extends React.Component {
         this.createActionMenu();
     }
 
+    /**
+     * Validator for children types.
+     * @param {Object} nodeBeingDragged The ast node.
+     * @returns {boolean} true if can be child, else false.
+     * @memberof ResourceDefinition
+     */
     canDropToPanelBody(nodeBeingDragged) {
         const nodeFactory = ASTFactory;
         // IMPORTANT: override default validation logic
@@ -67,7 +81,7 @@ class ResourceDefinition extends React.Component {
 
     /**
      * Creates the action menu.
-     * @memberof ServiceDefinition
+     * @memberof ResourceDefinition
      */
     createActionMenu() {
         const model = this.props.model;
@@ -121,20 +135,26 @@ class ResourceDefinition extends React.Component {
         ReactDOM.render(actionMenu, this.actionMenuWrapper);
     }
 
+    /**
+     * Renders the view.
+     * @returns {ReactElement} The view.
+     * @memberof ResourceDefinition
+     */
     render() {
         const bBox = this.props.model.viewState.bBox;
         const name = this.props.model.getResourceName();
         const statementContainerBBox = this.props.model.getViewState().components.statementContainer;
-        const statementContainerBBoxClone = Object.assign({}, this.props.model.getViewState().components.statementContainer);
+        const statementContainerBBoxClone =
+                                    Object.assign({}, this.props.model.getViewState().components.statementContainer);
         const connectorOffset = this.props.model.getViewState().components.statementContainer.expansionW;
         statementContainerBBoxClone.w += connectorOffset;
         const workerScopeContainerBBox = this.props.model.getViewState().components.workerScopeContainer;
         // lets calculate function worker lifeline bounding box.
         const resourceWorkerBBox = {};
-        resourceWorkerBBox.x = statementContainerBBox.x + (statementContainerBBox.w - lifeLine.width) / 2;
+        resourceWorkerBBox.x = statementContainerBBox.x + ((statementContainerBBox.w - lifeLine.width) / 2);
         resourceWorkerBBox.y = statementContainerBBox.y - lifeLine.head.height;
         resourceWorkerBBox.w = lifeLine.width;
-        resourceWorkerBBox.h = statementContainerBBox.h + lifeLine.head.height * 2;
+        resourceWorkerBBox.h = statementContainerBBox.h + (lifeLine.head.height * 2);
 
         const classes = {
             lineClass: 'default-worker-life-line',
@@ -206,6 +226,13 @@ class ResourceDefinition extends React.Component {
 
 ResourceDefinition.propTypes = {
     model: PropTypes.instanceOf(ResourceDefinitionAST).isRequired,
+    designer: PropTypes.instanceOf(Object),
+    mode: PropTypes.string,
+};
+
+ResourceDefinition.defaultProps = {
+    designer: undefined,
+    mode: 'default',
 };
 
 ResourceDefinition.contextTypes = {

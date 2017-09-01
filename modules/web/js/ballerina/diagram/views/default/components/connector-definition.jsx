@@ -17,15 +17,18 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { getCanvasOverlay } from 'ballerina/configs/app-context';
+import ConnectorDefinitionAST from 'ballerina/ast/connector-definition';
 import PanelDecorator from './panel-decorator';
-import { getComponentForNodeArray } from './../../../diagram-util';
-import ConnectorDefinitionAST from './../../../../ast/connector-definition';
+import { getComponentForNodeArray, getDesigner } from './../../../diagram-util';
 import GlobalExpanded from './globals-expanded';
 import GlobalDefinitions from './global-definitions';
 import * as DesignerDefaults from './../../../../configs/designer-defaults';
 import ASTFactory from '../../../../ast/ast-factory';
+import ActionMenu from './action-menu';
 
 /**
  * React component for a connector definition.
@@ -48,6 +51,23 @@ class ConnectorDefinition extends React.Component {
     }
 
     /**
+     * @override
+     */
+    componentDidMount() {
+        this.createActionMenu();
+    }
+
+    /**
+     * @override
+     */
+    componentDidUpdate() {
+        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+        const canvasOverlay = getCanvasOverlay();
+        canvasOverlay.removeChild(this.actionMenuWrapper);
+        this.createActionMenu();
+    }
+
+    /**
      * Checkes if node can be dropped to panel body.
      *
      * @param {ASTNode} nodeBeingDragged The ast node being dropped.
@@ -60,6 +80,67 @@ class ConnectorDefinition extends React.Component {
         // Panel's drop zone is for resource defs and connector declarations only.
         return nodeFactory.isConnectorDeclaration(nodeBeingDragged)
             || nodeFactory.isConnectorAction(nodeBeingDragged);
+    }
+
+    /**
+     * Creates the action menu.
+     * @memberof ConnectorDefinition
+     */
+    createActionMenu() {
+        const model = this.props.model;
+        const designer = getDesigner(['default']);
+        const canvasOverlay = getCanvasOverlay();
+        // Recreating content
+        this.actionMenuWrapper = document.createElement('div');
+        this.actionMenuWrapper.className = 'action-menu-wrapper';
+        this.actionMenuWrapper.style.top = model.getViewState().components.body.y +
+            designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left = model.getViewState().components.body.x +
+            designer.actionMenu.leftOffset + 'px';
+        canvasOverlay.appendChild(this.actionMenuWrapper);
+
+        const actionMenuItems = [];
+
+        const addAnnotationButton = {
+            key: this.props.model.getID(),
+            icon: 'fw-add',
+            text: 'Add Annotation',
+            onClick: () => {
+                model.getViewState().showAddAnnotations = true;
+                model.getViewState().showAnnotationContainer = true;
+                this.context.editor.update();
+            },
+        };
+        actionMenuItems.push(addAnnotationButton);
+
+        if (model.getChildrenOfType(ASTFactory.isAnnotationAttachment).length > 0) {
+            if (model.getViewState().showAnnotationContainer) {
+                const hideAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-hide',
+                    text: 'Hide Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = false;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(hideAnnotations);
+            } else {
+                const showAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-view',
+                    text: 'Show Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = true;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(showAnnotations);
+            }
+        }
+
+        const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);
+        ReactDOM.render(actionMenu, this.actionMenuWrapper);
     }
 
     /**

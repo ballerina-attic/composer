@@ -1318,6 +1318,7 @@ table.annotation-table tr:hover > td > .annotation-openning-bracket > .annotatio
 }
 
 .action-menu-wrapper {
+    z-index: 10;
     position: relative;
     /* top: 495px;
     left: 437px; */
@@ -1353,10 +1354,6 @@ table.annotation-table tr:hover > td > .annotation-openning-bracket > .annotatio
 
 .canvas-overlay {
     position: absolute
-}
-
-.canvas-overlay .action-menu-wrapper {
-    /* height: 20px; */
 }
 
 .canvas-overlay .action-menu-wrapper .action-menu {

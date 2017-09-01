@@ -17,16 +17,19 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import StatementContainer from './statement-container';
 import PanelDecorator from './panel-decorator';
 import LifeLineDecorator from './lifeline.jsx';
-import { getComponentForNodeArray } from './../../../diagram-util';
+import { getComponentForNodeArray, getDesigner } from './../../../diagram-util';
 import { lifeLine } from './../../../../configs/designer-defaults';
 import ConnectorActionAST from './../../../../ast/connector-action';
 import ImageUtil from './image-util';
 import ASTFactory from '../../../../ast/ast-factory.js';
+import ActionMenu from './action-menu';
 
 /**
  * React component for a connector action.
@@ -36,8 +39,30 @@ import ASTFactory from '../../../../ast/ast-factory.js';
  */
 class ConnectorAction extends React.Component {
 
+    /**
+     * Creates an instance of ConnectorAction.
+     * @param {Object} props React properties.
+     * @memberof ConnectorAction
+     */
     constructor(props) {
         super(props);
+    }
+
+    /**
+     * @override
+     */
+    componentDidMount() {
+        this.createActionMenu();
+    }
+
+    /**
+     * @override
+     */
+    componentDidUpdate() {
+        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+        const canvasOverlay = getCanvasOverlay();
+        canvasOverlay.removeChild(this.actionMenuWrapper);
+        this.createActionMenu();
     }
 
     /**
@@ -133,10 +158,15 @@ class ConnectorAction extends React.Component {
 
 ConnectorAction.propTypes = {
     model: PropTypes.instanceOf(ConnectorActionAST).isRequired,
+    mode: PropTypes.string,
+};
+
+ConnectorAction.defaultProps = {
+    mode: 'default',
 };
 
 ConnectorAction.contextTypes = {
-    mode: PropTypes.string,
+    editor: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default ConnectorAction;

@@ -17,22 +17,59 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import FunctionDefinitionAST from 'ballerina/ast/function-definition';
+import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import LifeLine from './lifeline.jsx';
 import StatementContainer from './statement-container';
 import PanelDecorator from './panel-decorator';
-import { getComponentForNodeArray } from './../../../diagram-util';
+import { getComponentForNodeArray, getDesigner } from './../../../diagram-util';
 import { lifeLine } from './../../../../configs/designer-defaults';
 import ImageUtil from './image-util';
 import ASTFactory from '../../../../ast/ast-factory.js';
+import ActionMenu from './action-menu';
 
+/**
+ * React component for function definition node.
+ * @class FunctionDefinition
+ * @extends {React.Component}
+ */
 class FunctionDefinition extends React.Component {
 
+    /**
+     * Creates an instance of FunctionDefinition.
+     * @param {Object} props React properties.
+     * @memberof FunctionDefinition
+     */
     constructor(props) {
         super(props);
     }
 
+    /**
+     * @override
+     */
+    componentDidMount() {
+        this.createActionMenu();
+    }
+
+    /**
+     * @override
+     */
+    componentDidUpdate() {
+        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+        const canvasOverlay = getCanvasOverlay();
+        canvasOverlay.removeChild(this.actionMenuWrapper);
+        this.createActionMenu();
+    }
+
+    /**
+     * Child add validator.
+     * @param {ASTNode} nodeBeingDragged The ast node.
+     * @returns {boolean} true if can be child, else false.
+     * @memberof FunctionDefinition
+     */
     canDropToPanelBody(nodeBeingDragged) {
         const nodeFactory = ASTFactory;
         // IMPORTANT: override default validation logic
@@ -42,6 +79,72 @@ class FunctionDefinition extends React.Component {
             || nodeFactory.isWorkerDeclaration(nodeBeingDragged);
     }
 
+    /**
+     * Creates the action menu.
+     * @memberof FunctionDefinition
+     */
+    createActionMenu() {
+        const model = this.props.model;
+        const designer = getDesigner(['default']);
+        const canvasOverlay = getCanvasOverlay();
+        // Recreating content
+        this.actionMenuWrapper = document.createElement('div');
+        this.actionMenuWrapper.className = 'action-menu-wrapper';
+        this.actionMenuWrapper.style.top = model.getViewState().components.body.y +
+            designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left = model.getViewState().components.body.x +
+            designer.actionMenu.leftOffset + 'px';
+        canvasOverlay.appendChild(this.actionMenuWrapper);
+
+        const actionMenuItems = [];
+
+        const addAnnotationButton = {
+            key: this.props.model.getID(),
+            icon: 'fw-add',
+            text: 'Add Annotation',
+            onClick: () => {
+                model.getViewState().showAddAnnotations = true;
+                model.getViewState().showAnnotationContainer = true;
+                this.context.editor.update();
+            },
+        };
+        actionMenuItems.push(addAnnotationButton);
+
+        if (model.getChildrenOfType(ASTFactory.isAnnotationAttachment).length > 0) {
+            if (model.getViewState().showAnnotationContainer) {
+                const hideAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-hide',
+                    text: 'Hide Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = false;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(hideAnnotations);
+            } else {
+                const showAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-view',
+                    text: 'Show Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = true;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(showAnnotations);
+            }
+        }
+
+        const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);
+        ReactDOM.render(actionMenu, this.actionMenuWrapper);
+    }
+
+    /**
+     * Renders view
+     * @returns {ReactElement} The view.
+     * @memberof FunctionDefinition
+     */
     render() {
         const bBox = this.props.model.viewState.bBox;
         const name = this.props.model.getFunctionName();
@@ -53,11 +156,11 @@ class FunctionDefinition extends React.Component {
         const workerScopeContainerBBox = this.props.model.getViewState().components.workerScopeContainer;
 
         // lets calculate function worker lifeline bounding box.
-        const function_worker_bBox = {};
-        function_worker_bBox.x = statementContainerBBox.x + (statementContainerBBox.w - lifeLine.width) / 2;
-        function_worker_bBox.y = statementContainerBBox.y - lifeLine.head.height;
-        function_worker_bBox.w = lifeLine.width;
-        function_worker_bBox.h = statementContainerBBox.h + lifeLine.head.height * 2;
+        const functionWorkerBBox = {};
+        functionWorkerBBox.x = statementContainerBBox.x + ((statementContainerBBox.w - lifeLine.width) / 2);
+        functionWorkerBBox.y = statementContainerBBox.y - lifeLine.head.height;
+        functionWorkerBBox.w = lifeLine.width;
+        functionWorkerBBox.h = statementContainerBBox.h + (lifeLine.head.height * 2);
 
         const classes = {
             lineClass: 'default-worker-life-line',
@@ -85,7 +188,7 @@ class FunctionDefinition extends React.Component {
         const isLambda = this.props.model.isLambda();
         const lifeline = (<LifeLine
             title="default"
-            bBox={function_worker_bBox}
+            bBox={functionWorkerBBox}
             classes={classes}
             icon={ImageUtil.getSVGIconString('tool-icons/worker-white')}
             iconColor='#025482'
@@ -118,7 +221,7 @@ class FunctionDefinition extends React.Component {
                 >
                     <LifeLine
                         title="default"
-                        bBox={function_worker_bBox}
+                        bBox={functionWorkerBBox}
                         classes={classes}
                         icon={ImageUtil.getSVGIconString('tool-icons/worker-white')}
                         iconColor='#025482'
@@ -152,7 +255,12 @@ class FunctionDefinition extends React.Component {
     }
 }
 
+FunctionDefinition.propTypes = {
+    model: PropTypes.instanceOf(FunctionDefinitionAST).isRequired,
+};
+
 FunctionDefinition.contextTypes = {
+    editor: PropTypes.instanceOf(Object).isRequired,
     mode: PropTypes.string,
 };
 

@@ -220,7 +220,8 @@ class ServiceDefinition extends React.Component {
         const resources = this.props.model.filterChildren(child => ASTFactory.isResourceDefinition(child));
         this.props.model.getViewState().components.transportLine.y2 = 0;
         if (resources[resources.length - 1]) {
-            this.props.model.getViewState().components.transportLine.y2 = resources[resources.length - 1].getViewState().components.body.y - 15;
+            this.props.model.getViewState().components.transportLine.y2 =
+                                                resources[resources.length - 1].getViewState().components.body.y - 15;
         }
 
         return (
@@ -266,6 +267,13 @@ class ServiceDefinition extends React.Component {
 
 ServiceDefinition.propTypes = {
     model: PropTypes.instanceOf(ServiceDefinitionAST).isRequired,
+    designer: PropTypes.instanceOf(Object),
+    mode: PropTypes.string,
+};
+
+ServiceDefinition.defaultProps = {
+    designer: undefined,
+    mode: 'default',
 };
 
 ServiceDefinition.contextTypes = {

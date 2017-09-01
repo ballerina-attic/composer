@@ -17,28 +17,35 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Alerts from 'alerts';
-import PropTypes from 'prop-types';
+import { getCanvasOverlay } from 'ballerina/configs/app-context';
+import StructDefinitionAST from 'ballerina/ast/struct-definition';
 import PanelDecorator from './panel-decorator';
 import './struct-definition.css';
 import Renderer from './renderer';
 import ASTNode from './../../../../ast/node';
 import * as DesignerDefaults from './../../../../configs/designer-defaults';
+import { getDesigner } from './../../../diagram-util';
 import SuggestionsText from './suggestions-text2';
 import ImageUtil from './image-util';
 import ASTFactory from '../../../../ast/ast-factory';
 import EditableText from './editable-text';
 import StructDefinitionItem from './struct-definition-item';
+import ActionMenu from './action-menu';
 
 /**
+ * React component for struct definition.
  * @class StructDefinition
  * @extends {React.Component}
  */
 class StructDefinition extends React.Component {
+
     /**
      * Creates an instance of StructDefinition.
-     * @param {any} props
+     * @param {any} props React properties
      */
     constructor(props) {
         super(props);
@@ -50,6 +57,24 @@ class StructDefinition extends React.Component {
             newValueEditing: false,
         };
     }
+
+    /**
+     * @override
+     */
+    componentDidMount() {
+        this.createActionMenu();
+    }
+
+    /**
+     * @override
+     */
+    componentDidUpdate() {
+        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+        const canvasOverlay = getCanvasOverlay();
+        canvasOverlay.removeChild(this.actionMenuWrapper);
+        this.createActionMenu();
+    }
+
     /**
      * Handle struct type change in input
      * @param {string} value - Struct type
@@ -79,8 +104,8 @@ class StructDefinition extends React.Component {
         }
 
         const { model } = this.props;
-        const identifierAlreadyExists = _.findIndex(model.getVariableDefinitionStatements(), (variableDefinitionStatement) => {
-            return variableDefinitionStatement.getIdentifier() === identifier;
+        const identifierAlreadyExists = _.findIndex(model.getVariableDefinitionStatements(), (variableDefStatement) => {
+            return variableDefStatement.getIdentifier() === identifier;
         }) !== -1;
         if (identifierAlreadyExists) {
             const errorString = `A variable with identifier ${identifier} already exists.`;
@@ -106,6 +131,68 @@ class StructDefinition extends React.Component {
         }
         return value;
     }
+
+    /**
+     * Creates the action menu.
+     * @memberof StructDefinition
+     */
+    createActionMenu() {
+        const model = this.props.model;
+        const designer = getDesigner(['default']);
+        const canvasOverlay = getCanvasOverlay();
+        // Recreating content
+        this.actionMenuWrapper = document.createElement('div');
+        this.actionMenuWrapper.className = 'action-menu-wrapper';
+        this.actionMenuWrapper.style.top = model.getViewState().components.body.y +
+            designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left = model.getViewState().components.body.x +
+            designer.actionMenu.leftOffset + 'px';
+        canvasOverlay.appendChild(this.actionMenuWrapper);
+
+        const actionMenuItems = [];
+
+        const addAnnotationButton = {
+            key: this.props.model.getID(),
+            icon: 'fw-add',
+            text: 'Add Annotation',
+            onClick: () => {
+                model.getViewState().showAddAnnotations = true;
+                model.getViewState().showAnnotationContainer = true;
+                this.context.editor.update();
+            },
+        };
+        actionMenuItems.push(addAnnotationButton);
+
+        if (model.getChildrenOfType(ASTFactory.isAnnotationAttachment).length > 0) {
+            if (model.getViewState().showAnnotationContainer) {
+                const hideAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-hide',
+                    text: 'Hide Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = false;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(hideAnnotations);
+            } else {
+                const showAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-view',
+                    text: 'Show Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = true;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(showAnnotations);
+            }
+        }
+
+        const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);
+        ReactDOM.render(actionMenu, this.actionMenuWrapper);
+    }
+
     /**
      * Create new variable definition and reset input form
      */
@@ -118,13 +205,15 @@ class StructDefinition extends React.Component {
             newValue: '',
         });
     }
+
     /**
      * Delete struct variable definition
-     * @param {Object} node
+     * @param {ASTNode} node The statement node.
      */
     deleteStatement(node) {
         node.remove();
     }
+
     /**
      * Handle click event on new struct variable's type field
      */
@@ -138,8 +227,8 @@ class StructDefinition extends React.Component {
      * Validate input values for struct default values
      * Only checks for the simple literals
      *
-     * @param {string} type
-     * @param {any} value
+     * @param {string} type Ballerina Type
+     * @param {any} value The value
      * @memberof StructDefinition
      */
     validateDefaultValue(type, value) {
@@ -169,6 +258,7 @@ class StructDefinition extends React.Component {
     /**
      * Validate identifier name
      * @param {string} identifier - identifier name
+     * @return {boolean} true if valid, else false.
      */
     validateIdentifierName(identifier) {
         if (ASTNode.isValidIdentifier(identifier)) {
@@ -208,33 +298,34 @@ class StructDefinition extends React.Component {
         const typeCellbox = {
             x: x + DesignerDefaults.structDefinition.panelPadding,
             y: y + DesignerDefaults.structDefinition.panelPadding,
-            width: columnSize - DesignerDefaults.structDefinition.panelPadding - DesignerDefaults.structDefinition.columnPadding / 2,
-            height: h - DesignerDefaults.structDefinition.panelPadding * 2,
+            width: columnSize - DesignerDefaults.structDefinition.panelPadding -
+                                                                (DesignerDefaults.structDefinition.columnPadding / 2),
+            height: h - (DesignerDefaults.structDefinition.panelPadding * 2),
         };
 
         const identifierCellBox = {
-            x: x + columnSize + DesignerDefaults.structDefinition.columnPadding / 2,
+            x: x + columnSize + (DesignerDefaults.structDefinition.columnPadding / 2),
             y: y + DesignerDefaults.structDefinition.panelPadding,
             width: columnSize - DesignerDefaults.structDefinition.columnPadding,
-            height: h - DesignerDefaults.structDefinition.panelPadding * 2,
+            height: h - (DesignerDefaults.structDefinition.panelPadding * 2),
         };
 
         const defaultValueBox = {
-            x: x + columnSize * 2 + DesignerDefaults.structDefinition.columnPadding / 2,
+            x: x + (columnSize * 2) + (DesignerDefaults.structDefinition.columnPadding / 2),
             y: y + DesignerDefaults.structDefinition.panelPadding,
-            width: columnSize - DesignerDefaults.structDefinition.columnPadding / 2,
-            height: h - DesignerDefaults.structDefinition.panelPadding * 2,
+            width: columnSize - (DesignerDefaults.structDefinition.columnPadding / 2),
+            height: h - (DesignerDefaults.structDefinition.panelPadding * 2),
         };
         const { environment } = this.context;
         const structSuggestions = environment.getTypes().map(name => ({ name }));
         return (
             <g>
                 <rect x={x} y={y} width={w} height={h} className="struct-content-operations-wrapper" fill="#3d3d3d" />
-                <g onClick={e => this.handleAddTypeClick(this.state.newType, typeCellbox)} >
+                <g onClick={() => this.handleAddTypeClick(this.state.newType, typeCellbox)} >
                     <rect {...typeCellbox} className="struct-type-dropdown-wrapper" />
                     <text
                         x={typeCellbox.x + placeHolderPadding}
-                        y={y + DesignerDefaults.contentOperations.height / 2 + 2}
+                        y={y + (DesignerDefaults.contentOperations.height / 2) + 2}
                     > {this.state.newType || 'Select Type'}
                     </text>
                     <SuggestionsText
@@ -247,19 +338,20 @@ class StructDefinition extends React.Component {
                         value={this.state.newType}
                     />
                 </g>
-                <g onClick={e => this.setState({ newIdentifierEditing: true })} >
+                <g onClick={() => this.setState({ newIdentifierEditing: true })} >
                     <rect {...identifierCellBox} className="struct-input-value-wrapper" />
                     <text
                         x={identifierCellBox.x + placeHolderPadding}
-                        y={y + DesignerDefaults.contentOperations.height / 2 + 2}
+                        y={y + (DesignerDefaults.contentOperations.height / 2) + 2}
                         className="struct-input-text"
                     >
-                        {this.state.newIdentifierEditing ? '' : (this.state.newIdentifier ? this.state.newIdentifier : 'Identifier')}
+                        {this.state.newIdentifierEditing ? '' : (this.state.newIdentifier ? this.state.newIdentifier :
+                                                                                                        'Identifier')}
                     </text>
                 </g>
                 <EditableText
                     {...identifierCellBox}
-                    y={y + DesignerDefaults.contentOperations.height / 2}
+                    y={y + (DesignerDefaults.contentOperations.height / 2)}
                     placeholder="Identifier"
                     onBlur={() => {
                         this.setState({
@@ -267,7 +359,7 @@ class StructDefinition extends React.Component {
                         });
                     }}
                     editing={this.state.newIdentifierEditing}
-                    onChange={ (e) => {
+                    onChange={(e) => {
                         if (!e.target.value.length || this.validateIdentifierName(e.target.value)) {
                             this.setState({
                                 newIdentifier: e.target.value,
@@ -277,11 +369,11 @@ class StructDefinition extends React.Component {
                 >
                     {this.state.newIdentifierEditing ? this.state.newIdentifier : ''}
                 </EditableText>
-                <g onClick={e => this.setState({ newValueEditing: true })}>
+                <g onClick={() => this.setState({ newValueEditing: true })}>
                     <rect {...defaultValueBox} className="struct-input-value-wrapper" />
                     <text
                         x={defaultValueBox.x + placeHolderPadding}
-                        y={y + DesignerDefaults.contentOperations.height / 2 + 2}
+                        y={y + (DesignerDefaults.contentOperations.height / 2) + 2}
                         className="struct-input-text"
                     >
                         {this.state.newValueEditing ? '' : (this.state.newValue ? this.state.newValue : '+ Add Default Value')}
@@ -289,7 +381,7 @@ class StructDefinition extends React.Component {
                 </g>
                 <EditableText
                     {...defaultValueBox}
-                    y={y + DesignerDefaults.contentOperations.height / 2}
+                    y={y + (DesignerDefaults.contentOperations.height / 2)}
                     placeholder="+ Add Default Value"
                     onBlur={() => {
                         this.setState({
@@ -366,12 +458,11 @@ class StructDefinition extends React.Component {
                     {
                         children.map((child, i) => {
                             if (ASTFactory.isVariableDefinitionStatement(child)) {
-                                
                                 return (
                                     <StructDefinitionItem
                                         x={coDimensions.x}
                                         y={coDimensions.y + DesignerDefaults.contentOperations.height +
-                                            DesignerDefaults.structDefinitionStatement.height * i + 10}
+                                            (DesignerDefaults.structDefinitionStatement.height * i) + 10}
                                         w={coDimensions.w}
                                         h={DesignerDefaults.structDefinitionStatement.height}
                                         model={child}
@@ -381,6 +472,8 @@ class StructDefinition extends React.Component {
                                         addQuotesToString={this.addQuotesToString}
                                     />
                                 );
+                            } else {
+                                return (null);
                             }
                         })
                     }
@@ -390,8 +483,13 @@ class StructDefinition extends React.Component {
     }
 }
 
+StructDefinition.propTypes = {
+    model: PropTypes.instanceOf(StructDefinitionAST).isRequired,
+};
+
 StructDefinition.contextTypes = {
     environment: PropTypes.instanceOf(Object).isRequired,
+    editor: PropTypes.instanceOf(Object).isRequired,
     getOverlayContainer: PropTypes.instanceOf(Object).isRequired,
 };
 
