@@ -225,7 +225,7 @@ class PanelDecorator extends React.Component {
                 />
                 <rect x={bBox.x - 1} y={bBox.y + annotationBodyHeight} height={titleHeight} rx="0" ry="0" className="panel-heading-decorator" />
                 <EditableText
-                    x={bBox.x + titleHeight + iconSize + 15 + protocolOffset } y={bBox.y + titleHeight / 2 + annotationBodyHeight}
+                    x={bBox.x + titleHeight + iconSize + protocolOffset } y={bBox.y + titleHeight / 2 + annotationBodyHeight}
                     width={titleWidth.w}
                     onBlur={() => { this.onTitleInputBlur(); }}
                     onClick={() => { this.onTitleClick(); }}
@@ -239,13 +239,13 @@ class PanelDecorator extends React.Component {
                 {this.props.protocol &&
                     <g>
                         <rect
-                            x={bBox.x + titleHeight + iconSize + 15 + 3 } y={bBox.y + annotationBodyHeight} width={protocolOffset - 3} height={titleHeight}
+                            x={bBox.x + titleHeight + iconSize} y={bBox.y + annotationBodyHeight} width={protocolOffset - 3} height={titleHeight}
                             className="protocol-rect"
                             onClick={this.handleProtocolClick}
                         />
-                        <text className="protocol-text" onClick={this.handleProtocolClick} x={bBox.x + titleHeight + iconSize + 15 + 3 + ((protocolOffset - protocolTextSize) / 2)} y={bBox.y + annotationBodyHeight + 15} style={{ dominantBaseline: 'central' }}>{this.props.protocol}</text>
+                        <text className="protocol-text" onClick={this.handleProtocolClick} x={bBox.x + titleHeight + iconSize + ((protocolOffset - protocolTextSize) / 2)} y={bBox.y + annotationBodyHeight + 15} style={{ dominantBaseline: 'central' }}>{this.props.protocol}</text>
                         <SuggestionsText
-                            x={bBox.x + titleHeight + iconSize + 15 + 3} y={bBox.y + annotationBodyHeight} width={protocolOffset - 3} height={titleHeight}
+                            x={bBox.x + titleHeight + iconSize} y={bBox.y + annotationBodyHeight} width={protocolOffset - 3} height={titleHeight}
                             suggestionsPool={this.availableProtocols}
                             show={this.state.showProtocolSelect}
                             onBlur={this.handleProtocolBlur}
