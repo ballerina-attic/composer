@@ -132,28 +132,31 @@ class ServiceDefinition extends React.Component {
             },
         };
         actionMenuItems.push(addAnnotationButton);
-        if (model.getViewState().showAnnotationContainer) {
-            const hideAnnotations = {
-                key: this.props.model.getID(),
-                icon: 'fw-hide',
-                text: 'Hide Annotations',
-                onClick: () => {
-                    model.getViewState().showAnnotationContainer = false;
-                    this.context.editor.update();
-                },
-            };
-            actionMenuItems.push(hideAnnotations);
-        } else {
-            const showAnnotations = {
-                key: this.props.model.getID(),
-                icon: 'fw-view',
-                text: 'Show Annotations',
-                onClick: () => {
-                    model.getViewState().showAnnotationContainer = true;
-                    this.context.editor.update();
-                },
-            };
-            actionMenuItems.push(showAnnotations);
+
+        if (model.getChildrenOfType(ASTFactory.isAnnotationAttachment).length > 0) {
+            if (model.getViewState().showAnnotationContainer) {
+                const hideAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-hide',
+                    text: 'Hide Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = false;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(hideAnnotations);
+            } else {
+                const showAnnotations = {
+                    key: this.props.model.getID(),
+                    icon: 'fw-view',
+                    text: 'Show Annotations',
+                    onClick: () => {
+                        model.getViewState().showAnnotationContainer = true;
+                        this.context.editor.update();
+                    },
+                };
+                actionMenuItems.push(showAnnotations);
+            }
         }
 
         const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);

@@ -1324,6 +1324,10 @@ table.annotation-table tr:hover > td > .annotation-openning-bracket > .annotatio
     left: 437px; */
 }
 
+.action-menu-icon-wrapper .fw {
+        font-size: 0.89em;
+}
+
 .action-menu-wrapper:hover > .action-menu,
 .action-menu-wrapper.edit > .action-menu {
     opacity: 1;
