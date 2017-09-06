@@ -221,10 +221,14 @@ class SizingUtil {
 
         components.annotation = new SimpleBBox();
 
+        if (_.isNil(node.viewState.collapsed)) {
+            node.viewState.collapsed = false;
+        }
+
         if (_.isNil(node.viewState.showAnnotationContainer)) {
             node.viewState.showAnnotationContainer = true;
         }
-        
+
         if (_.isNil(viewState.showAddAnnotations)) {
             viewState.showAddAnnotations = false;
         }
@@ -449,6 +453,10 @@ class SizingUtil {
             components.body.h = 0;
         } else {
             components.body.h = bodyHeight;
+        }
+
+        if (_.isNil(node.viewState.collapsed)) {
+            node.viewState.collapsed = false;
         }
 
         if (_.isNil(node.viewState.showAnnotationContainer)) {

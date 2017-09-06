@@ -62,17 +62,25 @@ class StructDefinition extends React.Component {
      * @override
      */
     componentDidMount() {
-        this.createActionMenu();
+        if (this.props.model.getViewState().collapsed === false) {
+            this.createActionMenu();
+        }
     }
 
     /**
      * @override
      */
     componentDidUpdate() {
-        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
-        const canvasOverlay = getCanvasOverlay();
-        canvasOverlay.removeChild(this.actionMenuWrapper);
-        this.createActionMenu();
+        if (this.actionMenuWrapper) {
+            ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+            const canvasOverlay = getCanvasOverlay();
+            if (canvasOverlay.contains(this.actionMenuWrapper)) {
+                canvasOverlay.removeChild(this.actionMenuWrapper);
+            }
+            if (this.props.model.getViewState().collapsed === false) {
+                this.createActionMenu();
+            }
+        }
     }
 
     /**

@@ -58,7 +58,9 @@ class ServiceDefinition extends React.Component {
      * @memberof ServiceDefinition
      */
     componentDidMount() {
-        this.createActionMenu();
+        if (this.props.model.getViewState().collapsed === false) {
+            this.createActionMenu();
+        }
     }
 
     /**
@@ -66,10 +68,16 @@ class ServiceDefinition extends React.Component {
      * @memberof ServiceDefinition
      */
     componentDidUpdate() {
-        ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
-        const canvasOverlay = getCanvasOverlay();
-        canvasOverlay.removeChild(this.actionMenuWrapper);
-        this.createActionMenu();
+        if (this.actionMenuWrapper) {
+            ReactDOM.unmountComponentAtNode(this.actionMenuWrapper);
+            const canvasOverlay = getCanvasOverlay();
+            if (canvasOverlay.contains(this.actionMenuWrapper)) {
+                canvasOverlay.removeChild(this.actionMenuWrapper);
+            }
+            if (this.props.model.getViewState().collapsed === false) {
+                this.createActionMenu();
+            }
+        }
     }
 
     /**
