@@ -99,10 +99,11 @@ class AnnotationDefinition extends React.Component {
      */
     getAnnotationAttachmentPointsForSuggestions() {
         const { environment } = this.context;
+        const attachmentTypes = environment.getAnnotationAttachmentTypes();
         const suggestions = [];
-        for (let i = 0; i < environment.getAnnotationAttachmentTypes().length; i++) {
+        for (let i = 0; i < attachmentTypes.length; i++) {
             const suggestion = {
-                name: environment.getAnnotationAttachmentTypes()[i],
+                name: attachmentTypes[i],
             };
             suggestions.push(suggestion);
         }

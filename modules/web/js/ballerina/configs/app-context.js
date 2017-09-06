@@ -16,14 +16,16 @@
  * under the License.
  */
 
-let _wrapper;
+import _ from 'lodash';
+
+let canvasOverlay;
 
 export function setCanvasOverlay(wrapper) {
-    if (wrapper !== undefined && wrapper !== null) {
-        _wrapper = wrapper;
+    if (!_.isNil(wrapper)) {
+        canvasOverlay = wrapper;
     }
 }
 
 export function getCanvasOverlay() {
-    return _wrapper;
+    return canvasOverlay;
 }
