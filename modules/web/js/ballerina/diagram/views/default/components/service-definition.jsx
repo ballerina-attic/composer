@@ -19,7 +19,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import PanelDecorator from './panel-decorator';
 import { getComponentForNodeArray, getDesigner } from './../../../diagram-util';
@@ -114,8 +113,10 @@ class ServiceDefinition extends React.Component {
         // Recreating content
         this.actionMenuWrapper = document.createElement('div');
         this.actionMenuWrapper.className = 'action-menu-wrapper';
-        this.actionMenuWrapper.style.top = model.getViewState().components.body.y + designer.actionMenu.topOffset + 'px';
-        this.actionMenuWrapper.style.left = model.getViewState().components.body.x + designer.actionMenu.leftOffset + 'px';
+        this.actionMenuWrapper.style.top =
+                                        model.getViewState().components.body.y + designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left =
+                                        model.getViewState().components.body.x + designer.actionMenu.leftOffset + 'px';
         canvasOverlay.appendChild(this.actionMenuWrapper);
 
         const actionMenuItems = [];
@@ -275,13 +276,6 @@ class ServiceDefinition extends React.Component {
 
 ServiceDefinition.propTypes = {
     model: PropTypes.instanceOf(ServiceDefinitionAST).isRequired,
-    designer: PropTypes.instanceOf(Object),
-    mode: PropTypes.string,
-};
-
-ServiceDefinition.defaultProps = {
-    designer: undefined,
-    mode: 'default',
 };
 
 ServiceDefinition.contextTypes = {

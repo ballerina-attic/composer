@@ -19,7 +19,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import ConnectorDefinitionAST from 'ballerina/ast/connector-definition';
 import PanelDecorator from './panel-decorator';

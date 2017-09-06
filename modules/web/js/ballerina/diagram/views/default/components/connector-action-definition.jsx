@@ -19,7 +19,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import StatementContainer from './statement-container';
 import PanelDecorator from './panel-decorator';
@@ -88,6 +87,64 @@ class ConnectorAction extends React.Component {
         // Statements should only be allowed on top of resource worker's dropzone.
         return nodeFactory.isConnectorDeclaration(nodeBeingDragged)
             || nodeFactory.isWorkerDeclaration(nodeBeingDragged);
+    }
+
+    /**
+     * Creates the action menu.
+     * @memberof ConnectorAction
+     */
+    createActionMenu() {
+        const model = this.props.model;
+        const designer = getDesigner(['default']);
+        const canvasOverlay = getCanvasOverlay();
+        // Recreating content
+        this.actionMenuWrapper = document.createElement('div');
+        this.actionMenuWrapper.className = 'action-menu-wrapper';
+        this.actionMenuWrapper.style.top =
+            model.getViewState().components.body.y + designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left =
+            model.getViewState().components.body.x + designer.actionMenu.leftOffset + 'px';
+        canvasOverlay.appendChild(this.actionMenuWrapper);
+
+        const actionMenuItems = [];
+
+        const addAnnotationButton = {
+            key: this.props.model.getID(),
+            icon: 'fw-add',
+            text: 'Add Annotation',
+            onClick: () => {
+                model.getViewState().showAddAnnotations = true;
+                model.getViewState().showAnnotationContainer = true;
+                this.context.editor.update();
+            },
+        };
+        actionMenuItems.push(addAnnotationButton);
+        if (model.getViewState().showAnnotationContainer) {
+            const hideAnnotations = {
+                key: this.props.model.getID(),
+                icon: 'fw-hide',
+                text: 'Hide Annotations',
+                onClick: () => {
+                    model.getViewState().showAnnotationContainer = false;
+                    this.context.editor.update();
+                },
+            };
+            actionMenuItems.push(hideAnnotations);
+        } else {
+            const showAnnotations = {
+                key: this.props.model.getID(),
+                icon: 'fw-view',
+                text: 'Show Annotations',
+                onClick: () => {
+                    model.getViewState().showAnnotationContainer = true;
+                    this.context.editor.update();
+                },
+            };
+            actionMenuItems.push(showAnnotations);
+        }
+
+        const actionMenu = React.createElement(ActionMenu, { items: actionMenuItems }, null);
+        ReactDOM.render(actionMenu, this.actionMenuWrapper);
     }
 
     /**
@@ -167,15 +224,11 @@ class ConnectorAction extends React.Component {
 
 ConnectorAction.propTypes = {
     model: PropTypes.instanceOf(ConnectorActionAST).isRequired,
-    mode: PropTypes.string,
-};
-
-ConnectorAction.defaultProps = {
-    mode: 'default',
 };
 
 ConnectorAction.contextTypes = {
     editor: PropTypes.instanceOf(Object).isRequired,
+    mode: PropTypes.string,
 };
 
 export default ConnectorAction;

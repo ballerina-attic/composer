@@ -100,8 +100,10 @@ class ResourceDefinition extends React.Component {
         // Recreating content
         this.actionMenuWrapper = document.createElement('div');
         this.actionMenuWrapper.className = 'action-menu-wrapper';
-        this.actionMenuWrapper.style.top = model.getViewState().components.body.y + designer.actionMenu.topOffset + 'px';
-        this.actionMenuWrapper.style.left = model.getViewState().components.body.x + designer.actionMenu.leftOffset + 'px';
+        this.actionMenuWrapper.style.top =
+                                        model.getViewState().components.body.y + designer.actionMenu.topOffset + 'px';
+        this.actionMenuWrapper.style.left =
+                                        model.getViewState().components.body.x + designer.actionMenu.leftOffset + 'px';
         canvasOverlay.appendChild(this.actionMenuWrapper);
 
         const actionMenuItems = [];
@@ -236,13 +238,6 @@ class ResourceDefinition extends React.Component {
 
 ResourceDefinition.propTypes = {
     model: PropTypes.instanceOf(ResourceDefinitionAST).isRequired,
-    designer: PropTypes.instanceOf(Object),
-    mode: PropTypes.string,
-};
-
-ResourceDefinition.defaultProps = {
-    designer: undefined,
-    mode: 'default',
 };
 
 ResourceDefinition.contextTypes = {

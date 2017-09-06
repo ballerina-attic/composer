@@ -19,7 +19,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import FunctionDefinitionAST from 'ballerina/ast/function-definition';
 import { getCanvasOverlay } from 'ballerina/configs/app-context';
 import LifeLine from './lifeline.jsx';
