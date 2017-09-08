@@ -23,7 +23,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import ASTVisitor from 'ballerina/visitors/ast-visitor';
-import Application from 'js/app';
 import DebugManager from './../../debugger/debug-manager';
 import DesignView from './design-view.jsx';
 import SourceView from './source-view.jsx';

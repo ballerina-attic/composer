@@ -23,7 +23,6 @@ import PropTypes from 'prop-types';
 import log from 'log';
 import _ from 'lodash';
 import commandManager from 'command';
-import Application from 'js/app';
 import File from './../../workspace/file';
 import SourceGenVisitor from './../visitors/source-gen/ballerina-ast-root-visitor';
 import EnableDefaultWSVisitor from './../visitors/source-gen/enable-default-ws-visitor';
