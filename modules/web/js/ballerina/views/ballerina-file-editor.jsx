@@ -23,6 +23,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import ASTVisitor from 'ballerina/visitors/ast-visitor';
+import Application from 'js/app';
 import DebugManager from './../../debugger/debug-manager';
 import DesignView from './design-view.jsx';
 import SourceView from './source-view.jsx';
@@ -42,6 +43,9 @@ import FindBreakpointNodesVisitor from './../visitors/find-breakpoint-nodes-visi
 import FindBreakpointLinesVisitor from './../visitors/find-breakpoint-lines-visitor';
 import FindLineNumbersVisiter from './../visitors/find-line-numbers';
 import UpdateLineNumbersVisiter from './../visitors/update-line-numbers';
+
+const aceDefaultTheme = 'ace/theme/twilight';
+const editorDefaultfontSize = '14px';
 
 const sourceViewTabHeaderClass = 'inverse';
 
@@ -441,6 +445,26 @@ class BallerinaFileEditor extends React.Component {
     }
 
     /**
+     * Load settings for ace editor
+     *
+     * @returns {Object}
+     * @memberof SourceView
+     */
+    getAceSettings() {
+        const { app } = this.props;
+        if (!app.browserStorage.get('pref:sourceViewTheme')) {
+            app.browserStorage.put('pref:sourceViewTheme', aceDefaultTheme);
+        }
+        if (!app.browserStorage.get('pref:sourceViewFontSize')) {
+            app.browserStorage.put('pref:sourceViewFontSize', editorDefaultfontSize);
+        }
+        return {
+            aceTheme: app.browserStorage.get('pref:sourceViewTheme'),
+            fontSize: app.browserStorage.get('pref:sourceViewFontSize'),
+        };
+    }
+
+    /**
      * @override
      * @memberof BallerinaFileEditor
      */
@@ -519,6 +543,7 @@ class BallerinaFileEditor extends React.Component {
                     file={this.props.file}
                     commandManager={this.props.commandManager}
                     show={showSourceView}
+                    preferences={this.getAceSettings()}
                 />
                 <div style={{ display: showSwaggerView ? 'block' : 'none' }}>
                     <SwaggerView
@@ -537,6 +562,7 @@ BallerinaFileEditor.propTypes = {
     file: PropTypes.instanceOf(File).isRequired,
     tab: PropTypes.instanceOf(Object).isRequired,
     commandManager: PropTypes.instanceOf(commandManager).isRequired,
+    app: PropTypes.instanceOf(Object).isRequired,
 };
 
 BallerinaFileEditor.childContextTypes = {
