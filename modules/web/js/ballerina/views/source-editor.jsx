@@ -52,9 +52,6 @@ function requireAll(requireContext) {
 }
 requireAll(require.context('ace', false, /theme-/));
 
-// ace look & feel configurations FIXME: Make this overridable from settings
-const aceTheme = 'ace/theme/twilight';
-const fontSize = '14px';
 const scrollMargin = 20;
 
 // override default undo manager of ace editor
@@ -102,8 +99,6 @@ class SourceView extends React.Component {
             editor.setShowPrintMargin(false);
             // Avoiding ace warning
             editor.$blockScrolling = Infinity;
-            editor.setTheme(aceTheme);
-            editor.setFontSize(fontSize);
             editor.setOptions({
                 enableBasicAutocompletion: true,
             });
@@ -238,6 +233,9 @@ class SourceView extends React.Component {
     shouldComponentUpdate() {
         // update ace editor - https://github.com/ajaxorg/ace/issues/1245
         this.editor.resize(true);
+        const { fontSize, aceTheme } = this.props.preferences;
+        this.editor.setTheme(aceTheme);
+        this.editor.setFontSize(fontSize);
         // keep this component unaffected from react re-render
         return false;
     }
@@ -320,6 +318,7 @@ SourceView.propTypes = {
     addBreakpoint: PropTypes.func.isRequired,
     removeBreakpoint: PropTypes.func.isRequired,
     debugHit: PropTypes.number,
+    preferences: PropTypes.instanceOf(Object).isRequired,
 };
 
 SourceView.defaultProps = {

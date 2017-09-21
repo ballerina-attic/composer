@@ -17,9 +17,10 @@
  */
 
 import $ from 'jquery';
-import log from 'log';
+import _ from 'lodash';
 import Backbone from 'backbone';
 import './dialog.css';
+
 const SettingsDialog = Backbone.View.extend(
     /** @lends SettingsDialog.prototype */
     {
@@ -44,30 +45,26 @@ const SettingsDialog = Backbone.View.extend(
         },
 
         render() {
-            let app = this.application;
-            let options = this._options;
+            const app = this.application;
+            const options = this._options;
 
             if (!_.isNil(this._modalContainer)) {
                 this._modalContainer.remove();
             }
 
-            let settingsModal = $(_.get(options, 'selector')).clone();
+            const settingsModal = $(_.get(options, 'selector')).clone();
 
             settingsModal.find('select').filter('#sourceViewFontSize').change(function () {
-                let fontSize = $(this).val();
-                app.tabController.getActiveTab().getBallerinaFileEditor().getSourceView()._editor.setFontSize(fontSize);
+                const fontSize = $(this).val();
                 app.browserStorage.put('pref:sourceViewFontSize', fontSize);
-            }).val(
-                    app.browserStorage.get('pref:sourceViewFontSize'),
-                );
+                app.reRender();
+            }).val(app.browserStorage.get('pref:sourceViewFontSize'));
 
             settingsModal.find('select').filter('#sourceViewTheme').change(function () {
-                let selectedTheme = $(this).val();
-                app.tabController.getActiveTab().getBallerinaFileEditor().getSourceView()._editor.setTheme(selectedTheme);
+                const selectedTheme = $(this).val();
                 app.browserStorage.put('pref:sourceViewTheme', selectedTheme);
-            }).val(
-                    app.browserStorage.get('pref:sourceViewTheme'),
-                );
+                app.reRender();
+            }).val(app.browserStorage.get('pref:sourceViewTheme'));
 
             this._dialogContainer.append(settingsModal);
             this._modalContainer = settingsModal;

@@ -148,6 +148,7 @@ class SourceView extends React.Component {
                         file={this.props.file}
                         parseFailed={this.props.parseFailed}
                         onLintErrors={this.onSourceEditorLintErrors}
+                        preferences={this.props.preferences}
                     />
                     <div
                         className={classNames('bottom-right-controls-container',
@@ -213,6 +214,7 @@ SourceView.propTypes = {
     commandManager: PropTypes.instanceOf(commandManager).isRequired,
     parseFailed: PropTypes.bool.isRequired,
     displayErrorList: PropTypes.bool.isRequired,
+    preferences: PropTypes.instanceOf(Object).isRequired,
 };
 
 SourceView.contextTypes = {

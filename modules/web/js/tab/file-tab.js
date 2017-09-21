@@ -103,6 +103,7 @@ class FileTab extends Tab {
             file: this.file,
             tab: this,
             commandManager: this.app.commandManager,
+            app: this.app,
         };
 
         // create Rect component for diagram
