@@ -145,7 +145,9 @@ public class WorkspaceUtils {
         Compiler compiler = Compiler.getInstance(context);
 
         BallerinaFile ballerinaFile = new BallerinaFile();
-        ballerinaFile.setBLangPackage(compiler.compile(fileName));
+        compiler.compile(fileName);
+        BLangPackage bLangPackage = (BLangPackage) compiler.getAST();
+        ballerinaFile.setBLangPackage(bLangPackage);
         ballerinaFile.setDiagnostics(diagnostics);
         return ballerinaFile;
     }
