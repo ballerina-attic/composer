@@ -30,7 +30,7 @@ public class LangServerPackageRepository extends GeneralFSPackageRepository {
     }
 
     private PackageSource lookupPackageSource(PackageID pkgID) {
-        Path path = this.generatePath(pkgID);
+        Path path = null;
         if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
             return null;
         }
@@ -38,7 +38,7 @@ public class LangServerPackageRepository extends GeneralFSPackageRepository {
     }
 
     private PackageSource lookupPackageSource(PackageID pkgID, String entryName) {
-        Path path = this.generatePath(pkgID);
+        Path path = null;
         if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
             return null;
         }
@@ -107,7 +107,7 @@ public class LangServerPackageRepository extends GeneralFSPackageRepository {
                     if (contentMap.containsKey(name)) {
                         this.code = contentMap.get(name);
                     } else {
-                        this.code = Files.readAllBytes(basePath.resolve(pkgPath).resolve(name));
+                        this.code = Files.readAllBytes(basePath.resolve("").resolve(name));
                     }
                 } catch (IOException e) {
                     throw new RuntimeException("Error in loading package source entry '" + filePath +
@@ -117,7 +117,7 @@ public class LangServerPackageRepository extends GeneralFSPackageRepository {
 
             @Override
             public PackageID getPackageID() {
-                return pkgID;
+                return null;
             }
 
             @Override

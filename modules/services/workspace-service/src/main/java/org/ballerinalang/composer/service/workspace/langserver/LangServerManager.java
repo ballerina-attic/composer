@@ -514,7 +514,7 @@ public class LangServerManager {
             compiler.compile("temp.bal");
             BLangPackage bLangPackage = (BLangPackage) compiler.getAST();
 
-            // Visit the package to resolve the symbols
+                    // Visit the package to resolve the symbols
             TreeVisitor treeVisitor = new TreeVisitor(compilerContext, symbols, position, filterDataModel);
             bLangPackage.accept(treeVisitor);
             // Set the symbol table
