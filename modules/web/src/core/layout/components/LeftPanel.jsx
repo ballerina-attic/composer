@@ -127,7 +127,7 @@ class LeftPanel extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            activeView: context.history.get(HISTORY.ACTIVE_LEFT_PANEL_VIEW) || null,
+            activeView: null,
         };
     }
 
@@ -160,15 +160,16 @@ class LeftPanel extends React.Component {
                 </Tab.Pane>
             ));
         });
+        const activeViewPrev = this.context.history.get(HISTORY.ACTIVE_LEFT_PANEL_VIEW);
         return (
             <div className="left-panel">
                 <div>
                     <Tab.Container
                         id="activity-bar-tabs"
-                        activeKey={this.state.activeView}
+                        activeKey={this.state.activeView || activeViewPrev}
                         onSelect={(key) => {
                             // if same tab is selected, disable tabs
-                            const activeView = this.state.activeView !== key ? key : null;
+                            const activeView = activeViewPrev !== key ? key : null;
                             this.context.history.put(HISTORY.ACTIVE_LEFT_PANEL_VIEW, activeView);
                             this.setState({
                                 activeView,
