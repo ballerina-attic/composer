@@ -64,6 +64,10 @@ class App extends React.Component {
         this.props.layoutPlugin.on(EVENTS.SHOW_BOTTOM_PANEL, () => {
             this.setBottomPanelState(true);
         });
+        this.props.layoutPlugin.on(EVENTS.SHOW_LEFT_PANEL, (view) => {
+            history.put(HISTORY.ACTIVE_LEFT_PANEL_VIEW, view);
+            this.setLeftPanelState(true);
+        });
     }
 
     /**
