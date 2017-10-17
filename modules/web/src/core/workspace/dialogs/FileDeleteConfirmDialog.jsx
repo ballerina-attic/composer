@@ -61,7 +61,7 @@ class FileDeleteConfirmDialog extends React.Component {
                     File {` ${this.props.filePath} `} will be deleted from file system.
                 </h4>
                 <p>
-                   Do you want to delete the file from file system?
+                   Do you want to delete the file/folder from file system?
                 </p>
             </Dialog>
         );

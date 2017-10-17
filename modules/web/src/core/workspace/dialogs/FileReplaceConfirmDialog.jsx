@@ -58,7 +58,7 @@ class FileReplaceConfirmDialog extends React.Component {
                 error={this.state.error}
             >
                 <h4>
-                    File {` ${this.props.filePath} `} alredy exists.
+                    File {` ${this.props.filePath} `} already exists.
                 </h4>
                 <p>
                    Do you want to overwrite the file?
