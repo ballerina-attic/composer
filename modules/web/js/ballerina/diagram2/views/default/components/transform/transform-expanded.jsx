@@ -221,7 +221,12 @@ class TransformExpanded extends React.Component {
         if (TreeUtil.isInvocation(nodeExpression)) {
             nodeDef = this.transformNodeManager.getFunctionVertices(nodeExpression);
             nodeName = nodeExpression.getFunctionName();
-            paramExpressions = nodeExpression.argumentExpressions;
+            if (nodeExpression.argumentExpressions.length === 0 && nodeExpression.expression) {
+                // for bounded functions. TODO: revisit this. We need a generic approach
+                paramExpressions = [nodeExpression.expression];
+            } else {
+                paramExpressions = nodeExpression.argumentExpressions;
+            }
         } else if (TreeUtil.isTernaryExpr(nodeExpression)) {
             nodeDef = this.transformNodeManager.getOperatorVertices(nodeExpression);
             nodeName = nodeExpression.getOperatorKind();

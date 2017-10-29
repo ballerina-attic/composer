@@ -533,11 +533,18 @@ class TransformNodeMapper {
         let nodeName;
         if (TreeUtil.isInvocation(nodeExpression)) {
             nodeName = nodeExpression.getFunctionName();
-            nodeExpression.getArgumentExpressions().forEach((paramExp) => {
+            if (nodeExpression.getArgumentExpressions().length === 0 && nodeExpression.getExpression()) {
+                const paramExp = nodeExpression.getExpression();
                 if (this.isComplexExpression(paramExp)) {
                     nestedNodes.push(paramExp);
                 }
-            });
+            } else {
+                nodeExpression.getArgumentExpressions().forEach((paramExp) => {
+                    if (this.isComplexExpression(paramExp)) {
+                        nestedNodes.push(paramExp);
+                    }
+                });
+            }
         } else {
             nodeName = nodeExpression.getOperatorKind();
             if (TreeUtil.isUnaryExpr(nodeExpression)
