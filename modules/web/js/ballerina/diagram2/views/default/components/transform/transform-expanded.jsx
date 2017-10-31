@@ -217,11 +217,13 @@ class TransformExpanded extends React.Component {
         let nodeDef;
         let nodeName;
         let paramExpressions = [];
+        let receiver;
 
         if (TreeUtil.isInvocation(nodeExpression)) {
             nodeDef = this.transformNodeManager.getFunctionVertices(nodeExpression);
             nodeName = nodeExpression.getFunctionName();
             paramExpressions = nodeExpression.argumentExpressions;
+            receiver = nodeExpression.expression
         } else if (TreeUtil.isTernaryExpr(nodeExpression)) {
             nodeDef = this.transformNodeManager.getOperatorVertices(nodeExpression);
             nodeName = nodeExpression.getOperatorKind();
@@ -253,6 +255,32 @@ class TransformExpanded extends React.Component {
         if (!nodeExpIsTemp) {
             // if the node expression is a temp resolved expression, do not need to
             // draw the parameters
+            if (receiver) {
+                debugger;
+                const { exp:expression, isTemp } = this.transformNodeManager.getResolvedExpression(expression, statement);
+                if (TreeUtil.isInvocation(expression) || TreeUtil.isBinaryExpr(expression)
+                    || TreeUtil.isUnaryExpr(expression)) {
+                    this.drawInnerIntermediateNode(nodeExpression, expression, nodeDef, 'receiver', statement, isTemp);
+                }
+
+                let sourceId = `${expression.getSource().trim()}:${viewId}`;
+                let folded = false;
+                if (!this.sourceElements[sourceId]) {
+                    folded = true;
+                    sourceId = this.getFoldedEndpointId(
+                        expression.getSource().trim(), viewId, 'source');
+                }
+
+                let targetId = `${nodeExpID}:receiver:${viewId}`;
+                if (!this.targetElements[targetId]) {
+                    // function is folded
+                    folded = true;
+                    targetId = `${nodeExpID}:${viewId}`;
+                }
+
+                this.drawConnection(sourceId, targetId, folded);
+            }
+
             paramExpressions.forEach((expression, i) => {
                 const { exp, isTemp } = this.transformNodeManager.getResolvedExpression(expression, statement);
                 expression = exp;
@@ -281,7 +309,7 @@ class TransformExpanded extends React.Component {
                         }
 
                         let targetId = `${nodeExpID}:${i}:${viewId}`;
-
+                        console.log(targetId)
                         if (!this.targetElements[targetId]) {
                             // function is folded
                             folded = true;
@@ -385,11 +413,13 @@ class TransformExpanded extends React.Component {
         let nodeDef;
         let nodeName;
         let paramExpressions = [];
+        let receiver;
 
         if (TreeUtil.isInvocation(nodeExpression)) {
             nodeDef = this.transformNodeManager.getFunctionVertices(nodeExpression);
             nodeName = nodeExpression.getFunctionName();
             paramExpressions = nodeExpression.argumentExpressions;
+            receiver = nodeExpression.expression;
         } else if (TreeUtil.isBinaryExpr(nodeExpression)) {
             nodeDef = this.transformNodeManager.getOperatorVertices(nodeExpression);
             nodeName = nodeExpression.getOperatorKind();
@@ -412,6 +442,26 @@ class TransformExpanded extends React.Component {
         if (nodeDef.parameters.length !== paramExpressions.length) {
             this.context.alert.showWarning('Function inputs and mapping count does not match in "' + nodeName + '"');
         }
+
+        if (receiver) {
+            debugger;
+            let sourceId = `${receiver.getSource().trim()}:${viewId}`;
+            let folded = false;
+            if (!this.sourceElements[sourceId]) {
+                folded = true;
+                sourceId = this.getFoldedEndpointId(
+                    receiver.getSource().trim(), viewId, 'source');
+            }
+
+            let targetId = `${nodeExpID}:receiver:${viewId}`;
+            if (!this.targetElements[targetId]) {
+                folded = true;
+                targetId = `${nodeExpID}:${viewId}`;
+            }
+
+            this.drawConnection(sourceId, targetId, folded);
+        }
+
         paramExpressions.forEach((expression, i) => {
             const { exp, isTemp } = this.transformNodeManager.getResolvedExpression(expression, statement);
             expression = exp;
@@ -585,6 +635,7 @@ class TransformExpanded extends React.Component {
         });
 
         this.props.model.getBody().getStatements().forEach((statement) => {
+            console.log(statement)
             this.createConnection(statement);
         });
 
@@ -1089,6 +1140,11 @@ class TransformExpanded extends React.Component {
             nodeExpression.argumentExpressions.forEach((arg) => {
                 this.getIntermediateNodes(arg, statement, intermediateNodes, nodeExpression);
             });
+            
+            if (nodeExpression.expression) {
+                this.getIntermediateNodes(nodeExpression.expression, statement, intermediateNodes, nodeExpression);
+            }
+
             intermediateNodes.push({
                 type: 'function',
                 func,
