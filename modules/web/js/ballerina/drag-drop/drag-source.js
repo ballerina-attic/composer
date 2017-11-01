@@ -17,8 +17,22 @@
  */
 import _ from 'lodash';
 import log from 'log';
+import React from 'react';
 import { DragSource } from 'react-dnd';
 import { ITEM_TYPES } from './constants';
+
+function cacheNodes(ToolView) {
+    const newComponent = class DebuggerHOC extends React.Component {
+        componentDidMount() {
+            const { factoryArgs = {}, nodeFactoryMethod } = this.props.tool;
+            nodeFactoryMethod(factoryArgs);
+        }
+        render() {
+            return <ToolView {...this.props} />;
+        }
+    };
+    return newComponent;
+}
 
 /**
  * Enable drag on given compenent
@@ -63,5 +77,5 @@ export function withDragEnabled(ToolView) {
             isDragging: monitor.isDragging(),
         };
     }
-    return DragSource(ITEM_TYPES.NODE, dragSpec, collect)(ToolView);
+    return DragSource(ITEM_TYPES.NODE, dragSpec, collect)(cacheNodes(ToolView));
 }
