@@ -15,7 +15,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-import { parseFragment } from 'js/api-client/api-client';
+import { parseFragment, parseFragmentAsync } from 'js/api-client/api-client';
 
 /**
  * Class for fragment utils.
@@ -188,6 +188,10 @@ class FragmentUtils {
      * */
     static parseFragment(fragment) {
         return parseFragment(fragment);
+    }
+
+    static parseFragmentAsync(fragment) {
+        return parseFragmentAsync(fragment);
     }
 }
 

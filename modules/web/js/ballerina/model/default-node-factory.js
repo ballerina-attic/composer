@@ -33,6 +33,19 @@ function getNodeForFragment(fragment) {
 }
 
 /**
+ * Creates the node instance for given source fragment
+ *
+ * @param {Fragment} fragment Source Fragment
+ */
+function getNodeForFragmentAsync(fragment) {
+    return FragmentUtils.parseFragment(fragment).then((parsedJson)=>{
+        const node = TreeBuilder.build(parsedJson);
+        node.clearWS();
+        return node;
+    });
+}
+
+/**
  * Default node factory class.
  * This creates all the default node for each model.
  * This is mostly used on drag and drop.

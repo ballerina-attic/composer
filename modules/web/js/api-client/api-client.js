@@ -26,6 +26,8 @@ import hardcodedOperatorLattice from './hardcoded-operator-lattice';
 let endpoints = {};
 let pathSeparator = '/'; // Setting default value as '/'. This value will get overriden at fetchConfigs().
 
+let fragmentsCache = {};
+
 /**
  * Gives the endpoint for a paticular backend service
  *
@@ -281,15 +283,28 @@ export function getOperatorLattice() {
     // });
 }
 
+function getFragmentFromCache(fragment) {
+    return fragmentsCache[JSON.stringify(fragment)];
+}
+
+function cacheFragment(fragment, data) {
+    fragmentsCache[JSON.stringify(fragment)] = data;
+}
+
 /**
  * parse fragment.
  *
  * @param {string} fragment - source fragment.
  * @return {object} fragment details to be sent to fragment parser.
+ * @deprecated use parseFragmentAsync instead
  * */
 
 // TODO: Use axios and Promises for api call
 export function parseFragment(fragment) {
+    const cachedFragment = getFragmentFromCache(fragment);
+    if (cachedFragment) {
+        return cachedFragment;
+    }
     let data = {};
     $.ajax({
         type: 'POST',
@@ -306,7 +321,29 @@ export function parseFragment(fragment) {
             data = { error: 'Unable to call fragment parser Backend.' };
         },
     });
+    cacheFragment(fragment, data);
     return data;
+}
+
+/**
+ * parse fragment asynchronously
+ * @param {string} fragment - source fragment.
+ * @return {object} fragment details to be sent to fragment parser.
+ */
+
+export function parseFragmentAsync(fragment) {
+    const cachedFragment = getFragmentFromCache(fragment);
+    if (cachedFragment) {
+        return Promise.resolve(cachedFragment);
+    }
+    const endpoint = getServiceEndpoint('fragmentParser');
+    return new Promise((resolve, reject) => {
+        axios.post(endpoint, fragment)
+            .then((response) => {
+                cacheFragment(fragment, response.data);
+                resolve(response.data);
+            }).catch(error => reject(error));
+    });
 }
 
 /**
