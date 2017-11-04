@@ -90,6 +90,54 @@ class DefaultNodeFactory {
         return node;
     }
 
+    createJMSServiceDef() {
+        const node = getNodeForFragment(
+            FragmentUtils.createTopLevelNodeFragment(
+                `
+    service<jms> service1 {
+        resource echo1 (jms:JMSMessage request) {
+
+        }
+    }
+`,
+            ));
+        node.viewState.shouldShowConnectorPropertyWindow = true;
+        node.setFullPackageName('ballerina.net.jms');
+        return node;
+    }
+
+    createFSServiceDef() {
+        const node = getNodeForFragment(
+            FragmentUtils.createTopLevelNodeFragment(
+                `
+    service<fs> service1 {
+        resource echo1 (fs:FileSystemEvent m) {
+
+        }
+    }
+`,
+            ));
+        node.viewState.shouldShowConnectorPropertyWindow = true;
+        node.setFullPackageName('ballerina.net.fs');
+        return node;
+    }
+
+    createFTPServiceDef() {
+        const node = getNodeForFragment(
+            FragmentUtils.createTopLevelNodeFragment(
+                `
+    service<ftp> service1 {
+        resource echo1 (ftp:FTPServerEvent m) {
+
+        }
+    }
+`,
+            ));
+        node.viewState.shouldShowConnectorPropertyWindow = true;
+        node.setFullPackageName('ballerina.net.ftp');
+        return node;
+    }
+
     /**
      * Create main function
      * @return {Node} function node for main function
@@ -147,6 +195,36 @@ class DefaultNodeFactory {
         );
     }
 
+    createFSResource() {
+        return getNodeForFragment(
+            FragmentUtils.createServiceResourceFragment(`
+                resource echo1 (fs:FileSystemEvent m) {
+
+                }
+            `),
+        );
+    }
+
+    createFTPResource() {
+        return getNodeForFragment(
+            FragmentUtils.createServiceResourceFragment(`
+                resource echo1 (ftp:FTPServerEvent m) {
+
+                }
+            `),
+        );
+    }
+
+    createJMSResource() {
+        return getNodeForFragment(
+            FragmentUtils.createServiceResourceFragment(`
+                resource echo1 (jms:JMSMessage request) {
+
+                }
+            `),
+        );
+    }
+
     createWSResource(fragment) {
         return getNodeForFragment(
             FragmentUtils.createServiceResourceFragment(fragment),
@@ -161,6 +239,14 @@ class DefaultNodeFactory {
                 }
             `),
         );
+    }
+
+    createTransformer() {
+        return getNodeForFragment(FragmentUtils.createTopLevelNodeFragment(`
+            transformer <Source a, Target b> {
+
+            }
+        `));
     }
 
     createWorker() {
@@ -192,17 +278,21 @@ class DefaultNodeFactory {
     createAssignmentStmt() {
         const node = getNodeForFragment(FragmentUtils.createStatementFragment('var a = 1;'));
         // Check if the node is a ConnectorDeclaration
-        if (TreeUtils.isConnectorDeclaration(node)) {
+        if (TreeUtils.isEndpointTypeVariableDef(node)) {
             node.viewState.showOverlayContainer = true;
             return node;
         }
         return node;
     }
 
+    createBindStmt() {
+        return getNodeForFragment(FragmentUtils.createStatementFragment('bind __connector with __endpoint;'));
+    }
+
     createVarDefStmt() {
         const node = getNodeForFragment(FragmentUtils.createStatementFragment('int a = 1;'));
         // Check if the node is a ConnectorDeclaration
-        if (TreeUtils.isConnectorDeclaration(node)) {
+        if (TreeUtils.isEndpointTypeVariableDef(node)) {
             node.viewState.showOverlayContainer = true;
             return node;
         }
@@ -240,14 +330,6 @@ class DefaultNodeFactory {
     createWhile() {
         return getNodeForFragment(FragmentUtils.createStatementFragment(`
             while(true) {
-
-            }
-        `));
-    }
-
-    createTransform() {
-        return getNodeForFragment(FragmentUtils.createStatementFragment(`
-            transform {
 
             }
         `));
@@ -370,6 +452,32 @@ class DefaultNodeFactory {
         connectorDeclaration.getVariable().getInitialExpression().setFullPackageName(fullPackageName);
         connectorDeclaration.viewState.showOverlayContainer = true;
         return connectorDeclaration;
+    }
+
+    createEndpoint(args) {
+        const { connector, packageName, fullPackageName } = args;
+
+        // Iterate through the params and create the parenthesis with the default param values
+        let paramString = '';
+        if (connector.getParams()) {
+            const connectorParams = connector.getParams().map((param) => {
+                let defaultValue = Environment.getDefaultValue(param.type);
+                if (defaultValue === undefined) {
+                    defaultValue = '{}';
+                }
+                return defaultValue;
+            });
+            paramString = connectorParams.join(', ')
+        }
+        const pkgStr = packageName !== 'Current Package' ? `${packageName}:` : '';
+        const connectorInit = `create ${pkgStr}${connector.getName()}(${paramString});`;
+        const constraint = `<${pkgStr}${connector.getName()}>`;
+
+        const endpointSource = `endpoint ${constraint} endpoint1 {
+            ${connectorInit}
+        }`;
+        const nodeForFragment = getNodeForFragment(FragmentUtils.createEndpointVarDefFragment(endpointSource));
+        return nodeForFragment;
     }
 
     createConnectorActionInvocationAssignmentStatement(args) {

@@ -37,7 +37,6 @@ class SemanticErrorPopup extends React.Component {
         super(props);
         this.state = {
             displayErrorList: false,
-            syntaxErrors: this.props.model.props.errors,
         };
         this.errorListPopoverTarget = undefined;
         this.toggleMouseOut = this.toggleMouseOut.bind(this);
@@ -66,9 +65,9 @@ class SemanticErrorPopup extends React.Component {
     /**
      * Navigates to code line in the source view from the design view node
      */
-    onJumpToCodeLine() {
+    onJumpToCodeLine(row, column) {
         const { editor } = this.context;
-        editor.goToSource(this.props.model.props.model);
+        editor.jumpToSourcePosition(row, column);
     }
 
     /**
@@ -85,7 +84,7 @@ class SemanticErrorPopup extends React.Component {
             left: props.bBox.x - 5,
             top: props.bBox.y,
         };
-        const hasSyntaxErrors = this.state.syntaxErrors.length > 0;
+        const hasSyntaxErrors = props.errors.length > 0;
 
         const errorListPopover = (
             <Popover
@@ -109,12 +108,12 @@ class SemanticErrorPopup extends React.Component {
                 >
                     <ul className="list-group">
                         {
-                            this.state.syntaxErrors.map((error, index) => {
+                            props.errors.map((error, index) => {
                                 return (
                                     <li
                                         key={error.row + error.column + btoa(error.text) + index}
                                         className="list-group-item"
-                                        onClick={() => this.onJumpToCodeLine()}
+                                        onClick={() => this.onJumpToCodeLine(error.row - 1, error.column - 1)}
                                     >
                                         <div>
                                             <span className="line">line {error.row + ' '}</span>

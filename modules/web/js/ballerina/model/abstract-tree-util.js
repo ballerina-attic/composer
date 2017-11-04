@@ -103,6 +103,10 @@ class AbstractTreeUtil {
         return node.kind === 'Xmlns';
     }
 
+    isTransformer(node) {
+        return node.kind === 'Transformer';
+    }
+
     isAnnotationAttachmentAttribute(node) {
         return node.kind === 'AnnotationAttachmentAttribute';
     }
@@ -207,6 +211,10 @@ class AbstractTreeUtil {
         return node.kind === 'Assignment';
     }
 
+    isBind(node) {
+        return node.kind === 'Bind';
+    }
+
     isBlock(node) {
         return node.kind === 'Block';
     }
@@ -293,6 +301,10 @@ class AbstractTreeUtil {
 
     isUserDefinedType(node) {
         return node.kind === 'UserDefinedType';
+    }
+
+    isEndpointType(node) {
+        return node.kind === 'EndpointType';
     }
 
     isValueType(node) {

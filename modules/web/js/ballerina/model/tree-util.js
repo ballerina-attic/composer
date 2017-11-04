@@ -156,6 +156,15 @@ class TreeUtil extends AbstractTreeUtil {
         return undefined;
     }
 
+    /**
+     * Check whether the variable def is an endpoint type definition
+     * @param node
+     * @return {*}
+     */
+    isEndpointTypeVariableDef(node) {
+        const typeNode = _.get(node, 'variable.typeNode');
+        return typeNode && this.isEndpointType(typeNode);
+    }
 
     /**
      * Return true if the statement is a connector declaration.
@@ -271,7 +280,7 @@ class TreeUtil extends AbstractTreeUtil {
         return variableDef;
     }
 
-    getAllVisibleConnectorDeclarations(parent) {
+    getAllVisibleEndpoints(parent) {
         if (!parent) {
             return [];
         }
@@ -289,10 +298,11 @@ class TreeUtil extends AbstractTreeUtil {
         let filteredItems = [];
         if (statements) {
             filteredItems = _.filter(statements, (stmt) => {
-                return this.isConnectorDeclaration(stmt);
+                const typeNode = _.get(stmt, 'variable.typeNode');
+                return typeNode && this.isEndpointType(typeNode);
             });
         }
-        return filteredItems.concat(this.getAllVisibleConnectorDeclarations(parent.parent));
+        return filteredItems.concat(this.getAllVisibleEndpoints(parent.parent));
     }
 
     /**
@@ -407,6 +417,10 @@ class TreeUtil extends AbstractTreeUtil {
         } else if (node.isExpression) {
             // Get the parent node.
             const expressionParentNode = node.parent;
+
+            source = source.endsWith(';')
+                ? source.substr(0, source.length - 1)
+                : source;
 
             // invoke the fragment util and get the new node.
             const parseJson = FragmentUtils.parseFragment(FragmentUtils.createExpressionFragment(source));

@@ -20,6 +20,7 @@ import _ from 'lodash';
 import SimpleBBox from './../../../model/view/simple-bounding-box';
 import TreeUtil from './../../../model/tree-util';
 import { getWorkerMaxHeight } from './../../diagram-util';
+import splitVariableDefByLambda from '../../../model/lambda-util';
 
 class SizingUtil {
 
@@ -121,6 +122,23 @@ class SizingUtil {
         viewState.fullExpression = expression;
     }
 
+    adjustToLambdaSize(node, viewState) {
+        const { sourceFragments, lambdas } = splitVariableDefByLambda(node);
+        viewState.sourceFragments = sourceFragments;
+        viewState.lambdas = lambdas;
+        if (lambdas.length) {
+            viewState.expression = sourceFragments.join('\u0192');
+            viewState.bBox.h = _.sumBy(lambdas, 'viewState.bBox.h') + viewState.components["drop-zone"].h;
+            const maxW = _.maxBy(lambdas, 'viewState.bBox.w').viewState.bBox.w;
+            viewState.bBox.w = maxW;
+            viewState.components['statement-box'].w = viewState.bBox.w;
+
+            for (const lambda of viewState.lambdas) {
+                lambda.viewState.bBox.w = maxW;
+            }
+        }
+    }
+
     /**
      * Set the container size of a particular node
      * @param {Array} nodes child nodes of the node
@@ -134,8 +152,8 @@ class SizingUtil {
         width = this.config.blockNode.width;
         let stH = this.config.statement.gutter.v;
         nodes.forEach((element) => {
-            // if the statement is a connector declaration we will not count the height.
-            if (!TreeUtil.isConnectorDeclaration(element)) {
+            // if the statement is an endpoint
+            if (!TreeUtil.isEndpointTypeVariableDef(element)) {
                 stH += element.viewState.bBox.h;
                 if (width < element.viewState.bBox.w) {
                     width = element.viewState.bBox.w;
@@ -358,7 +376,7 @@ class SizingUtil {
         const statements = node.body.statements;
         if (statements instanceof Array) {
             statements.forEach((statement) => {
-                if (TreeUtil.isConnectorDeclaration(statement)) {
+                if (TreeUtil.isEndpointTypeVariableDef(statement)) {
                     statement.viewState.bBox.w = this.config.lifeLine.width;
                     // add the connector width to panel body width.
                     cmp.panelBody.w += this.config.lifeLine.gutter.h + this.config.lifeLine.width;
@@ -588,16 +606,16 @@ class SizingUtil {
             children = node.getActions();
         }
         let variables = [];
-        let connectors = [];
+        let endpoints = [];
         if (TreeUtil.isService(node)) {
             variables = node.getVariables();
-            connectors = node.filterVariables((statement) => {
-                return TreeUtil.isConnectorDeclaration(statement);
+            endpoints = node.filterVariables((statement) => {
+                return TreeUtil.isEndpointTypeVariableDef(statement);
             });
         } else if (TreeUtil.isConnector(node)) {
             variables = node.getVariableDefs();
-            connectors = node.filterVariableDefs((statement) => {
-                return TreeUtil.isConnectorDeclaration(statement);
+            endpoints = node.filterVariableDefs((statement) => {
+                return TreeUtil.isEndpointTypeVariableDef(statement);
             });
         }
         // calculate the annotation height.
@@ -638,11 +656,11 @@ class SizingUtil {
             // If there are connector declarations add them to service width.
         const statements = variables;
         let connectorWidth = 0;
-        connectorHeight = connectors.length > 0
+        connectorHeight = endpoints.length > 0
             ? (this.config.connectorDeclaration.gutter.v + this.config.panel.heading.height) : 0;
         if (statements instanceof Array) {
             statements.forEach((statement) => {
-                if (TreeUtil.isConnectorDeclaration(statement)) {
+                if (TreeUtil.isEndpointTypeVariableDef(statement)) {
                     statement.viewState.bBox.w = this.config.lifeLine.width;
                         // add the connector width to body width.
                     connectorWidth += this.config.lifeLine.gutter.h + this.config.lifeLine.width;
@@ -793,6 +811,101 @@ class SizingUtil {
      */
     sizeXmlnsNode(node) {
         this.sizeStatement(node.getSource(), node.viewState);
+    }
+
+    /**
+     * Calculate dimention of Transformer nodes.
+     *
+     * @param {object} node
+     * 
+     */
+    sizeTransformerNode(node) {
+        const viewState = node.viewState;
+        const cmp = viewState.components;
+
+        /* Define the sub components */
+        cmp.heading = new SimpleBBox();
+        cmp.argParameters = new SimpleBBox();
+        cmp.sourceParameters = new SimpleBBox();
+        cmp.returnParameters = new SimpleBBox();
+        cmp.argParameterHolder = {};
+        cmp.returnParameterHolder = {};
+
+        cmp.heading.h = this.config.panel.heading.height;
+
+        viewState.bBox.h = cmp.heading.h;
+
+        const textWidth = this.getTextWidth(node.getSignature());
+        viewState.titleWidth = textWidth.w;
+
+        const returnParams = _.join(node.getReturnParameters().map(ret => ret.getSource()), ',');
+        const typeText = `< ${node.getSourceParam().getSource()}, ${returnParams} >`;
+        const typeTextDetails = this.getTextWidth(typeText, 0);
+        viewState.typeText = typeTextDetails.text;
+        viewState.typeTextWidth = typeTextDetails.w;
+
+        const params = _.join(node.getParameters().map(ret => ret.getSource()), ',');
+        const paramText = `( ${params} )`;
+        const paramTextDetails = this.getTextWidth(paramText, 0);
+        viewState.paramText = paramTextDetails.text;
+        viewState.paramTextWidth = paramTextDetails.w;
+
+        const nameText = node.getName().getValue();
+        let nameTextDetails;
+
+        if (nameText) {
+            nameTextDetails = this.getTextWidth(nameText, 0);
+            viewState.nameText = nameTextDetails.text;
+        } else {
+            viewState.defaultNameText = '+ Add name'
+            viewState.nameText = '';
+            nameTextDetails = this.getTextWidth(viewState.defaultNameText, 0);
+        }
+        viewState.nameTextWidth = nameTextDetails.w;
+
+        viewState.titleOffset = this.config.panel.heading.title.margin.right
+            + this.config.panelHeading.iconSize.width;
+
+        cmp.parametersPrefixContainer = {};
+        cmp.parametersPrefixContainer.w = this.getTextWidth('Parameters: ').w;
+
+        // Creating components for argument parameters
+        if (node.getParameters()) {
+            // Creating component for opening bracket of the parameters view.
+            cmp.argParameterHolder.openingParameter = {};
+            cmp.argParameterHolder.openingParameter.w = this.getTextWidth('(', 0).w;
+
+            // Creating component for closing bracket of the parameters view.
+            cmp.argParameterHolder.closingParameter = {};
+            cmp.argParameterHolder.closingParameter.w = this.getTextWidth(')', 0).w;
+
+            cmp.heading.w += cmp.argParameterHolder.openingParameter.w
+                + cmp.argParameterHolder.closingParameter.w
+                + this.getParameterTypeWidth(node.getParameters()) + 120;
+        }
+
+        // Creating components for return types
+        if (node.getReturnParameters()) {
+            // Creating component for the Return type text.
+            cmp.returnParameterHolder.returnTypesIcon = {};
+            cmp.returnParameterHolder.returnTypesIcon.w = this.getTextWidth('returns', 0).w;
+
+            // Creating component for opening bracket of the return types view.
+            cmp.returnParameterHolder.openingReturnType = {};
+            cmp.returnParameterHolder.openingReturnType.w = this.getTextWidth('(', 0).w;
+
+            // Creating component for closing bracket of the return types view.
+            cmp.returnParameterHolder.closingReturnType = {};
+            cmp.returnParameterHolder.closingReturnType.w = this.getTextWidth(')', 0).w;
+
+            cmp.heading.w += cmp.returnParameterHolder.returnTypesIcon.w
+                + cmp.returnParameterHolder.openingReturnType.w
+                + cmp.returnParameterHolder.closingReturnType.w
+                + this.getParameterTypeWidth(node.getReturnParameters()) + 120;
+        }
+        // here we add the remove and hide button width to the header.
+        cmp.heading.w += viewState.titleWidth + 100 + (this.config.panel.buttonWidth * 2);
+        viewState.bBox.w = cmp.heading.w;
     }
 
 
@@ -1070,8 +1183,19 @@ class SizingUtil {
     sizeAssignmentNode(node) {
         const viewState = node.viewState;
         this.sizeStatement(node.getSource(), viewState);
+        this.adjustToLambdaSize(node, viewState);
     }
 
+    /**
+     * Calculate dimention of Bind nodes.
+     *
+     * @param {object} node
+     *
+     */
+    sizeBindNode(node) {
+        const viewState = node.viewState;
+        this.sizeStatement(node.getSource(), viewState);
+    }
 
     /**
      * Calculate dimention of Block nodes.
@@ -1280,6 +1404,7 @@ class SizingUtil {
     sizeReturnNode(node) {
         const viewState = node.viewState;
         this.sizeStatement(node.getSource(), viewState);
+        this.adjustToLambdaSize(node, viewState);
     }
 
 
@@ -1401,6 +1526,7 @@ class SizingUtil {
     sizeVariableDefNode(node) {
         const viewState = node.viewState;
         this.sizeStatement(node.getSource(), viewState);
+        this.adjustToLambdaSize(node, viewState);
     }
 
 
@@ -1493,6 +1619,15 @@ class SizingUtil {
         // Not implemented.
     }
 
+    /**
+     * Calculate dimention of EndpointType nodes.
+     *
+     * @param {object} node
+     * 
+     */
+    sizeEndpointTypeNode(node) {
+        // Not implemented.
+    }
 
     /**
      * Calculate dimention of ValueType nodes.

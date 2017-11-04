@@ -73,6 +73,8 @@ class PropertyWindow extends React.Component {
     handleDismiss() {
         this.handleStructs(this.state.properties); // update the properties in the specific page
         this.handleStructs(this.supportedKeys); // update all the properties
+        this.handleConnectors(this.state.properties); // update the properties in the specific page
+        this.handleConnectors(this.supportedKeys); // update all the properties
         if (!this.state.error) {
             this.props.addedValues(this.supportedKeys);
             this.props.model.viewState.showOverlayContainer = false;
@@ -98,6 +100,7 @@ class PropertyWindow extends React.Component {
         this.props.model.viewState.overlayContainer = {};
         this.context.editor.update();
     }
+
     /**
      * Toggles the struct properties
      */
@@ -105,6 +108,19 @@ class PropertyWindow extends React.Component {
         this.previousItems.push(this.state.properties);
         this.breadCrumbs.push(identifier);
         this.handleStructs(this.supportedKeys);
+        this.setState({
+            properties: fields,
+        });
+    }
+
+
+    /**
+     * Toggles the connector param properties
+     */
+    toggleConnectorParamProperties(identifier, fields) {
+        this.previousItems.push(this.state.properties);
+        this.breadCrumbs.push(identifier);
+        this.forceUpdate();
         this.setState({
             properties: fields,
         });
@@ -162,7 +178,7 @@ class PropertyWindow extends React.Component {
                         id={key.identifier}
                         name={key.identifier}
                         type='text'
-                        placeholder={key.identifier}
+                        placeholder={_.startCase(key.identifier)}
                         value={value}
                         onChange={event => this.onChange(event, key)}
                     />
@@ -189,8 +205,8 @@ class PropertyWindow extends React.Component {
                         id={key.identifier}
                         name={key.identifier}
                         type='number'
-                        placeholder={key.identifier}
-                        value={key.value}
+                        placeholder={_.startCase(key.identifier)}
+                        value={Math.abs(key.value)}
                         onChange={event => this.onChange(event, key)}
                     />
                 </div>
@@ -288,6 +304,30 @@ class PropertyWindow extends React.Component {
             error: false,
         });
     }
+
+    /**
+     * Handle the connector property
+     * @param properties
+     */
+    handleConnectors(properties) {
+        properties.forEach((key) => {
+            let connectorParams = '(';
+            if (key.isConnector) {
+                key.connectorParams.forEach((param, index) => {
+                    const value = param.bType === 'string' ? this.addQuotationForStringValues(param.value)
+                        : param.value;
+                    if (index !== key.connectorParams.length - 1) {
+                        connectorParams += `${value},`;
+                    } else {
+                        connectorParams += `${value}`;
+                    }
+                });
+                connectorParams += ')';
+                key.value = key.value.replace(/ *\([^)]*\) */g, connectorParams);
+            }
+        });
+    }
+
     /**
      * Update values of structs when navigating across the prop window
      * @param properties
@@ -369,6 +409,42 @@ class PropertyWindow extends React.Component {
         });
     }
 
+    // TODO: Add the icon to the button
+    renderConnectorProps(key) {
+        return (<div className="propWindowStruct">
+            <div id='optionGroup' key={key.identifier} className="form-group">
+                <label
+                    htmlFor={key.identifier}
+                    className='col-sm-4 property-dialog-label'
+                >
+                    {_.startCase(key.identifier)}</label>
+                <div className='col-sm-7'>
+                    <div className="input-group">
+                        <input
+                            className='property-dialog-form-control'
+                            id={key.identifier}
+                            name={key.identifier}
+                            type='text'
+                            placeholder='Defined option object or a method'
+                            value={key.value}
+                            onChange={event => this.onChange(event, key)}
+                        />
+                        <span className="input-group-btn">
+                            <input
+                                id='viewOptionParams'
+                                type='button'
+                                value="&#xe609;"
+                                onClick={() => {
+                                    this.toggleConnectorParamProperties(key.identifier, key.connectorParams);
+                                }}
+                            />
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>);
+    }
+
     /**
      * Renders structs
      * @param key
@@ -399,7 +475,7 @@ class PropertyWindow extends React.Component {
                                     className="fw fw-error errorIcon"
                                     onClick={() => { this.clearStructFieldValues(key, key.fields); }}
                                 />
-                                <span className="errorMsg"> Configure properties for the map </span> </div>
+                                <span className="errorMsg"> Configure properties </span> </div>
                         }
                         <input
                             className={['property-dialog-form-control',
@@ -451,7 +527,7 @@ class PropertyWindow extends React.Component {
                     onTagsAdded={event =>
                         this.onTagsAdded(event, key)}
                     removeTagsAdded={this.removeTagsAdded}
-                    placeholder={`${key.identifier} (↵ or comma-separated)`}
+                    placeholder={`${_.startCase(key.identifier)} (↵ or comma-separated)`}
                     ref={(node) => { this.node = node; }}
                 />
             </div>
@@ -576,6 +652,8 @@ class PropertyWindow extends React.Component {
                                         return this.renderTextInputs(key);
                                     } else if (key.bType === 'struct') {
                                         return this.renderStructs(key);
+                                    } else if (key.isConnector) {
+                                        return this.renderConnectorProps(key);
                                     } else { // If not any of the types render a simple text box
                                         return this.renderTextInputs(key);
                                     }
@@ -594,7 +672,7 @@ class PropertyWindow extends React.Component {
                         }
                         <button
                             type="button"
-                            className="btn btn-primary propWindowCancelBtn"
+                            className="btn propWindowCancelBtn"
                             onClick={this.closePropertyWindow}
                         >Cancel</button>
                         {this.props.propertiesExist &&

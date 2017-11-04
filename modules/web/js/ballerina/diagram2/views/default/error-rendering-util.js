@@ -70,8 +70,8 @@ class ErrorRenderingUtil {
             !TreeUtil.isResource(node.parent.parent) && !TreeUtil.isAction(node.parent.parent) &&
             (node.parent.parent.parent.initFunction)) {
             // Do not show errors in the InitFunction of the service
-        } else if (node.parent.parent && TreeUtil.isTransform(node.parent.parent)) {
-            // TODO for transform statements
+        } else if (node.parent.parent && TreeUtil.isTransformer(node.parent.parent)) {
+            // Do not show errors for each statement of the transformer instead show all the errors together
         } else if (node.parent.kind === 'Service' || node.parent.kind === 'Connector') {
             const viewState = node.viewState;
             // Check for errors in the model
@@ -246,7 +246,9 @@ class ErrorRenderingUtil {
             globals.forEach((globalDec) => {
                 const errors = this.getSemanticErrorsOfNode(globalDec);
                 if (errors.length > 0) {
-                    errorListForGlobals.push(errors[0]);
+                    errors.forEach((error) => {
+                        errorListForGlobals.push(error);
+                    });
                 }
             });
             if (errorListForGlobals.length > 0) {
@@ -275,7 +277,9 @@ class ErrorRenderingUtil {
             imports.forEach((importDec) => {
                 const errors = this.getSemanticErrorsOfNode(importDec);
                 if (errors.length > 0) {
-                    errorListForImports.push(errors[0]);
+                    errors.forEach((error) => {
+                        errorListForImports.push(error);
+                    });
                 }
             });
             if (errorListForImports.length > 0) {
@@ -575,6 +579,24 @@ class ErrorRenderingUtil {
         this.placeErrorForStatementComponents(node);
     }
 
+    /**
+     * Calculate error position of Transformer nodes.
+     *
+     * @param {object} node
+     *
+     */
+    placeErrorForTransformerNode(node) {
+        const errors = this.getSemanticErrorsOfNode(node);
+        const viewState = node.viewState;
+        // Check for errors in the model
+        if (errors.length > 0) {
+            const errorBbox = new SimpleBBox();
+            errorBbox.x = viewState.bBox.x;
+            errorBbox.y = viewState.bBox.y;
+            this.setErrorToNode(node, errors, errorBbox, 'top');
+        }
+    }
+
 
     /**
      * Calculate error position of AnnotationAttachmentAttribute nodes.
@@ -862,6 +884,19 @@ class ErrorRenderingUtil {
     }
 
 
+
+    /**
+     * Calculate error position of Bind nodes.
+     *
+     * @param {object} node
+     *
+     */
+    placeErrorForBindNode(node) {
+        // Not implemented.
+    }
+
+
+
     /**
      * Calculate error position of Block nodes.
      *
@@ -1076,26 +1111,6 @@ class ErrorRenderingUtil {
         }
     }
 
-
-    /**
-     * Calculate error position of Transform nodes.
-     *
-     * @param {object} node
-     *
-     */
-    placeErrorForTransformNode(node) {
-        const errors = this.getSemanticErrorsOfNode(node);
-        const viewState = node.viewState;
-        // Check for errors in the model
-        if (errors.length > 0) {
-            const errorBbox = new SimpleBBox();
-            errorBbox.x = viewState.bBox.x;
-            errorBbox.y = viewState.bBox.y + 25;
-            this.setErrorToNode(node, errors, errorBbox, 'top');
-        }
-    }
-
-
     /**
      * Calculate error position of Try nodes.
      *
@@ -1233,6 +1248,19 @@ class ErrorRenderingUtil {
     placeErrorForUserDefinedTypeNode(node) {
         // Not implemented.
     }
+
+
+
+    /**
+     * Calculate error position of EndpointType nodes.
+     *
+     * @param {object} node
+     *
+     */
+    placeErrorForEndpointTypeNode(node) {
+        // Not implemented.
+    }
+
 
 
     /**

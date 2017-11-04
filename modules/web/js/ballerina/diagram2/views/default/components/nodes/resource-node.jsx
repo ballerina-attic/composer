@@ -29,7 +29,7 @@ import ImageUtil from './../../../../image-util';
 import './service-definition.css';
 import AddResourceDefinition from './add-resource-definition';
 import TreeUtil from '../../../../../model/tree-util';
-import ConnectorDeclarationDecorator from '../decorators/connector-declaration-decorator';
+import EndpointDecorator from '../decorators/endpoint-decorator';
 
 class ResourceNode extends React.Component {
 
@@ -43,7 +43,7 @@ class ResourceNode extends React.Component {
     }
 
     canDropToPanelBody(dragSource) {
-        return TreeUtil.isConnectorDeclaration(dragSource)
+        return TreeUtil.isEndpointTypeVariableDef(dragSource)
             || TreeUtil.isWorker(dragSource);
     }
 
@@ -82,15 +82,17 @@ class ResourceNode extends React.Component {
         };
         const argumentParameters = this.props.model.getParameters();
 
-        const connectors = this.props.model.body.statements
-            .filter((element) => { return TreeUtil.isConnectorDeclaration(element); }).map((statement) => {
-                return (
-                    <ConnectorDeclarationDecorator
-                        model={statement}
-                        title={statement.variable.name.value}
-                        bBox={statement.viewState.bBox}
-                    />);
-            });        
+        const connectors = this.props.model.body.statements.filter((element) => {
+            const typeNode = _.get(element, 'variable.typeNode');
+            return typeNode && TreeUtil.isEndpointType(typeNode);
+        }).map((statement) => {
+            return (
+                <EndpointDecorator
+                    model={statement}
+                    title={statement.variable.name.value}
+                    bBox={statement.viewState.bBox}
+                />);
+        });
 
         const blockNode = getComponentForNodeArray(this.props.model.getBody(), this.context.mode);
         const workers = getComponentForNodeArray(this.props.model.workers, this.context.mode);
@@ -107,9 +109,17 @@ class ResourceNode extends React.Component {
         tLinkBox.y += annotationBodyHeight;
         const thisNodeIndex = parentNode.getIndexOfResources(this.props.model);
         const resourceSiblings = parentNode.getResources();
-        let showAddResourceBtn = true;
-        if (parentNode.getProtocolPackageIdentifier().value === 'ws' && resourceSiblings.length >= 6) {
-            showAddResourceBtn = false;
+        const protocolPkgIdentifier = parentNode.getProtocolPackageIdentifier().value;
+        // For Web sockets
+        let showAddResourceBtnForWS = true;
+        if (protocolPkgIdentifier === 'ws' && resourceSiblings.length >= 6) {
+            showAddResourceBtnForWS = false;
+        }
+        // For JMS, FTP and FS allow only one resource
+        let showAddResourceForOneResource = true;
+        if ((protocolPkgIdentifier === 'jms' || protocolPkgIdentifier === 'ftp' || protocolPkgIdentifier === 'fs')
+            && resourceSiblings.length >= 1) {
+            showAddResourceForOneResource = false;
         }
         return (
             <g>
@@ -122,7 +132,7 @@ class ResourceNode extends React.Component {
                     dropTarget={this.props.model}
                     canDrop={this.canDropToPanelBody}
                     argumentParams={argumentParameters}
-                    packageIdentifier={parentNode.getProtocolPackageIdentifier().value}
+                    packageIdentifier={protocolPkgIdentifier}
                 >
                     <g>
                         { this.props.model.getWorkers().length === 0 &&
@@ -162,8 +172,8 @@ class ResourceNode extends React.Component {
                         {connectors}
                     </g>
                 </PanelDecorator>
-                {(thisNodeIndex !== parentNode.getResources().length - 1 && showAddResourceBtn &&
-                !this.props.model.viewState.collapsed) &&
+                {(thisNodeIndex !== parentNode.getResources().length - 1 && showAddResourceBtnForWS &&
+                showAddResourceForOneResource && !this.props.model.viewState.collapsed) &&
                 <g
                     className={this.state.style}
                     onMouseOver={this.onMouseOver}

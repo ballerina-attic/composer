@@ -74,6 +74,7 @@ export function parseFile(file) {
         content: file.content,
         includeTree: true,
         includePackageInfo: true,
+        includeProgramDir: true,
     };
     const endpoint = getServiceEndpoint('parser');
     const headers = {
@@ -333,9 +334,7 @@ export function parseFragment(fragment) {
 export function parseFragmentAsync(fragment) {
     const cachedFragment = getFragmentFromCache(fragment);
     if (cachedFragment) {
-        return new Promise((resolve) => {
-            resolve(cachedFragment);
-        });
+        return Promise.resolve(cachedFragment);
     }
     const endpoint = getServiceEndpoint('fragmentParser');
     return new Promise((resolve, reject) => {
@@ -367,13 +366,27 @@ export function invokeTryIt(tryItPayload, protocol) {
     };
 
     return new Promise((resolve, reject) => {
-        axios.post(endpoint, tryItPayload, { headers })
+        axios.post(endpoint, tryItPayload, { headers, timeout: 10000 })
             .then((response) => {
                 resolve(response.data);
             }).catch(error => reject(error));
     });
 }
 
+/**
+ * Get the url used for try-it executions.
+ * @export
+ * @returns {Object} The object.
+ */
+export function getTryItUrl() {
+    const endpoint = `${getServiceEndpoint('tryItService')}/url`;
+    return new Promise((resolve, reject) => {
+        axios.get(endpoint, {})
+            .then((response) => {
+                resolve(response.data.url);
+            }).catch(error => reject(error));
+    });
+}
 
 /**
  * Gets user home from backend

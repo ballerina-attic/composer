@@ -20,30 +20,30 @@ import DefaultNodeFactory from './../../model/default-node-factory';
 
 const tools = [
     {
-        id: 'service',
-        name: 'HTTP',
-        icon: 'http',
-        title: 'HTTP Service',
-        nodeFactoryMethod: DefaultNodeFactory.createHTTPServiceDef,
-        description: 'Http container of resources, each of which defines the logic for'
-        + ' handling one type of request',
-    },
-    {
-        id: 'service',
-        name: 'WebSocket',
-        icon: 'web-service',
-        title: 'WS Service',
-        nodeFactoryMethod: DefaultNodeFactory.createWSServiceDef,
-        description: 'Web Socket container of resources,'
-        + ' each of which defines the logic for handling one type of request',
-    },
-    {
         id: 'function',
         name: 'Main Function',
         icon: 'main-function',
         title: 'Main Function',
         nodeFactoryMethod: DefaultNodeFactory.createMainFunction,
         description: 'Potential entry point for command line execution',
+    },
+    {
+        id: 'http-service',
+        name: 'HTTP Service',
+        icon: 'http',
+        title: 'HTTP Service',
+        nodeFactoryMethod: DefaultNodeFactory.createHTTPServiceDef,
+        description: 'Http Service is a container of resources, each of which defines the logic for'
+        + ' handling one type of request',
+    },
+    {
+        id: 'ws-service',
+        name: 'WebSocket',
+        icon: 'web-service',
+        title: 'WebSocket Service',
+        nodeFactoryMethod: DefaultNodeFactory.createWSServiceDef,
+        description: 'Web Socket Service is a container of resources,'
+        + ' each of which defines the logic for handling one type of request',
     },
     //////////////////////////////////////////////////////////////////////////////////////////
     {
@@ -86,6 +86,14 @@ const tools = [
         description: 'Programmable actor which is represented on a sequence diagram'
         + ' as a vertical lifeline of logic to be executed.',
     },
+    {
+        id: 'transformer',
+        name: 'Transformer',
+        icon: 'transformer',
+        title: 'Transformer',
+        nodeFactoryMethod: DefaultNodeFactory.createTransformer,
+        description: 'Custom type conversion for transforming data',
+    },
     //////////////////////////////////////////////////////////////////////////////////////////
     {
         id: 'main_tool_seperator',
@@ -110,6 +118,15 @@ const tools = [
         nodeFactoryMethod: DefaultNodeFactory.createAssignmentStmt,
         description: 'Provide a way to assign a value to a variable accessor',
     },
+    // Need a separate icon for the bind
+    {
+        id: 'Bind',
+        name: 'Bind',
+        icon: 'assign',
+        title: 'Bind',
+        nodeFactoryMethod: DefaultNodeFactory.createBindStmt,
+        description: 'Provide a way to bind a connector to an endpoint',
+    },
     {
         id: 'if',
         name: 'If',
@@ -133,14 +150,6 @@ const tools = [
         title: 'While',
         nodeFactoryMethod: DefaultNodeFactory.createWhile,
         description: 'Provide a way to execute a series of statements as long as a boolean expression is met',
-    },
-    {
-        id: 'Transform',
-        name: 'Transform',
-        icon: 'type-converter',
-        title: 'Transform',
-        nodeFactoryMethod: DefaultNodeFactory.createTransform,
-        description: 'Transform any chosen variables in the enclosing scope',
     },
     {
         id: 'break',

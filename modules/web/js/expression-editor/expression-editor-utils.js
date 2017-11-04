@@ -23,6 +23,7 @@ import '../ballerina/utils/ace-mode';
 import DesignViewCompleterFactory from './../ballerina/utils/design-view-completer-factory';
 import { getLangServerClientInstance } from './../langserver/lang-server-client-controller';
 import TreeUtil from './../ballerina/model/tree-util';
+import splitVariableDefByLambda from './../ballerina/model/lambda-util';
 
 const ace = global.ace;
 const Range = ace.acequire('ace/range');
@@ -45,12 +46,30 @@ class ExpressionEditor {
         let didSemicolon = false;
         this.destroy();
         this.props = props;
-        this.file = props.model ? props.model.getFile() : null;
+        const model = props.model;
+        this.file = model ? model.getFile() : null;
+        const linebreak = /(?:\r\n|\r|\n)/g;
         this.ballerinaFileEditor = ballerinaFileEditor;
 
         // Get the expression for the statement or expression.
-        const expression = props.getterMethod instanceof Function ? props.getterMethod.call() :
-            (_.isNil(props.model.getSource()) ? '' : props.model.getSource(true).replace(/(?:\r\n|\r|\n)/g, ' '));
+        let expression;
+        if (props.getterMethod instanceof Function) {
+            expression = props.getterMethod.call();
+        } else {
+            const { sourceFragments, lambdas } = splitVariableDefByLambda(model);
+            if (lambdas.length) {
+                expression = sourceFragments.map(s => s.replace(linebreak, ' ')).join('\u0192');
+            }
+
+            if (!expression) {
+                const source = model.getSource(true);
+                expression = (_.isNil(source) ? '' : source.replace(linebreak, ' '));
+            }
+        }
+
+        expression = expression.endsWith(';')
+            ? expression.substr(0, expression.length - 1)
+            : expression;
 
         // workaround to handle http://stackoverflow.com/questions/21926083/failed-to-execute-removechild-on-node
         this.removed = false;
@@ -150,7 +169,9 @@ class ExpressionEditor {
 
         // when enter is pressed we will commit the change.
         this._editor.commands.bindKey('Enter|Shift-Enter', (e) => {
-            const text = this._editor.getSession().getValue();
+            const text = this._editor.getSession().getValue()
+                ? this._editor.getSession().getValue() + ';'
+                : '';
 
             // If setter method is available use it, else use setSource.
             if (props.setterMethod instanceof Function) {
@@ -169,21 +190,38 @@ class ExpressionEditor {
 
         // When the user is typing text we will resize the editor.
         this._editor.on('change', (event) => {
-            const text = this._editor.getSession().getValue();
+            const text = this._editor.getSession().getValue()
+                ? this._editor.getSession().getValue() + ';'
+                : '';
             $(this.expressionEditor).css('width', this.getNecessaryWidth(text));
             this._editor.resize();
         });
 
         this._editor.on('blur', (event) => {
+            const node = props.model;
+
             try {
                 if (!didSemicolon && !didEnter) {
-                    const text = this._editor.getSession().getValue();
+                    let text = this._editor.getSession().getValue()
+                        ? this._editor.getSession().getValue() + (TreeUtil.isEndpointTypeVariableDef(node) ? '' : ';')
+                        : '';
 
                     // If setter method is available use it, else use setSource.
                     if (props.setterMethod instanceof Function) {
-                        props.setterMethod.call(props.model, text);
+                        props.setterMethod.call(node, text);
                     } else {
-                        TreeUtil.setSource(props.model, text, this.ballerinaFileEditor);
+                        const kind = node.kind;
+                        if (kind === 'VariableDef' || kind === 'Return' || kind === 'Assignment') {
+                            const { lambdas } = splitVariableDefByLambda(model);
+                            if (lambdas.length) {
+                                let i = lambdas.length;
+                                text = text.replace(/\u0192/g, () => {
+                                    const lambda = lambdas[--i];
+                                    return lambda ? lambda.getSource() : '';
+                                });
+                            }
+                        }
+                        TreeUtil.setSource(node, text, this.ballerinaFileEditor);
                     }
 
                     if (_.isFunction(callback)) {
@@ -193,7 +231,7 @@ class ExpressionEditor {
             } catch (e) {
                 log.error('Error while updating the model from the input.', e);
             } finally {
-                props.model.trigger('focus-out');
+                node.trigger('focus-out');
                 if (!this.removed) {
                     this.destroy();
                 }
@@ -201,16 +239,16 @@ class ExpressionEditor {
         });
 
         // following snipet is to handle adding ";" at the end of statement.
-        this.end_check = /^([^"]|"[^"]*")*?(;)/;
+        this.end_check = /^([^{|"]|[{|"][^[}|"]*[}|"])*?(;)/;
         this._editor.commands.addCommand({
             name: 'semicolon',
             exec: (e) => {
                 // get the value and append ';' to get the end result of the key action
                 const curser = this._editor.selection.getCursor().column;
-                const text = this._editor.getSession().getValue();
+                let text = this._editor.getSession().getValue();
                 const textWithSemicolon = [text.slice(0, curser), ';', text.slice(curser)].join('');
                 if (this.end_check.exec(textWithSemicolon)) {
-
+                    text = text + ';';
                     // If setter method is available use it, else use setSource.
                     if (props.setterMethod instanceof Function) {
                         props.setterMethod.call(props.model, text);

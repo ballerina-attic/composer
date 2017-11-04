@@ -164,7 +164,7 @@ class TopLevelNodes extends React.Component {
         if (!value) {
             return;
         }
-        value = `${value};\n`;
+        value = `${value}\n`;
         const fragment = FragmentUtils.createTopLevelNodeFragment(value);
         const parsedJson = FragmentUtils.parseFragment(fragment);
         const globalNode = TreeBuilder.build(parsedJson);
@@ -283,18 +283,6 @@ class TopLevelNodes extends React.Component {
         }
         const packageDefExpanded = model.viewState.packageDefExpanded
             || (this.packageDefValue && (this.packageDefValue !== ''));
-
-        if (importsExpanded) {
-            const {
-                topBarHeight,
-                importDeclarationHeight,
-                importInputHeight,
-            } = importsExpandedViewState;
-
-            expandedGlobalsBbox.y += (imports.length * importDeclarationHeight) + topBarHeight +
-                importInputHeight + yGutterSize;
-            globalsBbox.x -= (importDecViewState.badgeWidth + xGutterSize);
-        }
         return (
             <g>
                 <g className="package-definition-head">

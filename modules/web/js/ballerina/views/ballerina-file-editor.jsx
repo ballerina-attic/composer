@@ -111,9 +111,9 @@ class BallerinaFileEditor extends React.Component {
                         this.setState(state);
                     })
                     .catch(error => log.error(error));
-            } else if(originEvtType === CHANGE_EVT_TYPES.SOURCE_MODIFIED) {
+            } else if (originEvtType === CHANGE_EVT_TYPES.SOURCE_MODIFIED) {
                 updateUponSourceChange();
-            } else if(originEvtType === UNDO_EVENT || originEvtType === REDO_EVENT) {
+            } else if (originEvtType === UNDO_EVENT || originEvtType === REDO_EVENT) {
                 updateUponUndoRedo();
             } else {
                 // upon code format
@@ -227,7 +227,7 @@ class BallerinaFileEditor extends React.Component {
             && node.getVariable().getInitialExpression()
             && TreeUtils.isInvocation(node.getVariable().getInitialExpression())) {
             fullPackageName = node.getVariable().getInitialExpression().getFullPackageName();
-        } else if (TreeUtils.isConnectorDeclaration(node)) {
+        } else if (TreeUtils.isEndpointTypeVariableDef(node)) {
             fullPackageName = node.getVariable().getInitialExpression().getFullPackageName();
         } else if (TreeUtils.isService(node)) {
             fullPackageName = node.getFullPackageName();
@@ -235,7 +235,7 @@ class BallerinaFileEditor extends React.Component {
             return;
         }
 
-        if (fullPackageName === 'Current Package' || fullPackageName === '' 
+        if (fullPackageName === 'Current Package' || fullPackageName === ''
             || fullPackageName === 'ballerina.builtin') {
             return;
         }
@@ -255,7 +255,7 @@ class BallerinaFileEditor extends React.Component {
                 if (TreeUtils.isResource(immediateParent) || TreeUtils.isFunction(immediateParent)
                     || TreeUtils.isAction(immediateParent)) {
                     const connectors = immediateParent.getBody().filterStatements((statement) => {
-                        return TreeUtils.isConnectorDeclaration(statement);
+                        return TreeUtils.isEndpointTypeVariableDef(statement);
                     });
                     connectors.forEach((connector) => {
                         if (connector.getVariable().getInitialExpression().getConnectorType().getPackageAlias().value
@@ -267,7 +267,7 @@ class BallerinaFileEditor extends React.Component {
                     });
                 } else if (TreeUtils.isService(immediateParent)) {
                     const connectors = immediateParent.filterVariables((statement) => {
-                        return TreeUtils.isConnectorDeclaration(statement);
+                        return TreeUtils.isEndpointTypeVariableDef(statement);
                     });
                     connectors.forEach((connector) => {
                         if (connector.getVariable().getInitialExpression().getConnectorType().getPackageAlias().value
@@ -279,7 +279,7 @@ class BallerinaFileEditor extends React.Component {
                     });
                 } else if (TreeUtils.isConnector(immediateParent)) {
                     const connectors = immediateParent.filterVariableDefs((statement) => {
-                        return TreeUtils.isConnectorDeclaration(statement);
+                        return TreeUtils.isEndpointTypeVariableDef(statement);
                     });
                     connectors.forEach((connector) => {
                         if (connector.getVariable().getInitialExpression().getConnectorType().getPackageAlias().value
@@ -322,9 +322,11 @@ class BallerinaFileEditor extends React.Component {
                     paramString = connectorParams.join(', ');
                 }
                 const pkgStr = packageName !== 'Current Package' ? `${packageName}:` : '';
-                const connectorInit = `${pkgStr}${connector.getName()} endpoint1
-                = create ${pkgStr}${connector.getName()}(${paramString});`;
-                const fragment = FragmentUtils.createStatementFragment(connectorInit);
+
+                const connectorInit = `create ${pkgStr}${connector.getName()}(${paramString});`;
+                const constraint = `<${pkgStr}${connector.getName()}>`;
+                const endpointSource = `endpoint ${constraint} endpoint1 {${connectorInit}}`;
+                const fragment = FragmentUtils.createStatementFragment(endpointSource);
                 const parsedJson = FragmentUtils.parseFragment(fragment);
                 const connectorDeclaration = TreeBuilder.build(parsedJson);
                 connectorDeclaration.getVariable().getInitialExpression().setFullPackageName(fullPackageName);
@@ -527,6 +529,9 @@ class BallerinaFileEditor extends React.Component {
         // final state to be passed into resolve
         const newState = {
             parsePending: false,
+            parseFailed: false,
+            isASTInvalid: false,
+            syntaxErrors: [],
         };
         // try to parse the file
         return parseFile(file)
@@ -560,11 +565,15 @@ class BallerinaFileEditor extends React.Component {
                         newState.activeView = SOURCE_VIEW;
                     }
                 }
+                if (newState.parseFailed && !_.isEmpty(runtimeFailures)) {
+                    this.context.alert.showError('Unexpected error occurred while parsing.'
+                        + runtimeFailures[0].text);
+                }
                 // if no error found and no model too
                 if ((_.isEmpty(syntaxErrors) && _.isEmpty(runtimeFailures))
-                        && (_.isNil(data.model) || _.isNil(data.model.kind))) {
+                    && (_.isNil(data.model) || _.isNil(data.model.kind))) {
                     this.context.alert.showError('Unexpected error occurred while parsing.');
-                } else {
+                } else if (!newState.parseFailed) {
                     const ast = TreeBuilder.build(data.model);
                     ast.setFile(file);
                     this.markBreakpointsOnAST(ast);
@@ -578,8 +587,6 @@ class BallerinaFileEditor extends React.Component {
                     });
 
                     newState.lastRenderedTimestamp = file.lastUpdated;
-                    newState.parseFailed = false;
-                    newState.isASTInvalid = false;
                     newState.model = ast;
                 }
                 return BallerinaEnvironment.initialize()
