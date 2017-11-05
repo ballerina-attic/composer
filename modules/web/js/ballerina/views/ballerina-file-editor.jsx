@@ -553,10 +553,12 @@ class BallerinaFileEditor extends React.Component {
                     return category === 'SEMANTIC';
                 });
                 // if syntax errors are found or model is not found
-                if (!_.isEmpty(syntaxErrors)
+                // TODO: here we add the  && _.isEmpty(this.semanticErrors) check as a temporary fix. we need to
+                // fix the drag drop parse update to be atomic
+                if ((!_.isEmpty(syntaxErrors)
                     || !_.isEmpty(runtimeFailures)
                     || _.isNil(data.model)
-                    || _.isNil(data.model.kind)
+                    || _.isNil(data.model.kind)) && _.isEmpty(this.semanticErrors)
                 ) {
                     newState.parseFailed = true;
                     newState.syntaxErrors = syntaxErrors;
