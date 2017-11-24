@@ -16,25 +16,6 @@
  * under the License.
  */
 
-import { PLUGIN_ID as LAYOUT_MANAGER_PLUGIN_ID } from './core/layout/constants';
-import { PLUGIN_ID as ALERT_PLUGIN_ID } from './core/alert/constants';
-import XacmlPlugin from './plugins/xacml-editor/plugin';
+export const PLUGIN_ID = 'composer.plugin.xacml.editor';
 
-export default {
-    app: {
-        plugins: [
-            XacmlPlugin,
-        ],
-    },
-    // provide plugin specific configs - if any.
-    // plugin-id will be the key
-    pluginConfigs: {
-        [ALERT_PLUGIN_ID]: {
-            container: 'alert-container',
-        },
-        [LAYOUT_MANAGER_PLUGIN_ID]: {
-            container: 'app-container',
-            dialogContainer: 'dialog-container',
-        },
-    },
-};
+export const EDITOR_ID = 'composer.editor.xacml';
