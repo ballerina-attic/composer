@@ -1291,13 +1291,18 @@
     .panel-label {
         dominant-baseline: middle;
     }
+
+    .client-line-text {
+        text-anchor: middle;
+        dominant-baseline: central;
+    }
     
     .condition-text {
         text-anchor: middle;
         dominant-baseline: central;
         width: 120px;
         max-width: 250px;
-        fill: #000000
+        fill: #000000;
     }
 
     .action-invocation-text {
@@ -1314,6 +1319,8 @@
         dominant-baseline: central;
         stroke:#ffffff;
         stroke-width: 4;
+        font-style: italic;
+        font-weight: bolder;
     }
     
     /*//////////////////////////////////////////////////*/

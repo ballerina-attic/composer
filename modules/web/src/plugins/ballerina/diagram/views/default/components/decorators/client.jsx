@@ -18,29 +18,17 @@
 
 
 import React from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
-import ExpressionEditor from 'plugins/ballerina/expression-editor/expression-editor-utils';
-import SimpleBBox from './../../../../../model/view/simple-bounding-box';
-import { lifeLine } from './../../designer-defaults';
-import * as DesignerDefaults from './../../designer-defaults';
-import TreeUtils from './../../../../../model/tree-util';
-import OverlayComponentsRenderingUtil from './../utils/overlay-component-rendering-util';
-import ActionBox from './action-box';
-import ActiveArbiter from './active-arbiter';
+import { lifeLine, clientLine } from './../../designer-defaults';
 
 class Client extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const bBox = this.props.bBox;
         const topBox = Object.assign({}, bBox);
         const bottomBox = Object.assign({}, bBox);
 
-        const header = 40;
+        const hLength = clientLine.head.length;
         bottomBox.h = lifeLine.head.height;
         topBox.h = lifeLine.head.height;
 
@@ -48,12 +36,20 @@ class Client extends React.Component {
 
         // calculate the line coordinates
         const line = {};
-        line.x1 = (header / 2) + bBox.x;
-        line.x2 = (header / 2) + bBox.x;
+        line.x1 = (hLength / 2) + bBox.x;
+        line.x2 = (hLength / 2) + bBox.x;
         line.y1 = bBox.y;
         line.y2 = bBox.y + bBox.h;
 
+
+        const topHeaderCentreX = bBox.x + (hLength / 2);
+        const topHeaderCentreY = topBox.y;
+        const bottomHeaderCentreX = topHeaderCentreX;
+        const bottomHeaderCentreY = bBox.y + bBox.h;
+
         const invokeLineY = topBox.y + topBox.h + this.context.designer.config.statement.height;
+
+        const titleTextArray = this.props.title.split(' ');
 
         return (<g
             className='client-line-group'
@@ -66,39 +62,60 @@ class Client extends React.Component {
                 className='client-life-line unhoverable'
             />
             <rect
-                x={topBox.x}
-                y={topBox.y}
-                width={header}
-                height={header}
+                x={topHeaderCentreX - (hLength / 2)}
+                y={topHeaderCentreY - (hLength / 2)}
+                width={hLength}
+                height={hLength}
                 rx='3'
                 ry='3'
                 className='client-line-header'
-                transform={`translate(${header / 2} -${header / 2}) rotate(45 ${topBox.x} ${topBox.y})`}
+                transform={`rotate(45 ${topHeaderCentreX} ${topHeaderCentreY})`}
             />
             <rect
-                x={bottomBox.x}
-                y={bottomBox.y}
-                width={header}
-                height={header}
+                x={bottomHeaderCentreX - (hLength / 2)}
+                y={bottomHeaderCentreY - (hLength / 2)}
+                width={hLength}
+                height={hLength}
                 rx='3'
                 ry='3'
                 className='client-line-header'
-                transform={`translate(${header / 2}) rotate(45 ${bottomBox.x} ${bottomBox.y})`}
+                transform={`rotate(45 ${bottomHeaderCentreX} ${bottomHeaderCentreY})`}
             />
-            <text
-                x={topBox.x + 10}
-                y={topBox.y + 10}
-
-                dominantBaseline='central'
-                className='client-line-text genericT'
-            >{this.props.title}</text>
-            <text
-                x={bottomBox.x + 10}
-                y={bottomBox.y + 30}
-
-                dominantBaseline='central'
-                className='client-line-text genericT'
-            >{this.props.title}</text>
+            {(titleTextArray.length === 1) &&
+                <g>
+                    <text
+                        x={topHeaderCentreX}
+                        y={topHeaderCentreY}
+                        className='client-line-text'
+                    >{this.props.title}</text>
+                    <text
+                        x={bottomHeaderCentreX}
+                        y={bottomHeaderCentreY}
+                        className='client-line-text'
+                    >{this.props.title}
+                    </text>
+                </g>
+            }
+            {(titleTextArray.length > 1) &&
+                <g>
+                    <text
+                        x={topHeaderCentreX}
+                        y={topHeaderCentreY}
+                        className='client-line-text'
+                    >
+                        <tspan x={topHeaderCentreX} dy='-8' className='client-line-text'>{titleTextArray[0]}</tspan>
+                        <tspan x={topHeaderCentreX} dy='15' className='client-line-text'>{titleTextArray[1]}</tspan>
+                    </text>
+                    <text
+                        x={bottomHeaderCentreX}
+                        y={bottomHeaderCentreY}
+                        className='client-line-text'
+                    >
+                        <tspan x={bottomHeaderCentreX} dy='-8' className='client-line-text'>{titleTextArray[0]}</tspan>
+                        <tspan x={bottomHeaderCentreX} dy='15' className='client-line-text'>{titleTextArray[1]}</tspan>
+                    </text>
+                </g>
+            }
             <line
                 x1={line.x1}
                 y1={invokeLineY}
@@ -111,18 +128,23 @@ class Client extends React.Component {
                 x={line.x1 + this.context.designer.config.statement.gutter.h}
                 y={topBox.y + topBox.h + (this.context.designer.config.statement.height / 2)}
                 dominantBaseline='central'
-                className='client-line-text genericT'
             >{bBox.text}</text>
         </g>);
     }
 }
 
 Client.propTypes = {
-    editorOptions: PropTypes.shape(),
+    title: PropTypes.string,
+    bBox: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        w: PropTypes.number.isRequired,
+        h: PropTypes.number.isRequired,
+    }).isRequired,
 };
 
 Client.defaultProps = {
-    editorOptions: null,
+    title: 'Caller',
 };
 
 Client.contextTypes = {
