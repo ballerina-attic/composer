@@ -80,14 +80,36 @@ class SourceEditor extends React.Component {
         //         .catch(error => log.error(error));
         // }
 
-        // const { debugHit, sourceViewBreakpoints } = nextProps;
-        // if (this.debugPointMarker) {
-        //     this.editor.getSession().removeMarker(this.debugPointMarker);
-        // }
-        // if (debugHit > 0) {
-        //     this.debugPointMarker = this.editor.getSession().addMarker(
-        //         new Range(debugHit, 0, debugHit, 2000), 'debug-point-hit', 'line', true);
-        // }
+        const { debugHit, breakpoints } = nextProps;
+        if (this.monaco && this.editorInstance) {
+            const breakpointDecorations = [];
+            breakpoints.forEach((breakpoint) => {
+                breakpointDecorations.push({
+                    range: new this.monaco.Range(breakpoint, 1, breakpoint, 1),
+                    options: {
+                        isWholeLine: false,
+                        glyphMarginClassName: 'breakpoint',
+                    },
+                });
+            });
+            this.breakpointDecorations = this.editorInstance.deltaDecorations(this.breakpointDecorations || [],
+                breakpointDecorations);
+
+            if (debugHit) {
+                this.debugHitDecorations = this.editorInstance.deltaDecorations(this.debugHitDecorations || [], [
+                    {
+                        range: new this.monaco.Range(debugHit, 1, debugHit, 1),
+                        options: {
+                            isWholeLine: true,
+                            className: 'debug-hit',
+                        },
+                    },
+                ]);
+            } else {
+                // clear existing debug hit
+                this.debugHitDecorations = this.editorInstance.deltaDecorations(this.debugHitDecorations || [], []);
+            }
+        }
 
         if (this.props.file.id !== nextProps.file.id) {
             if (this.monaco && this.editorInstance) {
@@ -106,7 +128,6 @@ class SourceEditor extends React.Component {
             // Adding the file content changed event to the new file.
             nextProps.file.on(CONTENT_MODIFIED, this.onFileContentChanged);
         }
-        // this.editor.getSession().setBreakpoints(sourceViewBreakpoints);
     }
 
     /**
@@ -165,8 +186,8 @@ class SourceEditor extends React.Component {
         editorInstance.setModel(modelForFile);
         this.props.commandProxy.on(WORKSPACE_EVENTS.FILE_CLOSED, this.onWorkspaceFileClose);
         const services = createMonacoServices(editorInstance);
-        const createLSConnection = this.props.ballerinaPlugin.createLangServerConnection();
-        createLSConnection
+        const getLangServerConnection = this.props.ballerinaPlugin.getLangServerConnection();
+        getLangServerConnection
             .then((connection) => {
                 // create and start the language client
                 const languageClient = new BaseLanguageClient({
@@ -191,6 +212,35 @@ class SourceEditor extends React.Component {
                 const disposable = languageClient.start();
                 connection.onClose(() => disposable.dispose());
             });
+        editorInstance.onMouseDown((e) => {
+            if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
+                if (e.target.element.classList.contains('breakpoint')) {
+                    this.props.removeBreakpoint(e.target.position.lineNumber);
+                } else {
+                    this.props.addBreakpoint(e.target.position.lineNumber);
+                }
+            }
+        });
+        editorInstance.onMouseMove((e) => {
+            // clean up previous decorations
+            this.breakpointHoverDecorations = this.editorInstance.deltaDecorations(
+                this.breakpointHoverDecorations || [], []);
+
+            if (e.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN) {
+                if (!e.target.element.classList.contains('breakpoint')) {
+                    this.breakpointHoverDecorations = this.editorInstance.deltaDecorations([], [
+                        {
+                            range: new this.monaco.Range(
+                                e.target.position.lineNumber, 1, e.target.position.lineNumber, 1),
+                            options: {
+                                isWholeLine: false,
+                                glyphMarginClassName: 'breakpoint-mouse-over',
+                            },
+                        },
+                    ]);
+                }
+            }
+        });
     }
 
     /**
@@ -285,6 +335,7 @@ class SourceEditor extends React.Component {
                         renderIndentGuides: true,
                         autoClosingBrackets: true,
                         automaticLayout: true,
+                        glyphMargin: true,
                     }}
                     width={width}
                     height={height}
@@ -305,7 +356,7 @@ SourceEditor.propTypes = {
     ballerinaPlugin: PropTypes.objectOf(Object).isRequired,
     parseFailed: PropTypes.bool.isRequired,
     onLintErrors: PropTypes.func,
-    sourceViewBreakpoints: PropTypes.arrayOf(Number).isRequired,
+    breakpoints: PropTypes.arrayOf(Number).isRequired,
     addBreakpoint: PropTypes.func.isRequired,
     removeBreakpoint: PropTypes.func.isRequired,
     debugHit: PropTypes.number,

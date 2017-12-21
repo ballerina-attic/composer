@@ -68,6 +68,7 @@ class Breakpoint extends React.Component {
 
         if (this.state.canShowRemove) {
             icon = ImageUtil.getSVGIconString('debug-point-remove');
+            console.log(icon);
         } else {
             icon = ImageUtil.getSVGIconString('debug-point');
         }
