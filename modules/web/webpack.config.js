@@ -27,9 +27,12 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const WebfontPlugin = require('webpack-webfont').default;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const extractThemes = new ExtractTextPlugin({ filename: './[name].css', allChunks: true });
 const extractCSSBundle = new ExtractTextPlugin({ filename: './bundle-[name].css', allChunks: true });
+
+const isProductionBuild = process.env.NODE_ENV === 'production';
 let exportConfig = {};
 const config = [{
     target: 'web',
@@ -44,6 +47,7 @@ const config = [{
         path: path.resolve(__dirname, 'dist'),
     },
     module: {
+        noParse: /vscode-languageserver-types/,
         rules: [{
             test: /\.js$/,
             exclude: /(node_modules|modules\/web\/lib\/scss)/,
@@ -74,7 +78,7 @@ const config = [{
                 use: [{
                     loader: 'css-loader',
                     options: {
-                        sourceMap: true,
+                        sourceMap: !isProductionBuild,
                     },
                 }],
             }),
@@ -142,6 +146,15 @@ const config = [{
             hash: new Date().getTime(),
         }),
         new WriteFilePlugin(),
+        new CopyWebpackPlugin([
+            {
+                from: 'public',
+            },
+            {
+                from: 'node_modules/monaco-editor/min/vs',
+                to: 'vs',
+            },
+        ]),
         /*
         new CircularDependencyPlugin({
             exclude: /a\.css|node_modules/,
@@ -150,8 +163,7 @@ const config = [{
         */
     ],
     devServer: {
-        publicPath: '/dist/',
-        contentBase: './public',
+        contentBase: path.join(__dirname, "dist"),
     },
     externals: {
         jsdom: 'window',
@@ -199,12 +211,12 @@ const config = [{
                     use: [{
                         loader: 'css-loader',
                         options: {
-                            sourceMap: true,
+                            sourceMap: !isProductionBuild,
                         },
                     }, {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: true,
+                            sourceMap: !isProductionBuild,
                         },
                     }],
                 }),
@@ -229,15 +241,15 @@ if (process.env.NODE_ENV === 'production') {
 
     // Add UglifyJsPlugin only when we build for production.
     // uglyfying slows down webpack build so we avoid in when in development
-    config[0].plugins.push(new UglifyJsPlugin({
-        sourceMap: true,
-        parallel: true,
-        uglifyOptions: {
-            mangle: {
-                keep_fnames: true,
-            },
-        }
-    }));
+   config[0].plugins.push(new UglifyJsPlugin({
+       sourceMap: !isProductionBuild,
+       parallel: true,
+       uglifyOptions: {
+           mangle: {
+               keep_fnames: true,
+           },
+       }
+   }));
 } else {
     config[0].plugins.push(new webpack.DefinePlugin({
         PRODUCTION: JSON.stringify(false),
