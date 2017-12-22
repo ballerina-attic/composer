@@ -90,8 +90,8 @@ class FileSaveDialog extends React.Component {
         }
         const derivedFilePath = !_.endsWith(filePath, getPathSeperator())
                 ? filePath + getPathSeperator() : filePath;
-        const derivedFileName = !_.endsWith(fileName, '.bal')
-                ? fileName + '.bal' : fileName;
+        const derivedFileName = !_.endsWith(fileName, '.xml')
+                ? fileName + '.xml' : fileName;
         const file = this.props.file;
 
         const saveFile = () => {
@@ -101,9 +101,9 @@ class FileSaveDialog extends React.Component {
                         error: '',
                         showDialog: false,
                     });
-                    file.name = _.endsWith(fileName, '.bal') ? _.split(fileName, '.bal')[0] : fileName;
+                    file.name = _.endsWith(fileName, '.xml') ? _.split(fileName, '.xml')[0] : fileName;
                     file.path = derivedFilePath;
-                    file.extension = 'bal';
+                    file.extension = 'xml';
                     file.fullPath = derivedFilePath + derivedFileName;
                     file.isPersisted = true;
                     file.isDirty = false;
@@ -184,10 +184,10 @@ class FileSaveDialog extends React.Component {
             <div>
                 <Dialog
                     show={this.state.showDialog}
-                    title="Save File"
+                    title='Save File'
                     actions={
                         <Button
-                            bsStyle="primary"
+                            bsStyle='primary'
                             onClick={this.onFileSave}
                             disabled={this.state.filePath === '' || this.state.fileName === ''}
                         >
@@ -199,7 +199,7 @@ class FileSaveDialog extends React.Component {
                     error={this.state.error}
                 >
                     <Form horizontal>
-                        <FormGroup controlId="filePath">
+                        <FormGroup controlId='filePath'>
                             <Col componentClass={ControlLabel} sm={2}>
                                 File Path
                             </Col>
@@ -219,12 +219,12 @@ class FileSaveDialog extends React.Component {
                                             filePath: evt.target.value,
                                         });
                                     }}
-                                    type="text"
-                                    placeholder="eg: /home/user/ballerina-services"
+                                    type='text'
+                                    placeholder='eg: /home/user/ballerina-services'
                                 />
                             </Col>
                         </FormGroup>
-                        <FormGroup controlId="fileName">
+                        <FormGroup controlId='fileName'>
                             <Col componentClass={ControlLabel} sm={2}>
                                 File Name
                             </Col>
@@ -244,8 +244,8 @@ class FileSaveDialog extends React.Component {
                                             fileName: evt.target.value,
                                         });
                                     }}
-                                    type="text"
-                                    placeholder="eg: routing.bal"
+                                    type='text'
+                                    placeholder='eg: routing.xml'
                                 />
                             </Col>
                         </FormGroup>

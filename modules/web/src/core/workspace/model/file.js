@@ -39,7 +39,7 @@ class File extends EventChannel {
         this._name = name || 'untitled';
         this._packageName = packageName || '.';
         this._ext = extension || 'bal';
-        this._content = content || '';
+        this._content = content || '<Policy></Policy>';
         this._isPersisted = !_.isNil(isPersisted) ? isPersisted : false;
         this._lastPersisted = lastPersisted || _.now();
         this._isDirty = !_.isNil(isDirty) ? isDirty : true;

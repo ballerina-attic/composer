@@ -34,8 +34,8 @@ export const MENUS = {
 export const LABELS = {
     HELP: 'Help',
     WELCOME: 'Welcome',
-    EXAMPLE: 'Ballerina by Example',
-    API_REFERENCE: 'Ballerina API Reference',
+    EXAMPLE: 'XACML 3.0 Specification',
+    API_REFERENCE: 'XACML Examples',
     REPORT: 'Report Issue',
     ABOUT: 'About',
 };

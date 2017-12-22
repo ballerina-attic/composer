@@ -55,7 +55,7 @@ class WelcomeTab extends React.Component {
                 if (sample.isFile) {
                     this.props.commandManager.dispatch(WORKSPACE_COMMANDS.OPEN_FILE, {
                         filePath: ballerinaHome + sampleFile,
-                        ext: 'bal',
+                        ext: 'xml',
                     });
                 } else {
                     this.props.commandManager.dispatch(WORKSPACE_COMMANDS.OPEN_FOLDER, {
@@ -64,7 +64,7 @@ class WelcomeTab extends React.Component {
                     this.props.commandManager.dispatch(LAYOUT_COMMANDS.SHOW_VIEW, { id: WORKSPACE_VIEWS.EXPLORER });
                     this.props.commandManager.dispatch(WORKSPACE_COMMANDS.OPEN_FILE, {
                         filePath: ballerinaHome + sampleFile,
-                        ext: 'bal',
+                        ext: 'xml',
                     });
                 }
             },
@@ -84,62 +84,103 @@ class WelcomeTab extends React.Component {
      */
     render() {
         const samplesView = this.renderSamples();
-        return (<div className="initial-background-container welcome-page">
-            <div className="container-fluid welcome-wrapper">
-                <div className="media media-welcome-container">
-                    <div className="media-left">
-                        <div className="logo" style={{ textAlign: 'center' }}>
-                            <a href={undefined}>
-                                <img
-                                    className="img-responsive"
-                                    src="images/BallerinaLogoWelcome.svg"
-                                    alt="logo"
-                                    onLoad={() => this.setState({ logoLoaded: true })}
-                                />
-                                {!this.state.logoLoaded &&
-                                    <i className="fw fw-loader2 fw-spin fw-lg loader-center" />
-                                }
-                            </a>
-                        </div>
+        return (<div className='initial-background-container welcome-page'>
+            <div className='container-fluid welcome-wrapper'>
+                <div className='media media-welcome-container'>
+                    <div className='media-left'>
+                        {/* <div className="logo" style={{ textAlign: 'center' }}> */}
+                        {/* <a href={undefined}> */}
+                        {/* <img */}
+                        {/* className="img-responsive" */}
+                        {/* src="images/BallerinaLogoWelcome.svg" */}
+                        {/* alt="logo" */}
+                        {/* onLoad={() => this.setState({ logoLoaded: true })} */}
+                        {/* /> */}
+                        {/* {!this.state.logoLoaded && */}
+                        {/* <i className="fw fw-loader2 fw-spin fw-lg loader-center" /> */}
+                        {/* } */}
+                        {/* </a> */}
+                        {/* </div> */}
 
                         <button
-                            id="btn-welcome-new"
-                            className="btn btn-primary"
+                            id='btn-welcome-new'
+                            className='btn btn-primary'
                             onClick={this.props.createNew}
                         >
-                            Create New
+                            Create New Policy
                         </button>
                         <button
-                            id="btn-welcome-open"
-                            className="btn btn-secondary"
+                            id='btn-welcome-open'
+                            className='btn btn-secondary'
                             onClick={this.props.openFile}
                         >
-                            Open File
+                            Open Policy
                         </button>
                         <button
-                            id="btn-welcome-open-dir"
-                            className="btn btn-secondary"
+                            id='btn-welcome-open-dir'
+                            className='btn btn-secondary'
                             onClick={this.props.openDirectory}
                         >
                             Open Directory
                         </button>
-                        <ul className="nav nav-pills">
-                            <li >
-                                <a href={this.props.userGuide} target="_blank" rel="noopener noreferrer">
-                                    <i className="fw fw-document" /> Ballerina by Example </a></li>
-                        </ul>
+
                     </div>
-                    <div className="media-body">
-                        <div className="welcome-details-wrapper ">
-                            <div className="header-title">
+                    <div className='media-body'>
+
+
+                        <div className='welcome-details-wrapper '>
+                            <div className='header-title'>
+                                Recent Policies
+                            </div>
+                            <div className='details-container'>
+                                <ul className='nav nav-pills row'>
+                                    <li >
+                                        <a href={this.props.recentPolicy} target='_blank' rel='noopener noreferrer'>
+                                            <i className='fw fw-document' /> authen_rule_based_policy </a></li>
+
+                                    <li >
+                                        <a href={this.props.recentPolicy} target='_blank' rel='noopener noreferrer'>
+                                            <i className='fw fw-document' /> authen_time_based_policy </a></li>
+
+                                    <li >
+                                        <a href={this.props.recentPolicy} target='_blank' rel='noopener noreferrer'>
+                                            <i className='fw fw-document' /> authen_scope_based_policy </a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className='welcome-details-wrapper '>
+                            <div className='header-title'>
                                 Try out our samples / templates
                             </div>
-                            <div className="details-container">
-                                <div id="inner-samples" className="row">
+                            <div className='details-container'>
+                                <div id='inner-samples' className='row'>
                                     {samplesView}
                                 </div>
                             </div>
                         </div>
+
+                        <div className='welcome-details-wrapper '>
+                            <div className='header-title'>
+                                Get Help
+                            </div>
+                            <div className='details-container'>
+                                <ul className='nav nav-pills row'>
+                                    <li >
+                                        <a href={this.props.userGuide} target='_blank' rel='noopener noreferrer'>
+                                            <i className='fw fw-document' /> XACML Tutorials </a></li>
+
+                                    <li >
+                                        <a href={this.props.userGuide} target='_blank' rel='noopener noreferrer'>
+                                            <i className='fw fw-document' /> Questions </a></li>
+
+                                    <li >
+                                        <a href={this.props.userGuide} target='_blank' rel='noopener noreferrer'>
+                                            <i className='fw fw-document' /> Support </a></li>
+                                </ul>
+                            </div>
+                        </div>
+
 
                     </div>
                 </div>
@@ -153,6 +194,7 @@ WelcomeTab.propTypes = {
     openFile: PropTypes.func.isRequired,
     openDirectory: PropTypes.func.isRequired,
     userGuide: PropTypes.string.isRequired,
+    recentPolicy: PropTypes.string.isRequired,
     samples: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         isFile: PropTypes.bool,

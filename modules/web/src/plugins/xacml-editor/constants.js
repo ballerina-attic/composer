@@ -19,3 +19,5 @@
 export const PLUGIN_ID = 'composer.plugin.xacml.editor';
 
 export const EDITOR_ID = 'composer.editor.xacml';
+
+export const VIEWS_ID = 'composer.editor.xacml';
