@@ -43,11 +43,14 @@ class XacmlEditorPlugin extends Plugin {
             [EDITORS]: [
                 {
                     id: EDITOR_ID,
-                    extension: 'xacml',
+                    extension: 'xml',
                     component: Editor,
                     customPropsProvider: () => {
                         return {
                             xacmlPlugin: this,
+                            WelcomeTabPlugin: this,
+                            HelpPlugin: this,
+
                         };
                     },
                 },

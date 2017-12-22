@@ -26,7 +26,7 @@ import { getHandlerDefinitions } from './handlers';
 import { getMenuDefinitions } from './menus';
 import WelcomeTab from './views/welcome-tab';
 import { LABELS, VIEWS as WELCOME_TAB_VIEWS, WELCOME_TAB_PLUGIN_ID, COMMANDS as COMMAND_IDS } from './constants';
-
+// import Sortable_tree from '/home/chathurangi/GIT/composer/modules/web/src/plugins/xacml-editor/src/containers/sortable_tree.js';
 /**
  * Plugin for Welcome tab.
  */

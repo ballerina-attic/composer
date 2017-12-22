@@ -22,8 +22,8 @@ import PropTypes from 'prop-types';
 import { EVENTS as EDITOR_EVENTS } from 'core/editor/constants';
 import { withUndoRedoSupport } from 'core/editor/views/utils';
 import { EVENTS as WORKSPACE_EVENTS } from 'core/workspace/constants';
-
-
+import Sortable_tree from '/home/chathurangi/GIT/composer/modules/web/src/plugins/xacml-editor/src/containers/sortable_tree.js';
+import convert from 'xml-js';
 /**
  * Editor for Xacml Files
  */
@@ -75,10 +75,16 @@ class Editor extends React.Component {
     render() {
         const { width, height } = this.props;
         return (
+        // result1 = convert.xml2json(this.props.file.content, {compact: true, spaces: ' ' }),
             <div className='xacml-editor' style={{ width, height }}>
                 <p>
                     {this.props.file.content}
+                    {/* <MainWindow/> */}
+                    {<Sortable_tree />}
                 </p>
+                {/* <p> */}
+                {/* {convert.xml2json(this.props.file.content, {compact: true, spaces: '\t' })} */}
+                {/* </p> */}
             </div>
         );
     }

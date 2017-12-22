@@ -85,15 +85,15 @@ class EditorTabTitle extends React.Component {
         const { editor, editor: { file }, onTabClose, customClass } = this.props;
         return (
             <div
-                data-placement="bottom"
-                data-toggle="tooltip"
+                data-placement='bottom'
+                data-toggle='tooltip'
                 title={file.isPersisted ? file.fullPath : file.name}
-                data-extra="tab-bar-title"
+                data-extra='tab-bar-title'
                 className={`tab-title-wrapper ${customClass}`}
             >
                 <button
-                    type="button"
-                    className="close close-tab pull-right"
+                    type='button'
+                    className='close close-tab pull-right'
                     onClick={(evt) => {
                         onTabClose(editor);
                         evt.stopPropagation();
@@ -102,9 +102,9 @@ class EditorTabTitle extends React.Component {
                 >
                     ×
                 </button>
-                <i className="fw fw-ballerina tab-icon" />
+                <i className='fw fw-xacml' />
                 {file.name}
-                {this.state.isFileDirty && <span className="dirty-indicator">*</span> }
+                {this.state.isFileDirty && <span className='dirty-indicator'>*</span> }
             </div>
         );
     }

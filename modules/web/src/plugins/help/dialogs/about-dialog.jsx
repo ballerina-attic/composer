@@ -57,47 +57,43 @@ class AboutDialog extends React.Component {
                 show={this.state.showDialog}
                 title={
                     <div>
-                        <div className="brand">
-                        <img
-                            src="images/BallerinaLogo.svg"
-                            alt="Ballerina Composer"
-                            className="logo"
-                        />
-                        <span className="appname">Composer</span>
+                        <div className='brand'>
+
+                            <span className='appname'>XACML Development Tool</span>
                         </div>
-                        <div className="version">v0.95.1.SNAPSHOT</div>
+                        <div className='version'>v0.1</div>
                     </div>
                 }
                 onHide={this.onDialogHide}
-                className="modal-about"
+                className='modal-about'
                 actions={
                     <div>
                         © {new Date().getFullYear()}
                         &nbsp;
                         <a
-                            href="http://wso2.com/"
-                            rel="noopener noreferrer"
-                            target="_blank"
+                            href='http://wso2.com/'
+                            rel='noopener noreferrer'
+                            target='_blank'
                         >
-                            <i className="fw fw-wso2 icon" /> Inc.
+                            <i className='fw fw-wso2 icon' /> Inc.
                         </a>
                     </div>
 
                 }
             >
                 <p>
-                    Ballerina Composer provides a flexible and powerful browser-based tool for creating your Ballerina
-                    programs. You can build your integrations by creating sequence diagrams, dragging elements from a tool
-                    palette onto a canvas. As you build the diagrams, the underlying code is written for you, which you can
-                    work with in the Source view. You can also use the Swagger view to define services by writing Swagger
-                    definitions. You can switch seamlessly between the Design view, Source view, and Swagger view and create
-                    your programs in the way that you like to work.
+                    XACML (eXtensible Access Control Markup Language) is a fine grained access control language. It is
+                    not a simple task to write a policy from sketch without any support. Objective of this project is to
+                    develop a tool which compliance with XACML 3.0 specifications and introduce a UI based approach to
+                    create XACML policies. The developed application will be easily extensible for future features which
+                    will use XACML. And this will include try it capabilities and debugger capabilities for the policies
+                    as well.
                     <br /><br />
                     Please use &nbsp;
                     <a
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        href="https://github.com/ballerinalang/composer/issues"
+                        rel='noopener noreferrer'
+                        target='_blank'
+                        href='https://github.com/ChathurangiShyalika/xacml-development-tool/issues'
                     >
                         GitHub issues
                     </a>
