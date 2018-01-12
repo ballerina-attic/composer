@@ -49,7 +49,7 @@ public class BLangJSONModelTest {
 
     @BeforeClass
     public void setup() throws Exception {
-        microservicesRunner = new MicroservicesRunner(9090);
+        microservicesRunner = new MicroservicesRunner(9098);
         microservicesRunner.deploy(new BLangFileRestService()).start();
     }
 
@@ -113,7 +113,7 @@ public class BLangJSONModelTest {
     }
 
     private HttpURLConnection request(String path, String method) throws IOException, URISyntaxException {
-        URI baseURI = new URI("http://localhost:9090");
+        URI baseURI = new URI("http://localhost:9098");
         URL url = baseURI.resolve(path).toURL();
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
         if (method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)) {
