@@ -223,7 +223,40 @@ class SizingUtil {
      * @param {object} node
      */
     sizeCatchNode(node) {
-        this.sizeCompoundNode(node, node.getParameter());
+        const viewState = node.viewState;
+        const components = viewState.components;
+        const dropZoneHeight = TreeUtil.isBlock(node.parent) ? this.config.statement.gutter.v : 0;
+        const nodeBodyViewState = node.body.viewState;
+
+        // flow chart if width and height is different to normal block node width and height
+        nodeBodyViewState.bBox.w = (nodeBodyViewState.bBox.w < this.config.compoundStatement.width) ?
+                                    this.config.compoundStatement.width : nodeBodyViewState.bBox.w;
+        nodeBodyViewState.bBox.h += this.config.statement.gutter.v;
+
+        components.body = new SimpleBBox();
+
+        viewState.components['drop-zone'] = new SimpleBBox();
+        viewState.components['statement-box'] = new SimpleBBox();
+        // Set the block header as an opaque box to prevent conflicts with arrows.
+        components['block-header'] = new SimpleBBox();
+        viewState.components.text = new SimpleBBox();
+
+        const bodyWidth = nodeBodyViewState.bBox.w;
+        const bodyHeight = nodeBodyViewState.bBox.h;
+
+        components['block-header'].h = this.config.compoundStatement.heading.height
+                                        + this.config.compoundStatement.padding.top;
+
+        viewState.components['drop-zone'].h = dropZoneHeight + (viewState.offSet || 0);
+        viewState.components['drop-zone'].w = bodyWidth;
+        viewState.components['statement-box'].h = bodyHeight;
+        viewState.components['statement-box'].w = bodyWidth;
+        viewState.bBox.h = viewState.components['statement-box'].h
+                            + viewState.components['drop-zone'].h
+                            + components['block-header'].h;
+        viewState.bBox.w = bodyWidth;
+
+        components['block-header'].setOpaque(true);
     }
 
     /**
@@ -232,7 +265,6 @@ class SizingUtil {
      * @param {object} node - finally node
      */
     sizeFinallyNode(node) {
-        this.sizeCompoundNode(node);
     }
 
     /**
@@ -1471,7 +1503,7 @@ class SizingUtil {
 
         components['block-header'].h = this.config.flowChartControlStatement.heading.height
                                         + this.config.flowChartControlStatement.padding.top
-                                        + this.config.flowChartControlStatement.heading.flowPathHeight;
+                                        + this.config.flowChartControlStatement.heading.gap;
 
         viewState.components['drop-zone'].h = dropZoneHeight + (viewState.offSet || 0);
         viewState.components['drop-zone'].w = bodyWidth;
@@ -1630,26 +1662,95 @@ class SizingUtil {
      * @param {object} node - try node
      */
     sizeTryNode(node) {
-        this.sizeCompoundNode(node);
-        const catchBlocks = node.catchBlocks || [];
-        let height = node.viewState.bBox.h;
-        const finallyBody = node.finallyBody;
-        let maxWidth = node.body.viewState.bBox.w;
+        const catchStmts = node.catchBlocks || [];
 
-        // Here we check for the max width. Consider each block's body and set the max width to the try node's width
-        // During the position calculation iteration, we increase the each corresponding component's width accordingly
-        catchBlocks.forEach((catchBlock) => {
-            height += catchBlock.viewState.bBox.h;
-            maxWidth = Math.max(maxWidth, catchBlock.body.viewState.bBox.w);
-        });
+        // size try node
+        const viewState = node.viewState;
+        const components = viewState.components;
+        const dropZoneHeight = TreeUtil.isBlock(node.parent) ? this.config.statement.gutter.v : 0;
+        const nodeBodyViewState = node.body.viewState;
 
-        if (finallyBody) {
-            height += finallyBody.viewState.bBox.h;
-            maxWidth = Math.max(maxWidth, finallyBody.viewState.bBox.w);
+        // flow chart if width and height is different to normal block node width and height
+        nodeBodyViewState.bBox.w = (nodeBodyViewState.bBox.w < this.config.compoundStatement.width) ?
+                                    this.config.compoundStatement.width : nodeBodyViewState.bBox.w;
+        nodeBodyViewState.bBox.h += this.config.statement.gutter.v;
+
+        components.body = new SimpleBBox();
+
+        viewState.components['drop-zone'] = new SimpleBBox();
+        viewState.components['statement-box'] = new SimpleBBox();
+        // Set the block header as an opaque box to prevent conflicts with arrows.
+        components['block-header'] = new SimpleBBox();
+        viewState.components.text = new SimpleBBox();
+
+        let bodyWidth = nodeBodyViewState.bBox.w;
+        const bodyHeight = nodeBodyViewState.bBox.h;
+
+        components['block-header'].h = this.config.compoundStatement.heading.height
+                                        + this.config.compoundStatement.padding.top;
+
+        viewState.components['drop-zone'].h = dropZoneHeight + (viewState.offSet || 0);
+        viewState.components['drop-zone'].w = bodyWidth;
+        viewState.components['statement-box'].h = bodyHeight;
+        viewState.components['statement-box'].w = bodyWidth;
+
+        if (catchStmts.length > 0) {
+            // add an additional gap to allow the catch clauses in try
+            components['block-header'].h += (3 * this.config.compoundStatement.padding.top);
+            // for the connector line of the first catch clause
+            bodyWidth += this.config.compoundStatement.gap.left;
         }
 
-        node.viewState.bBox.h = height;
-        node.viewState.bBox.w = maxWidth;
+        viewState.bBox.h = viewState.components['statement-box'].h
+                            + viewState.components['drop-zone'].h
+                            + components['block-header'].h;
+        viewState.bBox.w = bodyWidth;
+
+        components['block-header'].setOpaque(true);
+
+        // calculate left margin from the lifeline centre
+        let leftMargin = this.calcLeftMargin(node.body.statements);
+        leftMargin = (leftMargin === 0) ? this.config.compoundStatement.gap.left
+                                        // since there is no left expansion for if,
+                                        // we take the left margin as it is
+                                        : leftMargin;
+        viewState.components['left-margin'] = {
+            w: leftMargin,
+        };
+
+        // end of try block sizing
+
+        let nodeHeight = viewState.bBox.h;
+        let nodeWidth = viewState.bBox.w;
+
+        // try catch sizing
+        catchStmts.forEach((catchStmt) => {
+            const catchHeight = catchStmt.body.viewState.bBox.h;
+            nodeHeight += catchHeight;
+            nodeWidth += catchStmt.viewState.bBox.w;
+        });
+
+        // finally sizing
+        const finallyBody = node.finallyBody;
+        if (finallyBody) {
+            // since finally is a block node, the sizing of the finally title has to be done within try block
+            // rendering will also be done in try decorator
+            node.viewState.components['finally-block'] = new SimpleBBox();
+            const finallyViewState = node.viewState.components['finally-block'];
+            finallyViewState.components = {};
+            finallyViewState.components['block-header'] = new SimpleBBox();
+            finallyViewState.components['block-header'].h = this.config.compoundStatement.heading.height +
+                                    this.config.statement.gutter.h;
+            finallyViewState.components['block-header'].w = finallyBody.viewState.bBox.w;
+            finallyViewState.components['statement-box'] = finallyBody.viewState.bBox;
+            finallyViewState.w = finallyBody.viewState.bBox.w;
+            finallyViewState.h = finallyViewState.components['block-header'].h +
+                                    finallyViewState.components['statement-box'].h;
+            nodeHeight += finallyViewState.h;
+        }
+
+        node.viewState.bBox.h = nodeHeight;
+        node.viewState.bBox.w = nodeWidth;
     }
 
     /**
@@ -1758,7 +1859,7 @@ class SizingUtil {
 
         components['block-header'].h = this.config.flowChartControlStatement.heading.height
                                         + this.config.flowChartControlStatement.padding.top
-                                        + this.config.flowChartControlStatement.heading.flowPathHeight;
+                                        + this.config.flowChartControlStatement.heading.gap;
 
         viewState.components['drop-zone'].h = dropZoneHeight + (viewState.offSet || 0);
         viewState.components['drop-zone'].w = bodyWidth;
@@ -1939,11 +2040,12 @@ class SizingUtil {
         const bodyWidth = nodeBodyViewState.bBox.w;
         const bodyHeight = nodeBodyViewState.bBox.h;
 
-        components['block-header'].h = this.config.blockStatement.heading.height;
+        components['block-header'].h = this.config.compoundStatement.heading.height
+                                        + this.config.compoundStatement.heading.gap;
 
         viewState.components['drop-zone'].h = dropZoneHeight + (viewState.offSet || 0);
         viewState.components['drop-zone'].w = bodyWidth;
-        viewState.components['statement-box'].h = bodyHeight + this.config.blockStatement.heading.height;
+        viewState.components['statement-box'].h = bodyHeight + components['block-header'].h;
         viewState.components['statement-box'].w = bodyWidth;
         viewState.bBox.h = viewState.components['statement-box'].h + viewState.components['drop-zone'].h
                             + this.config.statement.gutter.h;
@@ -1956,7 +2058,7 @@ class SizingUtil {
         // we will calculate the width of the expression and adjust the block statement
         if (expression) {
             // see how much space we have to draw the condition
-            const available = bodyWidth - this.config.blockStatement.heading.width - 10;
+            const available = bodyWidth - this.config.compoundStatement.heading.width - 10;
             components.expression = this.getTextWidth(expression.getSource(true), 0, available);
         }
     }
