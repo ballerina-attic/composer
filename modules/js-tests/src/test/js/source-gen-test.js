@@ -29,7 +29,7 @@ import _ from 'lodash';
 import path from 'path';
 import chalk from 'chalk';
 
-const jsdom = require('jsdom-global')(undefined, { url: 'http://localhost:9091' });
+const jsdom = require('jsdom-global')(undefined, { url: 'http://127.0.0.1:9091' });
 require('composer/vendor.js');
 
 global.webpackJsonp = window.webpackJsonp;
