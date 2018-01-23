@@ -22,10 +22,12 @@ const path = require('path');
 const process = require('process');
 const fs = require('fs');
 const log = require('log');
-const {spawn} = require('child_process');
+const {exec, spawn} = require('child_process');
 const {createWindow} = require('./src/app');
 const {createErrorWindow} = require('./src/error-window');
 const {ErrorCodes} = require('./src/error-codes');
+
+const bootstrapClassName = 'org.ballerinalang.composer.server.launcher.ServerLauncher';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -33,7 +35,7 @@ let win,
     serviceProcess,
     logger = new log('info'),
     appDir = app.getAppPath(),
-    logsDir = path.join(appDir, '..', '..', 'logs'),
+    logsDir = path.join(__dirname, '..', '..', 'logs'),
     ballerinaHome = path.join(__dirname, 'bre');
 
 function createLogger(){
@@ -50,20 +52,22 @@ function createLogger(){
 
 function createService(){
     let logsDirSysProp = '-DlogsDirectory=' + logsDir;
-    let log4jConfPath = path.join(appDir, 'conf', 'log4j.properties')
+    let log4jConfPath = path.join(__dirname, 'conf', 'log4j.properties')
                           .replace('app.asar', 'app.asar.unpacked');
-    let log4jConfProp = '-Dlog4j.configuration=' + 'file:' + log4jConfPath;
-    let balComposerHomeProp = '-Dbal.composer.home=' + appDir.replace('app.asar', 'app.asar.unpacked');
-    let debugArgs='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6006';
+    let log4jConfProp = '-Djava.util.logging.config.file=' + 'file:' + log4jConfPath;
+    let publicPathProp = '-Dcomposer.public.path='
+            + path.join(__dirname, 'resources', 'composer', 'web', 'public')
+                .replace('app.asar', 'app.asar.unpacked');
+    let debugArgs='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005';
     let errorWin;
+    let jarPath = path.join(__dirname, 'composer-server-distribution.jar').replace('app.asar', 'app.asar.unpacked');
 
-    serviceProcess = spawn('java', [log4jConfProp, logsDirSysProp, balComposerHomeProp,
-        '-jar', path.join(appDir, 'workspace-service.jar')
-                    .replace('app.asar', 'app.asar.unpacked')]);
+    serviceProcess = exec(`java ${publicPathProp} -jar ${jarPath}`);
     logger.info('Verifying whether the backend services are started successfully');
     serviceProcess.stdout.on('data', function(data) {
+        console.log(data);
         // IMPORTANT: Wait till workspace-service is started to create window
-        if (data.includes('Microservices server started')) {
+        if (data.includes('Composer started successfully')) {
             logger.info('Backend services are properly started, starting composer GUI');
             if (win === undefined) {
                 win = createWindow();
