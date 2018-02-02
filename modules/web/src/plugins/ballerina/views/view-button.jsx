@@ -30,7 +30,7 @@ class ViewButton extends React.Component {
                 className={`view-split-view-btn btn-icon ${active}`}
                 onClick={this.props.onClick}
             >
-                <div className='bottom-label-icon-wrapper'>
+                <div className='bottom-label-icon-wrapper' title={this.props.title}>
                     <i className={`fw fw-${this.props.icon}`} />
                 </div>
                 <div
